@@ -1,0 +1,3 @@
+[submodule "tools/mtcg-mcp"]
+	path = tools/mtcg-mcp
+	url = https://github.com/cndreisbach/mtcg-mcp
