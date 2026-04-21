@@ -1,0 +1,21 @@
+{
+  "oracle_id": "44f87b6e-0cc8-4088-8a94-8272b6b26869",
+  "name": "Liliana's Shade",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.68,
+        "reasoning_notes": "ETB tutors a Swamp to hand, smoothing land drops and black mana supply; it supports mana consistency more than being a real payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

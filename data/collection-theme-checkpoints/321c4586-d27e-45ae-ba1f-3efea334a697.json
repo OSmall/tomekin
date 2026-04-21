@@ -1,0 +1,57 @@
+{
+  "oracle_id": "321c4586-d27e-45ae-ba1f-3efea334a697",
+  "name": "Ancestral Vengeance",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Aura spell with `Enchant creature`; its main deckbuilding home is aura-centric shells despite modest standalone impact."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "ETB places a +1/+1 counter on a creature you control, giving minor counters synergy alongside the Aura body."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Type line is Aura and it has enchant creature; its clearest deckbuilding home is aura-centric shells."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "ETB puts a +1/+1 counter on a creature you control, but that rider is incidental rather than a dedicated counters payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

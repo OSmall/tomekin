@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5acf1424-6886-4777-be9c-a845502e08bd",
+  "name": "Fleshmad Steed",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "Only hooks into creatures dying; that points at aristocrats/sacrifice, though the tap trigger is a drawback rather than a payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.31,
+        "reasoning_notes": "It only references another creature dying, so the closest deckbuilding hook is sacrifice/death-matters, but this is a liability trigger, not a payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

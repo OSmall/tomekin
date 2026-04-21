@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ed8ec935-3359-42a1-8ac6-cac6f0e7f905",
+  "name": "Maw of the Obzedat",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Free sac outlet that converts expendable creatures into team-wide pump; classic aristocrats engine and finisher support."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "Anthem-style pump scales best with many creatures, rewarding token/fodder-heavy boards."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

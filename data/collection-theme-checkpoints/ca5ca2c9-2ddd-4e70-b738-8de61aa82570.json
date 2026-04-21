@@ -1,0 +1,71 @@
+{
+  "oracle_id": "ca5ca2c9-2ddd-4e70-b738-8de61aa82570",
+  "name": "Opaline Unicorn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Mana dork on an artifact creature; taps for any color, mainly used to accelerate and smooth mana."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "`{T}: Add one mana of any color` directly fixes colors for multicolor decks."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Artifact creature body can contribute to artifact-count and artifact-synergy shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Mana dork on an artifact creature; taps for any color, mainly used to accelerate and smooth mana."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "`{T}: Add one mana of any color` directly fixes colors for multicolor decks."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Artifact creature body can contribute to artifact-count and artifact-synergy shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

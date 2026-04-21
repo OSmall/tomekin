@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fd68ae3c-52cd-4b20-b015-bd31378d972e",
+  "name": "Signal the Clans",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "card advantage / deck construction",
+        "theme": "name matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "It explicitly requires three creature cards with different names, directly rewarding singleton/name-diverse deckbuilding."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "card advantage / deck construction",
+        "theme": "name matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "It explicitly requires three creature cards with different names, directly rewarding singleton/name-diverse deckbuilding."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

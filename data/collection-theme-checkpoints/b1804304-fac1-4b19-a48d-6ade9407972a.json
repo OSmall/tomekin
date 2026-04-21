@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b1804304-fac1-4b19-a48d-6ade9407972a",
+  "name": "Dead Weight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap Aura that gives enchanted creature -2/-2; primarily used as efficient creature removal."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "It is an Aura enchantment, so it can matter for Aura/enchantment synergies beyond removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap Aura that gives enchanted creature -2/-2; primarily used as efficient creature removal."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "It is an Aura enchantment, so it can matter for Aura/enchantment synergies beyond removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

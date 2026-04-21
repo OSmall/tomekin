@@ -1,0 +1,35 @@
+{
+  "oracle_id": "49d06291-c8cb-4e22-b178-d0598582b2ee",
+  "name": "Glacial Stalker",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "morph / megamorph",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Morph and is mainly included as a face-down creature for morph synergies; no other strong mechanical theme is present."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "morph / megamorph",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Morph and is mainly included as a face-down creature for morph synergies; no other strong mechanical theme is present."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

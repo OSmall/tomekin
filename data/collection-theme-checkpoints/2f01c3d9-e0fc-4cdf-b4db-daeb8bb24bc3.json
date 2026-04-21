@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2f01c3d9-e0fc-4cdf-b4db-daeb8bb24bc3",
+  "name": "Geistflame",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant that deals damage to any target; classic small burn spell with reach and creature ping utility."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Cheap instant with flashback gives two spell casts from one card, fitting spell-count and graveyard-casting shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

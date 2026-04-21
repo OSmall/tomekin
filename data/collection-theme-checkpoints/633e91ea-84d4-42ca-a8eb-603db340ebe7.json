@@ -1,0 +1,21 @@
+{
+  "oracle_id": "633e91ea-84d4-42ca-a8eb-603db340ebe7",
+  "name": "Knight of the Skyward Eye",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.68,
+        "reasoning_notes": "Cheap 2-drop that can attack early and threaten a repeatable +3/+3 pump, fitting beatdown/pressure plans more than synergy decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

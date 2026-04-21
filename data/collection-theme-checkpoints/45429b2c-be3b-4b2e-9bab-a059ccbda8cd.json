@@ -1,0 +1,53 @@
+{
+  "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+  "name": "Blossoming Sands",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Tapped dual land that adds {G} or {W}; its main deckbuilding role is color fixing for Selesnya mana bases."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "ETB gains 1 life, giving small incidental support for lifegain-matters cards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Tapped dual land that adds {G} or {W}; its main deckbuilding role is color fixing for Selesnya mana bases."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "ETB gains 1 life, giving small incidental support for lifegain-matters cards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

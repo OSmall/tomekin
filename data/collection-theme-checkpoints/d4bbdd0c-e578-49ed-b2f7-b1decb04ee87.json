@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d4bbdd0c-e578-49ed-b2f7-b1decb04ee87",
+  "name": "Pressure Point",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap instant that taps a blocker/attacker for a turn while replacing itself, fitting classic tempo play patterns."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Cantrips on resolution, but the draw is secondary to the temporary creature interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap instant that taps a blocker/attacker for a turn while replacing itself, fitting classic tempo play patterns."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Cantrips on resolution, but the draw is secondary to the temporary creature interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

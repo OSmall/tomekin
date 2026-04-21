@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c650a7bc-e350-44a0-a698-d4a233d66156",
+  "name": "Child of Night",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap lifelink creature; repeatedly gains life through combat, mainly enabling lifegain synergies."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Vampire typing can matter in tribal shells, but rules text does not specifically support the tribe."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Has lifelink on a cheap creature, so it reliably enables life-gain triggers through combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

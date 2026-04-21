@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6297680-5d32-41e6-aaaf-b194e6be6b96",
+  "name": "Greenside Watcher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Only interacts with Gates, which are mainly used for color fixing; untapping one specifically supports Gate mana bases."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Untapping a Gate can effectively generate extra mana, but only in Gate-heavy decks and only one land at a time."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

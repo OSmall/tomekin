@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c3779271-1186-4754-8b8d-0ee18e585bb6",
+  "name": "Chronicler of Heroes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB draws only if you already control a creature with a +1/+1 counter, making it a counters-dependent card-advantage piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Provides a single card on entry, but only conditionally, so it is secondary to its counters synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB draws only if you already control a creature with a +1/+1 counter, making it a counters-dependent card-advantage piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Provides a single card on entry, but only conditionally, so it is secondary to its counters synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

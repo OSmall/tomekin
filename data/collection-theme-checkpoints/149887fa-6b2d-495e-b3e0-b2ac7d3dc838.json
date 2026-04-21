@@ -1,0 +1,66 @@
+{
+  "oracle_id": "149887fa-6b2d-495e-b3e0-b2ac7d3dc838",
+  "name": "Easterling Vanguard",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.71,
+        "reasoning_notes": "Dies trigger replaces itself with an Orc Army body, fitting death-value and sacrifice shells."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Amass creates an Army token if you do not already control one."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Amass adds a +1/+1 counter to an Army each time it resolves."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Death trigger leaves behind material via amass Orcs 1, a clean fit for sacrifice/death-value shells."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "If you lack an Army, the amass trigger creates one, giving minor token support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

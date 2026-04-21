@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d96ac790-428b-4a64-8dbd-6baa73eb6210",
+  "name": "Wildcall",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Explicitly manifests the top card of your library; this is direct manifest support and a core theme fit."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "It puts X +1/+1 counters on the manifested creature, directly feeding counter-based synergies."
+      },
+      {
+        "primary": false,
+        "category": "mana / activated abilities",
+        "theme": "mana sink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Its scalable X cost lets excess mana convert into a larger board presence, though that is secondary to manifest."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

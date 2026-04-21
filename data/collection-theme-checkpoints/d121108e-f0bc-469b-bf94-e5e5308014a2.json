@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d121108e-f0bc-469b-bf94-e5e5308014a2",
+  "name": "Razor Hippogriff",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB regrows an artifact card, making it a clear artifact-recursion support piece."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "It gains life tied to the returned artifact's mana value, but lifegain is secondary to the recursion."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Native flying gives it relevance in flier shells, though that is not its main deckbuilding pull."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

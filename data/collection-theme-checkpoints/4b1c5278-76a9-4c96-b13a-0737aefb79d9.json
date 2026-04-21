@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4b1c5278-76a9-4c96-b13a-0737aefb79d9",
+  "name": "Cyclone Sire",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Death trigger puts three +1/+1 counters on a land and animates it, directly supporting counters-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Death trigger puts three +1/+1 counters on a land and animates it, directly supporting counters-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

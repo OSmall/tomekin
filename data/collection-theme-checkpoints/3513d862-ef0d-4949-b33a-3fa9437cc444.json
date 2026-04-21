@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3513d862-ef0d-4949-b33a-3fa9437cc444",
+  "name": "Seismic Strike",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant that deals creature-only damage; scalable by Mountains but chiefly functions as removal."
+      },
+      {
+        "primary": false,
+        "category": "lands / color synergies",
+        "theme": "land type matters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Damage scales with the number of Mountains you control, directly rewarding a specific land type."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant that deals creature-only damage; scalable by Mountains but chiefly functions as removal."
+      },
+      {
+        "primary": false,
+        "category": "lands / color synergies",
+        "theme": "land type matters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Damage scales with the number of Mountains you control, directly rewarding a specific land type."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f640a102-7ee8-4605-9e15-09938fb229b2",
+  "name": "Bladetusk Boar",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "Intimidate makes it hard to block, so it mainly supports evasive-combat plans rather than a listed named synergy."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "evasion"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Intimidate is a pure evasion keyword; the card has no stronger tribal, aggro, or named-synergy hook beyond being hard to block."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

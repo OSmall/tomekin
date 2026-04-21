@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7a4ae76b-6241-4fa8-b239-5ec941a0e7df",
+  "name": "Horned Turtle",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "A 1/4 vanilla for 3 functions mainly as an early blocker, fitting defensive control shells more than proactive themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "A 1/4 vanilla for 3 functions mainly as an early blocker, fitting defensive control shells more than proactive themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

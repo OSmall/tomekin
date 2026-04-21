@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8315aa34-08b8-403e-a2e6-796a2d6978ad",
+  "name": "Stern Lesson",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Creates a Powerstone token, giving repeatable mana acceleration even though it enters tapped and is artifact-spell restricted."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Instant-speed draw two, discard one provides card selection and hand smoothing alongside the mana token."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Makes an artifact Powerstone token, so it lightly supports artifact-count and artifact-synergy shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

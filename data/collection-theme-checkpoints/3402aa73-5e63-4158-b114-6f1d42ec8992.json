@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3402aa73-5e63-4158-b114-6f1d42ec8992",
+  "name": "Master of Diversion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Attack trigger taps a blocker, creating attack-step board tempo and helping creatures push through."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Best in proactive decks that keep attacking, but it is not a standalone finisher."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

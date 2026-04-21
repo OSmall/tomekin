@@ -1,0 +1,75 @@
+{
+  "oracle_id": "a1b66fbf-14a3-4582-8414-53f432f96dad",
+  "name": "Eternal Thirst",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura that buffs a creature with lifelink and growth text; best fit is an Aura-centric enchantment piece."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Directly grants lifelink, turning combat damage into life gain."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Repeatedly adds +1/+1 counters whenever opposing creatures die, scaling over time."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap Aura that directly rewards suiting up one creature; its entire card type and function are Aura-centric."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Explicitly grants lifelink, so the enchanted creature converts combat damage into life gain."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "It repeatedly puts +1/+1 counters on the enchanted creature when opposing creatures die, but it is not a dedicated counters engine by itself."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

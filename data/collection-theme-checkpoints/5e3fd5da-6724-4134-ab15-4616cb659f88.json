@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5e3fd5da-6724-4134-ab15-4616cb659f88",
+  "name": "Exclusion Ritual",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB exiles a target nonland permanent; the name-lock is upside, but its main gameplay role is single-target removal."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "It is an enchantment-based answer, so it can incidentally fit enchantment-synergy shells more than most removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "ETB exiles one target nonland permanent, making this primarily single-target removal; high cost tempers strength."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1ef73cc0-fe72-4040-a932-bcd4b1a704a3",
+  "name": "Gnarled Scarhide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "One-mana 2/1 that can't block is a classic aggressive rate; best used to pressure early rather than defend."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Bestow lets it function as an Aura, granting +2/+1 and can't block to support creature-based aggression."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "One-mana 2/1 that can't block is a classic aggressive rate; best used to pressure early rather than defend."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Bestow lets it function as an Aura, granting +2/+1 and can't block to support creature-based aggression."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

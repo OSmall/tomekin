@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e4c96980-31ed-494e-89db-c0a0f1fd23fd",
+  "name": "Vulpine Goliath",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Has only trample as rules text on an oversized 6/5 body, making it a straightforward trample-based top-end threat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Has only trample as rules text on an oversized 6/5 body, making it a straightforward trample-based top-end threat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -3,7 +3,7 @@
     "mcp": {
         "mtcg": {
             "type": "local",
-            "enabled": true,
+            "enabled": false,
             "command": [
                 "bun",
                 "./tools/mtcg-mcp/index.ts",
@@ -12,6 +12,14 @@
                 "-b",
                 "./data/mtcg.db"
             ],
-        }
+        },
+        "scryfall": {
+            "type": "local",
+            "enabled": true,
+            "command": [
+                "bunx",
+                "scryfall-mcp-server",
+            ],
+        },
     }
 }

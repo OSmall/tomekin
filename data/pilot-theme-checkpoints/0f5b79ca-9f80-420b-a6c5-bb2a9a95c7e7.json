@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0f5b79ca-9f80-420b-a6c5-bb2a9a95c7e7",
+  "name": "Soul Summons",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creatures",
+        "theme": "manifest",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Only effect is Manifest, a dedicated face-down/manifest payoff enabler that creates a 2/2 from the top card with upside if it's a creature."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "manifest"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creatures",
+        "theme": "manifest",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Single-purpose manifest card; directly creates a face-down 2/2 and cleanly supports dedicated manifest/morph shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fd05f23e-8974-445d-9059-d706a3740d89",
+  "name": "Monastery Flock",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "morph / megamorph",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Morph {U}; its clearest deckbuilding home is face-down/morph synergy shells."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Flying makes it a defensive flier, but that is secondary to being a morph creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

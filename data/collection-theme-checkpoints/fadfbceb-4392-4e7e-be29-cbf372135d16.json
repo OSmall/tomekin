@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fadfbceb-4392-4e7e-be29-cbf372135d16",
+  "name": "Kruphix's Insight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Digs six cards deep for up to three enchantments, making it a dedicated enchantment-density payoff and card selection tool."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Non-enchantment cards and excess reveals go to the graveyard, incidentally stocking it for graveyard synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

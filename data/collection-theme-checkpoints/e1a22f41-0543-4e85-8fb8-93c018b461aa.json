@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e1a22f41-0543-4e85-8fb8-93c018b461aa",
+  "name": "Labyrinth Champion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Heroic triggers from targeting it with your spells, making it a direct payoff for heroic/targeted-spell shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Each heroic trigger deals 2 damage to any target, giving repeatable direct damage tied to targeting spells."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Rewards a deck full of cheap targeting spells, but specifically wants self-targeting more than generic spell volume."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

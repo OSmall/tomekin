@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7058e7c3-b704-47f6-85f8-ee584f76a1fe",
+  "name": "Clinging Anemones",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Evolve repeatedly puts +1/+1 counters on it as larger creatures enter; the card is mainly a counters-synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Evolve repeatedly puts +1/+1 counters on it as larger creatures enter; the card is mainly a counters-synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

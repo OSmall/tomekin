@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ebb24fc7-dc71-4712-8c2a-b5920f78e55d",
+  "name": "Outpost Siege",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Khans mode gives repeatable impulse draw each upkeep, a classic red card-advantage engine."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "Dragons mode pings whenever your creatures leave, rewarding sacrifice and death/leave-the-battlefield loops."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "Dragons mode converts creature exits into direct damage to any target, but usually as secondary utility."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

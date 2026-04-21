@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e3c0b11e-7340-4e0a-98b7-91b38439d4f9",
+  "name": "Silvercoat Lion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.59,
+        "reasoning_notes": "A vanilla 2/2 for 2 mana mainly serves as an efficient early-board creature for straightforward beatdown plans."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

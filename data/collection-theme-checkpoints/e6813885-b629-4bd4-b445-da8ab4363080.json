@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e6813885-b629-4bd4-b445-da8ab4363080",
+  "name": "Lost in a Labyrinth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "One-mana instant combat shrink effect; -3/-0 swings blocks or races, with scry 1 adding minor card selection."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Cheap temporary stat reduction can buy a turn or preserve pressure, but it does not remove the creature outright."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

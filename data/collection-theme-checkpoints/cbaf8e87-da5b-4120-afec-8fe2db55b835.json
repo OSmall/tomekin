@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cbaf8e87-da5b-4120-afec-8fe2db55b835",
+  "name": "Kalonian Twingrove",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB creates a second scalable Treefolk body, making it a clear token-producing payoff for mono-green board development."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.7,
+        "reasoning_notes": "Six-mana creature that scales with Forest count, rewarding heavy land development in green ramp shells."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Creates a Treefolk Warrior token and shares the Treefolk type, but has no explicit Treefolk tribal text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

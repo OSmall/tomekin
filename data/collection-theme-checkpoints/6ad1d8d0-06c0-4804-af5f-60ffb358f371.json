@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6ad1d8d0-06c0-4804-af5f-60ffb358f371",
+  "name": "Boldwyr Intimidator",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Explicitly rewards Warriors by making Cowards unable to block and can turn creatures into Warriors."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Creates pseudo-unblockable attacks by turning blockers into Cowards so they can't block Warriors."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Direct Warrior tribal payoff: it makes Cowards unable to block Warriors and can turn creatures into Warriors."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Turns would-be blockers into Cowards, creating conditional unblockability for Warriors in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

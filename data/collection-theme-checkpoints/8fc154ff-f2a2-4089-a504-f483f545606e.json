@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8fc154ff-f2a2-4089-a504-f483f545606e",
+  "name": "Rise of Eagles",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates two creature tokens outright; token production is the card's main deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Both tokens are Birds with flying, making it a modest source of evasive bodies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates two creature tokens outright; token production is the card's main deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Both tokens are Birds with flying, making it a modest source of evasive bodies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "37864d13-2aaa-477b-8453-a42f77ab4437",
+  "name": "Hunt the Weak",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Fight spell functions as creature-based removal; the +1/+1 counter mainly helps your creature win the exchange."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Explicitly places a +1/+1 counter, but only once and mostly to support the fight effect rather than a counters plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6588ea9a-658f-40d9-a64b-3a418ab81183",
+  "name": "Ulvenwald Mysteries",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Investigate makes Clue tokens, and sacrificing Clues makes 1/1 Human Soldier tokens; token production is the card's core loop."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Investigate supplies Clues, which cash in for cards and keep the engine fueled."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Rewards creature deaths with Clues and rewards sacrificing Clues with more bodies, fitting sacrifice-centric shells."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

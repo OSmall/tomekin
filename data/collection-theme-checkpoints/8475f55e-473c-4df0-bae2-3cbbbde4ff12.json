@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8475f55e-473c-4df0-bae2-3cbbbde4ff12",
+  "name": "Chrome Steed",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Artifact creature with Metalcraft; becomes a 4/4 when you control three artifacts, directly rewarding artifact density."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Artifact creature with Metalcraft; becomes a 4/4 when you control three artifacts, directly rewarding artifact density."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

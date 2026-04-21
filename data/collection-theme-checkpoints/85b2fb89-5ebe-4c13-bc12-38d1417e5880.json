@@ -1,0 +1,35 @@
+{
+  "oracle_id": "85b2fb89-5ebe-4c13-bc12-38d1417e5880",
+  "name": "Abzan Guide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Lifelink makes it a repeatable life-gain source; mainly supports lifegain shells rather than paying them off."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Lifelink makes it a repeatable life-gain source; mainly supports lifegain shells rather than paying them off."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f4e15575-2277-4cb1-a343-e9407c050eb1",
+  "name": "Ubul Sar Gatekeepers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB ability only turns on if you control two or more Gates, making it a clear Gates payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Conditional ETB gives target opposing creature -2/-2 until end of turn, functioning as light removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB ability only turns on if you control two or more Gates, making it a clear Gates payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Conditional ETB gives target opposing creature -2/-2 until end of turn, functioning as light removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

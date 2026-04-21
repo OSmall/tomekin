@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7140f396-1bfa-4b28-ba28-fa15eba74652",
+  "name": "Ruins of Oran-Rief",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability places a +1/+1 counter, making it a direct counter-support land for eligible creatures."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "colorless matters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Only works on colorless creatures and taps for {C}, explicitly rewarding colorless creature decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability places a +1/+1 counter, making it a direct counter-support land for eligible creatures."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "colorless matters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Only works on colorless creatures and taps for {C}, explicitly rewarding colorless creature decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

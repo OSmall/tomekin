@@ -1,0 +1,55 @@
+{
+  "oracle_id": "231f8edb-4ea1-44be-8794-b76a31462dfc",
+  "name": "Divine Offering",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant-speed artifact removal; targeted destruction is classic spot removal, though limited to artifacts."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Gains life equal to the destroyed artifact's mana value, adding incidental lifegain to the removal spell."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Directly destroys a target artifact at instant speed; this is specific artifact interaction more than broad spot removal."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Oracle text grants life equal to the destroyed artifact's mana value, but only as incidental upside on the hate spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2a249c4b-beaa-4e7f-b4f7-496d282327bd",
+  "name": "Voracious Wurm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB scales directly with life gained this turn, making it a dedicated reward for lifegain turns."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It enters with +1/+1 counters, so it can overlap with counters-matter shells, though that is secondary to lifegain."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB scales directly with life gained this turn, making it a dedicated reward for lifegain turns."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It enters with +1/+1 counters, so it can overlap with counters-matter shells, though that is secondary to lifegain."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

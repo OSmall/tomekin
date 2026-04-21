@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d8b6ea82-da4e-4763-84b1-4caa214ed945",
+  "name": "Hydroform",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Instant-speed land animation creates surprise combat stats and flying, mainly functioning as a trick or ambush play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.46,
+        "reasoning_notes": "Low-cost instant can convert a land into an evasive threat for a turn, supporting short-term board pressure."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Instant-speed land animation creates a surprise 3/3 flier for ambushes or unexpected damage; this is squarely a combat trick, not a lasting tempo plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

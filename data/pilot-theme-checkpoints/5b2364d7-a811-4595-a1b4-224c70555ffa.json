@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5b2364d7-a811-4595-a1b4-224c70555ffa",
+  "name": "Raise the Alarm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Creates two Soldier creature tokens for two mana; a clean token-production spell."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Adds multiple bodies at instant speed, helping swarm and wide-board strategies."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Oracle text directly creates two creature tokens for one card; this is a clean, efficient token-maker."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Two bodies from a single spell supports wide-board plans, though the card is more directly a token producer than a payoff."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

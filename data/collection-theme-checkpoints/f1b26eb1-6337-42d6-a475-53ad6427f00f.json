@@ -1,0 +1,70 @@
+{
+  "oracle_id": "f1b26eb1-6337-42d6-a475-53ad6427f00f",
+  "name": "Flourishing Defenses",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "-1/-1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Triggers whenever a -1/-1 counter is placed, making it a direct payoff for -1/-1 counter strategies."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Repeatedly converts -1/-1 counter placement into 1/1 Elf Warrior tokens, functioning as a token engine."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.7,
+        "reasoning_notes": "The steady stream of 1/1 tokens supports wide-board plans, though only through counter synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "-1/-1 counters"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "-1/-1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Directly rewards any -1/-1 counter placement with optional token creation, making it a clear dedicated payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Repeated token generation is built into the trigger, but it depends on ongoing -1/-1 counter support rather than standing alone."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

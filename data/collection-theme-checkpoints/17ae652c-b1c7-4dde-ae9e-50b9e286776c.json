@@ -1,0 +1,30 @@
+{
+  "oracle_id": "17ae652c-b1c7-4dde-ae9e-50b9e286776c",
+  "name": "Warpath Ghoul",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Zombie typeline gives it its clearest deckbuilding home; no text means it mainly fills creature-count tribal slots."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.38,
+        "reasoning_notes": "A vanilla 3/2 for three can attack in low-curve black creature decks, but rate and lack of abilities make this secondary."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

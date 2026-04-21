@@ -1,0 +1,30 @@
+{
+  "oracle_id": "54af9e23-459e-470d-9b0e-e91a0fa45c98",
+  "name": "Wandering Champion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Cheap 3/1 that wants to connect in combat; its body and trigger both reward attacking early."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "On-hit loot effect provides selective card flow if you control a blue or red permanent."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0f92daf5-520d-472a-a835-e6680a92fdab",
+  "name": "Voracious Null",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatable sorcery-speed sac outlet that consumes other creatures for value; classic sacrifice-shell enabler."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Each activation adds two +1/+1 counters, making it a direct counters payoff tied to sacrificing creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatable sorcery-speed sac outlet that consumes other creatures for value; classic sacrifice-shell enabler."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Each activation adds two +1/+1 counters, making it a direct counters payoff tied to sacrificing creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

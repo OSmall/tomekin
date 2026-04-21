@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b0168b7e-a8b8-4ce3-af12-a43f3818b6a1",
+  "name": "Aerial Formation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant that pumps and grants flying until EOT; classic combat/evasion trick with scalable strive upside."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Targets your creatures and can hit several at once, making it a reasonable heroic-style enabler."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap instant-speed pump plus flying for combat; strive can scale it across multiple attackers or blockers."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "It targets your creatures, so it can trigger heroic, but that is incidental rather than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

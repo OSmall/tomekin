@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7604aac7-82ae-4f5b-888d-a008754f716a",
+  "name": "Guardians of Meletis",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Colorless artifact creature with only defender; fits artifact-matters decks more than combat themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Colorless artifact creature with only defender; fits artifact-matters decks more than combat themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

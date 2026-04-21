@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bd5eb181-6a69-4dc2-93a0-fa000291bc3d",
+  "name": "Auramancer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB returns an enchantment from graveyard to hand, a classic enchantment/aura recursion support piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Directly recovers an enchantment card from your graveyard, but only to hand and only for enchantments."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB returns an enchantment from graveyard to hand, a classic enchantment/aura recursion support piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Directly recovers an enchantment card from your graveyard, but only to hand and only for enchantments."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

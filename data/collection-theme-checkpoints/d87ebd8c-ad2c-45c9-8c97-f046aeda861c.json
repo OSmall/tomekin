@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d87ebd8c-ad2c-45c9-8c97-f046aeda861c",
+  "name": "Anvilwrought Raptor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Artifact creature with no broader synergy text; it mainly counts for artifact-matters decks while serving as an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Artifact creature with no broader synergy text; it mainly counts for artifact-matters decks while serving as an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

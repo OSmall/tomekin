@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6969a7e2-6866-4001-a139-24b3be13deae",
+  "name": "Alesha, Who Smiles at Death",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Attack trigger repeatedly returns power-2-or-less creatures from your graveyard to the battlefield tapped and attacking."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Attack trigger reanimates a power-2-or-less creature from your graveyard directly to the battlefield tapped and attacking."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

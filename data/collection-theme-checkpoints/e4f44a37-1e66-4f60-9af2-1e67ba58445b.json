@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e4f44a37-1e66-4f60-9af2-1e67ba58445b",
+  "name": "Gore Vassal",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "-1/-1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Activated sacrifice ability directly places a -1/-1 counter, making it a clean counter-theme enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Can pick off X/1s or shrink creatures in combat, but the effect is small and often temporary due to regenerate."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

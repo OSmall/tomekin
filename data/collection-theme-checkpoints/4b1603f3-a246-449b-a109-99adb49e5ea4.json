@@ -1,0 +1,66 @@
+{
+  "oracle_id": "4b1603f3-a246-449b-a109-99adb49e5ea4",
+  "name": "Eastfarthing Farmer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "ETB makes a Food, then grants a scalable temporary pump to your creature based on Foods you control."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Creates a Food token, which supports incidental life gain rather than paying it off directly."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Food is an artifact token, so it lightly supports artifact-count or artifact-sacrifice shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.69,
+        "reasoning_notes": "ETB creates a Food, then gives a creature a temporary power/toughness boost scaled by Foods you control; this is mainly a board-combat swing."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "It makes a Food token, providing incidental life gain support, but it neither rewards life gain nor produces Food at high volume."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

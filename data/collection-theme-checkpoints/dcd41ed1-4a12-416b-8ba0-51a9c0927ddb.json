@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dcd41ed1-4a12-416b-8ba0-51a9c0927ddb",
+  "name": "Binding Agony",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Aura enchantment that rewards enchanting a creature; its damage-reflection text is secondary to clear Aura synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Aura enchantment that rewards enchanting a creature; its damage-reflection text is secondary to clear Aura synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5604c475-6e01-4e9d-b4e6-8e8d72874581",
+  "name": "Briarpack Alpha",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Flash plus ETB +2/+2 lets it act like an instant-speed pump spell while leaving behind a 3/3 body."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Instant-speed ambush potential can swing combat and preserve board position, fitting a light tempo role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Flash and an ETB +2/+2 pump let it function primarily as an instant-speed combat blowout attached to a creature body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

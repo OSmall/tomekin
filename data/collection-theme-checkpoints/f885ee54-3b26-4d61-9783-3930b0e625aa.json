@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f885ee54-3b26-4d61-9783-3930b0e625aa",
+  "name": "Lat-Nam's Legacy",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Instant-speed hand filtering that turns one card into two on the next upkeep; mainly a delayed card-advantage spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.41,
+        "reasoning_notes": "Low-cost instant can be held up and cashed in efficiently, but delayed draw makes tempo relevance secondary."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

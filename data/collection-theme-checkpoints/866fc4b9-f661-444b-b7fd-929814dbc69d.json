@@ -1,0 +1,46 @@
+{
+  "oracle_id": "866fc4b9-f661-444b-b7fd-929814dbc69d",
+  "name": "Abzan Skycaptain",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Bolster 2 puts +1/+1 counters on death, making it a modest counters support piece rather than a standalone payoff."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "A 2/2 flier for four with death value can fit grindy creature decks, but its text points more strongly to counters support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Bolster 2 always places two +1/+1 counters when it dies, making this a clean counters support card. It is not a dedicated payoff, and the body is too modest to justify extra themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5af2689d-c45c-4d45-b6a9-f32e8410b336",
+  "name": "Illusion // Reality",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Reality cleanly destroys an artifact at instant speed; the color-change half is niche support, not the main deckbuilding pull."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Its most relevant target class is artifacts, making it a sideboard-style answer in artifact-heavy metas or pods."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Reality cleanly destroys an artifact at instant speed; the color-change half is niche support, not the main deckbuilding pull."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Its most relevant target class is artifacts, making it a sideboard-style answer in artifact-heavy metas or pods."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

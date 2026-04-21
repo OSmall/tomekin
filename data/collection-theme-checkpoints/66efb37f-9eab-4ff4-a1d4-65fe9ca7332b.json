@@ -1,0 +1,39 @@
+{
+  "oracle_id": "66efb37f-9eab-4ff4-a1d4-65fe9ca7332b",
+  "name": "Scourgemark",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Aura with a cantrip ETB and small stat boost; most naturally fits Aura-focused decks as low-cost glue."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Draws a card on entry, but only once and mainly offsets Aura card disadvantage rather than serving as pure draw."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Gives enchanted creature +1/+0, a modest offensive buff that slightly supports attacking plans."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

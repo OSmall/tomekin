@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c1346677-d89e-49d0-9819-08805f00bb64",
+  "name": "Panic Attack",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Sorcery clears up to three blockers for a turn, mainly enabling aggressive attacks and pushing damage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Temporary blocking denial can create a short-term combat swing, but it does not answer creatures permanently."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

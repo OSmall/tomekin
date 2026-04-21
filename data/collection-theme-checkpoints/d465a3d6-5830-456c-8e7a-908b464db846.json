@@ -1,0 +1,71 @@
+{
+  "oracle_id": "d465a3d6-5830-456c-8e7a-908b464db846",
+  "name": "Inspired Charge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Mass team pump rewards having multiple creatures and converts a wide board into a lethal attack."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Instant-speed +2/+1 across your team functions as an overrun-style combat blowout in combat."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Token decks maximize this effect because many small bodies turn the global pump into efficient damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Mass team pump rewards having multiple creatures and converts a wide board into a lethal attack."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Instant-speed +2/+1 across your team functions as an overrun-style combat blowout in combat."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Token decks maximize this effect because many small bodies turn the global pump into efficient damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

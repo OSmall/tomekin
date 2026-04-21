@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9676da93-1e17-4f6c-b610-a242b78c71ab",
+  "name": "Sensor Splicer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "ETB makes a 3/3 Golem artifact creature token, so its main deckbuilding role is token production."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "The created token is an artifact creature, making this a clean fit for artifact-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "It specifically grants vigilance to Golem creatures you control, acting as a modest Golem tribal lord."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

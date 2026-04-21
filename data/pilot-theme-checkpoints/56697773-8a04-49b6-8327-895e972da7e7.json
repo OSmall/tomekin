@@ -1,0 +1,46 @@
+{
+  "oracle_id": "56697773-8a04-49b6-8327-895e972da7e7",
+  "name": "Night Revelers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "A 5-mana 4/4 that can gain haste plays as a generic board-impact threat rather than a synergy piece."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.36,
+        "reasoning_notes": "Vampire typing gives minor relevance in tribal shells, but the card has no explicit Vampire payoff text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Five-mana 4/4 with only conditional haste reads as a generic creature-based closer, not a real synergy card; Vampire typing alone is too incidental to justify a tribal tag."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a0f29566-bca8-4fe8-86ce-4a051ece6d5a",
+  "name": "Purge the Profane",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Sorcery makes target opponent discard two cards; the life gain is minor rider, so its main gameplay identity is hand disruption."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "It gains 2 life, but only as a small incidental effect rather than a dedicated payoff or engine."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

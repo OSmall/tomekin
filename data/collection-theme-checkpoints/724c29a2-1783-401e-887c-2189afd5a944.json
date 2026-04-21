@@ -1,0 +1,30 @@
+{
+  "oracle_id": "724c29a2-1783-401e-887c-2189afd5a944",
+  "name": "Meditation Puzzle",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant that only gains 8 life; pure life-total stabilization with no other mode or payoff text."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "Convoke is easiest in creature-dense, go-wide shells, though the card itself does not make tokens or reward wide boards directly."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

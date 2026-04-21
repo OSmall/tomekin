@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ce02ef24-d53e-4025-bc45-ca27aba89fe9",
+  "name": "Nimbus Swimmer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Enters with X +1/+1 counters on it, making counters the card's defining mechanic and scaling body."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Has flying and can be cast large, giving it a clear evasive threat role in the air."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "X in its cost rewards decks that generate excess mana, though it is not itself mana production."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

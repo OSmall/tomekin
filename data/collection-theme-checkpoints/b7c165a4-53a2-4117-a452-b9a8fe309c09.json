@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b7c165a4-53a2-4117-a452-b9a8fe309c09",
+  "name": "Tooth Collector",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delirium",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has explicit Delirium text and repeatable upkeep trigger that turns on only with four card types in your graveyard."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "ETB and Delirium trigger shrink opposing creatures with targeted -1/-1, functioning as small creature control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delirium",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has explicit Delirium text and repeatable upkeep trigger that turns on only with four card types in your graveyard."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "ETB and Delirium trigger shrink opposing creatures with targeted -1/-1, functioning as small creature control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

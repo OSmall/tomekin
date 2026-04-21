@@ -1,0 +1,35 @@
+{
+  "oracle_id": "265f461e-d076-4119-8ea4-96360305f3a0",
+  "name": "Phalanx Vanguard",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Artifact ETB trigger gives repeatable temporary power boosts; a clear artifact-matters creature payoff in white aggro shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Artifact ETB trigger gives repeatable temporary power boosts; a clear artifact-matters creature payoff in white aggro shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

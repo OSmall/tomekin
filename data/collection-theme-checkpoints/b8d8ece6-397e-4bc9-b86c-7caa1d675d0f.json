@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b8d8ece6-397e-4bc9-b86c-7caa1d675d0f",
+  "name": "Back to Nature",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Cheap instant-speed sweeper for enchantments; mainly a sideboard-style answer that disrupts enchantment-based boards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Cheap instant-speed sweeper for enchantments; mainly a sideboard-style answer that disrupts enchantment-based boards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

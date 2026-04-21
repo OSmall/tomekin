@@ -1,0 +1,56 @@
+{
+  "oracle_id": "24227761-b50e-4b9e-93a2-e82d053b3e3d",
+  "name": "Fling",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Requires sacrificing a creature as an added cost and converts that body into direct damage to any target."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Often used after blocks or with a large attacker to turn combat stats into burst removal or reach."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Additional-cost creature sacrifice makes this a clear sac payoff, turning expendable or oversized creatures into reach or removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "It deals direct damage to any target, but the card is usually enabled by creature-sacrifice or power-scaling shells rather than generic burn decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

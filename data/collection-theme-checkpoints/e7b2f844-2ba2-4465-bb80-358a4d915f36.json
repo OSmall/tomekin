@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e7b2f844-2ba2-4465-bb80-358a4d915f36",
+  "name": "Abzan Advantage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Instant forces an opponent to sacrifice an enchantment; this is clean enchantment interaction with minor upside."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Bolster 1 places a +1/+1 counter on your least-tough creature, giving small counters synergy support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Instant forces an opponent to sacrifice an enchantment; this is clean enchantment interaction with minor upside."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Bolster 1 places a +1/+1 counter on your least-tough creature, giving small counters synergy support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

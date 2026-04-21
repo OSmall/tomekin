@@ -1,0 +1,53 @@
+{
+  "oracle_id": "67f59250-d46a-4637-9493-165d23278817",
+  "name": "Sungrace Pegasus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Lifelink makes it a repeatable life-gain source; cheap evasive body helps trigger it in combat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Flying gives reliable evasion, but the card mainly serves as a lifegain enabler rather than a dedicated skies payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Lifelink makes it a repeatable life-gain source; cheap evasive body helps trigger it in combat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Flying gives reliable evasion, but the card mainly serves as a lifegain enabler rather than a dedicated skies payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

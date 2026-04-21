@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a920d37e-e172-41f7-bfbf-c18821dcbed7",
+  "name": "Goblin Roughrider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Efficient vanilla 3/2 for {2}{R}; contributes early combat pressure in straightforward aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.35,
+        "reasoning_notes": "Goblin creature type gives minor relevance in Goblin tribal, but it has no tribe-specific text or synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

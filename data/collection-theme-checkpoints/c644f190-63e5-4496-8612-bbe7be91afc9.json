@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c644f190-63e5-4496-8612-bbe7be91afc9",
+  "name": "Remedy",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Instant-speed damage prevention used to win combats or blank burn; flexible division across targets is classic combat-trick play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.45,
+        "reasoning_notes": "Can defensively negate damage from attacks or burn, but it is narrower than typical control interaction."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

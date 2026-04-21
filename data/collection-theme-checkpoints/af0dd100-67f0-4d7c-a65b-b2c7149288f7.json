@@ -1,0 +1,31 @@
+{
+  "oracle_id": "af0dd100-67f0-4d7c-a65b-b2c7149288f7",
+  "name": "Havoc Festival",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Stops lifegain and repeatedly chunks each player's life total, fitting Rakdos life-loss / drain shells as a major payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.7,
+        "reasoning_notes": "Symmetrical upkeep life-loss plus lifegain denial pressures the whole table and constrains stabilizing lines over time."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

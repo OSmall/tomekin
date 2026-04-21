@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1c4bd85b-03c2-4235-aea1-76c48520adf3",
+  "name": "Melesse Spirit",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "A 3/3 Angel Spirit with flying; its main deckbuilding relevance is being an evasive flying creature."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Flying gives consistent combat evasion, but this is already mostly captured by the more specific fliers label."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "A 3/3 Angel Spirit with flying; its main deckbuilding relevance is being an evasive flying creature."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Flying gives consistent combat evasion, but this is already mostly captured by the more specific fliers label."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

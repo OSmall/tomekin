@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e8cf80a1-6908-4adb-88e7-2015672d4905",
+  "name": "Karametra's Acolyte",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "devotion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Explicitly scales with devotion to green, rewarding heavy green pip density on permanents you control."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Its tap ability can generate large amounts of green mana, often functioning as explosive creature-based ramp."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9bc82078-2f3e-44ee-906d-707f3430d414",
+  "name": "Hands of Binding",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap tap-plus-frost effect removes a blocker twice with cipher, creating repeated tempo swings and clearing attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap tap-plus-frost effect removes a blocker twice with cipher, creating repeated tempo swings and clearing attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

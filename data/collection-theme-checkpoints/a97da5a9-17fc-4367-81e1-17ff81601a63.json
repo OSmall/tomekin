@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a97da5a9-17fc-4367-81e1-17ff81601a63",
+  "name": "Anticipate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Instant-speed selection puts one of top three into hand; a classic cheap cantrip/card-selection spell."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "Low-cost instant helps trigger spell-count/payoff decks, though it has no dedicated spell-matter text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Cheap instant-speed selection replaces itself by taking 1 of top 3, fitting card draw/card selection support."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "A low-cost instant is a reasonable spell-count enabler, but it has no explicit spell-matter payoff text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

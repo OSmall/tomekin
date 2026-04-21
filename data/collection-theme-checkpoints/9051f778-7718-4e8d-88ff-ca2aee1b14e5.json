@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9051f778-7718-4e8d-88ff-ca2aee1b14e5",
+  "name": "Knight of Obligation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Extort repeatedly drains each opponent while gaining life, a direct fit for lifegain-drain shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Vigilance plus extort suits slower board stalls and incremental advantage, though it is not a dedicated control piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dc9374df-134d-4d32-842e-991e2bfb2dc1",
+  "name": "Shattering Blow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant that exiles a target artifact cleanly; a narrow but very direct anti-artifact sideboard/deckbuilding tool."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Single-target exile removal, but restricted to artifacts so this is secondary to its artifact-hate role."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "artifact hate"
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0b751cc7-3a19-4207-9e64-83e18d279588",
+  "name": "Cloud Elemental",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap flying body with no other synergy text; best fit is straightforward flier support/evasion."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Flying makes it naturally evasive, though the card is more specifically a generic flier than a broader evasion payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap flying body with no other synergy text; best fit is straightforward flier support/evasion."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Flying makes it naturally evasive, though the card is more specifically a generic flier than a broader evasion payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

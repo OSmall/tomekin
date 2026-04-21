@@ -1,0 +1,53 @@
+{
+  "oracle_id": "dcc31cbf-f75d-4584-a97b-aa9d19d7b142",
+  "name": "Zhur-Taa Swine",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Bloodrush functions as an instant-speed pump effect, giving an attacker +5/+4 for a surprise combat swing."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "5/4 body for 5 and Bloodrush only buffs an attacking creature, pointing clearly to aggressive combat plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Bloodrush functions as an instant-speed pump effect, giving an attacker +5/+4 for a surprise combat swing."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "5/4 body for 5 and Bloodrush only buffs an attacking creature, pointing clearly to aggressive combat plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

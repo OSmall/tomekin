@@ -1,0 +1,35 @@
+{
+  "oracle_id": "649512ed-4908-450a-9652-b2c80df5e24d",
+  "name": "Smite the Monstrous",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed creature removal, limited to creatures with power 4 or greater; a clean conditional removal spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed creature removal, limited to creatures with power 4 or greater; a clean conditional removal spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

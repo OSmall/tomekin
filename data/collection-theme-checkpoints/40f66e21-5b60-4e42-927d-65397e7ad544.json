@@ -1,0 +1,77 @@
+{
+  "oracle_id": "40f66e21-5b60-4e42-927d-65397e7ad544",
+  "name": "Citadel Siege",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Khans mode repeatedly puts two +1/+1 counters on a creature each combat, making it a clear counters engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Dragons mode taps an opposing creature on each opponent's combat, functioning as repeatable combat control."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It is an enchantment, so it can slot into enchantment-synergy shells, though its text is not enchantment-focused."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Khans mode adds two +1/+1 counters every combat on your turn, a strong repeatable counters engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Dragons mode repeatedly taps a creature each opponent combat, but it is narrower combat control, not a core control payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "It is an enchantment with useful static value, so it fits enchantment-synergy shells incidentally."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

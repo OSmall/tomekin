@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bd9c5b53-9666-45ee-8f9d-ee1ae74111b6",
+  "name": "Hideous Visage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Mass intimidate makes the team hard to block for a turn; this is a classic evasion finisher/support effect for combat damage."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Best when multiple creatures attack, so it rewards a wide board even though it does not create tokens itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

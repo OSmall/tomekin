@@ -1,0 +1,21 @@
+{
+  "oracle_id": "05a7ca83-e820-433f-b9e9-151e817d3708",
+  "name": "Tar Pit Warrior",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "3/4 body for three mana blocks reasonably well; no proactive synergy text, and its self-sacrifice on targeting discourages combat-trick or aura use."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

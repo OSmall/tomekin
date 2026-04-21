@@ -1,0 +1,46 @@
+{
+  "oracle_id": "58edb282-a124-47bc-b123-1c34b6804f48",
+  "name": "Ember Beast",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.75,
+        "reasoning_notes": "Efficient 3-mana 3/4 for beatdown, but its attack/block restriction fits creature-dense aggressive boards."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Can't attack or block alone, so it specifically rewards having multiple creatures in play."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Above-rate 3/4 body for 3 mana suits creature-based beatdown, but the can't-attack-or-block-alone clause is a drawback, not true go-wide support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

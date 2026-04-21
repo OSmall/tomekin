@@ -1,0 +1,71 @@
+{
+  "oracle_id": "8ad7fdd2-bff5-4434-a3f9-1f5ce0ed573b",
+  "name": "Urza, Powerstone Prodigy",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Loot ability specifically rewards discarding artifact cards by making Powerstones, pushing artifact-focused deckbuilding."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Its discard payoff creates Powerstone tokens, providing repeatable colorless mana acceleration for artifact-heavy decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Activated ability loots each turn, filtering cards and fueling the artifact-discard payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Loot ability specifically rewards discarding artifact cards by making Powerstones, pushing artifact-focused deckbuilding."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Its discard payoff creates Powerstone tokens, providing repeatable colorless mana acceleration for artifact-heavy decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Activated ability loots each turn, filtering cards and fueling the artifact-discard payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

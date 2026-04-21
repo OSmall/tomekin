@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4c3745ff-6e1e-4660-abe6-1a30611ec00c",
+  "name": "Weakstone's Subjugation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Aura locks an artifact or creature by stopping untaps; classic repeatable blue board control piece."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.91,
+        "reasoning_notes": "Type line is Enchantment - Aura and it functions through an Aura-based permanent lockdown effect."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Can enchant artifacts as well as creatures, giving it some relevance in artifact-interaction contexts."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

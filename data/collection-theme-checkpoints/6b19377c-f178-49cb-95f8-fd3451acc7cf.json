@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6b19377c-f178-49cb-95f8-fd3451acc7cf",
+  "name": "Angelic Benediction",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Repeatable attack trigger taps a blocker while exalted rewards a lone attacker, pushing evasive tempo-oriented combat."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "The tap trigger is soft board control, but only during your solo attacks rather than broad control play."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Exalted and the attack-alone tap trigger both reward committing to one attacker, a classic single-creature combat plan."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Tapping a potential blocker each turn creates soft combat tempo, but only within the attack-alone shell rather than as a general tempo card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

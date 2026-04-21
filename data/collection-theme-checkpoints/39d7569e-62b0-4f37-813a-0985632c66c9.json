@@ -1,0 +1,46 @@
+{
+  "oracle_id": "39d7569e-62b0-4f37-813a-0985632c66c9",
+  "name": "Encircling Fissure",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "One-sided Fog effect blanks an opponent's combat step, fitting defensive interaction and board stabilization plans."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.47,
+        "reasoning_notes": "Awaken adds two +1/+1 counters to a land, but the counters mode is secondary to the combat prevention effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "A one-sided Fog that blanks an opponent's combat step; this is defensive interaction for control shells, not a dedicated counters card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

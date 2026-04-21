@@ -1,0 +1,64 @@
+{
+  "oracle_id": "405cd74a-6b44-4a80-b53c-ff1406d8ff45",
+  "name": "Enlarge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "One-shot sorcery pump spell that forces blocks and grants trample, built to swing combat math decisively."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Explicitly grants trample for the turn, helping excess damage push through forced blockers."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Targets one creature for a huge temporary stat boost, fitting single-attacker kill setups."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "Single-target sorcery that massively pumps, grants trample, and compels blocks, making it a clear combat-swing spell."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Explicitly grants trample until end of turn, letting excess damage push through the forced block."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

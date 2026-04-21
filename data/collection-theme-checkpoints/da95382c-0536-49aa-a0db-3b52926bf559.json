@@ -1,0 +1,55 @@
+{
+  "oracle_id": "da95382c-0536-49aa-a0db-3b52926bf559",
+  "name": "Coastline Chimera",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Flying makes it a natural fit for fliers decks, though it plays a defensive support role more than an aggressive payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "High toughness plus the activated extra-block ability helps stall combat and defend in slower control shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "A 1/5 flyer for four with an activated extra-block ability is built to gum up combat and protect life total."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Flying gives it incidental synergy with fliers decks, but its stats and text point more to blocking than aerial pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

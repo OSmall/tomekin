@@ -1,0 +1,30 @@
+{
+  "oracle_id": "08911e8e-cd67-4960-a927-958c33632469",
+  "name": "Sandstone Bridge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Tapped white land gives a temporary +1/+1 and vigilance boost on ETB, best supporting early combat pressure."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "The ETB trigger acts like a small one-shot combat boost, though attached to a land rather than a spell."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

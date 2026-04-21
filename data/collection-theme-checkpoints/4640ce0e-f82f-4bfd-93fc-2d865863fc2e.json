@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4640ce0e-f82f-4bfd-93fc-2d865863fc2e",
+  "name": "Involuntary Cooldown",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sorcery that locks down up to two artifacts/creatures with stun counters, buying multiple turns of time rather than removing them."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.75,
+        "reasoning_notes": "Fits control shells as repeatable-style board delay, but its effect is more specifically a tempo play than hard control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sorcery that locks down up to two artifacts/creatures with stun counters, buying multiple turns of time rather than removing them."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.75,
+        "reasoning_notes": "Fits control shells as repeatable-style board delay, but its effect is more specifically a tempo play than hard control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

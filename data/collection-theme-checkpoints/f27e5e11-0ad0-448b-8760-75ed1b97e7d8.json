@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f27e5e11-0ad0-448b-8760-75ed1b97e7d8",
+  "name": "Bronze Sable",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.94,
+        "reasoning_notes": "Colorless artifact creature with no other text; it mainly serves as a low-impact artifact-count enabler."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.94,
+        "reasoning_notes": "Colorless artifact creature with no other text; it mainly serves as a low-impact artifact-count enabler."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

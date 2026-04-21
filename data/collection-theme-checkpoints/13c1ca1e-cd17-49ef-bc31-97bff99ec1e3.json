@@ -1,0 +1,53 @@
+{
+  "oracle_id": "13c1ca1e-cd17-49ef-bc31-97bff99ec1e3",
+  "name": "Hopeful Eidolon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Lifelink on both creature and bestowed Aura repeatedly gains life; mainly a cheap lifegain enabler."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Bestow lets it function as an Aura that buffs a creature and grants lifelink, fitting Aura-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Lifelink on both creature and bestowed Aura repeatedly gains life; mainly a cheap lifegain enabler."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Bestow lets it function as an Aura that buffs a creature and grants lifelink, fitting Aura-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dcd41ed1-4a12-416b-8ba0-51a9c0927ddb",
+  "name": "Binding Agony",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Type line is Enchantment — Aura with enchant creature; chiefly supports Aura/enchantments-matter shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Its damage-reflection text deters combat and punishes blocking/being blocked, giving a light control element."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura with enchant creature; its main deckbuilding home is Aura-based enchantment shells rather than a broader control plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

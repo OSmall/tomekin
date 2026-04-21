@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b8a3440a-03c5-444c-a1de-252524c3db82",
+  "name": "Aragorn and Arwen, Wed",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB/attack puts a +1/+1 counter on each other creature you control, making it a strong teamwide counters engine."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Both the counters and life gain scale with having many other creatures, rewarding a wide battlefield."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Its ETB/attack trigger puts a +1/+1 counter on each other creature you control, making counters the card's clear build-around role. The life gain scales wide but is secondary, not a distinct theme anchor."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

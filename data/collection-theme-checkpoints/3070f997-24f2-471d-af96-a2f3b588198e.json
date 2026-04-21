@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3070f997-24f2-471d-af96-a2f3b588198e",
+  "name": "Divine Verdict",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed creature kill, limited to attacking or blocking creatures; classic defensive removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed creature kill, limited to attacking or blocking creatures; classic defensive removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

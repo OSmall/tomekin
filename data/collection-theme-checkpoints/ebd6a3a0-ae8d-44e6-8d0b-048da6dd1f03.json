@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ebd6a3a0-ae8d-44e6-8d0b-048da6dd1f03",
+  "name": "Uglúk of the White Hand",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Grows whenever another creature you control dies, making it a direct death/sacrifice payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Its scaling is entirely via +1/+1 counters placed from your creatures dying."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Specifically rewards Goblin or Orc deaths with an extra counter, fitting Orc/Goblin tribal shells."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

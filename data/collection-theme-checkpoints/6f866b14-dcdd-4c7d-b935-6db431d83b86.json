@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6f866b14-dcdd-4c7d-b935-6db431d83b86",
+  "name": "Kiora's Dismissal",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Targets and bounces any number of enchantments, making it dedicated enchantment interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Cheap instant-speed bounce can create a strong temporary tempo swing against aura or enchantment-heavy boards."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

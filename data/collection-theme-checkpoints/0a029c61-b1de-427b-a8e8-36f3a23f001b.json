@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0a029c61-b1de-427b-a8e8-36f3a23f001b",
+  "name": "Tymaret, the Murder King",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Repeatable sacrifice outlet that converts creatures into damage, a classic Rakdos aristocrats engine."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Both abilities require sacrificing creatures, directly enabling sac-focused gameplay and death-trigger shells."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Can recur itself from graveyard to hand by sacrificing a creature, supporting repeated reuse in grindy decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Sacrificed creatures become 2 damage to target player or planeswalker, giving reach as a sacrifice payoff."
+      }
+    ],
+    "audit_reasons": [
+      "broad_tagging"
+    ],
+    "proposed_themes": []
+  }
+}

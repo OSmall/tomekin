@@ -1,0 +1,39 @@
+{
+  "oracle_id": "62d293a6-4fad-4aaa-af87-62d705e243ca",
+  "name": "Pith Driller",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "-1/-1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB directly places a -1/-1 counter on a target creature, making it a clean counters-theme enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "The ETB counter can kill small creatures or permanently shrink a key threat on entry."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It is an artifact creature, so it naturally slots into artifact-count and artifact-synergy shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

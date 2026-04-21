@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3ab3996f-aa3f-4041-8634-8e197d51f108",
+  "name": "Mass Calcify",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Asymmetric sweeper: destroys all nonwhite creatures, a classic board-control effect that preserves white boards."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

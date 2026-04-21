@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0f92daf5-520d-472a-a835-e6680a92fdab",
+  "name": "Voracious Null",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sac outlet that consumes other creatures for repeatable growth; classic sacrifice payoff in black creature decks."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Its activated ability places two +1/+1 counters on itself each use, supporting counters synergies secondarily."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sac outlet that consumes other creatures for repeatable growth; classic sacrifice payoff in black creature decks."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Its activated ability places two +1/+1 counters on itself each use, supporting counters synergies secondarily."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

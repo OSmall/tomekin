@@ -1,0 +1,39 @@
+{
+  "oracle_id": "60bfcaef-9014-4707-b681-cc3920bf223e",
+  "name": "Foray of Orcs",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "It deals scalable damage to target creature an opponent controls as part of its resolution."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Amass Orcs 2 adds +1/+1 counters to an Army, and the damage scales with that creature's power."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Amass can create an Orc Army token if you don't already control an Army."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

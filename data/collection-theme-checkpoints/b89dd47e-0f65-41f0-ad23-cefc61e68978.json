@@ -1,0 +1,71 @@
+{
+  "oracle_id": "b89dd47e-0f65-41f0-ad23-cefc61e68978",
+  "name": "Collateral Damage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Requires sacrificing a creature for value; classic aristocrats enabler that converts fodder into damage/removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Instant-speed 3 damage to any target functions as cheap creature removal or reach."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "The additional sacrifice cost directly supports sacrifice-matters shells and death-trigger setups."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Requires sacrificing a creature for value; classic aristocrats enabler that converts fodder into damage/removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Instant-speed 3 damage to any target functions as cheap creature removal or reach."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "The additional sacrifice cost directly supports sacrifice-matters shells and death-trigger setups."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5c2e0762-4994-4c34-b33f-909c2b3f0f43",
+  "name": "Swordwise Centaur",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Efficient 3/2 for {G}{G} with no text; a classic rate-based early attacker for aggressive green creature decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Efficient 3/2 for {G}{G} with no text; a classic rate-based early attacker for aggressive green creature decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

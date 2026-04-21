@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e74c70be-2b70-4b04-9909-161d6f41a156",
+  "name": "Nagging Thoughts",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Puts one of the top two cards into hand, functioning as cheap card selection and card advantage smoothing."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "The other looked-at card goes to your graveyard, lightly fueling graveyard-based synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Puts one of the top two cards into hand, functioning as cheap card selection and card advantage smoothing."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "The other looked-at card goes to your graveyard, lightly fueling graveyard-based synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

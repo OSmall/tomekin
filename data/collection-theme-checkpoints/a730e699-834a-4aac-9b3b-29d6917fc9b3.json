@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a730e699-834a-4aac-9b3b-29d6917fc9b3",
+  "name": "Tireless Missionaries",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB gains 3 life, making it a straightforward lifegain enabler on a creature body."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "A 2/3 for five mana is low-pressure and tends to play a stabilizing role rather than attack well."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

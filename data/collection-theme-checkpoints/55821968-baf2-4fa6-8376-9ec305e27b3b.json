@@ -1,0 +1,46 @@
+{
+  "oracle_id": "55821968-baf2-4fa6-8376-9ec305e27b3b",
+  "name": "Boon of Erebos",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "One-mana instant that buffs power and protects a creature via regenerate, fitting cheap combat-oriented blowout/protection play."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "It targets your own creature, so it can trigger heroic-style payoffs, but that is secondary to its trick/protection role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Cheap instant-speed pump plus regeneration makes it a classic protection/combat blowout spell; life loss is minor."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

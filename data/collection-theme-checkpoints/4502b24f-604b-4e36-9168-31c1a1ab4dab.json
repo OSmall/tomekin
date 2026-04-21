@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4502b24f-604b-4e36-9168-31c1a1ab4dab",
+  "name": "Angelic Wall",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Cheap flying defender blocks early attackers well; a pure defensive body that supports control/stall plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Cheap flying defender blocks early attackers well; a pure defensive body that supports control/stall plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2ddd33e1-b48e-42e2-a60a-f09f151d3c1d",
+  "name": "Felhide Brawler",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Minotaur-typed creature with a tribal dependency: it blocks only if you control another Minotaur, tying its function to Minotaur tribal shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Minotaur-typed creature with a tribal dependency: it blocks only if you control another Minotaur, tying its function to Minotaur tribal shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

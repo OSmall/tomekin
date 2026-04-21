@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d9c57520-9827-4b8b-8f81-43cca4227c60",
+  "name": "Taigam's Scheming",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Surveil 5 directly loads your own graveyard while filtering draws, a classic self-mill setup piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "reanimator",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "Puts creatures or other targets into your graveyard efficiently, helping stock reanimation payoffs."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Surveil 5 can bin any number of the top five cards, making it a very efficient self-mill setup spell."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "reanimator",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "It can stock the graveyard with reanimation targets, but only indirectly and without a direct payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

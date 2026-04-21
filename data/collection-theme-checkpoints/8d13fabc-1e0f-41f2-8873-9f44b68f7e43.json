@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8d13fabc-1e0f-41f2-8873-9f44b68f7e43",
+  "name": "Hindervines",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Only creatures without +1/+1 counters are fogged, so it strongly rewards counter-based boards and breaks combat in their favor."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Instant-speed combat damage prevention functions as a situational fog that can swing combat math."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Only creatures without +1/+1 counters are fogged, so it strongly rewards counter-based boards and breaks combat in their favor."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Instant-speed combat damage prevention functions as a situational fog that can swing combat math."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

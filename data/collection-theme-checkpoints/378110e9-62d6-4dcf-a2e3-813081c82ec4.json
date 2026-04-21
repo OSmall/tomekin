@@ -1,0 +1,23 @@
+{
+  "oracle_id": "378110e9-62d6-4dcf-a2e3-813081c82ec4",
+  "name": "Twins of Maurer Estate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "discard / graveyard synergies",
+        "theme": "madness",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Has Madness itself, so it directly rewards discard outlets by becoming a cheaper castable threat from exile."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "madness"
+    ]
+  }
+}

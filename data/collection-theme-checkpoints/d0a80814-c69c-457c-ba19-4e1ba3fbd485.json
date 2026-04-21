@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d0a80814-c69c-457c-ba19-4e1ba3fbd485",
+  "name": "Loxodon Convert",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.23,
+        "reasoning_notes": "Vanilla 4/2 creature with no rules text; only clear role is attacking/blocking in straightforward combat decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

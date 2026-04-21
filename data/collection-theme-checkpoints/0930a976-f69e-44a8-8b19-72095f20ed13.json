@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0930a976-f69e-44a8-8b19-72095f20ed13",
+  "name": "Baleful Eidolon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Bestow turns it into an Aura that buffs a creature and grants deathtouch; its main deckbuilding home is Aura-based enchantment shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Bestow turns it into an Aura that buffs a creature and grants deathtouch; its main deckbuilding home is Aura-based enchantment shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e365699a-bd77-473f-86b0-4e1ba0371cdc",
+  "name": "Crippling Blight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "An Aura that weakens a creature and stops blocking; best fits aura-based interaction shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Can't block plus -1/-1 mainly hampers combat efficiency and pushes damage through at low cost."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Can function as soft removal on x/1s, but usually debuffs rather than fully removes a creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Creature Aura with a persistent debuff; its type line cleanly supports aura-focused synergies while functioning as cheap interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "'-1/-1' plus 'can't block' is mainly about shrinking a blocker and pushing damage, which is a solid tempo play at one mana."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

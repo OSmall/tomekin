@@ -1,0 +1,53 @@
+{
+  "oracle_id": "66578806-9148-479d-80e1-6c3e3b67e452",
+  "name": "Elite Skirmisher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Heroic trigger directly rewards targeting it with spells, making it a clear heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Each heroic trigger can tap a blocker or attacker, providing small tempo-oriented board control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Heroic trigger directly rewards targeting it with spells, making it a clear heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Each heroic trigger can tap a blocker or attacker, providing small tempo-oriented board control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

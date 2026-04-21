@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7d084fe0-4896-4a1d-839c-81f55591c18a",
+  "name": "Ruination Wurm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Vanilla 7/6 for six mana is a straightforward large body, best suited as a stat-based top-end threat in creature midrange decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Vanilla 7/6 for six mana is a straightforward large body, best suited as a stat-based top-end threat in creature midrange decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

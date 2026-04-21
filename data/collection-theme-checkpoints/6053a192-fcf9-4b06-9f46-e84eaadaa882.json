@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6053a192-fcf9-4b06-9f46-e84eaadaa882",
+  "name": "Solfatara",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Prevents a player from playing lands for a turn, functioning as temporary land denial rather than true destruction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "One-turn land denial can stunt development and buy time; delayed cantrip helps offset card cost."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Prevents a player from playing lands for a turn, functioning as temporary land denial rather than true destruction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "One-turn land denial can stunt development and buy time; delayed cantrip helps offset card cost."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

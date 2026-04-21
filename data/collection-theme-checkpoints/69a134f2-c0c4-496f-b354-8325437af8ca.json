@@ -1,0 +1,30 @@
+{
+  "oracle_id": "69a134f2-c0c4-496f-b354-8325437af8ca",
+  "name": "Pharagax Giant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "If tribute isn't paid, it ETBs and deals 5 to each opponent, making it a direct-damage finisher in red decks."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Tribute 2 can place two +1/+1 counters on it, but counters are the fallback mode rather than the main deckbuilding incentive."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

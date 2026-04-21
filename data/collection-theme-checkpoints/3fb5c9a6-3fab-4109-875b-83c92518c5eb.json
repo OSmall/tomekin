@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3fb5c9a6-3fab-4109-875b-83c92518c5eb",
+  "name": "Gollum, Scheming Guide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Attack trigger can make Gollum unblockable that turn, making it a repeatable evasive attacker if the opponent guesses wrong."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Its attack trigger can draw a card on a failed guess, giving conditional repeatable card advantage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

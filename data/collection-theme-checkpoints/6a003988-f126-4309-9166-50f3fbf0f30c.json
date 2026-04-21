@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6a003988-f126-4309-9166-50f3fbf0f30c",
+  "name": "Battlefront Krushok",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Grants a teamwide menace-like evasion bonus specifically to creatures you control with +1/+1 counters."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "A 5-mana 3/4 body with built-in evasion can pressure boards, but its main deckbuilding hook is counters synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Teamwide attack payoff for creatures with +1/+1 counters, granting a strong pseudo-evasion clause tied directly to that counter theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

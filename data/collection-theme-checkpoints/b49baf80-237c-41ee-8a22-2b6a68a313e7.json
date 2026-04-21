@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b49baf80-237c-41ee-8a22-2b6a68a313e7",
+  "name": "Dwarven Vigilantes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Attack trigger can convert an unblocked attack into creature damage, functioning as repeatable conditional removal on a body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Attack trigger can convert an unblocked attack into creature damage, functioning as repeatable conditional removal on a body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

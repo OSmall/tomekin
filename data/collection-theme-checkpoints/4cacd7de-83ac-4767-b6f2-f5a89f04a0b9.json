@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4cacd7de-83ac-4767-b6f2-f5a89f04a0b9",
+  "name": "Captain's Claws",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Type line is Equipment with cheap equip cost; primarily supports an attacker rather than acting as a standalone payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Each attack by the equipped creature creates a 1/1 Kor Ally tapped and attacking, giving repeat token production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Type line is Equipment with cheap equip cost; primarily supports an attacker rather than acting as a standalone payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Each attack by the equipped creature creates a 1/1 Kor Ally tapped and attacking, giving repeat token production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

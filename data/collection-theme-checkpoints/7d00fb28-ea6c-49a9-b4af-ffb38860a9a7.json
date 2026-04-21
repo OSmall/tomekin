@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7d00fb28-ea6c-49a9-b4af-ffb38860a9a7",
+  "name": "Cancel",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Clean counterspell that trades one-for-one on the stack; classic blue control interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Clean counterspell that trades one-for-one on the stack; classic blue control interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

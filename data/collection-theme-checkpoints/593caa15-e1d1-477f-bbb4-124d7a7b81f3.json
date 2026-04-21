@@ -1,0 +1,53 @@
+{
+  "oracle_id": "593caa15-e1d1-477f-bbb4-124d7a7b81f3",
+  "name": "Mighty Leap",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap instant pumps a creature and grants flying for a turn; classic limited-style combat trick."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Temporary flying can force damage through blockers, but evasion is secondary to the trick effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap instant pumps a creature and grants flying for a turn; classic limited-style combat trick."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Temporary flying can force damage through blockers, but evasion is secondary to the trick effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

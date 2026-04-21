@@ -1,0 +1,39 @@
+{
+  "oracle_id": "708bf989-dd8d-4066-a463-96cc5eadbb06",
+  "name": "Meadowboon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Leaves-the-battlefield trigger puts a +1/+1 counter on each creature a player controls, making it a teamwide counters payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "The mass counter trigger scales best with a wide board, rewarding decks that flood creatures."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Evoke guarantees a sacrifice trigger, letting it cash in immediately for the counters effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

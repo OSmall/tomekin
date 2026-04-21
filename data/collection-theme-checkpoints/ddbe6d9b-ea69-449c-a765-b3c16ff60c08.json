@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ddbe6d9b-ea69-449c-a765-b3c16ff60c08",
+  "name": "Formless Nurturing",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Directly manifests the top card; manifest is the card's central mechanic and deckbuilding home."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Adds a +1/+1 counter to the manifested creature, giving minor counters synergy beyond the main manifest role."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Directly manifests the top card; manifest is the card's central mechanic and deckbuilding home."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Adds a +1/+1 counter to the manifested creature, giving minor counters synergy beyond the main manifest role."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

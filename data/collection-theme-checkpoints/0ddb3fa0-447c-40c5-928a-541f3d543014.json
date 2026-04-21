@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0ddb3fa0-447c-40c5-928a-541f3d543014",
+  "name": "Netcaster Spider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Reach and a bonus when blocking fliers make it a dedicated anti-flying defensive creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Reach and a bonus when blocking fliers make it a dedicated anti-flying defensive creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

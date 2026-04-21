@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e37416cc-f343-44cd-8676-4ce4d4068e85",
+  "name": "Ice Cage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura-based lockdown that disables attacking, blocking, and activated abilities on one creature; functions as blue conditional removal."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It is an Aura enchantment, so it can incidentally fit Aura-count or enchantment-based synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

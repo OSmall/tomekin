@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d1d171de-1c6d-4fb9-817a-9c689c709f3d",
+  "name": "Shamanic Revelation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Primary mode draws per creature you control, making it a creature-board card-advantage payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "Scales with total creatures controlled, strongly rewarding wide boards regardless of token source."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Ferocious rider grants life for each 4+ power creature, but this is secondary to the draw effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

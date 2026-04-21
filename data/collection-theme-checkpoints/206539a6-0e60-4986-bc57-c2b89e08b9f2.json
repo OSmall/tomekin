@@ -1,0 +1,35 @@
+{
+  "oracle_id": "206539a6-0e60-4986-bc57-c2b89e08b9f2",
+  "name": "Siege Dragon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Flying 5/5 Dragon that pressures in the air and punishes nonflying boards with repeated 2-damage attack triggers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Flying 5/5 Dragon that pressures in the air and punishes nonflying boards with repeated 2-damage attack triggers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

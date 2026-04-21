@@ -1,0 +1,53 @@
+{
+  "oracle_id": "92225b59-4f39-4175-ad0d-88e96f4d906a",
+  "name": "Galadhrim Bow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Equipment type, auto-attaches on ETB, and provides a reusable stat/keyword boost; directly supports Equipment-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Flash plus immediate attach and untap lets it function as an ambush or surprise blocker upgrade in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Equipment type, auto-attaches on ETB, and provides a reusable stat/keyword boost; directly supports Equipment-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Flash plus immediate attach and untap lets it function as an ambush or surprise blocker upgrade in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

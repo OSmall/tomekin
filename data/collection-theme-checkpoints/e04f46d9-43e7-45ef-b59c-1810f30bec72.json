@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e04f46d9-43e7-45ef-b59c-1810f30bec72",
+  "name": "Dizzying Gaze",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Aura that enchants your creature; its main deckbuilding relevance is being a cheap Aura rather than broad removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Activated ability repeatedly pings target creature with flying, offering narrow creature interaction against fliers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap Aura that only enchants your own creature; its clearest deckbuilding relevance is as an Aura payoff/enabler piece."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Its activated ability only targets creatures with flying, making this narrow anti-flyer interaction rather than general spot removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

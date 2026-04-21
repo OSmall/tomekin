@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ec96cde2-f1e6-495c-94e2-3e8ae79e556c",
+  "name": "Thornwood Falls",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Two-color tapland that reliably fixes GU mana; its main deckbuilding role is color consistency."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "ETB gains 1 life, giving minor support to lifegain and lifegain-payoff shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Two-color tapland that reliably fixes GU mana; its main deckbuilding role is color consistency."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "ETB gains 1 life, giving minor support to lifegain and lifegain-payoff shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

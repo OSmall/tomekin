@@ -1,0 +1,39 @@
+{
+  "oracle_id": "daff56a6-a5b6-4726-8fee-676b846e0c6b",
+  "name": "Guildscorn Ward",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura that grants protection to one creature; cleanly fits aura-based decks as a cheap protective piece."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Single-creature protection effect helps suit up and preserve a key attacker or commander in Voltron shells."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Protection from multicolored is narrow hate/interaction aimed specifically at multicolored creatures and effects."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

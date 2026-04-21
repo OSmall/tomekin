@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1c4561d1-377c-4a6a-b7a2-8ce81efa39c6",
+  "name": "Kingpin's Pet",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, making it a classic Orzhov drain engine."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "A 2/2 with flying contributes incidental airborne pressure and blocks opposing fliers efficiently."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, making it a classic Orzhov drain engine."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "A 2/2 with flying contributes incidental airborne pressure and blocks opposing fliers efficiently."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

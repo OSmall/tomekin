@@ -1,0 +1,35 @@
+{
+  "oracle_id": "93514874-41e8-49e7-8935-d06e852dd1e3",
+  "name": "Yavimaya Wurm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text is only Trample; this is a straightforward trampling beater with no other clear synergy hook."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text is only Trample; this is a straightforward trampling beater with no other clear synergy hook."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

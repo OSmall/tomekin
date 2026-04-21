@@ -1,0 +1,30 @@
+{
+  "oracle_id": "467c9fe6-d1d3-4242-bc0c-e522b4f21d56",
+  "name": "Landroval, Horizon Witness",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Flying body and repeated attack trigger grant flying to attackers, rewarding an evasive-creature combat plan."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Needs two or more attackers and improves combat pressure by pushing a ground attacker through the air."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

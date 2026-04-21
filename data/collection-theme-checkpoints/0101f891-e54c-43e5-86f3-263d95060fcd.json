@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0101f891-e54c-43e5-86f3-263d95060fcd",
+  "name": "Refocus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Instant-speed untap changes combat math or enables a surprise blocker; the effect is primarily tactical."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.95,
+        "reasoning_notes": "It replaces itself immediately with 'Draw a card,' making it a cantripping trick rather than pure utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Untapping a creature can preserve mana efficiency or reuse a tapped threat, but tempo is secondary to the trick/cantrip mode."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9e0c5919-aed6-4d98-85c8-2658be78bdf0",
+  "name": "Master Splicer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Creates a Golem and gives Golems you control +1/+1, making it a clear Golem-tribal lord/payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "ETB creates a 3/3 artifact creature token, contributing to token-based boards."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Its token is an artifact creature, so it naturally supports artifact-focused shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

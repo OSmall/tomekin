@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a653ac26-e9c9-4319-88f6-c83cc64d3bdb",
+  "name": "Festergloom",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Selective sweeper effect shrinks opposing nonblack boards, functioning as anti-aggro battlefield control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Selective sweeper effect shrinks opposing nonblack boards, functioning as anti-aggro battlefield control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

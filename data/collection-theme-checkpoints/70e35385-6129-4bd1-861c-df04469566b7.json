@@ -1,0 +1,53 @@
+{
+  "oracle_id": "70e35385-6129-4bd1-861c-df04469566b7",
+  "name": "Hooting Mandrills",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delve",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Has delve natively and is chiefly played as an undercosted graveyard-enabled threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Built-in trample gives relevant combat evasion, but it is secondary to the delve identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delve",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Has delve natively and is chiefly played as an undercosted graveyard-enabled threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Built-in trample gives relevant combat evasion, but it is secondary to the delve identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

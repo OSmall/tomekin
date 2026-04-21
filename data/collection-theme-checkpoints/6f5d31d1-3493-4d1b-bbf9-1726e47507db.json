@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6f5d31d1-3493-4d1b-bbf9-1726e47507db",
+  "name": "Tower Above",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.86,
+        "reasoning_notes": "One-shot pump spell: +4/+4 plus trample and a forced-block attack clause for favorable combat."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "-1/-1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "It grants wither until end of turn, so combat damage to creatures is dealt as -1/-1 counters."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Temporary trample helps convert the pump into damage through blockers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

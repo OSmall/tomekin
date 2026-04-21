@@ -1,0 +1,30 @@
+{
+  "oracle_id": "72df0b70-5c9f-44f3-96d5-81c95abc0065",
+  "name": "Griffin Sentinel",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap creature with flying; clean fit for flying/evasive-creature decks. Vigilance supports blocking but doesn't define a stronger theme."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Flying is a core evasion keyword, but 'fliers' is the more specific and better primary label here."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b3126751-27fe-42d3-a001-33ecee72b528",
+  "name": "Nature's Panoply",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Puts +1/+1 counters on one or many creatures; scalable strive mode is a direct counters-theme enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "Instant-speed team sizing can swing combat, though its main identity is permanent counter placement."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

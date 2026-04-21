@@ -1,0 +1,30 @@
+{
+  "oracle_id": "749141aa-f6c4-4ad8-b146-406e68ae9b0b",
+  "name": "Sengir Vampire",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Has flying and serves as an evasive creature threat that attacks well in flying-based shells."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Grows with +1/+1 counters when creatures it damaged die, giving it incidental counters synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

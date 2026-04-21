@@ -1,0 +1,39 @@
+{
+  "oracle_id": "458ca9f4-4622-48e1-9ca1-6a8117188973",
+  "name": "Diffusion Sliver",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Sliver lord-style protection for your whole Sliver board; strongest use is in dedicated Sliver typal decks."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sliver-specific protection enabler: it gives your Slivers a ward-like tax against opposing targeting, making it primarily a dedicated Sliver typal card."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

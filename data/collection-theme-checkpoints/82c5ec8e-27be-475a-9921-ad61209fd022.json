@@ -1,0 +1,35 @@
+{
+  "oracle_id": "82c5ec8e-27be-475a-9921-ad61209fd022",
+  "name": "Unknown Shores",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Land taps for {C} or filters 1 mana into any color, serving straightforward color fixing in multicolor decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Land taps for {C} or filters 1 mana into any color, serving straightforward color fixing in multicolor decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

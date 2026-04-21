@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d97c4bca-6433-4cb0-b63a-fdf8360fc29c",
+  "name": "Thoughtrender Lamia",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Constellation makes each opponent discard on enchantment ETBs, making it a repeatable enchantment-based discard payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its triggered ability specifically rewards playing enchantments and itself is an enchantment creature with constellation."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Constellation makes each opponent discard on enchantment ETBs, making it a repeatable enchantment-based discard payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its triggered ability specifically rewards playing enchantments and itself is an enchantment creature with constellation."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

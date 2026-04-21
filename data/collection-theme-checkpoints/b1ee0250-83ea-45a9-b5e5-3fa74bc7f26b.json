@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b1ee0250-83ea-45a9-b5e5-3fa74bc7f26b",
+  "name": "Shaman of Spring",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB trigger draws a card immediately; this is a simple cantrip creature, mainly valued as attached card advantage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Its enters-the-battlefield draw trigger gives minor reuse value in blink shells, though it is not a dedicated blink payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1b3b14b9-088d-48df-8d21-54ee68989ac0",
+  "name": "Nimbus Naiad",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.92,
+        "reasoning_notes": "Bestow makes it an Aura that buffs a creature with +2/+2 and flying, fitting Aura-based enhancement plans."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Has flying itself and grants flying to the enchanted creature, directly supporting evasive flying game plans."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "It is an enchantment creature and can be cast as an Aura, giving it natural synergy with enchantment-matters shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "277757c6-4c4c-4a4c-84f6-4a64fe3b3bfe",
+  "name": "Hypnotic Cloud",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery makes target player discard 1, or 3 if kicked; this is clean hand-disruption with no stronger competing theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery makes target player discard 1, or 3 if kicked; this is clean hand-disruption with no stronger competing theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

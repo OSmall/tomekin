@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0a44da1d-7914-4592-a00f-7e40e0d07f91",
+  "name": "Expedition Raptor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Support 2 distributes +1/+1 counters to up to two other creatures; this is a direct counters enabler."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Has flying, but evasion is secondary to its ETB counter-support role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Support 2 puts +1/+1 counters on up to two other creatures, making it a clean counters enabler."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Flying gives incidental evasive value, but it is clearly secondary to the support trigger."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

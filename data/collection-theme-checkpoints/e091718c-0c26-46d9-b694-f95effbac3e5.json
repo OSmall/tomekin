@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e091718c-0c26-46d9-b694-f95effbac3e5",
+  "name": "Mina and Denn, Wildborn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Extra land play each turn and self-bouncing lands repeatedly enable landfall triggers."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.69,
+        "reasoning_notes": "Additional land drop functions as repeatable mana development, though the card is more landfall-focused than pure ramp."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Activated ability grants trample, helping creatures punch through blockers as a secondary combat utility."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

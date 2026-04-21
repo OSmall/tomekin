@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6bc8fd7e-7616-484a-ac23-04d37c93733b",
+  "name": "Piranha Marsh",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "ETB makes target player lose 1 life; small repeatable drain effect on a land, though it does not gain life."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

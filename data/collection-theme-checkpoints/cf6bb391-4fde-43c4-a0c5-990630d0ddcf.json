@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cf6bb391-4fde-43c4-a0c5-990630d0ddcf",
+  "name": "Protector of Gondor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB creates a 1/1 Human Soldier token, making it a straightforward token-producing creature."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Adds an extra body to the battlefield, modestly supporting wide-board strategies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

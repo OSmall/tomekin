@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3212e47a-5492-4c50-9d4a-6ea562f1a6e1",
+  "name": "Millstone",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Repeatable activated ability mills any player; classic dedicated mill engine on an artifact."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Artifact typing gives it incidental synergy in artifact-matter shells, but its main gameplay identity is mill."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Repeatable activated ability mills any player; classic dedicated mill engine on an artifact."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Artifact typing gives it incidental synergy in artifact-matter shells, but its main gameplay identity is mill."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

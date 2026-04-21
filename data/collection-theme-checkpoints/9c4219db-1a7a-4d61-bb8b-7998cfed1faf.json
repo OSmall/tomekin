@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9c4219db-1a7a-4d61-bb8b-7998cfed1faf",
+  "name": "Anax and Cymede",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Has Heroic and rewards targeted spells with a team-wide +1/+1 and trample alpha-strike effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Has Heroic and rewards targeted spells with a team-wide +1/+1 and trample alpha-strike effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

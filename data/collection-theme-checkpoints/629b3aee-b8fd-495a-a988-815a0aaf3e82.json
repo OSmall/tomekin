@@ -1,0 +1,53 @@
+{
+  "oracle_id": "629b3aee-b8fd-495a-a988-815a0aaf3e82",
+  "name": "Dragonscale Boon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant that directly places two +1/+1 counters on a creature; clean counters support piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Instant-speed pump plus untap lets it win combat or ambush attackers/blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant that directly places two +1/+1 counters on a creature; clean counters support piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Instant-speed pump plus untap lets it win combat or ambush attackers/blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

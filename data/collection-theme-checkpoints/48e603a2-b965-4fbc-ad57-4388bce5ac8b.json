@@ -1,0 +1,39 @@
+{
+  "oracle_id": "48e603a2-b965-4fbc-ad57-4388bce5ac8b",
+  "name": "Gods Willing",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant protects a creature and can force through blockers; classic protection-based combat/push-through trick."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Targets your own creature for cheap, making it a strong heroic-style enabler."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Efficiently shields a key attacker from removal and blockers, supporting single-creature game plans."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

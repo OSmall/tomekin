@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9bc458ac-5566-4978-aeaa-73b600d4ec29",
+  "name": "Woodborn Behemoth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Checks for controlling eight or more lands and becomes a much larger trampling threat, directly rewarding a high land count."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Gains trample once the land threshold is met, making it a cleaner combat closer."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Checks for controlling eight or more lands and becomes a much larger trampling threat, directly rewarding a high land count."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Gains trample once the land threshold is met, making it a cleaner combat closer."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

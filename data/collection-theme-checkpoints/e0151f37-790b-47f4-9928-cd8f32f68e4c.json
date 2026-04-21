@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e0151f37-790b-47f4-9928-cd8f32f68e4c",
+  "name": "Mental Vapors",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Sorcery makes target player discard, and cipher can repeat that effect on combat damage for ongoing hand disruption."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Sorcery makes target player discard, and cipher can repeat that effect on combat damage for ongoing hand disruption."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

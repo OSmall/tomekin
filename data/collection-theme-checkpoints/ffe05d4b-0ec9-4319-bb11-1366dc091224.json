@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ffe05d4b-0ec9-4319-bb11-1366dc091224",
+  "name": "Venom Sliver",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "A Sliver lord-style payoff piece that grants all Sliver creatures you control deathtouch, fitting dedicated Sliver tribal decks."
+      },
+      {
+        "primary": false,
+        "category": "combat / keyword abilities",
+        "theme": "deathtouch",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Its entire rules text is team-wide deathtouch for your Slivers, making deathtouch a real secondary combat theme."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3a0ea41e-b4f5-4aa1-9f7a-158485313c64",
+  "name": "Dark Temper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant that kills a creature if you control a black permanent; otherwise it still deals 2 to a creature."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Gets a major upgrade when paired with a black permanent, rewarding BR color overlap."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Single-target creature interaction; baseline 2 damage upgrades to destroy if you control a black permanent."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

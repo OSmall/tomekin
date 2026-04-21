@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ab1d04ef-5f39-4a95-969e-b0872e6db0d6",
+  "name": "Knight of the Keep",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "Vanilla 3/2 for three mana with no text; fits limited-rate beatdown more than any synergy theme."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.22,
+        "reasoning_notes": "Human Knight typeline gives minor tribal relevance, but no rules text specifically supports tribal plans."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "30997b43-fc13-41d3-8064-1ccc2cb6fd2b",
+  "name": "Raging Goblin",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "One-mana 1/1 with haste is a classic early pressure creature for fast red aggro starts."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "goblins",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Goblin subtype gives it incidental tribal relevance, but the card is mostly just a rate-based aggro body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "One-mana 1/1 with haste is a classic early pressure creature for fast red aggro starts."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "goblins",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Goblin subtype gives it incidental tribal relevance, but the card is mostly just a rate-based aggro body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

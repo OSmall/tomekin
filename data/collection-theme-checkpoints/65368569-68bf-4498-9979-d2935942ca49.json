@@ -1,0 +1,40 @@
+{
+  "oracle_id": "65368569-68bf-4498-9979-d2935942ca49",
+  "name": "Stonehorn Dignitary",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB fogs an opponent's next combat, making it a classic repeatable blink target and combat lock piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Prevents combat steps to buy time and suppress creature-based pressure in defensive control shells."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "1/4 body blocks early attackers while its ETB further blanks opposing combat."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

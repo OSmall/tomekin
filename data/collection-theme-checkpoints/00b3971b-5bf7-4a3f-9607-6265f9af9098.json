@@ -1,0 +1,46 @@
+{
+  "oracle_id": "00b3971b-5bf7-4a3f-9607-6265f9af9098",
+  "name": "Crypt Creeper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sacrifice ability exiles a target card from a graveyard, making it a small, repeatable graveyard-disruption creature."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "It sacrifices itself as an activation cost, but only incidentally; it is not a dedicated sacrifice payoff or engine."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated by sacrificing itself to exile one target card from a graveyard. This is narrow, one-shot graveyard interaction, not a sacrifice engine."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

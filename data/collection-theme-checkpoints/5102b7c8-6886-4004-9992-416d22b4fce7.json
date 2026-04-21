@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5102b7c8-6886-4004-9992-416d22b4fce7",
+  "name": "Tin Street Market",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Turns a land into repeatable rummaging; discard is the key deckbuilding hook for madness, reanimator, or graveyard setup."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Each activation replaces the discarded card, providing steady card selection rather than raw card advantage."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "It is an Aura that enchants a land, so it can matter in enchantment- and Aura-adjacent shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

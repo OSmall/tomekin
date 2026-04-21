@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7f1a9248-8e7b-46a8-942b-ca18c7da8c4a",
+  "name": "Traitorous Blood",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Temporary control-change sorcery that steals an opposing creature for the turn, untaps it, and gives haste/trample."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Also grants trample for the turn, mainly to push damage with the stolen creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

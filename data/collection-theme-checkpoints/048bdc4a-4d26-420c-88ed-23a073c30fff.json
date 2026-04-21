@@ -1,0 +1,39 @@
+{
+  "oracle_id": "048bdc4a-4d26-420c-88ed-23a073c30fff",
+  "name": "Unexpected Results",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Can cheat extra lands onto the battlefield or cast expensive spells for free from the top, rewarding high-end mana curves."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.71,
+        "reasoning_notes": "Best when built to high-roll into costly nonlands, functioning as a topdeck cheat spell for big threats."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Hitting a land puts it onto the battlefield and rebuys the spell, but land synergy is incidental rather than central."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

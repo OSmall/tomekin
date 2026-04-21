@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2298eb28-425d-4e87-990b-6bc0ef9bcfda",
+  "name": "Silent Artisan",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Vanilla 3/5 for five mana with no abilities plays mainly as a blocker; high toughness over power points to a defensive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Vanilla 3/5 for five mana with no abilities plays mainly as a blocker; high toughness over power points to a defensive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

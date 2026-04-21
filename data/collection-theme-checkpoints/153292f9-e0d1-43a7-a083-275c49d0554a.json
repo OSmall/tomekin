@@ -1,0 +1,46 @@
+{
+  "oracle_id": "153292f9-e0d1-43a7-a083-275c49d0554a",
+  "name": "Aeronaut Cavalry",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "ETB puts a +1/+1 counter on another Soldier you control, directly rewarding Soldier tribal boards."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Creates a single +1/+1 counter on entry, but only incidentally and tied to Soldier support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its ETB specifically rewards controlling another Soldier, making it a clear Soldier-tribal payoff rather than a generic flyer."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

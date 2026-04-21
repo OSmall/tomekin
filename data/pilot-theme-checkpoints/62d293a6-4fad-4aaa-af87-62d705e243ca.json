@@ -1,0 +1,57 @@
+{
+  "oracle_id": "62d293a6-4fad-4aaa-af87-62d705e243ca",
+  "name": "Pith Driller",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.91,
+        "reasoning_notes": "ETB puts a -1/-1 counter on any creature, functioning as small creature removal or shrink-based interaction."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Artifact creature body can matter for artifact-count and recursion shells beyond its ETB interaction."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "ETB puts a -1/-1 counter on a target creature, giving modest one-shot creature interaction rather than a dedicated removal spell."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "It is an artifact creature, so it can contribute to artifact-count, recursion, or artifact-synergy shells, though that is secondary to its ETB effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

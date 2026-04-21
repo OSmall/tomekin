@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ea7d5ada-78ac-405b-887e-b262e4935bd3",
+  "name": "Wandering Graybeard",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Kinship rewards revealing a Giant or Wizard from the top, making it a creature-type payoff for tribal builds."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Successful kinship triggers gain 4 life repeatedly, offering steady incidental lifegain if tribal density is high."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Kinship rewards revealing a Giant or Wizard from the top, making it a creature-type payoff for tribal builds."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Successful kinship triggers gain 4 life repeatedly, offering steady incidental lifegain if tribal density is high."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

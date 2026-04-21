@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9839f80b-d28b-49c7-a31a-40c245af2edc",
+  "name": "Gurmag Drowner",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Exploit turns a creature into selection plus a card, digging four deep and stocking the graveyard."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Exploit specifically asks you to sacrifice a creature, fitting sacrifice shells that want death triggers or fodder."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "It bins the other three cards after selection, incidentally fueling graveyard strategies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5a20113c-7ea8-4edf-af9f-148ccd326a88",
+  "name": "Nyx-Fleece Ram",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Upkeep trigger gains life every turn; classic repeatable lifegain enabler on a cheap body."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "It's an Enchantment Creature, so it incidentally supports enchantment-count and constellation-style decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "0/5 body plus steady life gain mainly helps stabilize early against aggressive decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

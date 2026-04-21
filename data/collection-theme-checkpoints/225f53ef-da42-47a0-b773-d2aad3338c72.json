@@ -1,0 +1,55 @@
+{
+  "oracle_id": "225f53ef-da42-47a0-b773-d2aad3338c72",
+  "name": "Cradle Clearcutter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Mana creature in artifact form; taps for green equal to its power, scaling from 1 to 3 mana via prototype/full cast."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "Artifact creature that naturally slots into artifact-matter shells, though its text is mainly a mana ability."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Repeatable mana source; prototype lets it come down on turn three, and its tap ability scales with its power from 1 to 3 green."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Artifact creature body gives it incidental artifact-matter synergy, but the card's main deckbuilding pull is mana production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "59af03ba-28d0-4f15-b877-2cf3c81d66e1",
+  "name": "Drown in Filth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Oracle text mills four cards and scales off lands in your graveyard, directly fueling graveyard setup."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Targets a creature and gives scalable -X/-X until end of turn, functioning as conditional creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Oracle text mills four cards and scales off lands in your graveyard, directly fueling graveyard setup."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Targets a creature and gives scalable -X/-X until end of turn, functioning as conditional creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9652f79c-3060-4e9c-9623-0ebe4ab4094c",
+  "name": "Lunar Mystic",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on casting instants and converts spell chaining into repeatable card draw, a classic blue spell-matter engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Explicitly draws cards when you pay {1} after casting an instant, providing scalable draw support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on casting instants and converts spell chaining into repeatable card draw, a classic blue spell-matter engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Explicitly draws cards when you pay {1} after casting an instant, providing scalable draw support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

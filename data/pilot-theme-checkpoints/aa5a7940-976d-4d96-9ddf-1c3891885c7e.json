@@ -1,0 +1,35 @@
+{
+  "oracle_id": "aa5a7940-976d-4d96-9ddf-1c3891885c7e",
+  "name": "Marked by Honor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Aura that enchants a creature and provides a permanent stat boost plus vigilance; classic Aura support piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Aura that enchants a creature and provides a permanent stat boost plus vigilance; classic Aura support piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

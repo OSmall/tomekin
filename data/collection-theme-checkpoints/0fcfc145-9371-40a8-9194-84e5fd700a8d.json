@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0fcfc145-9371-40a8-9194-84e5fd700a8d",
+  "name": "Ragemonger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Explicit Minotaur tribal cost reduction; built to enable a Minotaur-focused deck."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Reduces colored mana costs for your Minotaur spells, functioning as tribe-locked mana acceleration."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

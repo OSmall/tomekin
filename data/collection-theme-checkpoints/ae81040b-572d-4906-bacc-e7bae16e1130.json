@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ae81040b-572d-4906-bacc-e7bae16e1130",
+  "name": "Frontier Mastodon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Efficient 3-drop body that can enter as a 4/3 in decks already playing large creatures; mainly a rate-based creature payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "It can enter with a +1/+1 counter, but the counter is incidental rather than a dedicated counters-matters build piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

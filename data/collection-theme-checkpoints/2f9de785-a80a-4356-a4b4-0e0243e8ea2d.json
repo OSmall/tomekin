@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2f9de785-a80a-4356-a4b4-0e0243e8ea2d",
+  "name": "Carrion Crow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap evasive body with flying; no other text points to a stronger synergy theme."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.32,
+        "reasoning_notes": "Zombie Bird types can matter in tribal decks, but the card has no explicit tribal payoff or enabler text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Flying is the card's only meaningful synergy hook; enters tapped does not suggest a competing deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

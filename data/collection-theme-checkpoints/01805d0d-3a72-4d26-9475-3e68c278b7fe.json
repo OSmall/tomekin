@@ -1,0 +1,66 @@
+{
+  "oracle_id": "01805d0d-3a72-4d26-9475-3e68c278b7fe",
+  "name": "Cinder Elemental",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Activated ability sacrifices it to deal X damage to any target, functioning as flexible creature or player removal."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Its own activation requires sacrificing it, but it does not reward or broadly support sacrifice synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Its activated ability scales X into damage to any target, making it chiefly a red direct-damage mana payoff that can finish players."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "The same activation can pick off a creature or planeswalker-sized target, but the card is broader and less efficient than dedicated removal."
+      },
+      {
+        "primary": false,
+        "category": "mana / activated abilities",
+        "theme": "mana sink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "The X activation lets excess mana convert into damage, though only once because sacrificing it is part of the cost."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

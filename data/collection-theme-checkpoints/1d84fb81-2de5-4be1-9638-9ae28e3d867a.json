@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1d84fb81-2de5-4be1-9638-9ae28e3d867a",
+  "name": "Mage-Ring Responder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Colorless Artifact Creature that naturally slots into artifact-centric shells more than generic creature plans."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Attack trigger repeatedly deals 7 damage to a defending player's creature, functioning as conditional creature removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

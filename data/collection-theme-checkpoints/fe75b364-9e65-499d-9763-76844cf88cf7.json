@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fe75b364-9e65-499d-9763-76844cf88cf7",
+  "name": "Noxious Dragon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Dies trigger destroys a small creature; repeatable only via death/recursion, but clearly removal attached to a body."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Has flying and Dragon typeline, so it naturally fits flier-based shells as an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Dies trigger destroys a small creature; repeatable only via death/recursion, but clearly removal attached to a body."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Has flying and Dragon typeline, so it naturally fits flier-based shells as an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

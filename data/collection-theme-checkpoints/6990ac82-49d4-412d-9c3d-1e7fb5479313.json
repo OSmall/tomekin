@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6990ac82-49d4-412d-9c3d-1e7fb5479313",
+  "name": "Vanquish the Foul",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery-speed removal that destroys a large creature; scry 1 is minor upside, but the card's role is targeted creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery-speed removal that destroys a large creature; scry 1 is minor upside, but the card's role is targeted creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

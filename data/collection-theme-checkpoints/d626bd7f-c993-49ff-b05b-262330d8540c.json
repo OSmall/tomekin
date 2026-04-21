@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d626bd7f-c993-49ff-b05b-262330d8540c",
+  "name": "Ogre Resister",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Vanilla 4/3 for four in red mainly supports straightforward attacking; no text suggests a narrower synergy theme."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

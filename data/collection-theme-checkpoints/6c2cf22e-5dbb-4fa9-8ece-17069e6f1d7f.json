@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6c2cf22e-5dbb-4fa9-8ece-17069e6f1d7f",
+  "name": "Excommunicate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Sorcery-speed topdecking removes a blocker or threat and time-walks the opponent's next draw."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.59,
+        "reasoning_notes": "Acts as temporary creature answer, but it is more delay than true removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Putting a creature on top of its owner's library removes a blocker or attacker and denies the next draw, which is classic tempo."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "It can function as a delaying answer in controlling shells, but it is temporary interaction rather than true removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

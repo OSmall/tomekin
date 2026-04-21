@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7790bd6c-75e2-4abd-87ab-e1c15f1d53ab",
+  "name": "Fortress Cyclops",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Attack trigger gives +3/+0, making it a straightforward combat-focused attacker in RW aggressive shells."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.2,
+        "reasoning_notes": "Boros color identity is present, but the card has no text rewarding multicolor play."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

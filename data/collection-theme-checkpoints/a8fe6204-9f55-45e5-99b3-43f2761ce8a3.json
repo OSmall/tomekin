@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a8fe6204-9f55-45e5-99b3-43f2761ce8a3",
+  "name": "Rakshasa's Disdain",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Instant-speed tax counterspell; plays as reactive permission and scales up in longer control games."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Its counter tax scales with cards in your graveyard, rewarding stocked graveyards without directly enabling them."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "graveyard count matters"
+    ]
+  }
+}

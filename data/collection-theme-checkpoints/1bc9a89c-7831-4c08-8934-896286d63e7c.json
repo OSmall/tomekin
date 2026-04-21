@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1bc9a89c-7831-4c08-8934-896286d63e7c",
+  "name": "Put Away",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Hard counter at instant speed is classic control interaction; graveyard-to-library clause is minor value, not the main theme."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Can recycle a card from your graveyard into your library, but only incidentally alongside the counterspell."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

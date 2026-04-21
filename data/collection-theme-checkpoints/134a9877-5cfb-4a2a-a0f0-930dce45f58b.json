@@ -1,0 +1,39 @@
+{
+  "oracle_id": "134a9877-5cfb-4a2a-a0f0-930dce45f58b",
+  "name": "Prophetic Prism",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Filters any color via activated ability; classic color-smoothing artifact."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB replaces itself immediately with a card, but draw is incidental not central."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Cheap artifact permanent that can matter for artifact-count synergies."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

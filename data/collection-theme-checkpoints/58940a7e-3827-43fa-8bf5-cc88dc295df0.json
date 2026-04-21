@@ -1,0 +1,53 @@
+{
+  "oracle_id": "58940a7e-3827-43fa-8bf5-cc88dc295df0",
+  "name": "Mystic Genesis",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Hard counterspell that answers a spell on the stack; classic reactive control piece with built-in board swing."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Creates an X/X Ooze token based on the countered spell's mana value, giving incidental token payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Hard counterspell that answers a spell on the stack; classic reactive control piece with built-in board swing."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Creates an X/X Ooze token based on the countered spell's mana value, giving incidental token payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e42ca67d-c9c3-499a-a7b7-63dc2dafdeab",
+  "name": "Neutralizing Blast",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Counters only multicolored spells, making it narrow but explicit anti-multicolor interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "A cheap conditional counterspell that fits reactive control shells more than proactive plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Counters only multicolored spells, making it narrow but explicit anti-multicolor interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "A cheap conditional counterspell that fits reactive control shells more than proactive plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

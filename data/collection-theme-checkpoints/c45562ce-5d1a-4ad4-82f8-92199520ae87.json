@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c45562ce-5d1a-4ad4-82f8-92199520ae87",
+  "name": "Vesper Ghoul",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Tap ability converts life into any-color mana; classic mana dork role for acceleration and fixing."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Produces one mana of any color, enabling multicolor costs despite black color identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Tap ability converts life into any-color mana; classic mana dork role for acceleration and fixing."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Produces one mana of any color, enabling multicolor costs despite black color identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "82246ef2-4267-4daf-9463-908c2e142e7d",
+  "name": "Crystal Golem",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Artifact creature with no broader mechanic hook; mainly contributes to artifact-count and artifact-matters synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Artifact creature with no broader mechanic hook; mainly contributes to artifact-count and artifact-matters synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

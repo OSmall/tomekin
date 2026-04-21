@@ -1,0 +1,57 @@
+{
+  "oracle_id": "51685f85-06ad-4de2-a7a6-06e6f59a1cbb",
+  "name": "Breakneck Rider // Neck Breaker",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Neck Breaker is an attack anthem, boosting all attacking creatures with +1/+0 and trample, rewarding wide combat boards."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.45,
+        "reasoning_notes": "Werewolf type and transform pattern give some tribal relevance, but the payoff text is not tribe-locked."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Neck Breaker is a boardwide attack anthem, giving all attacking creatures +1/+0 and trample, which strongly rewards going wide."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "It grants trample to the whole attacking team, making it a real but secondary trample enabler rather than a dedicated trample card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

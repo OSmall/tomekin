@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9fb5ea12-5b87-462b-b9c0-904cd0f55a9c",
+  "name": "Warchanter of Mogis",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Inspired grants a creature intimidate on untap, directly enabling attacks through blockers."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Repeatable temporary evasion best supports proactive combat decks trying to push damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

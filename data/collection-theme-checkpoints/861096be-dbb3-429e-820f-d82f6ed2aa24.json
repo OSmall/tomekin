@@ -1,0 +1,35 @@
+{
+  "oracle_id": "861096be-dbb3-429e-820f-d82f6ed2aa24",
+  "name": "Sip of Hemlock",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery-speed creature destruction is classic spot removal; the 2 life loss is minor rider text, not a separate theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery-speed creature destruction is classic spot removal; the 2 life loss is minor rider text, not a separate theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

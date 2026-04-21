@@ -1,0 +1,53 @@
+{
+  "oracle_id": "60b36821-0fad-423c-98c4-f64d991719f3",
+  "name": "Graypelt Refuge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Two-color ETB tapped land that taps for {G} or {W}; its main deckbuilding role is smoothing Selesnya mana."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "ETB gains 1 life, making it a minor incidental lifegain enabler for lifegain-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Two-color ETB tapped land that taps for {G} or {W}; its main deckbuilding role is smoothing Selesnya mana."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "ETB gains 1 life, making it a minor incidental lifegain enabler for lifegain-focused decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

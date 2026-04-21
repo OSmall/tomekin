@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3afe854a-7daa-4745-a5d9-04879e5d940a",
+  "name": "Shivan Sand-Mage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells / exile mechanics",
+        "theme": "suspend",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB adds or removes time counters from permanents or suspended cards, directly supporting Suspend/time-counter strategies."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Can speed up your suspended card or delay an opposing suspended card by manipulating time counters."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "suspend"
+    ]
+  }
+}

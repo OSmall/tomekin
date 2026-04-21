@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5825997b-10d7-4a36-972c-a80ddd90b8ed",
+  "name": "Feed the Swarm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Efficient sorcery that destroys an opponent's creature or enchantment; a clear one-for-one removal spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Flexible removal supports control plans by answering key permanents, especially black's rare enchantment answer."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Two-mana sorcery that cleanly answers an opposing creature or enchantment; this is straightforward one-for-one removal."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

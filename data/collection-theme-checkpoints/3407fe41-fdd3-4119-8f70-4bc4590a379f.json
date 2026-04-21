@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+  "name": "Negate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap instant-speed counterspell for noncreature spells; classic reactive control piece that trades up on stack interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap instant-speed counterspell for noncreature spells; classic reactive control piece that trades up on stack interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

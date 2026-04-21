@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7e3fe8e4-e56a-4109-a314-96c44bbe7d22",
+  "name": "Fall of the Hammer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant speed creature-based removal; your creature deals damage equal to its power to another creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant speed creature-based removal; your creature deals damage equal to its power to another creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

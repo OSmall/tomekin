@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f8fac28d-adf4-47e9-bdd3-8402cbf0f228",
+  "name": "Boggart Loggers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.89,
+        "reasoning_notes": "Forestwalk makes it unblockable against players with a Forest; its sacrifice mode is narrow removal, not a core deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.89,
+        "reasoning_notes": "Forestwalk makes it unblockable against players with a Forest; its sacrifice mode is narrow removal, not a core deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

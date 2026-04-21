@@ -1,0 +1,57 @@
+{
+  "oracle_id": "2002dd67-2347-4869-98de-299074206684",
+  "name": "Hour of Need",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Turns your creatures into 4/4 flying Sphinx tokens, often upgrading expendable bodies or token swarms into real threats."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Instant-speed exile can answer opposing creatures, though it leaves their controller a 4/4 flyer as compensation."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Exiles your own creatures to replace them with 4/4 flying Sphinx tokens, letting token or go-wide decks upgrade small bodies into meaningful evasive threats."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Can exile opposing creatures at instant speed, but the replacement 4/4 flyer makes it a situational answer rather than clean removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

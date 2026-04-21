@@ -1,0 +1,30 @@
+{
+  "oracle_id": "747ee321-f2dc-4d27-90cd-c4e610086958",
+  "name": "Sandsteppe Scavenger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Bolster 2 ETB places two +1/+1 counters on your smallest-toughness creature, making it a direct counters enabler/payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "A 5-mana 2/2 that spreads stats on ETB plays like modest board-development filler in slower creature decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

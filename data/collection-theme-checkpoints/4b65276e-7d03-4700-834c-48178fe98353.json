@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4b65276e-7d03-4700-834c-48178fe98353",
+  "name": "Aspect of Gorgon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura enchantment that buffs a creature with +1/+3 and deathtouch; fits Aura-based decks first."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Granting deathtouch makes blocks and attacks highly favorable, functioning as repeatable combat-based interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura enchantment that buffs a creature with +1/+3 and deathtouch; fits Aura-based decks first."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Granting deathtouch makes blocks and attacks highly favorable, functioning as repeatable combat-based interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

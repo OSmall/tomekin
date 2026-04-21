@@ -1,0 +1,35 @@
+{
+  "oracle_id": "954aaaa7-c3c1-4696-9ace-bcb5359b1709",
+  "name": "Hundred-Handed One",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Monstrosity 3 adds three +1/+1 counters to itself; the card’s main synergy hook is becoming a larger counter-based threat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Monstrosity 3 adds three +1/+1 counters to itself; the card’s main synergy hook is becoming a larger counter-based threat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

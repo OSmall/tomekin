@@ -1,0 +1,53 @@
+{
+  "oracle_id": "67362406-b1ca-49e2-800d-9050bfe8742a",
+  "name": "Merfolk Looter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Repeatable looter activation provides steady card flow and selection from the battlefield."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Its tap ability discards from hand, enabling discard-focused or graveyard-value plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Repeatable looter activation provides steady card flow and selection from the battlefield."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Its tap ability discards from hand, enabling discard-focused or graveyard-value plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

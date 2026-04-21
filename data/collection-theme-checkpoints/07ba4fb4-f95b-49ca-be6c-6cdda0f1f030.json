@@ -1,0 +1,30 @@
+{
+  "oracle_id": "07ba4fb4-f95b-49ca-be6c-6cdda0f1f030",
+  "name": "Frilled Oculus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Hybridly supports Simic/color-pair decks via UG color identity, but text has no stronger named synergy."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.48,
+        "reasoning_notes": "Cheap body with repeatable once-per-turn pump can attack up in combat, fitting low-tier aggressive play patterns."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

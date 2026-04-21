@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7c699180-d18e-4599-acd1-27b951d82136",
+  "name": "Mana Bloom",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Stores charge counters that convert into extra mana over multiple turns, functioning as a reusable ramp piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Each counter can be cashed in for mana of any color, giving repeatable color fixing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Stores charge counters that convert into extra mana over multiple turns, functioning as a reusable ramp piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Each counter can be cashed in for mana of any color, giving repeatable color fixing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

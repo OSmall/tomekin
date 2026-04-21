@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d4b50749-a016-4aff-8d70-a1707cabf57b",
+  "name": "Falter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Temporarily removes most blockers, a classic red finisher/enabler for pushing combat damage in aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Functions as teamwide pseudo-evasion by making nonfliers unblockable for the turn against ground blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Temporarily removes most blockers, a classic red finisher/enabler for pushing combat damage in aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Functions as teamwide pseudo-evasion by making nonfliers unblockable for the turn against ground blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

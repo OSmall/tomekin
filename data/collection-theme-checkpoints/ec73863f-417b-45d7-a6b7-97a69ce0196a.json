@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ec73863f-417b-45d7-a6b7-97a69ce0196a",
+  "name": "Might Makes Right",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Repeatable beginning-of-combat Act of Treason effect if you control the biggest creature, making creature theft the card's core plan."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "It rewards building around the largest creature on board, so high-power creatures enable the theft trigger consistently."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "The stolen creature untaps, gains haste, and can attack immediately, supporting combat-pressure turns."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "threaten / theft"
+    ]
+  }
+}

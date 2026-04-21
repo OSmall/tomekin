@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0eb0c9d2-bc5a-4ba3-bd83-57af1da51c3b",
+  "name": "Observant Alseid",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Bestow lets it function as an Aura that buffs one creature with +2/+2 and vigilance, a classic aura-based Voltron support piece."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "It is itself an enchantment creature, so it incidentally contributes to enchantment-count and constellation-style synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

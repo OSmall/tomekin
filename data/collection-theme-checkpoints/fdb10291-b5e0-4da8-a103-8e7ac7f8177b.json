@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fdb10291-b5e0-4da8-a103-8e7ac7f8177b",
+  "name": "Psychic Intrusion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.91,
+        "reasoning_notes": "Exiles an opponent's card from hand or graveyard and lets you cast it, making it a clear theft effect."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Can selectively exile a nonland card from an opponent's graveyard, disrupting graveyard use."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "Reveals the opponent's hand and strips a nonland card from it, adjacent to pinpoint discard."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

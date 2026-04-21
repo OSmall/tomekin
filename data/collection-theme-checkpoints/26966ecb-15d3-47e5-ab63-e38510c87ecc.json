@@ -1,0 +1,35 @@
+{
+  "oracle_id": "26966ecb-15d3-47e5-ab63-e38510c87ecc",
+  "name": "Charging Rhino",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its static ability limits blocks to one creature, making it a straightforward evasion creature for combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its static ability limits blocks to one creature, making it a straightforward evasion creature for combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e5fa93a3-0b2b-4477-ad3f-4fc1b325ca19",
+  "name": "Gruul Ragebeast",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Each creature ETB you control fights an opposing creature, turning creature deployment into repeatable removal."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.69,
+        "reasoning_notes": "More creatures entering means more fight triggers, rewarding token-making or creature-dense boards."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

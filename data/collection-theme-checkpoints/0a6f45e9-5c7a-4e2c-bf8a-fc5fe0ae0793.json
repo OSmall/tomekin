@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0a6f45e9-5c7a-4e2c-bf8a-fc5fe0ae0793",
+  "name": "Pyre Hound",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Gets a +1/+1 counter whenever you cast an instant or sorcery, making it a clear spells-matter payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Its growth is explicitly via +1/+1 counters, though the card wants spells first rather than dedicated counters support."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Native trample helps convert repeated spell-triggered growth into combat damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

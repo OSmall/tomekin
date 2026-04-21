@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d21994f2-75e1-456c-a25a-729c3269df1a",
+  "name": "Bold Defense",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Team-wide pump rewards having multiple creatures; kicked mode adds a larger boost plus first strike for alpha strikes."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.75,
+        "reasoning_notes": "Instant-speed mass pump can swing combat math, especially with kicked first strike."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Team-wide pump rewards having multiple creatures; kicked mode adds a larger boost plus first strike for alpha strikes."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.75,
+        "reasoning_notes": "Instant-speed mass pump can swing combat math, especially with kicked first strike."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

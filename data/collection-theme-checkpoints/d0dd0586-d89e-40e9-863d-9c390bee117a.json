@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d0dd0586-d89e-40e9-863d-9c390bee117a",
+  "name": "Rite of Ruin",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "Symmetrical attrition sorcery that strips multiple permanent types and plays as a high-cost resource-denial control piece."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Can be ordered to make each player sacrifice three lands, giving it a real land-denial subtheme."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Uses forced sacrifice and can be built around with disposable permanents to break the symmetry."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

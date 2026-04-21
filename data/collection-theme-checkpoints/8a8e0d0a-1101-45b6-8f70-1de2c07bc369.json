@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8a8e0d0a-1101-45b6-8f70-1de2c07bc369",
+  "name": "Mordor Trebuchet",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Triggers specifically when you attack with Goblins and/or Orcs, making it a tribal attack payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Repeatedly creates a temporary 2/1 flying artifact creature token on qualifying attacks."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Its Ballistic Boulder token has flying, giving the card incidental evasive pressure."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Artifact creature that also makes artifact creature tokens, but artifact synergy is secondary to tribal payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "broad_tagging"
+    ],
+    "proposed_themes": []
+  }
+}

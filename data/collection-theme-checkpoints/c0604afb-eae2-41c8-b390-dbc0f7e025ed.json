@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c0604afb-eae2-41c8-b390-dbc0f7e025ed",
+  "name": "Ethereal Ambush",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Directly manifests two cards at instant speed; this is a clean manifest enabler and one of the card's only gameplay identities."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Directly manifests two cards at instant speed; this is a clean manifest enabler and one of the card's only gameplay identities."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

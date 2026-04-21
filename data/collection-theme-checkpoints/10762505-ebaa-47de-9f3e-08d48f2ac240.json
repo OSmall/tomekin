@@ -1,0 +1,64 @@
+{
+  "oracle_id": "10762505-ebaa-47de-9f3e-08d48f2ac240",
+  "name": "Beckon Apparition",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Exiles a target graveyard card at instant speed; narrow but real graveyard interaction that answers recursion targets."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Creates a 1/1 Spirit token as added value, but token production is incidental rather than the main deckbuilding pull."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "The created Spirit has flying, giving minor evasive synergy for decks that care about fliers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instantly exiles a target card from a graveyard; this is direct graveyard interaction, not spot removal in normal removal taxonomy."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "Also makes a 1/1 Spirit token with flying, but the token is rider value rather than the main deckbuilding reason to play it."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

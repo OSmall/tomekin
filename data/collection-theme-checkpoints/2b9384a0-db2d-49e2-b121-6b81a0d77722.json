@@ -1,0 +1,68 @@
+{
+  "oracle_id": "2b9384a0-db2d-49e2-b121-6b81a0d77722",
+  "name": "Cloudform",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB manifests the top card and turns itself into an Aura attached to that face-down creature; a direct face-down/manifest payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "It becomes an Aura with enchant creature and functions like a protective buff once attached."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "The enchanted creature gains flying, making this a minor evasive support card."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "manifest"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "manifest",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Oracle text explicitly manifests a card on ETB and is a direct face-down enabler built for manifest play."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "It becomes an Aura and stays attached, but the card is primarily a manifest enabler rather than an Aura-matters build piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

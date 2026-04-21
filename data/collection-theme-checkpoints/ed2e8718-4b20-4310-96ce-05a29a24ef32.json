@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ed2e8718-4b20-4310-96ce-05a29a24ef32",
+  "name": "Drafna, Founder of Lat-Nam",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Both abilities exclusively support artifact lines: rebuy ETB/value artifacts and copy artifact spells into extra artifact tokens."
+      },
+      {
+        "primary": false,
+        "category": "legendary",
+        "theme": "legendary matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.27,
+        "reasoning_notes": "Legendary is relevant mostly for commander eligibility; the card has no explicit legendary-matters text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Both activated abilities only work with artifacts: one repeatedly rebuys artifact ETBs/cast triggers, the other copies artifact spells into extra artifact tokens."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

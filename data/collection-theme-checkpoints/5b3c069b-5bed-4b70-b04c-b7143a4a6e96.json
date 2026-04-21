@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5b3c069b-5bed-4b70-b04c-b7143a4a6e96",
+  "name": "Feral Invocation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura spell that directly enchants a creature; this is a straightforward Auras-theme include."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Flash lets it play at instant speed as a surprise +2/+2 in combat, functioning like a trick."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura spell that directly enchants a creature; this is a straightforward Auras-theme include."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Flash lets it play at instant speed as a surprise +2/+2 in combat, functioning like a trick."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

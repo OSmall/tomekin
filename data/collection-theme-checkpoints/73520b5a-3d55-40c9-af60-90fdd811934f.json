@@ -1,0 +1,64 @@
+{
+  "oracle_id": "73520b5a-3d55-40c9-af60-90fdd811934f",
+  "name": "Dromoka, the Eternal",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Bolster 2 repeatedly adds +1/+1 counters whenever your Dragons attack, making it a clear counters payoff."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Its attack trigger keys off Dragons you control, so it directly rewards Dragon tribal play."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Dromoka itself is a flying Dragon and specifically rewards attacking with Dragons, which are commonly evasive fliers."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its attack trigger repeatedly bolsters 2, directly generating +1/+1 counters rather than merely rewarding them."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "The trigger cares specifically about Dragons attacking, so it is a clear reward for Dragon-heavy tribal decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

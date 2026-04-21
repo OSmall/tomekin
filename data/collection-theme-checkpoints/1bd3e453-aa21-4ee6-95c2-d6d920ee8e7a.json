@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+  "name": "Terramorphic Expanse",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Fetches any basic land from the library, primarily smoothing colors rather than accelerating mana."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Self-sacrificing land can support land-recursion or landfall-adjacent shells, but that is secondary here."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

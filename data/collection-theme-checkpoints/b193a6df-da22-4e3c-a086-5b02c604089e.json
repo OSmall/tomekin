@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b193a6df-da22-4e3c-a086-5b02c604089e",
+  "name": "Great-Horn Krushok",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.31,
+        "reasoning_notes": "Vanilla 5-mana 3/5 creature with no text; only loosely fits as a low-impact body for creature-based midrange decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

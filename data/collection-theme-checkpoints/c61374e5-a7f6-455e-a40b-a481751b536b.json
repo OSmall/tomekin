@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c61374e5-a7f6-455e-a40b-a481751b536b",
+  "name": "Bushwhack",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Fight mode is conditional creature removal; the land-search mode adds flexibility but doesn't define a ramp card."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Can tutor a basic land to hand, providing light color/land consistency rather than true ramp."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "One mode is a one-mana fight spell, which functions as conditional creature removal and is the card's main deckbuilding pull."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "The other mode finds a basic land to hand, offering light color or land consistency without increasing mana on board."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

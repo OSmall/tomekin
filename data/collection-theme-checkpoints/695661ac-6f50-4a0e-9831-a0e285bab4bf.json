@@ -1,0 +1,35 @@
+{
+  "oracle_id": "695661ac-6f50-4a0e-9831-a0e285bab4bf",
+  "name": "Wild Celebrants",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB can destroy target artifact; the body is incidental, so its clearest deckbuilding role is artifact interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB can destroy target artifact; the body is incidental, so its clearest deckbuilding role is artifact interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

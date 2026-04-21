@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c527eb80-ccac-40b8-8377-c31121613128",
+  "name": "Dark Deal",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Forces each player to discard their entire hand, directly enabling discard-matters payoffs and punishing hand-centric play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Forces each player to discard their entire hand, directly enabling discard-matters payoffs and punishing hand-centric play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

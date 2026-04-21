@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6f76fec2-6fd0-4d33-b39a-f1684922d478",
+  "name": "Blisterstick Shaman",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "ETB deals 1 to any target, functioning as a small removal spell attached to a creature."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Its enters-the-battlefield damage scales with blink or other repeat-ETB effects."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "ETB ping to any target is real removal utility, especially against x/1s, though narrow in size keeps confidence moderate."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "A clean ETB trigger gives modest blink synergy, but the payoff is only 1 damage so it is clearly secondary."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b36c66d3-24ae-4291-8f8b-8716e354975e",
+  "name": "Greater Stone Spirit",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Static text makes it hard for flying blockers to interact, giving it a clear evasive combat role."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Activated ability can pump a creature's toughness and grant repeatable firebreathing for combat math."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "A 4/4 body with evasion and mana sink pressure fits red combat-focused aggressive decks at the top end."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

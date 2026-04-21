@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f7b70077-5518-45f9-9833-01a4f8afac71",
+  "name": "Mortal Wound",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Aura makes any damaged creature die, so it plays as cheap conditional removal tied to combat or ping effects."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Type line is Enchantment — Aura, so it naturally fits Aura-matter shells beyond its removal function."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Aura makes any damaged creature die, so it plays as cheap conditional removal tied to combat or ping effects."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Type line is Enchantment — Aura, so it naturally fits Aura-matter shells beyond its removal function."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

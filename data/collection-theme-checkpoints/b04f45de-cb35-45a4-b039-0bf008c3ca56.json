@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b04f45de-cb35-45a4-b039-0bf008c3ca56",
+  "name": "Iron-Craw Crusher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Artifact creature with a colorless main mode; naturally fits artifact-matters shells more than a generic green creature theme."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Attack trigger boosts another attacker by this creature's power, pushing combat damage in creature-based aggressive decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b0f36bf7-bdde-4576-9eca-ec02d41326ab",
+  "name": "Nissa, Voice of Zendikar",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "-2 puts a +1/+1 counter on each creature you control, making it a clear counters payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "+1 repeatedly makes Plant tokens, providing board presence and bodies for the counter ability."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Ultimate can gain a large amount of life, but lifegain is incidental rather than the card's core theme."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Ultimate also draws cards based on lands, but this is secondary to the token and counters game plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "broad_tagging",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

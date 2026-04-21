@@ -1,0 +1,64 @@
+{
+  "oracle_id": "1498f5a1-6df7-4f80-9470-c93528b64a9c",
+  "name": "Deadbridge Goliath",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Scavenge turns it from graveyard into a large burst of +1/+1 counters, directly supporting counters decks."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "A 4-mana 5/5 is an efficient standalone body, and later scavenge lets it convert into more board pressure."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.51,
+        "reasoning_notes": "Scavenge uses the graveyard as a resource, but it is not true recursion since the card exiles itself instead of returning."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Scavenge converts it in the graveyard into a one-shot pile of +1/+1 counters, a clear counters enabler rather than a counters payoff."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "A vanilla 5/5 for four is solid standalone board presence, and scavenge preserves late-game pressure after it dies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

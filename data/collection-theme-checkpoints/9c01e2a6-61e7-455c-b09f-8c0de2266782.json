@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9c01e2a6-61e7-455c-b09f-8c0de2266782",
+  "name": "Pyromatics",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant that deals damage to any target; replicate lets you scale direct damage by paying more mana."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Replicate creates extra spell copies, giving modest synergy with spell-copy and cast-spell payoffs."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

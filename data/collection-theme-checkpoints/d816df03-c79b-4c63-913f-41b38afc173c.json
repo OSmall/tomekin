@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d816df03-c79b-4c63-913f-41b38afc173c",
+  "name": "Sky Scourer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "colorless matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Devoid makes it colorless, and it gets +1/+0 whenever you cast a colorless spell; directly rewards a colorless-heavy shell."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Has flying, giving it natural evasion, but that is secondary to its colorless-spell payoff text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "colorless matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Devoid makes it colorless, and it gets +1/+0 whenever you cast a colorless spell; directly rewards a colorless-heavy shell."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Has flying, giving it natural evasion, but that is secondary to its colorless-spell payoff text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

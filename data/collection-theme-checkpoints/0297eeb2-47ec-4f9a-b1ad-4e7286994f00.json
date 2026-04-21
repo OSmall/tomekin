@@ -1,0 +1,57 @@
+{
+  "oracle_id": "0297eeb2-47ec-4f9a-b1ad-4e7286994f00",
+  "name": "Cathedral Membrane",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Artifact creature with defender; mainly slots into artifact-count/synergy shells rather than a dedicated combat or control theme."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Defender plus a punishing death trigger can deter attacks and trade up in combat, but it's a narrow defensive piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "`Defender` and a combat-death trigger that can wipe blocked attackers make it chiefly a deterrent/blocker, not a broad control card."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Being an artifact creature gives it incidental artifact-count synergy, but the card is not a notable artifact payoff or build-around."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

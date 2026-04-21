@@ -1,0 +1,49 @@
+{
+  "oracle_id": "06d63395-6d05-44d8-bae6-0155f8026e57",
+  "name": "Deadly Wanderings",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.89,
+        "reasoning_notes": "Rewards controlling exactly one creature by granting +2/+0, deathtouch, and lifelink; best in single-threat Voltron shells."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Repeatedly grants lifelink to your lone creature, enabling incidental life gain through combat."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "voltron"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Explicitly rewards a one-creature board, giving that lone threat +2/+0, deathtouch, and lifelink; this is narrow Voltron support rather than a broad lifegain card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

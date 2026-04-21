@@ -1,0 +1,55 @@
+{
+  "oracle_id": "32f5f67b-bba3-427c-ab24-13a50acdc611",
+  "name": "Carnivorous Moss-Beast",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Activated ability repeatedly adds +1/+1 counters to itself, making it a direct counters payoff and mana sink."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Its 7-mana activation rewards excess mana, but it does not help produce mana itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana / activated abilities",
+        "theme": "mana sink",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Expensive repeatable activation converts excess mana into permanent self-growth, a textbook mana sink on a large creature."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "It places +1/+1 counters on itself, but only as self-contained scaling rather than a broader counters payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

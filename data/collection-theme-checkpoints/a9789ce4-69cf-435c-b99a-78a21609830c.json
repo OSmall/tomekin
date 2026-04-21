@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a9789ce4-69cf-435c-b99a-78a21609830c",
+  "name": "Dread Statuary",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / utility lands",
+        "theme": "manland",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Land that taps for colorless, then animates into a 4/2 artifact creature; chiefly a resilient land-based threat and mana sink."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Its activated form is an artifact creature, so it can incidentally interact with artifact-matter synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "manland"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / utility lands",
+        "theme": "manland",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Colorless land that can animate into a 4/2 artifact creature; its main deckbuilding role is a resilient land-based threat and mana sink."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

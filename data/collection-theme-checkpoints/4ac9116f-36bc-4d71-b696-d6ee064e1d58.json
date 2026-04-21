@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4ac9116f-36bc-4d71-b696-d6ee064e1d58",
+  "name": "Juggernaut",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Efficient 5/3 body for 4 with forced attacks; built to apply combat pressure rather than provide value."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Artifact creature that naturally fits artifact-count and artifact-synergy shells, though it has no explicit artifact payoff text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Efficient 5/3 body for 4 with forced attacks; built to apply combat pressure rather than provide value."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Artifact creature that naturally fits artifact-count and artifact-synergy shells, though it has no explicit artifact payoff text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

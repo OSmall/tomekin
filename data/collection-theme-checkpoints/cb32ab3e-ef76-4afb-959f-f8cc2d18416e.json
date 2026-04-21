@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cb32ab3e-ef76-4afb-959f-f8cc2d18416e",
+  "name": "Night // Day",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Split instant offers team-wide +1/+1 in combat, with a flexible -1/-1 mode that can swing blocks or trades."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "Night can pick off x/1s or combine with combat damage, but the removal mode is narrow and temporary."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Day rewards boards with multiple creatures by pumping an entire player's team for the turn."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

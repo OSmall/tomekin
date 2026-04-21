@@ -1,0 +1,30 @@
+{
+  "oracle_id": "169705c3-32c1-4628-b108-c37ca5f27e24",
+  "name": "Ruin Ghost",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Repeatedly blinks your own lands, chiefly enabling landfall and other ETB-from-lands synergies."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Activated ability repeatedly reuses utility lands, fitting broader lands-matter shells beyond pure landfall."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

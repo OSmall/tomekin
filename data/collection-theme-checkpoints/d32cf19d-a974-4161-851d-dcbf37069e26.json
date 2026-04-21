@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d32cf19d-a974-4161-851d-dcbf37069e26",
+  "name": "Umara Entangler",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Has prowess as its only ability, directly rewarding noncreature spell casting with repeated combat stat boosts."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Two-mana 2/1 body pressures early and converts spell casts into extra combat damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

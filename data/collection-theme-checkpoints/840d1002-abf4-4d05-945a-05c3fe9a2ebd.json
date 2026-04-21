@@ -1,0 +1,35 @@
+{
+  "oracle_id": "840d1002-abf4-4d05-945a-05c3fe9a2ebd",
+  "name": "Geyser Glider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.96,
+        "reasoning_notes": "Has landfall and turns each land drop into temporary flying, a clear landfall payoff for pushing damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.96,
+        "reasoning_notes": "Has landfall and turns each land drop into temporary flying, a clear landfall payoff for pushing damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

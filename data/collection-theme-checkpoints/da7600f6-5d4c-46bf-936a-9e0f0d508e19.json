@@ -1,0 +1,75 @@
+{
+  "oracle_id": "da7600f6-5d4c-46bf-936a-9e0f0d508e19",
+  "name": "Barrage of Expendables",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability requires sacrificing creatures, directly enabling sacrifice-based decks and death triggers."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Free sac outlet on an enchantment; converts dying creatures into damage, a classic aristocrats engine."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Works especially well with expendable token creatures, turning spare bodies into repeatable damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability explicitly sacrifices creatures for repeatable value, making it a direct sac outlet."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Turns creature deaths into damage, fitting aristocrats, but it needs mana each time so it is less of a true engine."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Disposable tokens help fuel the activation, though the card does not make or specifically reward tokens."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

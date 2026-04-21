@@ -1,0 +1,64 @@
+{
+  "oracle_id": "8b25f353-0798-4a03-a928-6a701a919468",
+  "name": "Arachnus Web",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Aura-based creature lockdown; type line is Aura and it functions as repeatable creature shutdown."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Prevents attacking, blocking, and activated abilities, serving as board control against a creature."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Acts like conditional creature removal by blanking one target, though it can fall off from high power."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura-based creature lockdown; type line is Aura and oracle text fully disables combat and activated abilities."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Single-target lockdown piece that suppresses a creature until the Aura breaks on power 4 or greater."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

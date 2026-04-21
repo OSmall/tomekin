@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8422f1e0-00ca-4ffb-a6b2-e2c9f96d7f23",
+  "name": "Furnace Whelp",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Flying is the card's defining gameplay hook; it functions mainly as an evasive aerial threat with scalable firebreathing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Flying is the card's defining gameplay hook; it functions mainly as an evasive aerial threat with scalable firebreathing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

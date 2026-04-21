@@ -1,0 +1,53 @@
+{
+  "oracle_id": "29f4c69a-ca59-4e9f-a808-87ba85b34f2f",
+  "name": "Dark Privilege",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura that buffs a creature and stays attached; its core identity is creature enhancement via enchantment."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Activated ability requires sacrificing creatures, making it a repeatable sac outlet to protect the enchanted creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura that buffs a creature and stays attached; its core identity is creature enhancement via enchantment."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Activated ability requires sacrificing creatures, making it a repeatable sac outlet to protect the enchanted creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

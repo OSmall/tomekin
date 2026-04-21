@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2577860a-663a-4b56-880c-05576522e3b7",
+  "name": "Vaultbreaker",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "discard / graveyard synergies",
+        "theme": "madness",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.84,
+        "reasoning_notes": "Attack trigger lets you discard before drawing, making Vaultbreaker a repeatable madness outlet."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Dash grants haste and temporary deployment, fitting aggressive attack-focused red decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

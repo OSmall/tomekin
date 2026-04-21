@@ -1,0 +1,55 @@
+{
+  "oracle_id": "acc7d3b8-60f2-4f3b-9cf9-b6b39627d8f6",
+  "name": "Crimson Roc",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Has flying and is primarily an evasive bird; its triggered combat bonus is narrow and defensive."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.47,
+        "reasoning_notes": "Can win blocks vs nonfliers by gaining +1/+0 and first strike when blocking."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Flying is the card's only evergreen proactive theme hook; it is plainly an evasive Bird with no broader synergy text."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Its trigger only works while blocking and specifically improves combat against nonfliers, which reads as defensive board control more than a combat-trick theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

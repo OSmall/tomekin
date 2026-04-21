@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fee18f57-4ae5-4df8-af3b-f82ed2157ac3",
+  "name": "Spitebellows",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Leaves-the-battlefield trigger deals 6 to a creature, and evoke turns it into efficient creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Leaves-the-battlefield trigger deals 6 to a creature, and evoke turns it into efficient creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

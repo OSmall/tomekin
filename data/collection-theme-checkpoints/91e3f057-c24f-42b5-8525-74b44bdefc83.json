@@ -1,0 +1,35 @@
+{
+  "oracle_id": "91e3f057-c24f-42b5-8525-74b44bdefc83",
+  "name": "Felhide Spiritbinder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Inspired repeatedly makes temporary hasty creature-copy tokens for 1R, making it chiefly a token-generation engine."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Inspired repeatedly makes temporary hasty creature-copy tokens for 1R, making it chiefly a token-generation engine."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

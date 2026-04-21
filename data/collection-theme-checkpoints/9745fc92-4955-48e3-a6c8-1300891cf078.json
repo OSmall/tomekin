@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9745fc92-4955-48e3-a6c8-1300891cf078",
+  "name": "Spellheart Chimera",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Power scales with instant and sorcery cards in your graveyard; a classic Izzet spells-matter threat."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Specifically counts instants and sorceries in your graveyard, rewarding a stocked yard."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Power scales with instant and sorcery cards in your graveyard; a classic Izzet spells-matter threat."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Specifically counts instants and sorceries in your graveyard, rewarding a stocked yard."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

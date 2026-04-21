@@ -1,0 +1,75 @@
+{
+  "oracle_id": "9811d1fa-1398-49a2-bcbe-0e40d9779ef1",
+  "name": "Fleetfeather Sandals",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Artifact Equipment that grants flying and haste; a clean, generic Equipment enabler."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Directly grants flying, making a creature harder to block and connect in combat."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Best in single-creature plans, adding haste and evasion to suit up one attacker."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Type line is Artifact - Equipment, and its entire function is a cheap, generically useful piece of Equipment."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "It directly grants flying, a standard evasion keyword that helps creatures attack through blockers."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Granting haste and flying helps suit up one threat, but this is broad Equipment support rather than a strongly dedicated Voltron payoff."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "13279222-422d-4447-9451-2463b0c714c6",
+  "name": "Garruk's Packleader",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Draw engine for decks curving into 3+ power creatures; triggers on each qualifying ETB under your control."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Best in creature-heavy green midrange shells that play efficient 3+ power bodies and snowball value."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

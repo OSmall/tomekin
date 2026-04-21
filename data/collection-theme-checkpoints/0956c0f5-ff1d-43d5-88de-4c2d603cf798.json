@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0956c0f5-ff1d-43d5-88de-4c2d603cf798",
+  "name": "Koilos Roc",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "ETB makes a Powerstone token, giving repeatable mana acceleration on a creature body."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "Has flying, so it naturally fits decks that care about evasive air threats."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Flash lets it be deployed at instant speed, preserving mana and fitting reactive tempo play."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

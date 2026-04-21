@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2002dd67-2347-4869-98de-299074206684",
+  "name": "Hour of Need",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Turns any number of creatures into 4/4 Sphinx creature tokens; scalable token creation is the card's clearest deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "The created tokens are 4/4 blue Sphinxes with flying, making the output specifically an evasive flying board."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.61,
+        "reasoning_notes": "Can answer opposing creatures at instant speed by exiling them and downgrading them into vanilla 4/4 flyers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

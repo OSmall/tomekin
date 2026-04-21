@@ -1,0 +1,30 @@
+{
+  "oracle_id": "76cef1af-ff7e-4eab-9be6-81ba6049d222",
+  "name": "Graceful Reprieve",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "One-shot death-trigger rescue that returns a creature to the battlefield, functioning like a protection/reuse ETB trick."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "Instant-speed save spell can swing combat by blanking lethal damage or trades."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

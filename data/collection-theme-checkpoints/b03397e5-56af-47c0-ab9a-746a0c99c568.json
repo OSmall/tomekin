@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b03397e5-56af-47c0-ab9a-746a0c99c568",
+  "name": "Nessian Game Warden",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "ETB digs X cards deep based on Forest count and puts a creature into hand, functioning as creature-based card selection/advantage."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "A 4/5 for five that often replaces itself fits slower green creature decks, but the body is secondary to the ETB value."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

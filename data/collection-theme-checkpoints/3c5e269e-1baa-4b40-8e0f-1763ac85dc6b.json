@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c5e269e-1baa-4b40-8e0f-1763ac85dc6b",
+  "name": "Redeem the Lost",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap instant targets your creature and grants protection for blowouts, saves, or forcing combat through."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "It targets a creature you control, so it cleanly enables heroic-style payoff creatures."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

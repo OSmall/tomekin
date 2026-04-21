@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fec6a4a7-4ded-4062-b99b-c1826dea7113",
+  "name": "Meriadoc Brandybuck",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Triggers specifically from Halflings attacking and turns tribal combat into repeatable Food generation."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Repeatedly creates Food tokens on attack, providing ongoing token production."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Food tokens convert into life, but lifegain is incidental rather than the main deckbuilding hook."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "dd6cec11-5c66-4f0e-a12f-9b483a09a777",
+  "name": "Reap What Is Sown",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant that places +1/+1 counters on up to three creatures; directly supports counters-based decks and combat scaling."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Instant-speed counter placement can swing combat by growing multiple blockers or attackers mid-combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant that places +1/+1 counters on up to three creatures; directly supports counters-based decks and combat scaling."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Instant-speed counter placement can swing combat by growing multiple blockers or attackers mid-combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2e037c5e-3e07-4ffc-a388-7976459f6ff7",
+  "name": "Voracious Fell Beast",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB makes each opponent sacrifice a creature, functioning as a strong edict-style removal effect in multiplayer."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Has flying on a 4/4 body, so it naturally fits decks that value evasive creatures."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "Creates Food tokens from the sacrifice trigger, giving incidental life gain support rather than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

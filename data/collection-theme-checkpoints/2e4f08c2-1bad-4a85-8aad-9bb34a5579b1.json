@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2e4f08c2-1bad-4a85-8aad-9bb34a5579b1",
+  "name": "Mugging",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "One-mana sorcery deals 2 to a creature and removes its ability to block, fitting cheap red damage-based interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Preventing a creature from blocking adds a race-oriented tempo swing beyond the damage effect."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Can't-block clause mainly supports aggressive attacks by pushing damage through early."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

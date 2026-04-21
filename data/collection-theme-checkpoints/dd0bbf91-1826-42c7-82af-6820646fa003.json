@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dd0bbf91-1826-42c7-82af-6820646fa003",
+  "name": "Spiderwig Boggart",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB grants fear until end of turn, a temporary unblockable-like evasion effect that helps push combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB grants fear until end of turn, a temporary unblockable-like evasion effect that helps push combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

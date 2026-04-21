@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5f5e0b10-c8cf-450c-bfd3-bcb0528ec330",
+  "name": "Pacifism",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura that disables a creature from attacking or blocking; a classic enchantment-based answer."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Functions as creature-specific shutdown, though it doesn't remove abilities or the body itself."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura that disables a creature from attacking or blocking; a classic enchantment-based answer."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Functions as creature-specific shutdown, though it doesn't remove abilities or the body itself."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

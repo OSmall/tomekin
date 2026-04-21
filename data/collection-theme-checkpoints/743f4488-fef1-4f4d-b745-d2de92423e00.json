@@ -1,0 +1,30 @@
+{
+  "oracle_id": "743f4488-fef1-4f4d-b745-d2de92423e00",
+  "name": "Grixis Panorama",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Colorless land that cashes in for a tapped Island, Swamp, or Mountain, mainly serving three-color fixing."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Can trigger landfall by sacrificing itself to fetch a basic onto the battlefield tapped."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

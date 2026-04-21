@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0acbc9a6-0de0-4096-b35c-1a586a1312ea",
+  "name": "Savage Surge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant +2/+2 and untap is a classic surprise combat buff, used to win fights or ambush attackers/blockers."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "It targets your creature, so it can incidentally trigger heroic or similar targeted-creature payoffs."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "97671aac-7322-44ae-8908-d573734db3af",
+  "name": "Cliffside Lookout",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Activated team-wide pump rewards boards with multiple creatures; functions as a classic go-wide finisher/payoff in white creature decks."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.24,
+        "reasoning_notes": "Kor Scout Ally typeline gives minor tribal relevance, but rules text does not specifically reward creature type synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Repeatable team pump rewards having multiple creatures; this is a classic go-wide mana-sink payoff. It has no text-based tribal synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

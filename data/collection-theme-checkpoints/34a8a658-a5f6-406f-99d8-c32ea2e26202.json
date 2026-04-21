@@ -1,0 +1,30 @@
+{
+  "oracle_id": "34a8a658-a5f6-406f-99d8-c32ea2e26202",
+  "name": "Severed Legion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Fear makes it hard to block, so its main deckbuilding value is reliable combat evasion."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "A cheap evasive 2/2 can support black aggressive decks by pushing early damage through blockers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

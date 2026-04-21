@@ -1,0 +1,39 @@
+{
+  "oracle_id": "77b98632-e103-44fa-a940-2c3b2897b60f",
+  "name": "Swarm Surge",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "colorless matters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Devoid makes it colorless, and it specifically rewards colorless creatures with first strike on top of a team pump effect."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Team-wide +2/+0 sorcery plays best as an alpha-strike payoff when attacking with multiple creatures."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.59,
+        "reasoning_notes": "A temporary combat stat boost with added first strike can swing combat, though it is more of a board-finisher than a trick."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

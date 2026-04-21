@@ -1,0 +1,35 @@
+{
+  "oracle_id": "752ebcba-97fb-43a3-8811-d244164b3e16",
+  "name": "Basilica Screecher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains you life, directly fitting Orzhov-style lifegain-drain shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains you life, directly fitting Orzhov-style lifegain-drain shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

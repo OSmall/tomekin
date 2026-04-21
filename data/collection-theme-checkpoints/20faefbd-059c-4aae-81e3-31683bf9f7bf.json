@@ -1,0 +1,53 @@
+{
+  "oracle_id": "20faefbd-059c-4aae-81e3-31683bf9f7bf",
+  "name": "Jaddi Offshoot",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Landfall repeatedly gains life; the card is chiefly used to pad life total off land drops."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Its only triggered ability is a landfall payoff, converting each land entering into life gain."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Landfall repeatedly gains life; the card is chiefly used to pad life total off land drops."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Its only triggered ability is a landfall payoff, converting each land entering into life gain."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

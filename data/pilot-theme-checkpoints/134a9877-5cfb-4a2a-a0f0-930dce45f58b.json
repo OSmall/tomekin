@@ -1,0 +1,55 @@
+{
+  "oracle_id": "134a9877-5cfb-4a2a-a0f0-930dce45f58b",
+  "name": "Prophetic Prism",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB cantrip artifact that filters into any color repeatedly; mainly used to smooth multicolor mana."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It replaces itself on entry, but the draw is incidental to its fixing role rather than a dedicated draw engine."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Activated ability filters mana into any color; this is a classic multicolor fixing piece, with the card draw mostly offsetting its cost."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "It draws a card on ETB, but only once and not as a repeatable draw engine, so this is clearly secondary."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

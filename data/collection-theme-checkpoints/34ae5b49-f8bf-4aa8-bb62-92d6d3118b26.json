@@ -1,0 +1,46 @@
+{
+  "oracle_id": "34ae5b49-f8bf-4aa8-bb62-92d6d3118b26",
+  "name": "Carnival Hellsteed",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "A 6-mana 5/4 with first strike and haste plays as an immediate board-pressure threat in combat-oriented midrange shells."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Unleash can add a +1/+1 counter on entry, giving it minor counters synergy, though it is not a dedicated counters payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Six-mana Rakdos body with haste and first strike is mainly a top-end combat threat; Unleash is optional but not a real counters-theme incentive."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

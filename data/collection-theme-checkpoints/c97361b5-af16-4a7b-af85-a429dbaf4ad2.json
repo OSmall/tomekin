@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c97361b5-af16-4a7b-af85-a429dbaf4ad2",
+  "name": "Mind Stone",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Two-mana rock that taps for {C}; classic early-game mana acceleration."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Artifact permanent that naturally fits artifact-count and artifact-synergy shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Can cash itself in for a card later, providing incidental draw once mana is less needed."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "10bc98b0-3fdc-46d1-8d3b-6d160e9dd62f",
+  "name": "Goblin Balloon Brigade",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "One-drop evasive attacker; can pay {R} to gain flying and push early combat damage."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Temporary self-flying gives repeatable evasion, but it is not a dedicated flying-matters payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "4c5b2be9-5d48-4e62-ae67-d61f3708bb4f",
+  "name": "Thieving Sprite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its enters trigger makes a player reveal cards and discard the chosen one."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB discard scales with the number of Faeries you control, making it a clear Faerie-tribal reward and payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It has flying, so it naturally fits decks that value evasive flying creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its enters trigger makes a player reveal cards and discard the chosen one."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "ETB discard scales with the number of Faeries you control, making it a clear Faerie-tribal reward and payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It has flying, so it naturally fits decks that value evasive flying creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

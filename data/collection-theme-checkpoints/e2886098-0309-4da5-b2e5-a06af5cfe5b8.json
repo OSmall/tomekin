@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e2886098-0309-4da5-b2e5-a06af5cfe5b8",
+  "name": "Setessan Battle Priest",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Heroic and directly rewards targeting it with repeatable life gain."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Each spell that targets it gains 2 life, making it a small lifegain engine in Heroic shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Heroic and directly rewards targeting it with repeatable life gain."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Each spell that targets it gains 2 life, making it a small lifegain engine in Heroic shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c3401995-4fb4-4b43-b852-5ccad6dc3154",
+  "name": "Mortal's Ardor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant that pumps a creature in combat; classic trick that can swing trades and races."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Temporarily grants lifelink, enabling incidental life gain but not functioning as a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant that pumps a creature in combat; classic trick that can swing trades and races."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Temporarily grants lifelink, enabling incidental life gain but not functioning as a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

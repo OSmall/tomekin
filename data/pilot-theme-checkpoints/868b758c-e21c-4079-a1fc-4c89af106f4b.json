@@ -1,0 +1,53 @@
+{
+  "oracle_id": "868b758c-e21c-4079-a1fc-4c89af106f4b",
+  "name": "Howl of the Night Pack",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates a large batch of Wolf tokens at once, directly serving token-swarm plans as a board-building finisher."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "The effect scales with Forest count and wins by flooding the board, fitting classic go-wide gameplay."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates a large batch of Wolf tokens at once, directly serving token-swarm plans as a board-building finisher."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "The effect scales with Forest count and wins by flooding the board, fitting classic go-wide gameplay."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "aff51c27-fb61-41b3-a7ea-7092cd280c63",
+  "name": "Solemn Offering",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Directly destroys an artifact or enchantment; flexible disenchant effect is most often classified as artifact hate."
+      },
+      {
+        "primary": false,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "Also cleanly answers enchantments, making it a secondary disenchant-style hate piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

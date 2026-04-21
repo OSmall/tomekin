@@ -1,0 +1,58 @@
+{
+  "oracle_id": "e5e04968-d9b7-4bd5-b826-be9502360cd3",
+  "name": "Angelic Gift",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura creature buff; its type line and targeted enchant effect make it a clear Auras-theme enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "ETB cantrips on resolution, giving incidental card draw alongside the Aura effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Cheap Aura that targets a creature and adds an on-theme body upgrade; type line and oracle text make this a clear Auras enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "It replaces itself when it enters, so the draw is real but incidental rather than a dedicated card-draw engine."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

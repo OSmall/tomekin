@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e45f0a12-e1ca-432f-a208-9359dd18513d",
+  "name": "Rage Extractor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells / cost mechanics",
+        "theme": "phyrexian mana",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Explicit payoff for casting spells with {H} in their mana costs; built to reward Phyrexian-mana-heavy decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Turns each qualifying spell into repeatable damage to any target equal to mana value."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "phyrexian mana"
+    ]
+  }
+}

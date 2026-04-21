@@ -1,0 +1,53 @@
+{
+  "oracle_id": "00b9d3a3-fd64-4757-9159-b3af06b5f5b1",
+  "name": "Sauron, the Lidless Eye",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB is a classic Threaten effect: steal, untap, and grant haste to an opposing creature for the turn."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Activated team pump and opponent life loss help close games in aggressive Rakdos creature shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB is a classic Threaten effect: steal, untap, and grant haste to an opposing creature for the turn."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Activated team pump and opponent life loss help close games in aggressive Rakdos creature shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

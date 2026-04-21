@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1c2ce0d0-8c3e-48e8-b1fd-54658bdb9af9",
+  "name": "Asphyxiate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery that directly destroys a target creature; a straightforward removal spell with an untapped restriction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery that directly destroys a target creature; a straightforward removal spell with an untapped restriction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "58f70225-17b5-4aa6-a62a-89c57e31ecc1",
+  "name": "Flamecast Wheel",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability sacrifices it to deal 3 damage to target creature, making it a reusable-slot removal piece."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Cheap colorless artifact can count toward artifact density and artifact-matters synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability sacrifices it to deal 3 damage to target creature, making it a reusable-slot removal piece."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Cheap colorless artifact can count toward artifact density and artifact-matters synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

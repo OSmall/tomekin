@@ -1,0 +1,49 @@
+{
+  "oracle_id": "43144f06-079b-4515-a03a-01ea3e90d586",
+  "name": "Encroaching Wastes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Colorless utility land that sacrifices to destroy a target nonbasic land; mainly used to answer problem lands."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Fits control-style decks as low-opportunity-cost interaction from a land slot rather than a dedicated spell."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "land destruction"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Activated ability sacrifices it to destroy a target nonbasic land, making it a clear utility land for land denial."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

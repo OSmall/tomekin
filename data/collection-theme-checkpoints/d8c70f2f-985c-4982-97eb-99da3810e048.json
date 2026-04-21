@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d8c70f2f-985c-4982-97eb-99da3810e048",
+  "name": "Shepherd of the Lost",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Efficient evasive Angel with flying as its defining gameplay hook; first strike and vigilance support air-based combat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Flying gives reliable combat evasion, but the card is more specifically a flier than a broader evasion build-around."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

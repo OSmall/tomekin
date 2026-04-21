@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9e737a22-a352-411d-8412-96770c7f6cce",
+  "name": "Simic Keyrune",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Taps for either {G} or {U}; its main deckbuilding use is a two-color mana rock for smoothing and acceleration."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Artifact typing gives it incidental synergy in artifact-matters shells, though that is secondary to mana production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Taps for either {G} or {U}; its main deckbuilding use is a two-color mana rock for smoothing and acceleration."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Artifact typing gives it incidental synergy in artifact-matters shells, though that is secondary to mana production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

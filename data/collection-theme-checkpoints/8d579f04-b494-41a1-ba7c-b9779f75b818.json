@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8d579f04-b494-41a1-ba7c-b9779f75b818",
+  "name": "Fruit of the First Tree",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Death trigger converts a high-toughness creature into a large burst of cards; the life gain is secondary to the refill."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "It is an Aura and naturally slots into Aura-based shells, though it does not reward other Auras directly."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "The death trigger also gains life equal to toughness, giving incidental lifegain alongside the draw effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

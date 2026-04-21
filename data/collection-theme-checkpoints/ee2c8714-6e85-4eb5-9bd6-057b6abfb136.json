@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ee2c8714-6e85-4eb5-9bd6-057b6abfb136",
+  "name": "Warlord's Elite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics / cost reduction",
+        "theme": "convoke",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Pseudo-convoke additional cost rewards a developed board by tapping creatures, artifacts, or lands for an undercosted 4/4."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "A 3-mana 4/4 fits aggressive curves when you can tap early permanents without losing much tempo."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "convoke"
+    ]
+  }
+}

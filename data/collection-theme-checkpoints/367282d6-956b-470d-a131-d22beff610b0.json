@@ -1,0 +1,35 @@
+{
+  "oracle_id": "367282d6-956b-470d-a131-d22beff610b0",
+  "name": "Bramblecrush",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery that cleanly destroys any noncreature permanent; broad single-target answer fits spot removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery that cleanly destroys any noncreature permanent; broad single-target answer fits spot removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

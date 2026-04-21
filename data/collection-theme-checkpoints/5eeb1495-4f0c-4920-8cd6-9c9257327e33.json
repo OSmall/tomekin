@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5eeb1495-4f0c-4920-8cd6-9c9257327e33",
+  "name": "Skygames",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Turns any creature into a temporary flier via the enchanted land, mainly enabling attacks through blockers."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It is an Aura, but it enchants a land and usually supports evasion plans more than dedicated Aura synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

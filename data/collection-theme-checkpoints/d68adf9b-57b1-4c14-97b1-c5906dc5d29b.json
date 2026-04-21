@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d68adf9b-57b1-4c14-97b1-c5906dc5d29b",
+  "name": "Towering Thunderfist",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.45,
+        "reasoning_notes": "Red creature with a white activated ability; best fit is Boros color-pair support, though the card is otherwise low-synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

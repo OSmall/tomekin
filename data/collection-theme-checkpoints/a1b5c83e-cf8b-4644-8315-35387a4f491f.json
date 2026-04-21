@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a1b5c83e-cf8b-4644-8315-35387a4f491f",
+  "name": "Hope Charm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "One-mana instant mainly plays as combat interaction via temporary first strike in combat."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "Has a small modal life-gain option, but only 2 life and not a dedicated payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "Can answer a single Aura at instant speed, though the removal mode is narrow and situational."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

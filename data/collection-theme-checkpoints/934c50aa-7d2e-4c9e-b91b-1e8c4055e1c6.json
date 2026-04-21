@@ -1,0 +1,30 @@
+{
+  "oracle_id": "934c50aa-7d2e-4c9e-b91b-1e8c4055e1c6",
+  "name": "Spell Rupture",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Creature-power-scaled soft counter is best in board-ahead decks, protecting pressure while trading up on mana."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "It is still countermagic, but its dependence on creature power makes it less at home in pure control shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

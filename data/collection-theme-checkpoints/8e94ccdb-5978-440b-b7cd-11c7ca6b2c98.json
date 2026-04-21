@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8e94ccdb-5978-440b-b7cd-11c7ca6b2c98",
+  "name": "You Cannot Pass!",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant-speed creature destruction, but restricted to creatures that fought a legendary creature in combat this turn."
+      },
+      {
+        "primary": false,
+        "category": "legendary",
+        "theme": "legendary matters",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Only works if you attacked or blocked with a legendary creature, making it a legend-synergy combat removal spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant-speed creature destruction, but restricted to creatures that fought a legendary creature in combat this turn."
+      },
+      {
+        "primary": false,
+        "category": "legendary",
+        "theme": "legendary matters",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Only works if you attacked or blocked with a legendary creature, making it a legend-synergy combat removal spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

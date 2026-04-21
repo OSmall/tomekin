@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e8e88e9a-0097-49ac-8b23-482a3190f21b",
+  "name": "Reckless Imp",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Flying makes it a repeatable evasive attacker that chips in damage."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Can't block and dash for haste push it toward pure attacking play, not defense."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Dash lets it pressure safely and dodge sorcery-speed removal by returning to hand."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

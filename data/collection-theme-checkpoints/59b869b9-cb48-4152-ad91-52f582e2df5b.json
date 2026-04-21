@@ -1,0 +1,57 @@
+{
+  "oracle_id": "59b869b9-cb48-4152-ad91-52f582e2df5b",
+  "name": "Comparative Analysis",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant that simply makes a player draw two cards; its main gameplay role is straightforward card draw."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Surge rewards casting another spell first, giving minor synergy with spell-dense turns and spells-matter shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed 'target player draws two cards' makes this a clean, direct card-draw spell; surge only discounts it."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Surge asks for another spell first, so it has light spells-matter synergy, but that rider is incidental rather than a real deckbuilding focus."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

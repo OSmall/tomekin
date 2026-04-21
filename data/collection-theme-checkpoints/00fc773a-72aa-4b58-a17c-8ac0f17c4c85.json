@@ -1,0 +1,39 @@
+{
+  "oracle_id": "00fc773a-72aa-4b58-a17c-8ac0f17c4c85",
+  "name": "Shadowcloak Vampire",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Can pay life to gain flying on demand, making it primarily an evasion enabler for combat damage."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Repeatedly grants itself flying, so it can function as a situational flyer even without native flying."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.23,
+        "reasoning_notes": "Uses life as a resource, but it neither gains nor drains life, so this link is weak and mostly contextual."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

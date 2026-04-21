@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4429a30e-17f1-4bcc-92f0-55ab1315adff",
+  "name": "Panic Spellbomb",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Cheap artifact that sacrifices itself, making it a clean enabler for artifact-count and artifact-recursion shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Its tap-sac ability removes a blocker for a turn, mainly to push damage through while replacing itself for {R}."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

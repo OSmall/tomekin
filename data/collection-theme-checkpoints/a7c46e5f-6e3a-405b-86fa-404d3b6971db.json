@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a7c46e5f-6e3a-405b-86fa-404d3b6971db",
+  "name": "Chronostutter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Single-target instant tucks a creature near the top of its owner's library, a classic blue control tempo-removal effect."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Removes a blocker or threat while denying the next draw step somewhat, but at six mana it is only a light tempo card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Single-target instant tucks a creature near the top of its owner's library, a classic blue control tempo-removal effect."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Removes a blocker or threat while denying the next draw step somewhat, but at six mana it is only a light tempo card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

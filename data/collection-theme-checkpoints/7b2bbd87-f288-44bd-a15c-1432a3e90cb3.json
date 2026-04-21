@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7b2bbd87-f288-44bd-a15c-1432a3e90cb3",
+  "name": "Two-Headed Cerberus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Double strike is a classic pump/equipment payoff; low base stats point to scaling via a single suited-up attacker."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "An evasive-less 3-drop attacker, but double strike can pressure life totals in aggressive shells with pump support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

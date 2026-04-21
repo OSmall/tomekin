@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6ee32b5e-3b29-47ff-87f8-913ec05f6b2f",
+  "name": "Illusory Angel",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Efficient 4/4 flyer for 3; primary gameplay identity is an evasive creature threat."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Needs another spell first, fitting low-curve double-spell turns common in tempo shells."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Cast restriction rewards sequencing extra spells in a turn, but it is not a dedicated spell-matter card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

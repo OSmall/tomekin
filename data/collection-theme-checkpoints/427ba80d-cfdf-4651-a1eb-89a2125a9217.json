@@ -1,0 +1,46 @@
+{
+  "oracle_id": "427ba80d-cfdf-4651-a1eb-89a2125a9217",
+  "name": "Conjured Currency",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Repeatable upkeep exchange steals opponents' best permanents over time; classic blue board-control through ownership manipulation."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "It is an enchantment, so enchantment-centric shells can recur or tutor it, but the text does not reward enchantments directly."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Repeatable upkeep trigger exchanges control of itself for an opposing permanent, making it a persistent theft effect rather than generic control."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

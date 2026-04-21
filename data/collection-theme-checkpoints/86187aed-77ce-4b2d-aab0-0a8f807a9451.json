@@ -1,0 +1,30 @@
+{
+  "oracle_id": "86187aed-77ce-4b2d-aab0-0a8f807a9451",
+  "name": "River Boa",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Islandwalk makes it unblockable against Island decks, making evasive pressure its defining gameplay theme."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "A cheap 2-power two-drop that attacks early; regeneration helps sustain pressure in aggressive shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

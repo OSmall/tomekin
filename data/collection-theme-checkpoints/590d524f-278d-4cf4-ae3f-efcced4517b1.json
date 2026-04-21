@@ -1,0 +1,30 @@
+{
+  "oracle_id": "590d524f-278d-4cf4-ae3f-efcced4517b1",
+  "name": "Merfolk Mesmerist",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Activated ability repeatedly mills any player for two cards; this is a dedicated mill enabler."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.57,
+        "reasoning_notes": "Merfolk Wizard can fit tribal shells, but the card text itself mainly supports milling."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

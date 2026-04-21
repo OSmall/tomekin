@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4cd6ad78-7441-4dd7-b486-d9575e8e0947",
+  "name": "Blistering Dieflyn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.97,
+        "reasoning_notes": "Has Flying and repeatable firebreathing via {B/R}, fitting an evasive-creature threat for fliers shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.97,
+        "reasoning_notes": "Has Flying and repeatable firebreathing via {B/R}, fitting an evasive-creature threat for fliers shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

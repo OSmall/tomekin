@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0d6dc95d-55ce-4ef8-b065-d7203f5bf642",
+  "name": "Resolute Archangel",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB resets your life total to starting life total, a large life-gain stabilization effect in lifegain shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Its value is tied to an ETB trigger, so blink effects can reuse the life-total reset."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

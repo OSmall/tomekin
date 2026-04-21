@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f28b21a6-f7ce-437a-8c5b-0423cb55cefb",
+  "name": "Banishing Light",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB exiles an opposing nonland permanent until it leaves play; this is classic white removal attached to an enchantment."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "ETB exiles target nonland permanent an opponent controls until it leaves; staple white O-Ring-style removal."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "It is an enchantment, so it modestly contributes to enchantment-count or enchantress-style synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

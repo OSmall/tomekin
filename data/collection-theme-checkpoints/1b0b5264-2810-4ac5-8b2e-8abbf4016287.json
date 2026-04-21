@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1b0b5264-2810-4ac5-8b2e-8abbf4016287",
+  "name": "Catacomb Slug",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.23,
+        "reasoning_notes": "Vanilla 2/6 for five mana plays mostly as a defensive blocker; no oracle text or keywords suggest a stronger synergy theme."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.89,
+        "reasoning_notes": "A 2/6 vanilla for five mana with no text or keywords mainly contributes as a blocker, not a control engine or synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

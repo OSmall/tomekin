@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5ba04e0d-a3eb-448d-8a97-08c155ef9694",
+  "name": "Breaching Hippocamp",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Flash plus ETB untap enables surprise blocks or reuse of a tapped attacker, creating board-position tempo swings."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Functions like a creature-based trick in combat by appearing at instant speed and untapping another creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Flash plus ETB untap can ambush attacks or preserve shields, but the effect is small and mostly a minor tempo play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "It can play like a creature-based trick in combat by entering at instant speed and untapping another creature you control."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

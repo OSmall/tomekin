@@ -1,0 +1,53 @@
+{
+  "oracle_id": "361f534b-39d1-4421-b5a8-d3813c62f86d",
+  "name": "Rakdos Guildgate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Gate subtype directly supports Gates-matter decks while providing Rakdos fixing."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Tapped dual land that adds either {B} or {R}, serving basic color fixing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Gate subtype directly supports Gates-matter decks while providing Rakdos fixing."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Tapped dual land that adds either {B} or {R}, serving basic color fixing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

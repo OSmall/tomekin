@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6933789-bb4f-4d45-975e-402b8e0b0e68",
+  "name": "Shielded Passage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "One-mana instant that protects a creature in combat by preventing all damage to it for the turn."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "Targets your creature cheaply, so it can incidentally trigger heroic-style payoffs."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e5139376-cdb1-4f1e-b417-b956d6b713b9",
+  "name": "Gloomwidow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Reach plus a blocking restriction aimed only at flyers makes this a narrow anti-flying defensive creature."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "flying hate"
+    ]
+  }
+}

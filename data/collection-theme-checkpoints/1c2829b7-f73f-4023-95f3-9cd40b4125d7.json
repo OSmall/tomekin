@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1c2829b7-f73f-4023-95f3-9cd40b4125d7",
+  "name": "Voyage's End",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap instant-speed bounce creates a time swing, and scry 1 adds efficiency; classic tempo play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Can buy time by resetting an opposing attacker or blocker, but it is more tempo than true control."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

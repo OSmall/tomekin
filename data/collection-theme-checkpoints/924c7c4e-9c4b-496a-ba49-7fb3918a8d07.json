@@ -1,0 +1,30 @@
+{
+  "oracle_id": "924c7c4e-9c4b-496a-ba49-7fb3918a8d07",
+  "name": "Metropolis Sprite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap flying creature with repeatable self-pump, fitting evasive creature plans more than any synergy-specific archetype."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.43,
+        "reasoning_notes": "Low-cost evasive body can pressure early and trade up in combat via activated pump, a common tempo-gameplay pattern."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

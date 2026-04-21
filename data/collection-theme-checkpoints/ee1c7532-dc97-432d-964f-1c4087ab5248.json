@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ee1c7532-dc97-432d-964f-1c4087ab5248",
+  "name": "Embodiment of Insight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Explicit landfall trigger is the card's core gameplay hook, rewarding each land drop with repeatable board pressure."
+      },
+      {
+        "primary": false,
+        "category": "lands / utility lands",
+        "theme": "manland",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "It repeatedly turns your lands into creatures, directly enabling land-creature attacks and vigilance synergy."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Has an explicit landfall trigger that repeatedly converts each land drop into a temporary 3/3 attacker, making land entries its core engine."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Rewards a land-heavy game by animating lands and granting vigilance to land creatures, but it is not itself a manland."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

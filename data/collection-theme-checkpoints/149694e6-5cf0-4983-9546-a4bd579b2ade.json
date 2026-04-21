@@ -1,0 +1,71 @@
+{
+  "oracle_id": "149694e6-5cf0-4983-9546-a4bd579b2ade",
+  "name": "Scrapwork Cohort",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB creates a 1/1 artifact creature token, making token production the card's clearest deckbuilding role."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Unearth lets it return from the graveyard for another body and another ETB token trigger."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Both the main body and the token are artifact creatures, supporting artifact-count and artifact-synergy plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB creates a 1/1 artifact creature token, making token production the card's clearest deckbuilding role."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Unearth lets it return from the graveyard for another body and another ETB token trigger."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Both the main body and the token are artifact creatures, supporting artifact-count and artifact-synergy plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5b60a257-e4f8-412e-b146-b7983a384753",
+  "name": "Resplendent Mentor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Static ability gives each white creature '{T}: You gain 1 life,' making it a dedicated repeatable lifegain engine for creature-heavy white decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Static ability gives each white creature '{T}: You gain 1 life,' making it a dedicated repeatable lifegain engine for creature-heavy white decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

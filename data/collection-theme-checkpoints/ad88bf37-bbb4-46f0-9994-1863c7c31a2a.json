@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ad88bf37-bbb4-46f0-9994-1863c7c31a2a",
+  "name": "Harvestguard Alseids",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Constellation triggers from this or another enchantment entering, making it a clear enchantments-matter payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Its trigger prevents all damage to a target creature for the turn, functioning as defensive board-control support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Constellation triggers from this or another enchantment entering, making it a clear enchantments-matter payoff piece."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Its trigger prevents all damage to a target creature for the turn, functioning as defensive board-control support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

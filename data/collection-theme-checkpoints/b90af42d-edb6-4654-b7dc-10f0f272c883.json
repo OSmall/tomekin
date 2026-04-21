@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b90af42d-edb6-4654-b7dc-10f0f272c883",
+  "name": "Elite Scaleguard",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Bolster 2 gives +1/+1 counters, and its attack trigger specifically rewards creatures you control with +1/+1 counters."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Attacking with countered creatures taps blockers, creating attack-step tempo and forcing favorable combat."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB bolster 2 directly places +1/+1 counters, and its attack trigger specifically keys off your creatures with +1/+1 counters."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It can tap down defending creatures as your countered attackers swing, but that is secondary to its counters-focused game plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

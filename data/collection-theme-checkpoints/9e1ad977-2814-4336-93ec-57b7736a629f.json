@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9e1ad977-2814-4336-93ec-57b7736a629f",
+  "name": "Cinder Hellion",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.57,
+        "reasoning_notes": "5-mana 4/4 trampler with ETB face damage plays as a modest board-presence threat that also adds immediate reach."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Has native trample on a 4/4 body; ETB 2 damage is minor reach, but the clearest deckbuilding fit is a low-impact trample creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

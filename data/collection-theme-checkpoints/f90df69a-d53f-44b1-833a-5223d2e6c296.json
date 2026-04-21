@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f90df69a-d53f-44b1-833a-5223d2e6c296",
+  "name": "Returned Reveler",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Death trigger mills both players, making it a cleaner self-mill/graveyard setup piece than a dedicated opponent-mill payoff."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "It does mill opponents, but only incidentally and in small volume; usually not a true mill finisher or payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

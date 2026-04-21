@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f4d2eca4-4645-4044-b75f-442cd726cedf",
+  "name": "Shadow Slice",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Drains an opponent for 3, and cipher can repeat that life-loss on future combat-damage triggers."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Cipher is best when encoded on an evasive creature that can reliably hit a player to recast it."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

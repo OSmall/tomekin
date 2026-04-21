@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8c71cbb3-e900-4ea3-aced-8439b5803654",
+  "name": "Vandalize",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Mode destroys target artifact, making it a clean anti-artifact interaction spell."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its second mode destroys a land, with optional two-for-one utility when both modes apply."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Mode destroys target artifact, making it a clean anti-artifact interaction spell."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Its second mode destroys a land, with optional two-for-one utility when both modes apply."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

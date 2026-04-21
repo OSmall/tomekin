@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4989d38e-332f-48f5-863b-1566921156c8",
+  "name": "Saberclaw Golem",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Artifact creature with no broader synergy text; most naturally slots into artifact-matters shells."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.53,
+        "reasoning_notes": "4/2 body with repeatable first strike activation leans toward attacking, but rate is modest for a dedicated aggro card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

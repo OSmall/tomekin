@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e6479195-cbdf-4d2b-9f45-5fd0a6ab4a77",
+  "name": "Arm with Aether",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Mass combat-damage trigger that bounces blockers or survivors, creating swingy board advantage and clearing attacks."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Scales with multiple attackers; wider boards let more creatures connect and generate repeated bounce triggers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.86,
+        "reasoning_notes": "Turns combat damage into temporary creature removal, pushing attacks through and setting opponents back on board and mana."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.58,
+        "reasoning_notes": "Works best when several creatures can connect, since each damage trigger can bounce another opposing creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

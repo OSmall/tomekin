@@ -1,0 +1,71 @@
+{
+  "oracle_id": "9c46adaa-ab39-4c0a-99bd-935b6c4f732f",
+  "name": "Wingsteed Rider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Heroic directly rewards targeting it with spells by growing via +1/+1 counters."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Its heroic trigger repeatedly places +1/+1 counters on itself as the main scaling mechanism."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Flying gives reliable evasion, helping the growing threat connect in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Heroic directly rewards targeting it with spells by growing via +1/+1 counters."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Its heroic trigger repeatedly places +1/+1 counters on itself as the main scaling mechanism."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Flying gives reliable evasion, helping the growing threat connect in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

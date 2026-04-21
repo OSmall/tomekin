@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cde622fa-a634-409d-962c-1e4c5ddf9b3b",
+  "name": "Gatstaf Arsonists // Gatstaf Ravagers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Werewolf creature with day/night-style transform text; mainly fits Werewolf/tribal decks rather than a broader mechanic theme."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.36,
+        "reasoning_notes": "Five-mana body that flips into an evasive menace attacker, but it lacks strong standalone rate or payoff text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.91,
+        "reasoning_notes": "Human Werewolf // Werewolf with transform text; this is chiefly a Werewolf tribal include, with menace being incidental rather than a deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

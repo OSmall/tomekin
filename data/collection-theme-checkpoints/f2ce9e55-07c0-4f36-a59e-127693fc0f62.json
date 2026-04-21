@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f2ce9e55-07c0-4f36-a59e-127693fc0f62",
+  "name": "Magnifying Glass",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Artifact taps for {C}, making it a straightforward colorless mana rock with secondary late-game utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Its investigate ability creates Clues, which convert mana into cards over time."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Both the permanent and its Clue output contribute artifact count for artifact-centric decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a16509da-ad46-4ee3-86f3-06c521c23481",
+  "name": "Phyrexian Hulk",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Vanilla artifact creature with no text; mainly contributes as an artifact permanent for artifact-count and affinity-style synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Vanilla artifact creature with no text; mainly contributes as an artifact permanent for artifact-count and affinity-style synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

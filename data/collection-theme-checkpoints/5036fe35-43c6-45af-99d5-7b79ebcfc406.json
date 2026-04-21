@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5036fe35-43c6-45af-99d5-7b79ebcfc406",
+  "name": "Senseless Rage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura that permanently buffs one creature with +2/+2; directly slots into Aura-focused decks and synergies."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Single-target stat boost helps stack power on one attacker, a common Voltron support pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura that permanently buffs one creature with +2/+2; directly slots into Aura-focused decks and synergies."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Single-target stat boost helps stack power on one attacker, a common Voltron support pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

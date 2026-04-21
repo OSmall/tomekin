@@ -1,0 +1,53 @@
+{
+  "oracle_id": "cd17bd00-90b1-4b89-9368-2d8735159e47",
+  "name": "Shambling Attendants",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delve",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Has delve as a named cost-reduction mechanic; it rewards filling the graveyard to cast this far below 8 mana."
+      },
+      {
+        "primary": false,
+        "category": "combat / keyword abilities",
+        "theme": "deathtouch",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Native deathtouch makes it a strong blocker and combat deterrent, but this is secondary to the delve identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "delve",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Has delve as a named cost-reduction mechanic; it rewards filling the graveyard to cast this far below 8 mana."
+      },
+      {
+        "primary": false,
+        "category": "combat / keyword abilities",
+        "theme": "deathtouch",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Native deathtouch makes it a strong blocker and combat deterrent, but this is secondary to the delve identity."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

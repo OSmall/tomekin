@@ -1,0 +1,71 @@
+{
+  "oracle_id": "868b758c-e21c-4079-a1fc-4c89af106f4b",
+  "name": "Howl of the Night Pack",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Creates a large batch of Wolf creature tokens based on Forest count; quintessential token-maker and board-wide payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Turns a developed mana base into a wide board of bodies, often functioning as a late-game swarm finisher."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Rewards having many Forests in play, so it scales directly with land ramp and mono-green mana development."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Creates a large batch of Wolf creature tokens based on Forest count; quintessential token-maker and board-wide payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Turns a developed mana base into a wide board of bodies, often functioning as a late-game swarm finisher."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Rewards having many Forests in play, so it scales directly with land ramp and mono-green mana development."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

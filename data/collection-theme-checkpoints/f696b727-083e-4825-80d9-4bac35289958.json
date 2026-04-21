@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f696b727-083e-4825-80d9-4bac35289958",
+  "name": "Glade Watcher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.7,
+        "reasoning_notes": "Efficient 3/3 for 2 that turns into an attacker once you have 8+ total power, fitting board-based green midrange."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.43,
+        "reasoning_notes": "Can join attacks in creature-heavy starts, but defender and formidable gate make it a weak aggro fit rather than a core one."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

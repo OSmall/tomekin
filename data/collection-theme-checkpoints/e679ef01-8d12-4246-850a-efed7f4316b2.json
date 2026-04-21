@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e679ef01-8d12-4246-850a-efed7f4316b2",
+  "name": "Nightwing Shade",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Has flying and functions mainly as an evasive creature that can scale power in combat."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Shade pump ability can convert excess mana into damage, but the 5-mana 2/2 body limits pure aggro fit."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

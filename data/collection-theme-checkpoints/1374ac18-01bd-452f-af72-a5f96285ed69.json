@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1374ac18-01bd-452f-af72-a5f96285ed69",
+  "name": "Wall of Essence",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "0/4 with defender is a dedicated blocker; it mainly slots into defensive shells rather than attacking plans."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its combat-damage trigger gains life equal to damage dealt to it, directly supporting lifegain synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "0/4 with defender is a dedicated blocker; it mainly slots into defensive shells rather than attacking plans."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its combat-damage trigger gains life equal to damage dealt to it, directly supporting lifegain synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

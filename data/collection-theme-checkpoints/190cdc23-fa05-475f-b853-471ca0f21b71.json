@@ -1,0 +1,30 @@
+{
+  "oracle_id": "190cdc23-fa05-475f-b853-471ca0f21b71",
+  "name": "Gorgon's Head",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Cheap Equipment with equip and a static granted combat keyword; directly belongs in Equipment shells."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Artifact permanent that can count toward artifact-matter synergies, though its text is mainly Equipment-focused."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

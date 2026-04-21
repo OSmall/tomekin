@@ -1,0 +1,66 @@
+{
+  "oracle_id": "685c4665-e04c-4012-aa5b-888a042c2a21",
+  "name": "Convincing Mirage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Turns any land into one basic type, often blanking nonbasic utility or constraining colors as soft land disruption."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "It is a land Aura, so it naturally slots into Aura-count and enchantment-synergy shells."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Can enchant your own land to give it a needed basic land type and corresponding color-producing ability."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Land-type overwrite acts as soft mana denial, blanking utility lands or constraining colors; this is primarily control-style disruption."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It is an Aura, so it can contribute to Aura-count or enchantment-synergy shells, though that is incidental to its main use."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

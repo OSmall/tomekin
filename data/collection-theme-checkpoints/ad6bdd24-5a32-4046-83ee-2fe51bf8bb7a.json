@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ad6bdd24-5a32-4046-83ee-2fe51bf8bb7a",
+  "name": "Archers of Qarsi",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.46,
+        "reasoning_notes": "Defender plus reach makes it a purely defensive creature that helps stall combat and block fliers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Defender makes it a dedicated blocker, and reach specifically improves its role at holding off aerial attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

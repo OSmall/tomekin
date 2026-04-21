@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5a6bbc45-6cb8-40ff-9f7c-7b2c5713dd78",
+  "name": "Griptide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.89,
+        "reasoning_notes": "Instant-speed creature bounce-to-library creates a strong time walk, denying draws and resetting the threat."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Single-creature answer that cleanly handles attackers or key threats, fitting reactive control shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.89,
+        "reasoning_notes": "Instant-speed creature bounce-to-library creates a strong time walk, denying draws and resetting the threat."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Single-creature answer that cleanly handles attackers or key threats, fitting reactive control shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

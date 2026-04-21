@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b4540f6a-bec8-4942-aebe-d3285b8a8134",
+  "name": "Battlewise Valor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Cheap instant pump for one attacker/blocker; +2/+2 until EOT with minor scry rider is classic combat-trick play pattern."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "Can swing combat and preserve board presence efficiently, but its main identity is still a combat trick rather than broad tempo."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant-speed +2/+2 to a target creature is a textbook combat trick; scry 1 is minor selection attached to that play pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

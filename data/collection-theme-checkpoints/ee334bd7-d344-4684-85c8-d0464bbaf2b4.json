@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ee334bd7-d344-4684-85c8-d0464bbaf2b4",
+  "name": "Tormented Soul",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Can't be blocked makes it a pure evasive attacker and reliable combat-damage enabler."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Cheap unblockable body is a classic carrier for Auras, Equipment, and combat-damage buffs."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "One-mana creature that attacks every turn, but its main identity is evasion rather than rate."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

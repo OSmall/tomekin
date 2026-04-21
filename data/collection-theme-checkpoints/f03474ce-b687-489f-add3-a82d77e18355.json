@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f03474ce-b687-489f-add3-a82d77e18355",
+  "name": "Coral Barrier",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "ETB creates a 1/1 Squid token; the card's main deckbuilding relevance is adding bodies for token-based plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "ETB creates a 1/1 Squid token; the card's main deckbuilding relevance is adding bodies for token-based plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6f5b6cba-3b57-4e6a-afa7-0cb62e5cc7d4",
+  "name": "Death Watch",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Aura enchantment that must attach to a creature; its gameplay use is primarily as an Aura-based death trigger piece."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "On enchanted creature's death, it drains life from that creature's controller and gains you life, directly fitting drain-lifegain plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Aura enchantment that must attach to a creature; its gameplay use is primarily as an Aura-based death trigger piece."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "On enchanted creature's death, it drains life from that creature's controller and gains you life, directly fitting drain-lifegain plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

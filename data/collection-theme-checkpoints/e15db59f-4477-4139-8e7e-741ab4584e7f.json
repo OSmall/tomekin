@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e15db59f-4477-4139-8e7e-741ab4584e7f",
+  "name": "Akroan Hoplite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Attack trigger scales with number of attacking creatures, rewarding swarming the board rather than single-creature combat."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.21,
+        "reasoning_notes": "Boros aggro overlap exists, but its text does not target itself, so this is only a weak adjacent fit."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.16,
+        "reasoning_notes": "Human Soldier typing can matter in tribal shells, but the rules text is not tribe-specific."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Attack trigger scales with your total attacking creatures, directly rewarding wide combat boards and swarm attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3b0694ff-aa92-4a2e-a366-69fdf5a57c4b",
+  "name": "Kazuul's Toll Collector",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Free sorcery-speed reattach of Equipment to itself is a dedicated Equipment payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Helps stack multiple Equipment onto one attacker, a classic Voltron play pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Free sorcery-speed reattach of Equipment to itself is a dedicated Equipment payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Helps stack multiple Equipment onto one attacker, a classic Voltron play pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

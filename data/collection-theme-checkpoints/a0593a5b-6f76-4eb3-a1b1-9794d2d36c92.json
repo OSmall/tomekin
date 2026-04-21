@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a0593a5b-6f76-4eb3-a1b1-9794d2d36c92",
+  "name": "Armed // Dangerous",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "A two-part sorcery built for combat: double strike/pump plus forced blocks to swing combat or engineer a favorable attack."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Both halves target a creature, so it can incidentally trigger heroic-style payoffs while advancing combat."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "Both halves are combat-focused targeted effects: pump plus double strike, or forced blocks to engineer a favorable attack. Heroic is only incidental, not a real theme tag here."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

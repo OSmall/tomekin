@@ -1,0 +1,30 @@
+{
+  "oracle_id": "de68a69a-0c4e-43b9-821d-2fe2269b5e48",
+  "name": "Mightstone's Animation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Only targets artifacts and turns one into a 4/4 body, making it a clear artifact-synergy support piece."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It is an Aura and plays like a cantripping modification spell, but its payoff is mainly tied to artifacts rather than Aura synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

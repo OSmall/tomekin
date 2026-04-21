@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c31801e6-2444-4158-8e19-2afe751d7cff",
+  "name": "Circle of Flame",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Punishes attacks from nonfliers, discouraging combat and helping stall the board defensively."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.47,
+        "reasoning_notes": "It is an enchantment, so it can slot into enchantment-synergy shells, though it does not reward them itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Repeatable attack deterrent that punishes nonflying attackers, mainly serving as anti-aggro board control."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It repeatedly deals damage to attacking creatures, but as defensive chip removal rather than a dedicated burn payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

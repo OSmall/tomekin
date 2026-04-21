@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9503c801-eb6f-4f34-9062-c56105509b7b",
+  "name": "Burn the Impure",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant that deals 3 to target creature; clean creature removal. Infect rider is narrow upside, not the main theme."
+      },
+      {
+        "primary": false,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Specifically hoses infect by also burning that creature's controller, making it light anti-infect interaction support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Two-mana instant that deals 3 damage to target creature; the infect clause is conditional hate text, not an infect/proliferate payoff or enabler."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

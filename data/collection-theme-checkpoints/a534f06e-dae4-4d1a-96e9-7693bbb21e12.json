@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a534f06e-dae4-4d1a-96e9-7693bbb21e12",
+  "name": "Zhalfirin Knight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Efficient evasive-in-combat attacker; flanking punishes blocks and activated first strike helps it attack profitably."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Efficient evasive-in-combat attacker; flanking punishes blocks and activated first strike helps it attack profitably."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

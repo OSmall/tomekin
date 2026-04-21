@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9d08af23-9f4a-4097-9abc-3b17475ab744",
+  "name": "Act of Treason",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Temporary steal plus untap/haste creates a swingy combat turn and short-term board advantage."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Threaten effect is a classic fodder-stealing setup for sacrifice decks to permanently convert the borrowed creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Temporary steal plus untap/haste creates a swingy combat turn and short-term board advantage."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Threaten effect is a classic fodder-stealing setup for sacrifice decks to permanently convert the borrowed creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

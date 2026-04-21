@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f3817f63-7bde-46c5-93cb-b4756f5f821e",
+  "name": "Gothmog, Morgul Lieutenant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "ETB amass Orcs 1 creates or upgrades an Army token, and it grants all creature tokens deathtouch."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Amass adds +1/+1 counters to an Army, but the card mainly supports token play rather than a dedicated counters plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "ETB amass Orcs 1 creates or upgrades an Army token, and it grants all creature tokens deathtouch."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Amass adds +1/+1 counters to an Army, but the card mainly supports token play rather than a dedicated counters plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

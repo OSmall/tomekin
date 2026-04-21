@@ -1,0 +1,37 @@
+{
+  "oracle_id": "43c449d1-51a9-45e0-8102-823a6811ff54",
+  "name": "Benthic Giant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "A 6-mana 4/5 with hexproof is mainly a hard-to-answer top-end creature, not a synergy piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Large hexproof body with no synergy text; it functions as a resilient top-end threat rather than a theme-specific enabler."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

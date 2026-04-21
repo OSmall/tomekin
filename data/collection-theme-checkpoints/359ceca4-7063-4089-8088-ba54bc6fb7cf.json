@@ -1,0 +1,35 @@
+{
+  "oracle_id": "359ceca4-7063-4089-8088-ba54bc6fb7cf",
+  "name": "Fatal Fumes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant gives a creature -4/-2 until end of turn; this is straightforward creature removal interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Instant gives a creature -4/-2 until end of turn; this is straightforward creature removal interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

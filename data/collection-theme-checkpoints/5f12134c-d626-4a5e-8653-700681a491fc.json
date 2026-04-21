@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5f12134c-d626-4a5e-8653-700681a491fc",
+  "name": "Ancient Silverback",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Large 6/5 body with self-regeneration; mainly a resilient curve-top creature for creature-based midrange decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Large 6/5 body with self-regeneration; mainly a resilient curve-top creature for creature-based midrange decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

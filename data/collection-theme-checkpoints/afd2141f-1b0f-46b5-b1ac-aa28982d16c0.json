@@ -1,0 +1,39 @@
+{
+  "oracle_id": "afd2141f-1b0f-46b5-b1ac-aa28982d16c0",
+  "name": "Wall of Mulch",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "0/4 with defender is built to block efficiently; its baseline role is board defense."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Pays G and sacrifices a Wall to repeatedly convert spare Walls into cards."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Its activated ability specifically rewards a Wall-heavy deck, giving minor typal synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

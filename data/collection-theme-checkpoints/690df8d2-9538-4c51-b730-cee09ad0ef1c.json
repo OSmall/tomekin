@@ -1,0 +1,71 @@
+{
+  "oracle_id": "690df8d2-9538-4c51-b730-cee09ad0ef1c",
+  "name": "Sphinx of the Chimes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "card advantage / deck construction",
+        "theme": "name matters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability specifically rewards duplicate nonland names by converting them into a large draw burst."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Discarding two matching nonland cards draws four, making the card a repeatable draw engine if enabled."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Flying gives it relevant evasive board presence, but that is secondary to the duplicate-name draw ability."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "card advantage / deck construction",
+        "theme": "name matters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated ability specifically rewards duplicate nonland names by converting them into a large draw burst."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Discarding two matching nonland cards draws four, making the card a repeatable draw engine if enabled."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Flying gives it relevant evasive board presence, but that is secondary to the duplicate-name draw ability."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

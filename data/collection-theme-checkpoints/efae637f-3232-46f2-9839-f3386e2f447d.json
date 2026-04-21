@@ -1,0 +1,57 @@
+{
+  "oracle_id": "efae637f-3232-46f2-9839-f3386e2f447d",
+  "name": "Akoum Flameseeker",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Cohort explicitly needs another Ally, making it a dedicated Ally-tribal synergy piece rather than a generic rummager."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Its activated rummage asks you to discard first, giving minor discard-synergy support alongside card selection."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Cohort requires tapping another Ally, so it functions mainly as an Ally-tribal synergy piece rather than a standalone rummager."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It discards as part of a rummage ability, giving light discard-synergy support, but that theme is clearly secondary."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

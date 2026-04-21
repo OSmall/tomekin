@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c35f4b80-90b6-467a-a666-1cc3437d49ab",
+  "name": "Jeskai Windscout",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Built-in prowess directly rewards casting noncreature spells; a classic spells-matter evasive threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Flying gives reliable evasion, helping its prowess boosts convert into combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Built-in prowess directly rewards casting noncreature spells; a classic spells-matter evasive threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Flying gives reliable evasion, helping its prowess boosts convert into combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

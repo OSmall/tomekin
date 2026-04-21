@@ -1,0 +1,39 @@
+{
+  "oracle_id": "29233aa4-3fa0-4074-ad0f-c8e7101052f3",
+  "name": "Armored Warhorse",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.31,
+        "reasoning_notes": "Vanilla creature with only a Horse subtype as a deckbuilding hook; no rules text points to other themes."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Only meaningful deckbuilding hook is the Horse creature type; blank oracle text and vanilla stats do not point to another theme."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

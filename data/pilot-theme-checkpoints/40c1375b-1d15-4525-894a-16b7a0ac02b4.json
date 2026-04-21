@@ -1,0 +1,35 @@
+{
+  "oracle_id": "40c1375b-1d15-4525-894a-16b7a0ac02b4",
+  "name": "Renowned Weaponsmith",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Taps for {C}{C} restricted to artifact casts/activations, making it dedicated artifact ramp and support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Taps for {C}{C} restricted to artifact casts/activations, making it dedicated artifact ramp and support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

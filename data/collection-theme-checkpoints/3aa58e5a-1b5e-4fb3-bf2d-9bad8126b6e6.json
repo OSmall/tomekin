@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3aa58e5a-1b5e-4fb3-bf2d-9bad8126b6e6",
+  "name": "Keepsake Gorgon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Becoming monstrous destroys a target non-Gorgon creature, making this a removal-on-body card."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Monstrosity puts a +1/+1 counter on it, but the card is not chiefly a counters payoff or engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Deathtouch plus attached creature removal fits slower control shells as defensive interaction."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

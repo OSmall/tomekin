@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bf3b7489-e9d6-4b3c-9fb8-3bb727584db9",
+  "name": "Dross Ripper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Artifact creature with no stronger mechanical hook; mostly fits generic artifact-synergy shells."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Repeatable pump can pressure in combat, but rate is weak and not a defining aggro card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Type line is Artifact Creature, and its text does not point to a narrower synergy beyond generic artifact-matters shells."
+      },
+      {
+        "primary": false,
+        "category": "mana / activated abilities",
+        "theme": "mana sink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "It has a repeatable pump ability that converts excess mana into combat stats, which is a modest but real mana-sink role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

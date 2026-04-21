@@ -1,0 +1,57 @@
+{
+  "oracle_id": "28f0765a-de09-4be3-b952-aee75b9ede03",
+  "name": "Fascination",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Mode directly mills each player for X, making it a scalable mill piece and occasional self-mill enabler."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Alternate mode is a symmetric X-card draw effect, useful mainly in decks that want mass card draw support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "One mode is scalable symmetric mill for X; that is a real mill enabler, though not an especially dedicated payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "Alternate mode gives each player X cards, so it can function as symmetric mass draw support more than a focused draw payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

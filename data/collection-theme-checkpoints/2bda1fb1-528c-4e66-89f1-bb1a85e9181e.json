@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2bda1fb1-528c-4e66-89f1-bb1a85e9181e",
+  "name": "Darksteel Relic",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Zero-mana indestructible artifact chiefly exists to count for artifact synergies like affinity, metalcraft, improvise, and sacrifice fodder."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Zero-mana indestructible artifact chiefly exists to count for artifact synergies like affinity, metalcraft, improvise, and sacrifice fodder."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

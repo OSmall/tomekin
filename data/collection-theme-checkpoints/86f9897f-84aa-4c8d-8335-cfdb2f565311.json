@@ -1,0 +1,39 @@
+{
+  "oracle_id": "86f9897f-84aa-4c8d-8335-cfdb2f565311",
+  "name": "Rescue Retriever",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB boosts each other Soldier and shields attacking Soldiers, making it a clear Soldier-tribal payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Enters and puts a +1/+1 counter on each other Soldier you control, rewarding an established board."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Flash plus team damage prevention lets it act as an ambush-style combat blowout for attacking Soldiers."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "43a515f2-b53a-4bb4-bb6e-0d79c9162359",
+  "name": "Giant Caterpillar",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "Activated ability sacrifices itself, making it a built-in sac outlet body for death/sacrifice synergies."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "Leaves behind a delayed 1/1 Butterfly token, giving minor token synergy value."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "The created Butterfly token has flying, but evasive payoff is incidental rather than central."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

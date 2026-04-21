@@ -1,0 +1,53 @@
+{
+  "oracle_id": "34161ec4-5d99-45e6-b43c-c8d28958660a",
+  "name": "Treasury Thrull",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Attack trigger regrows artifact, creature, or enchantment from your graveyard to hand, making it a repeatable recursion engine."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life as you cast spells, but it is secondary to the recursion text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Attack trigger regrows artifact, creature, or enchantment from your graveyard to hand, making it a repeatable recursion engine."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life as you cast spells, but it is secondary to the recursion text."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "a01491b7-89c8-4d6e-a516-431440ff3e88",
+  "name": "Cunning Strike",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Cheap-ish instant that interacts and replaces itself, a classic noncreature spell for Izzet spell-count decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Deals 2 to target creature at instant speed; efficient enough as small-creature interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Cantrips on resolution, helping spell-density decks keep cards flowing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Cheap-ish instant that interacts and replaces itself, a classic noncreature spell for Izzet spell-count decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Deals 2 to target creature at instant speed; efficient enough as small-creature interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Cantrips on resolution, helping spell-density decks keep cards flowing."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

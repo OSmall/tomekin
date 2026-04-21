@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2636aafa-83f9-4b72-b729-04e1c3aa0eec",
+  "name": "Spider Climb",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Aura that enchants a creature; primarily slots into aura/enchantress-style decks as cheap protection/combat utility."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "Grants reach and +0/+3, mainly helping a creature block fliers and ambush them at instant speed."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Flash-like timing lets it function as a temporary combat ambush when cast outside sorcery speed."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0a56e2ad-684d-45a7-9145-479d1505bba2",
+  "name": "Adaptive Snapjaw",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.96,
+        "reasoning_notes": "Evolve repeatedly places +1/+1 counters on itself when larger creatures enter, making it a clear counters-synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.96,
+        "reasoning_notes": "Evolve repeatedly places +1/+1 counters on itself when larger creatures enter, making it a clear counters-synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

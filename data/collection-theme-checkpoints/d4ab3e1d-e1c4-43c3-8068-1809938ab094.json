@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d4ab3e1d-e1c4-43c3-8068-1809938ab094",
+  "name": "Friendly Fire",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Instant targets a creature and deals damage to it; random hand reveal only sets damage size, so it mainly functions as removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "Also deals the same damage to that creature's controller, giving it incidental face-damage reach alongside removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

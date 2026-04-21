@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8d0213d7-9e25-49d2-93fa-1d346cb2e869",
+  "name": "Akroan Horse",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.91,
+        "reasoning_notes": "Its upkeep trigger repeatedly creates 1/1 Soldier tokens for the Horse controller's opponents, making it a dedicated token engine."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.97,
+        "reasoning_notes": "It's an Artifact Creature, so it naturally fits artifact-matters shells, but its gameplay identity is more token-focused."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Artifact creature with no artifact-matters text; artifact shells can play it, but its Oracle text does not reward artifact synergies directly."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "It repeatedly creates Soldier tokens, but for opponents on your upkeep, so this is token production without typical token-deck payoff alignment."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

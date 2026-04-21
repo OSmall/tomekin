@@ -1,0 +1,57 @@
+{
+  "oracle_id": "4b63bf36-cd0e-41d8-b0ca-aac459d91f3f",
+  "name": "Flensermite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Infect is the card's defining keyword and primary deckbuilding home; it advances poison kills directly."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Lifelink gives incidental life gain, but it's secondary to the infect plan and not a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Infect is the defining keyword and clear deckbuilding home; it directly advances poison kills."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Lifelink provides real but incidental life gain; it supports racing without making this a lifegain-focused card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

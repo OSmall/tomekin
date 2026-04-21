@@ -1,0 +1,30 @@
+{
+  "oracle_id": "223c97fb-dc96-41ba-be9d-bad9b5e4876f",
+  "name": "Returned Centaur",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB makes any target player mill four; the card directly advances self-mill or opponent-mill plans."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It can target its controller, giving black graveyard decks a small self-stock option on ETB."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "cd583365-27cc-4170-b138-4b3dd0d842b6",
+  "name": "Ambush Paratrooper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Team pump activated ability rewards going wide; flash flier is a modest board-wide anthem outlet."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Flash lets it function as surprise ambush/blocker, though the main deckbuilding pull is team-wide pump."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Repeatable team pump rewards having multiple creatures; effect scales with a wide board more than with tokens specifically."
+      },
+      {
+        "primary": false,
+        "category": "mana / activated abilities",
+        "theme": "mana sink",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "The {5} activation gives late-game utility, letting excess mana convert into incremental combat pressure."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

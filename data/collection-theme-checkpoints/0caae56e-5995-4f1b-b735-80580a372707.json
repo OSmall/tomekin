@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0caae56e-5995-4f1b-b735-80580a372707",
+  "name": "Armored Transport",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Colorless artifact creature with no stronger archetype hook; it mainly contributes as an artifact-body for artifact synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Colorless artifact creature with no stronger archetype hook; it mainly contributes as an artifact-body for artifact synergies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

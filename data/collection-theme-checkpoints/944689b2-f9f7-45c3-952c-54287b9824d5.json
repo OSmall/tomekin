@@ -1,0 +1,66 @@
+{
+  "oracle_id": "944689b2-f9f7-45c3-952c-54287b9824d5",
+  "name": "Acolyte's Reward",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Instant-speed damage prevention that can swing combat, then reflect that damage to any target."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Can convert prevented damage into creature damage, sometimes functioning as reactive removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Instant-speed prevention can win combat, and prevented damage is redirected to any target for a reactive blowout."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "devotion",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Its prevention and damage output scale directly with your devotion to white, making it a modest devotion payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "If enough damage is prevented, the reflected damage can kill a creature, but only in reactive damage-based spots."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

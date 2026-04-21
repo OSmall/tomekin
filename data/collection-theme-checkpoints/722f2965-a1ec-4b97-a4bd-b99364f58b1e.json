@@ -1,0 +1,71 @@
+{
+  "oracle_id": "722f2965-a1ec-4b97-a4bd-b99364f58b1e",
+  "name": "Return to the Earth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Single-target instant removal, though restricted to artifact, enchantment, or flying creature targets."
+      },
+      {
+        "primary": false,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Explicitly destroys target enchantment, making it a clean enchantment-answer option."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Can answer a creature with flying at instant speed, directly punishing evasive threats."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Single-target instant removal, though restricted to artifact, enchantment, or flying creature targets."
+      },
+      {
+        "primary": false,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Explicitly destroys target enchantment, making it a clean enchantment-answer option."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Can answer a creature with flying at instant speed, directly punishing evasive threats."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

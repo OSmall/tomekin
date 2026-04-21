@@ -1,0 +1,53 @@
+{
+  "oracle_id": "af199b80-d5d8-417a-97d5-459a5bd48b22",
+  "name": "Prescient Chimera",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Triggers on each instant or sorcery cast, rewarding spellslinger play with repeatable scry 1."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "A 3/4 flyer provides incidental airborne pressure and blocks well in blue tempo or spells decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Triggers on each instant or sorcery cast, rewarding spellslinger play with repeatable scry 1."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "A 3/4 flyer provides incidental airborne pressure and blocks well in blue tempo or spells decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

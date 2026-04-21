@@ -1,0 +1,71 @@
+{
+  "oracle_id": "3c334eb3-e3fd-45b0-a36d-4681c9e72ac5",
+  "name": "Incursion Specialist",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on your second spell each turn, rewarding spell chaining with a temporary power boost and unblockable pressure."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Its second-spell trigger grants can't be blocked, making evasion a consistent part of its combat role."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "Becoming unblockable after double-spelling supports evasive damage patterns typical of low-curve tempo decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on your second spell each turn, rewarding spell chaining with a temporary power boost and unblockable pressure."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Its second-spell trigger grants can't be blocked, making evasion a consistent part of its combat role."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "Becoming unblockable after double-spelling supports evasive damage patterns typical of low-curve tempo decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

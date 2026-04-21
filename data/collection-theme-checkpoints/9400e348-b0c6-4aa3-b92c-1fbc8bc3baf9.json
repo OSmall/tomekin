@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9400e348-b0c6-4aa3-b92c-1fbc8bc3baf9",
+  "name": "Frost Lynx",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB taps a blocker and denies untap for a turn cycle, creating a classic blue time-walk style board-tempo swing."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.41,
+        "reasoning_notes": "Temporary tap-down can help attackers get through, but the card itself has no evasive keyword or dedicated evasion text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

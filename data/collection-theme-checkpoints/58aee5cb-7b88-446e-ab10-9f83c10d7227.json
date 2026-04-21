@@ -1,0 +1,30 @@
+{
+  "oracle_id": "58aee5cb-7b88-446e-ab10-9f83c10d7227",
+  "name": "Lightning Elemental",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Cheap-ish red haste body with 4 power; built to pressure life totals immediately in aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.53,
+        "reasoning_notes": "Haste can convert mana into immediate pressure, but it offers no disruption or board control on its own."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

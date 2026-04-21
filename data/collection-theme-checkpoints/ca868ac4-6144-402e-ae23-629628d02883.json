@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ca868ac4-6144-402e-ae23-629628d02883",
+  "name": "Kiln Walker",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Self-buffs on attack, turning a 3-mana 0/3 into a 3-power attacker suited to straightforward aggressive combat."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Its artifact creature type gives it incidental relevance in artifact-count and artifact-synergy shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

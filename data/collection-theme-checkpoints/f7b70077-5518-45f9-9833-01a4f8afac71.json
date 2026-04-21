@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f7b70077-5518-45f9-9833-01a4f8afac71",
+  "name": "Mortal Wound",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura-based creature removal; once the creature is dealt any damage, it is destroyed."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "It is an Aura and can fit enchantment/Aura-count strategies, though its main job is removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4a4f6e85-df16-49a4-8fc6-149a28c2cb42",
+  "name": "Vanguard of Brimaz",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Heroic and directly rewards targeting it with token generation, making it a clear heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Repeatedly creates 1/1 Cat Soldier tokens whenever targeted by your spells, giving steady token production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Has Heroic and directly rewards targeting it with token generation, making it a clear heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Repeatedly creates 1/1 Cat Soldier tokens whenever targeted by your spells, giving steady token production."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

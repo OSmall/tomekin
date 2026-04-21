@@ -1,0 +1,46 @@
+{
+  "oracle_id": "698f3526-489e-47a1-ac10-70cca73dea10",
+  "name": "Bleak Coven Vampires",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Metalcraft ETB checks for three artifacts, making it a direct reward for artifact-heavy decks."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "ETB causes a 4-point life drain swing, but only as a conditional rider rather than a dedicated lifegain engine."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Metalcraft directly rewards controlling three or more artifacts; the life-drain trigger is conditional artifact payoff, not a lifegain theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

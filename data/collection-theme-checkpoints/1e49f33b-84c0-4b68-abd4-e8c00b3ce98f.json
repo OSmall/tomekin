@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1e49f33b-84c0-4b68-abd4-e8c00b3ce98f",
+  "name": "Viashino Shanktail",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Bloodrush turns it into an instant-speed attack pump granting +3/+1 and first strike to an attacker."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Efficiently supports attacking lines as either a 3/1 first striker or an offensive bloodrush finisher."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Bloodrush turns it into an instant-speed attack pump granting +3/+1 and first strike to an attacker."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Efficiently supports attacking lines as either a 3/1 first striker or an offensive bloodrush finisher."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

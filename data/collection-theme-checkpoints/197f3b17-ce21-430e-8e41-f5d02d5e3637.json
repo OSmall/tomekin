@@ -1,0 +1,35 @@
+{
+  "oracle_id": "197f3b17-ce21-430e-8e41-f5d02d5e3637",
+  "name": "Wasteland Strangler",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB can give target creature -3/-3 if you process an opponent's exiled card; primarily a conditional removal creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB can give target creature -3/-3 if you process an opponent's exiled card; primarily a conditional removal creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

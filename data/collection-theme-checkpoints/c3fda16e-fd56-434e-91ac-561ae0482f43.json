@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c3fda16e-fd56-434e-91ac-561ae0482f43",
+  "name": "Staff of the Death Magus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeated life gain from casting black spells and Swamps entering makes it a straightforward lifegain engine."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "swamps matter",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It specifically rewards Swamps entering the battlefield, giving minor payoff for Swamp-heavy manabases."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeated life gain from casting black spells and Swamps entering makes it a straightforward lifegain engine."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "swamps matter",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It specifically rewards Swamps entering the battlefield, giving minor payoff for Swamp-heavy manabases."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

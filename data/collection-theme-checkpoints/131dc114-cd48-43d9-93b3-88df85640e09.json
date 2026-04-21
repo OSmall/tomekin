@@ -1,0 +1,35 @@
+{
+  "oracle_id": "131dc114-cd48-43d9-93b3-88df85640e09",
+  "name": "Arrow Volley Trap",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Divided damage to target attacking creatures is reactive creature removal, especially against combat or wide attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Divided damage to target attacking creatures is reactive creature removal, especially against combat or wide attacks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5ba04e0d-a3eb-448d-8a97-08c155ef9694",
+  "name": "Breaching Hippocamp",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Flash plus ETB untap enables surprise attacks/blocks and hold-up play, fitting reactive tempo shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Untapping another creature at instant speed can ambush attackers or create unexpected combat lines."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Flash plus ETB untap rewards holding mana up and creates swingy end-step or combat repositioning lines typical of tempo play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Untapping another creature at instant speed can ambush attackers or enable an unexpected blocker, but that mode is narrower than its tempo use."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

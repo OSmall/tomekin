@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d011153e-d12a-4eb1-b105-64729e37be12",
+  "name": "Ondu War Cleric",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeatable 2-life gain from Cohort makes it a clear lifegain enabler if you have another Ally."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Cohort specifically requires tapping another Ally, so it plays best in Ally tribal shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

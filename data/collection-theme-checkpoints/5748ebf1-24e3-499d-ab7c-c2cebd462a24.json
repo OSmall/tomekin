@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+  "name": "Giant Growth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "One-mana instant that gives +3/+3 until EOT; a textbook pump spell used to win combat or push damage."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

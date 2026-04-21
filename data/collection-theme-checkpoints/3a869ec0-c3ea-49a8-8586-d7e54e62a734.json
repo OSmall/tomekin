@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3a869ec0-c3ea-49a8-8586-d7e54e62a734",
+  "name": "Daily Regimen",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Activated ability repeatedly adds +1/+1 counters to the enchanted creature, making it a dedicated counters engine."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "It is an Aura and only functions by enchanting a creature, so it naturally fits Aura-focused shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Activated ability repeatedly adds +1/+1 counters to the enchanted creature, making it a dedicated counters engine."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "It is an Aura and only functions by enchanting a creature, so it naturally fits Aura-focused shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

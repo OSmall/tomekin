@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bce18f34-848e-4dd2-9a38-6084c0695f78",
+  "name": "Voyaging Satyr",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap mana creature analogue; tapping to untap a land accelerates mana, especially with lands that tap for extra mana."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Works better with high-output or utility lands, but it does not directly reward land count or landfall."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

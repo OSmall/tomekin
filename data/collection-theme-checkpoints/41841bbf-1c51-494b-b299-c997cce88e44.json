@@ -1,0 +1,39 @@
+{
+  "oracle_id": "41841bbf-1c51-494b-b299-c997cce88e44",
+  "name": "Turn // Burn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Fuse lets Turn shrink/blank a creature, and Turn+Burn cleanly kills most creatures as a flexible removal spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "Burn half deals 2 to any target, giving incidental reach and small-target removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Turn strips abilities and reduces stats until end step, enabling temporary blowouts even without fusing."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "1498f5a1-6df7-4f80-9470-c93528b64a9c",
+  "name": "Deadbridge Goliath",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Scavenge converts this card in graveyard into a large batch of +1/+1 counters, making it a direct counters payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "A 4-mana 5/5 is a straightforward oversized body that pressures well in creature-based midrange shells."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.33,
+        "reasoning_notes": "It uses the graveyard as a resource, but does not return cards; this is only a weak graveyard-adjacent theme."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Scavenge turns it from the graveyard into five +1/+1 counters on another creature, a direct counters enabler with strong rate."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "A 4-mana 5/5 is an efficient standalone body, but that rate is secondary to its counters role rather than a strong theme pull."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

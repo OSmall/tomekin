@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5b2364d7-a811-4595-a1b4-224c70555ffa",
+  "name": "Raise the Alarm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instantly creates two 1/1 Soldier creature tokens; a clean token-production enabler."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Puts multiple bodies onto the battlefield efficiently, supporting wide-board combat plans."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

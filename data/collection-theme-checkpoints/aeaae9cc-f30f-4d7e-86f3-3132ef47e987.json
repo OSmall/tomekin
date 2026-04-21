@@ -1,0 +1,53 @@
+{
+  "oracle_id": "aeaae9cc-f30f-4d7e-86f3-3132ef47e987",
+  "name": "Molten Birth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates two Elemental tokens and can rebuy itself on a won coin flip for repeat token production."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Makes multiple bodies from one card, supporting swarm combat plans even without an explicit anthem."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Creates two Elemental tokens and can rebuy itself on a won coin flip for repeat token production."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Makes multiple bodies from one card, supporting swarm combat plans even without an explicit anthem."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

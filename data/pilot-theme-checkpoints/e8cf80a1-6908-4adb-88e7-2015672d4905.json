@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e8cf80a1-6908-4adb-88e7-2015672d4905",
+  "name": "Karametra's Acolyte",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Tap ability makes green mana equal to devotion to green, scaling from board presence into strong mana acceleration."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "High-devotion decks can turn this into explosive multi-mana production for large spells and sink turns."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Repeatable tap ability converts green devotion into multiple green mana, making it a clear devotion-based mana accelerant."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "In heavy-green permanent shells, devotion scaling can generate explosive amounts of mana for top-end plays."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

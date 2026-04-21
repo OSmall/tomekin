@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1ad604ed-c645-4f94-8c5f-8e0ce66a85ff",
+  "name": "Felhide Petrifier",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Explicit Minotaur lord: grants all other Minotaurs deathtouch, strongly supporting Minotaur tribal decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Explicit Minotaur lord: grants all other Minotaurs deathtouch, strongly supporting Minotaur tribal decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

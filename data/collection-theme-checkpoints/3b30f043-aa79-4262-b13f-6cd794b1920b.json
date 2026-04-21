@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3b30f043-aa79-4262-b13f-6cd794b1920b",
+  "name": "Surge Node",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap artifact that specifically supports artifact-based boards by moving charge counters onto other artifacts."
+      },
+      {
+        "primary": false,
+        "category": "counters / artifacts",
+        "theme": "charge counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Enters with six charge counters and repeatedly transfers them to target artifacts, enabling charge-counter synergies."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "charge counters"
+    ]
+  }
+}

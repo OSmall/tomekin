@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0b2e7c1a-dc07-4138-a560-dc80fa723860",
+  "name": "Rock Slide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "X spell that divides damage across attacking/blocking creatures; scalable red combat removal, not face damage."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Can only target creatures without flying, making it specifically anti-ground in combat."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Removes creatures via damage, though only in combat and only nonfliers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

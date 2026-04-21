@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0715167b-00b1-45a4-94a0-60d4097a1428",
+  "name": "Rakdos Drake",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Flying makes it an evasive creature; this is the clearest deckbuilding fit."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Unleash can place a +1/+1 counter on entry, giving minor counters synergy support."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Unleash trades blocking for extra power, nudging it toward aggressive attacking shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

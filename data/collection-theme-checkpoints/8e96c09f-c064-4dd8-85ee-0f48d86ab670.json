@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8e96c09f-c064-4dd8-85ee-0f48d86ab670",
+  "name": "Golem Foundry",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on casting artifact spells and converts repeated artifact play into artifact creature bodies."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Banks charge counters, then repeatedly turns them into 3/3 Golem artifact creature tokens."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on casting artifact spells and converts repeated artifact play into artifact creature bodies."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Banks charge counters, then repeatedly turns them into 3/3 Golem artifact creature tokens."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

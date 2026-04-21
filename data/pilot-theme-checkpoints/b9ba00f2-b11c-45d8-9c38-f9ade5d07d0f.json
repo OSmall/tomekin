@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b9ba00f2-b11c-45d8-9c38-f9ade5d07d0f",
+  "name": "Elusive Spellfist",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Triggers on every noncreature spell, turning spell density into repeatable combat pressure and evasion."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.7,
+        "reasoning_notes": "Unblockable-on-cast rewards cheap spells and helps convert tempo plays into evasive damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Directly rewards casting noncreature spells with repeatable power boost and unblockability, making it a clear spell-matter payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

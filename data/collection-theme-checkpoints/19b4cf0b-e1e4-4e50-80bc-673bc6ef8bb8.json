@@ -1,0 +1,35 @@
+{
+  "oracle_id": "19b4cf0b-e1e4-4e50-80bc-673bc6ef8bb8",
+  "name": "Yoked Ox",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "A 0/4 for {W} with no abilities is a pure early blocker, fitting defensive-creature shells over proactive combat plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "A 0/4 for {W} with no abilities is a pure early blocker, fitting defensive-creature shells over proactive combat plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

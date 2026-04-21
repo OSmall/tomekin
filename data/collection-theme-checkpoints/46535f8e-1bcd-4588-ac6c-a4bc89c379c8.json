@@ -1,0 +1,55 @@
+{
+  "oracle_id": "46535f8e-1bcd-4588-ac6c-a4bc89c379c8",
+  "name": "Abzan Banner",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Three-mana rock that taps for W/B/G; its main deckbuilding role is fixing Abzan colors."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Has a built-in sacrifice ability to cash in for one card later, but that mode is secondary."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "ramp",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Three-mana artifact taps for W/B/G only; its defining deck role is Abzan color fixing from a rock slot."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Has a late-game cash-in mode, but paying WBG, tapping, and sacrificing for one card makes draw clearly secondary."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9dd755a5-0bef-4bde-92fa-14ef2a1a1410",
+  "name": "Dunland Crebain",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Has flying and provides an evasive body, but its ETB mostly adds board material rather than pure evasion payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Amass Orcs 2 can create an Orc Army token or grow one, making it a modest token-producing ETB."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Has flying and provides an evasive body, but its ETB mostly adds board material rather than pure evasion payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "Amass Orcs 2 can create an Orc Army token or grow one, making it a modest token-producing ETB."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

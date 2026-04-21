@@ -1,0 +1,46 @@
+{
+  "oracle_id": "98f9619e-585f-486f-b143-fb42085eb583",
+  "name": "Blood-Toll Harpy",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Has flying on a cheap creature body; its main deckbuilding relevance is as an evasive creature."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "ETB makes each player lose 1 life, a minor symmetrical drain effect that can matter in drain shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "A 2/1 creature with flying; its clearest deckbuilding relevance is as a cheap evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

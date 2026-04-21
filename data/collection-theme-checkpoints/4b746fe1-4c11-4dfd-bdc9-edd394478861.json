@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4b746fe1-4c11-4dfd-bdc9-edd394478861",
+  "name": "Pyxis of Pandemonium",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Type line is Artifact, and its repeatable activated ability mainly suits artifact-centric shells more than a narrower named theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Type line is Artifact, and its repeatable activated ability mainly suits artifact-centric shells more than a narrower named theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

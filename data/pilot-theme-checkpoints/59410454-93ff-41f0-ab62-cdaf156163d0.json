@@ -1,0 +1,35 @@
+{
+  "oracle_id": "59410454-93ff-41f0-ab62-cdaf156163d0",
+  "name": "Sultai Runemark",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura payoff piece: directly rewards Aura synergies while providing a sizable buff and conditional deathtouch."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura payoff piece: directly rewards Aura synergies while providing a sizable buff and conditional deathtouch."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

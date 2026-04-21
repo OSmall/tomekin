@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c8f958da-3a31-4064-9a78-66e9b65b85ab",
+  "name": "Dutiful Return",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery regrows up to two creature cards from your graveyard to hand; direct creature-recursion support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery regrows up to two creature cards from your graveyard to hand; direct creature-recursion support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1d4605c0-47c5-4561-ab53-9cff677330aa",
+  "name": "Warriors' Lesson",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Combat-damage rider turns one or two attackers into card advantage for a turn; primarily a cheap conditional draw spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Instant-speed combat setup rewards getting creatures through, though it grants no stat boost or removal."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Best in decks attacking with evasive or early creatures, where connecting in combat is reliable."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

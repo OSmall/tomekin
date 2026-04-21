@@ -1,0 +1,75 @@
+{
+  "oracle_id": "0cdc86c4-8c68-4ba6-8165-511f32156a4c",
+  "name": "Ember Swallower",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Monstrosity costs 7 mana and converts excess mana into a major resource-denial endgame swing."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Monstrosity 3 places three +1/+1 counters on Ember Swallower when activated."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Its monstrous trigger forces each player to sacrifice three lands, a symmetrical sacrifice effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Its defining payoff is the monstrous trigger forcing each player to sacrifice three lands, a classic mass land-denial effect."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Monstrosity 3 explicitly adds three +1/+1 counters, but that counter theme is incidental to the card's main use."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "A seven-mana activation means it plays better in shells that can generate excess mana, though it is not itself a mana payoff theme card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

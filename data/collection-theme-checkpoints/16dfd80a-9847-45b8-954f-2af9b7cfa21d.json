@@ -1,0 +1,71 @@
+{
+  "oracle_id": "16dfd80a-9847-45b8-954f-2af9b7cfa21d",
+  "name": "Roc Egg",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Defender and 0/3 body make it a dedicated blocker that stabilizes early combat."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Dies into a 3/3 Bird token, giving it a clear token-production angle."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "The death trigger makes a 3/3 Bird with flying, lightly supporting flying-based plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Defender and 0/3 body make it a dedicated blocker that stabilizes early combat."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Dies into a 3/3 Bird token, giving it a clear token-production angle."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "The death trigger makes a 3/3 Bird with flying, lightly supporting flying-based plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f009ef70-d718-45cf-bb22-e560484bbfe5",
+  "name": "Rite of the Serpent",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery-speed destroy target creature is straightforward creature removal."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Its token rider specifically checks whether the destroyed creature had a +1/+1 counter."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "It can create a 1/1 Snake token as incidental value when the counter condition is met."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

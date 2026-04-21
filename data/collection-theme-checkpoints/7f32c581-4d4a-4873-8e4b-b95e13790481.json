@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7f32c581-4d4a-4873-8e4b-b95e13790481",
+  "name": "Phantasmal Dragon",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Efficient 5/5 flyer for four mana; its main deck role is as an evasive aerial threat despite the Illusion drawback."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Cheap oversized evasive body fits blue tempo shells that pressure quickly, though it offers no direct tempo effect itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

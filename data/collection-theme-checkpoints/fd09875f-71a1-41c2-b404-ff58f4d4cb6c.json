@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fd09875f-71a1-41c2-b404-ff58f4d4cb6c",
+  "name": "Triad of Fates",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.92,
+        "reasoning_notes": "Fate counters set up repeatable exile-and-return of creatures, making it a dedicated blink engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Its black tap ability exiles a fate-marked creature outright, functioning as repeatable removal with a card-draw drawback."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Tap abilities let it manage marked creatures over time, fitting slow board-control shells more than proactive combat plans."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

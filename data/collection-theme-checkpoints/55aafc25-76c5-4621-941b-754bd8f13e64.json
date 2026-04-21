@@ -1,0 +1,21 @@
+{
+  "oracle_id": "55aafc25-76c5-4621-941b-754bd8f13e64",
+  "name": "Stalwart Shield-Bearers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Has defender and specifically buffs your other defender creatures with +0/+2, making it a clear wall/defender support piece."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

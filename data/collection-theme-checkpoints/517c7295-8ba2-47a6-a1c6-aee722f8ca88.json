@@ -1,0 +1,30 @@
+{
+  "oracle_id": "517c7295-8ba2-47a6-a1c6-aee722f8ca88",
+  "name": "Leonin Skyhunter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Efficient 2-mana 2/2 with flying; a clean curve play for white flying-creature decks."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Above-rate evasive body for early pressure, but no extra combat text beyond flying."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

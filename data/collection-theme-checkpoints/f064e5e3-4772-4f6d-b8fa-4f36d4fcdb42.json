@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f064e5e3-4772-4f6d-b8fa-4f36d4fcdb42",
+  "name": "Paragon of New Dawns",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Anthem for other white creatures and repeatable vigilance support fit white creature-based beatdown boards."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.69,
+        "reasoning_notes": "Static +1/+1 to your other white creatures rewards deploying multiple white creatures, even without making tokens itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

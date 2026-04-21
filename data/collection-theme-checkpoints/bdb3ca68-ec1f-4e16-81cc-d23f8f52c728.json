@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bdb3ca68-ec1f-4e16-81cc-d23f8f52c728",
+  "name": "Naturalize",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Efficient instant that answers artifacts or enchantments directly; classic narrow removal spell."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Specifically interacts with artifact permanents, making it relevant in artifact-heavy metas."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Also cleanly answers enchantments, so it serves as enchantment interaction rather than synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

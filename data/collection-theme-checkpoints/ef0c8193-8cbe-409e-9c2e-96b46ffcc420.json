@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ef0c8193-8cbe-409e-9c2e-96b46ffcc420",
+  "name": "Snake of the Golden Grove",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Tribute 3 can place three +1/+1 counters on entry, making it a plausible counters-synergy creature."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "If tribute isn't paid, it gains 4 life on ETB, giving it a small incidental lifegain mode."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

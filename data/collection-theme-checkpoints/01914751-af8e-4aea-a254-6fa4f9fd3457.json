@@ -1,0 +1,39 @@
+{
+  "oracle_id": "01914751-af8e-4aea-a254-6fa4f9fd3457",
+  "name": "Leafcrown Dryad",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Bestow lets it function as an Aura, granting +2/+2 and reach to one creature."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "It is an enchantment creature and Aura on bestow, so it naturally supports enchantment-count and constellation shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Bestow can act like a board-impacting stat boost in combat, though it is slower than typical tricks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2707f9f4-2b80-47ac-af0a-99fc53af94bf",
+  "name": "Retraction Helix",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "One-mana instant creates a temporary tap-to-bounce ability, mainly used to disrupt board development and gain tempo."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Cheap instant fits spell-dense shells, though its main identity is still bounce-based interaction rather than spell payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

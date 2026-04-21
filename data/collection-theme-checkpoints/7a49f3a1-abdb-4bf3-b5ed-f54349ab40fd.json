@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7a49f3a1-abdb-4bf3-b5ed-f54349ab40fd",
+  "name": "Skarrg Guildmage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatable team-wide trample activation makes it a clear trample enabler for combat-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "lands / utility lands",
+        "theme": "manland",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Its second ability repeatedly turns one of your lands into a 4/4 creature, fitting manland support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatable team-wide trample activation makes it a clear trample enabler for combat-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "lands / utility lands",
+        "theme": "manland",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Its second ability repeatedly turns one of your lands into a 4/4 creature, fitting manland support."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

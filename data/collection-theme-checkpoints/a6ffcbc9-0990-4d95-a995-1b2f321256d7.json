@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a6ffcbc9-0990-4d95-a995-1b2f321256d7",
+  "name": "Asphodel Wanderer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "Small recursive body with self-regeneration, but no clear synergy to canonical themes; mainly a low-impact sticky creature."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "A 1/1 for {B} with repeatable regeneration mainly plays as a sticky blocker, not a real midrange payoff or broader synergy piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

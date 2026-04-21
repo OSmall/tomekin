@@ -1,0 +1,55 @@
+{
+  "oracle_id": "aa7714b0-2bfb-458a-8ebf-37ec2c53383e",
+  "name": "Fireball",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "X-spell that scales with excess mana and converts it into direct damage to players or creatures."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Can kill one or more creatures by dividing damage among targets, though inefficient when split."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "X damage to any number of targets is fundamentally direct-damage scaling; it often closes games or removes creatures while pointing damage upstairs."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "big mana",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "As an X-spell, it does reward excess mana, but that is secondary to its core identity as scalable burn rather than a dedicated big-mana payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

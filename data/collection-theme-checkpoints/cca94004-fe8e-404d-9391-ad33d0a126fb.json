@@ -1,0 +1,53 @@
+{
+  "oracle_id": "cca94004-fe8e-404d-9391-ad33d0a126fb",
+  "name": "Stoic Builder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "ETB regrows a land from your graveyard, supporting land-value and land-recursion shells."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Directly returns a card from graveyard to hand, though limited specifically to lands."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "ETB regrows a land from your graveyard, supporting land-value and land-recursion shells."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Directly returns a card from graveyard to hand, though limited specifically to lands."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

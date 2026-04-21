@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9357de36-f8be-4f49-b2c8-9fe9eaf82b07",
+  "name": "Holy Strength",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Aura permanent with only 'Enchant creature'; its main deckbuilding relevance is Aura synergy support."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Cheap stat boost can support combat, but as a permanent Aura it is less aligned than true instant-speed tricks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

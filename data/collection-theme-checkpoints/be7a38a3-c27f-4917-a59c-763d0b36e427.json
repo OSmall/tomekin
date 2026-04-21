@@ -1,0 +1,35 @@
+{
+  "oracle_id": "be7a38a3-c27f-4917-a59c-763d0b36e427",
+  "name": "Forge Devil",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB deals 1 to a target creature; a cheap creature-based ping that mainly functions as small removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB deals 1 to a target creature; a cheap creature-based ping that mainly functions as small removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

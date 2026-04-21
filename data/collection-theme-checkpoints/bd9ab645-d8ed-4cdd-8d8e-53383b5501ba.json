@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bd9ab645-d8ed-4cdd-8d8e-53383b5501ba",
+  "name": "Executioner's Swing",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed conditional kill spell; gives a damaged creature -5/-5, functioning as efficient creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed conditional kill spell; gives a damaged creature -5/-5, functioning as efficient creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

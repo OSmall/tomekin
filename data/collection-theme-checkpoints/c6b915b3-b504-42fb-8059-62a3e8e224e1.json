@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c6b915b3-b504-42fb-8059-62a3e8e224e1",
+  "name": "Frenzied Tilling",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Oracle text directly destroys a land; that is the card's defining game plan."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It replaces itself with a tapped basic from your library, giving minor mana development after the LD effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Oracle text directly destroys a land; that is the card's defining game plan."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It replaces itself with a tapped basic from your library, giving minor mana development after the LD effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

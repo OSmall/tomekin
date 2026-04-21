@@ -1,0 +1,53 @@
+{
+  "oracle_id": "752ebcba-97fb-43a3-8811-d244164b3e16",
+  "name": "Basilica Screecher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, making it a classic incremental drain engine."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Flying gives it light evasive utility, but the card's main deckbuilding pull is extort rather than aerial pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, making it a classic incremental drain engine."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Flying gives it light evasive utility, but the card's main deckbuilding pull is extort rather than aerial pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7dcbce46-2973-4a9f-93df-95ac41ce668a",
+  "name": "Phantasmal Terrain",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "land type matters",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Aura that permanently sets a land's basic land type, mainly useful for basic-land-type synergies or fixing specific land-type requirements."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "It is a cheap Aura, but its deckbuilding relevance is narrower than generic Aura-matters payoffs."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.43,
+        "reasoning_notes": "Can enchant an opposing land to alter its type, enabling minor mana disruption or shutting off some land synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "land type matters"
+    ]
+  }
+}

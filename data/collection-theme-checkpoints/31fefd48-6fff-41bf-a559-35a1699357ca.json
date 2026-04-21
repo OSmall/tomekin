@@ -1,0 +1,73 @@
+{
+  "oracle_id": "31fefd48-6fff-41bf-a559-35a1699357ca",
+  "name": "Feral Incarnation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Creates three 3/3 Beast tokens; token production is the card's core function despite convoke cost reduction."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Makes multiple bodies at once and convoke naturally plays well in creature-dense go-wide shells."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Convoke is a cost-reduction mechanic that lets creatures help cast this expensive spell ahead of curve."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Oracle text directly creates three 3/3 Beast tokens; token production is the card's clear deckbuilding identity."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Three bodies from one card supports wide-board strategies, though it is still primarily a token-maker rather than a dedicated anthem payoff."
+      },
+      {
+        "primary": false,
+        "category": "creature mechanics / cost reduction",
+        "theme": "convoke",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It has convoke in its own cost, so creature-heavy shells cast it more efficiently, but the card is not mainly a convoke build-around."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

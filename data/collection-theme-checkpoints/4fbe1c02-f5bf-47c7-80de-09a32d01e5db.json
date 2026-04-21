@@ -1,0 +1,76 @@
+{
+  "oracle_id": "4fbe1c02-f5bf-47c7-80de-09a32d01e5db",
+  "name": "Evangel of Heliod",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB makes multiple 1/1 Soldier tokens based on white devotion, directly rewarding token-focused boards."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Creates a wide board in one shot, supporting swarm combat plans rather than single-creature play."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "ETB token burst scales well with repeated flicker effects, though blink is support rather than core text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB creates a scalable batch of 1/1 Soldier tokens, making it a direct token payoff."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "devotion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Token output explicitly scales with your devotion to white, so it directly rewards devotion-heavy boards."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "One ETB adds multiple bodies at once, naturally supporting swarm and wide-board combat plans."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

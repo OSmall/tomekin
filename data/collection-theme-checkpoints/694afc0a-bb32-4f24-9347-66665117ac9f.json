@@ -1,0 +1,21 @@
+{
+  "oracle_id": "694afc0a-bb32-4f24-9347-66665117ac9f",
+  "name": "Great Hart",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "Only notable hook is its Elk creature type; with no rules text, it's chiefly relevant as a tribal body."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

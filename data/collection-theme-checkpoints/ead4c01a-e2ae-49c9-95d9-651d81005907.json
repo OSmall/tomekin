@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ead4c01a-e2ae-49c9-95d9-651d81005907",
+  "name": "Satyr Wayfinder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB bins up to three nonland cards while replacing itself with a land, a classic graveyard-filling setup piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Can find a land from the top four into hand, helping hit land drops and smooth colors rather than accelerating mana."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "Stocks the graveyard efficiently for cards that scale with graveyard size or card types in the yard."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

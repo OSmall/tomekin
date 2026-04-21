@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c43425c1-ad01-4088-a061-f691fa2f6c20",
+  "name": "Thassa's Bounty",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Primary rate is a six-mana sorcery that draws three cards; the self/targeted mill is incidental to its main deckbuilding role."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.81,
+        "reasoning_notes": "It also mills three cards from any player, which can support self-mill or chip mill plans, but at low volume."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Primary rate is a six-mana sorcery that draws three cards; the self/targeted mill is incidental to its main deckbuilding role."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.81,
+        "reasoning_notes": "It also mills three cards from any player, which can support self-mill or chip mill plans, but at low volume."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

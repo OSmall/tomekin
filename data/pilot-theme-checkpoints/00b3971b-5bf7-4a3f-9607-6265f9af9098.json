@@ -1,0 +1,39 @@
+{
+  "oracle_id": "00b3971b-5bf7-4a3f-9607-6265f9af9098",
+  "name": "Crypt Creeper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Activated sacrifice ability exiles a card from a graveyard; mainly a cheap graveyard interaction piece on a Zombie body."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "graveyard hate"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.96,
+        "reasoning_notes": "Sacrifice ability exiles a single target card from a graveyard; this is narrow, low-impact graveyard interaction on a Zombie body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

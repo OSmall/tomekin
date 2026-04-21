@@ -1,0 +1,64 @@
+{
+  "oracle_id": "302407c8-0842-4f8e-a5aa-5c11a69851c4",
+  "name": "Dying Wish",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Aura that pays you when your creature dies, converting death into life-loss and lifegain based on power."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Triggered effect drains an opponent and gains you that much life when the enchanted creature dies."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It is an Aura that enchants your own creature, so it fits aura-centric enchantment shells secondarily."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "aristocrats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Death trigger turns your creature dying into drain, a clean aristocrats payoff tied directly to sacrifice/death loops."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Oracle text explicitly makes target player lose life and you gain that much life when the enchanted creature dies."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "45d939d1-e9ca-4b4b-a0a9-59b936210a5b",
+  "name": "Oreskos Sun Guide",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Inspired triggers on untap to gain 2 life repeatedly; the card mainly exists to generate life gain."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.23,
+        "reasoning_notes": "It is not a payoff itself, but fits decks that want frequent life-gain triggers to enable payoff cards."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

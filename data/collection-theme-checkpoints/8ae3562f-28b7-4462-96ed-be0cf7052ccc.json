@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8ae3562f-28b7-4462-96ed-be0cf7052ccc",
+  "name": "Kor Outfitter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB directly reattaches Equipment, making it a clean Equipment-synergy setup piece."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Helps suit up one creature efficiently, a common Voltron play pattern with equipped attackers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB directly reattaches Equipment, making it a clean Equipment-synergy setup piece."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Helps suit up one creature efficiently, a common Voltron play pattern with equipped attackers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

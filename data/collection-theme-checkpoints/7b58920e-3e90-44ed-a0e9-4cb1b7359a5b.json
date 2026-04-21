@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7b58920e-3e90-44ed-a0e9-4cb1b7359a5b",
+  "name": "Artful Maneuver",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant +2/+2 pump is a classic combat trick; rebound lets it swing combat twice across two turns."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Targets your creature, and rebound can retrigger heroic-style payoffs on the next upkeep."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant +2/+2 pump is a classic combat trick; rebound lets it swing combat twice across two turns."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Targets your creature, and rebound can retrigger heroic-style payoffs on the next upkeep."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

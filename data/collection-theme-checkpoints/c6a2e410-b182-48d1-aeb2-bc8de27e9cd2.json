@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c6a2e410-b182-48d1-aeb2-bc8de27e9cd2",
+  "name": "Cremate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Exiles a target card from a graveyard at instant speed; a cheap, cantripping piece of graveyard interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "It replaces itself with 'Draw a card,' making it low-cost interactive cantrip support."
+      }
+    ],
+    "audit_reasons": [
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "graveyard hate"
+    ]
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Exiles any target card from a graveyard at instant speed; this is clean, cheap graveyard interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "It replaces itself with 'Draw a card,' so the cantrip rider is real but clearly secondary to the hate effect."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

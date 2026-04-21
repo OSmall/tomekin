@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ac193909-7e81-4082-ad02-2a60d142a0ab",
+  "name": "Blood Host",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeatable sac outlet for another creature, turning fodder into value; classic sacrifice-engine text."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Each activation grows Blood Host with a +1/+1 counter, making counters a direct reward for sacrificing creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeatable sac outlet for another creature, turning fodder into value; classic sacrifice-engine text."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Each activation grows Blood Host with a +1/+1 counter, making counters a direct reward for sacrificing creatures."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

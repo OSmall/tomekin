@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c2bfb230-6949-4d5e-8cac-9d7dafdc5e9a",
+  "name": "Dawnstrike Paladin",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Lifelink makes it a repeatable life-gain source; vigilance helps it attack while still blocking."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Five-mana lifelink body can stabilize boards, but its stats are modest for a true finisher."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Lifelink makes it a repeatable life source; vigilance helps it gain life in combat while remaining back on defense."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "A 2/4 vigilance lifelink body plays mainly as a stabilizer, blocking well after attacking or without tapping."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

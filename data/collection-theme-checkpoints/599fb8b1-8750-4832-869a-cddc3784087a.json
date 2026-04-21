@@ -1,0 +1,35 @@
+{
+  "oracle_id": "599fb8b1-8750-4832-869a-cddc3784087a",
+  "name": "Harbor Serpent",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Islandwalk gives reliable unblockability vs Islands; card is mainly a conditional evasive beater rather than a broader synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Islandwalk gives reliable unblockability vs Islands; card is mainly a conditional evasive beater rather than a broader synergy piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

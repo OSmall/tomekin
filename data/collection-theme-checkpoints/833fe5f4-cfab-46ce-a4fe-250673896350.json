@@ -1,0 +1,64 @@
+{
+  "oracle_id": "833fe5f4-cfab-46ce-a4fe-250673896350",
+  "name": "Epiphany Storm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Aura itself, so it naturally fits Aura/enchantress shells as a cheap enchantment that sticks on a creature."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Grants repeatable rummaging: discard a card to draw a card, giving ongoing filtering/card-selection from the enchanted creature."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "The activated ability requires discarding, which can enable discard-synergy or graveyard setup, though only as a support piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "It is a one-mana Aura, so its clearest deckbuilding home is Aura/enchantments shells rather than a generic utility card."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "It grants a repeatable discard outlet via the enchanted creature, which is relevant for discard-synergy and graveyard setup."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

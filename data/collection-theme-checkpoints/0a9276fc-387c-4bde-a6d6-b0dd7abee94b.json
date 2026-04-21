@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0a9276fc-387c-4bde-a6d6-b0dd7abee94b",
+  "name": "Abzan Runemark",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Aura that buffs an enchanted creature with +2/+2 and conditional vigilance; fits dedicated Aura decks cleanly."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Acts as a permanent combat stat boost and vigilance-granter, but is mainly an Aura synergy piece rather than interaction."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Aura with a clean permanent buff; directly supports Aura-focused decks. Conditional vigilance is minor upside, not a separate theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

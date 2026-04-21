@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e552cab2-cee0-4420-9419-4bada4b2f241",
+  "name": "Gruul Charm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "One mode sweeps fliers for 3, a clear anti-flying effect; other modes are situational support, not the main deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Its unblockable-to-nonfliers mode helps push combat damage through in aggressive Gruul decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "15fee0bd-ede2-4f65-a9a1-2da4623679d5",
+  "name": "Aether Figment",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Kicked mode adds two +1/+1 counters, making counters the clearest built-in scaling theme."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Unblockable body pressures life totals efficiently, especially when kicked into a 3/3 evasive threat."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Oracle text makes it unblockable outright; that is the card's most defining deckbuilding hook, more than kicker counters."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "Kicker adds two +1/+1 counters, but only as a self-contained upgrade rather than a dedicated counters payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

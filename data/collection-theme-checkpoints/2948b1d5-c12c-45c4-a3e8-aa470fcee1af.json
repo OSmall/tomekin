@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2948b1d5-c12c-45c4-a3e8-aa470fcee1af",
+  "name": "Wake of Vultures",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Activated ability requires sacrificing creatures, making it a repeatable sac outlet that mainly supports sacrifice shells."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Has flying and can chip in through the air, but evasion is secondary to its sacrifice outlet role."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Activated ability requires sacrificing creatures, making it a repeatable sac outlet that mainly supports sacrifice shells."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Has flying and can chip in through the air, but evasion is secondary to its sacrifice outlet role."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

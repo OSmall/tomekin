@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+  "name": "Jungle Hollow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Two-color land that taps for {B} or {G}; its main deckbuilding role is smoothing Golgari mana."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "ETB trigger gains 1 life, a minor incidental lifegain enabler rather than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Two-color land that taps for {B} or {G}; its main deckbuilding role is smoothing Golgari mana."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "ETB trigger gains 1 life, a minor incidental lifegain enabler rather than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

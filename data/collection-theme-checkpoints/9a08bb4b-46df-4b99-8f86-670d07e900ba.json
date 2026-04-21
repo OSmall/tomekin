@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9a08bb4b-46df-4b99-8f86-670d07e900ba",
+  "name": "Brood Monitor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "ETB makes three Eldrazi Scion tokens, giving immediate board presence and repeatable token material."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "The Scion tokens can be sacrificed for {C}, turning the token burst into a one-shot mana boost."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB creates three Eldrazi Scion bodies, making it a clear token producer and token engine piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.87,
+        "reasoning_notes": "Those Scions can be sacrificed for {C}, so the token burst also converts into immediate mana acceleration."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "447b9412-2649-4548-8e9b-eed5e92ad92a",
+  "name": "Spire Monitor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Flying is the card's main gameplay identity; a 3/3 flier primarily supports evasive combat plans."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Flash lets it be held up at instant speed, fitting reactive tempo play, though it has no direct disruption."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

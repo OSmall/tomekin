@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a95a2d1c-70a9-4eb2-ae30-a07fab26a9c6",
+  "name": "Resistance Fighter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Cheap 1/1 that can sacrifice itself to blank a creature's combat damage, functioning mainly as a defensive combat piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Cheap 1/1 that can sacrifice itself to blank a creature's combat damage, functioning mainly as a defensive combat piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

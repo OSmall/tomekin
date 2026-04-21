@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ea29c489-bd04-4f36-8b59-bccaac153152",
+  "name": "Mortal Obstinacy",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap Aura that buffs your creature and is castable in Aura-focused decks; enchantment-destruction rider is incidental utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Acts like a small combat boost with upside, but only at sorcery speed and mainly as an Aura rather than a true trick."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments-matter",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Directly interacts with enchantments by sacrificing itself to destroy one after combat damage, giving niche enchantment synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Aura payoff piece for Voltron/Aura shells: one-mana enchantment that buffs your creature and can cash itself in after combat to remove an opposing enchantment."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

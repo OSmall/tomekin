@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fc71710a-8294-4370-89da-7ab1c2b38d19",
+  "name": "Staff of the Flame Magus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeated life gain from casting red spells and from Mountains entering makes it a straightforward lifegain engine piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Repeated life gain from casting red spells and from Mountains entering makes it a straightforward lifegain engine piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

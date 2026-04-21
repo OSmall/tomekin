@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2ce12817-a7b5-475a-87d0-718d77349a6d",
+  "name": "Ogre Savant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Optional ETB bounce is a classic tempo play; the blue-spend rider turns it into creature-only interaction on a body."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "Its effect explicitly rewards spending blue on a red card, tying performance to multicolor casting."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Optional ETB bounce is a classic tempo play; the blue-spend rider turns it into creature-only interaction on a body."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "Its effect explicitly rewards spending blue on a red card, tying performance to multicolor casting."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

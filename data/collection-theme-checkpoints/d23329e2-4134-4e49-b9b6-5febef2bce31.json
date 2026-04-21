@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d23329e2-4134-4e49-b9b6-5febef2bce31",
+  "name": "Thundering Giant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Vanilla 4/3 haste for five is mainly an aggressive curve-topper that pushes immediate combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Vanilla 4/3 haste for five is mainly an aggressive curve-topper that pushes immediate combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

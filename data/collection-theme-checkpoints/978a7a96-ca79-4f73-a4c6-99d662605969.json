@@ -1,0 +1,30 @@
+{
+  "oracle_id": "978a7a96-ca79-4f73-a4c6-99d662605969",
+  "name": "Snarling Warg",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.88,
+        "reasoning_notes": "Gets +1/+0 only if you control a Goblin or Orc, making it a small creature-type synergy payoff."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "Menace gives it built-in blocking evasion, supporting attacking decks but not defining a broader archetype alone."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

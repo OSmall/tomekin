@@ -1,0 +1,75 @@
+{
+  "oracle_id": "407021e2-4072-4961-95be-f9309c341677",
+  "name": "Fire of Orthanc",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.87,
+        "reasoning_notes": "Directly destroys an artifact or land; land-destruction mode is specific and central to the card's gameplay use."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Also answers artifacts, but this is narrower than the card's broader land/artifact destruction role."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Creatures without flying can't block this turn, enabling a temporary alpha-strike or damage push."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "`Destroy target artifact or land` cleanly supports land-destruction packages, but the card is a flexible hybrid answer rather than a dedicated LD payoff."
+      },
+      {
+        "primary": false,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "It directly removes an artifact, so artifact-hate is a real secondary tag and fits better than generic artifacts."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "`Creatures without flying can't block this turn` acts as a Falter effect, mainly supporting damage pushes rather than defining the card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

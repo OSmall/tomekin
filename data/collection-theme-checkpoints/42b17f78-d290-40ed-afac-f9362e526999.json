@@ -1,0 +1,53 @@
+{
+  "oracle_id": "42b17f78-d290-40ed-afac-f9362e526999",
+  "name": "Undergrowth Scavenger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB size scales with the number of creature cards in all graveyards, directly rewarding stocked graveyards."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "It enters with +1/+1 counters, but the counters are a sizing mechanism rather than a dedicated counters-synergy card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard count matters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "ETB size scales with the number of creature cards in all graveyards, directly rewarding stocked graveyards."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "It enters with +1/+1 counters, but the counters are a sizing mechanism rather than a dedicated counters-synergy card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

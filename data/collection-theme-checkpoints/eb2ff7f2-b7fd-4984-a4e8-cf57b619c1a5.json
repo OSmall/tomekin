@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eb2ff7f2-b7fd-4984-a4e8-cf57b619c1a5",
+  "name": "Wose Pathfinder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Two-mana mana dork taps for any color, fitting early acceleration and fixing roles."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "Its tap ability adds one mana of any color, supporting multicolor casting."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Late-game activated ability grants another creature +3/+3 and trample as a combat finisher aid."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

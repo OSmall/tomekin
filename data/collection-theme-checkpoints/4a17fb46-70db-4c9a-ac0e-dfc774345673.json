@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4a17fb46-70db-4c9a-ac0e-dfc774345673",
+  "name": "Oppressive Rays",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Cheap Aura that largely shuts down one creature by taxing attacks, blocks, and activated abilities."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.82,
+        "reasoning_notes": "It is an Aura enchantment, so it naturally fits Aura-based synergies and enchantment count support."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Functions as a tempo-control piece by constraining a key creature rather than removing it outright."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

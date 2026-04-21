@@ -1,0 +1,39 @@
+{
+  "oracle_id": "18c5e7a0-4397-48bb-b993-1c3e3b08be2c",
+  "name": "Scholar of Athreos",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability repeatedly drains each opponent and gains you matching life; classic Orzhov lifegain-drain piece."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "The ability directly gains life, so it can contribute to lifegain-matters shells even without other text."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "A 1/4 body for three mana blocks well while providing repeatable noncombat reach from the battlefield."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

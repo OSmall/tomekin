@@ -1,0 +1,21 @@
+{
+  "oracle_id": "263df914-aea1-48dc-b517-7d515307789e",
+  "name": "Merfolk of the Depths",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.61,
+        "reasoning_notes": "Flash lets it be held up for end-step deployment or ambush blocks, a classic tempo play pattern despite otherwise vanilla stats."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "41b1d850-2fda-490b-a4f6-0d9bfb37103c",
+  "name": "Soulmender",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability repeatedly gains life; classic cheap lifegain enabler for Soul Sisters-style or life-total synergy decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability repeatedly gains life; classic cheap lifegain enabler for Soul Sisters-style or life-total synergy decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

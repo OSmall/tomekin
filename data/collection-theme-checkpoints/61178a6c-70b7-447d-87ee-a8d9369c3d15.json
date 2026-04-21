@@ -1,0 +1,39 @@
+{
+  "oracle_id": "61178a6c-70b7-447d-87ee-a8d9369c3d15",
+  "name": "Skyknight Legionnaire",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Cheap 2/2 with flying and haste is a classic evasive Boros attacker that pressures life totals immediately."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Flying makes it a reliable evasive threat and supports decks that care about airborne combat."
+      },
+      {
+        "primary": false,
+        "category": "color synergies",
+        "theme": "multicolor matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "Two-color Boros card can incidentally fit multicolor-matters shells, but it has no direct payoff text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

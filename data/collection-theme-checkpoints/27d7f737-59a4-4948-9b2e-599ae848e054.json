@@ -1,0 +1,39 @@
+{
+  "oracle_id": "27d7f737-59a4-4948-9b2e-599ae848e054",
+  "name": "Ojutai, Soul of Winter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Specifically rewards attacking with Dragons, making it a clear Dragon-tribal build-around and payoff source."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Attack trigger taps a nonland permanent and locks it down for a turn cycle, functioning as repeatable board control."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "A large flying Dragon contributes to aerial combat plans, though the card is not specifically a flying-matters payoff."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

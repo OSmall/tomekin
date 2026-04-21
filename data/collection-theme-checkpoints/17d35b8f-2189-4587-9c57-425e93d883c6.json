@@ -1,0 +1,40 @@
+{
+  "oracle_id": "17d35b8f-2189-4587-9c57-425e93d883c6",
+  "name": "Westfold Rider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Sacrifice ability destroys an artifact; this is dedicated disenchant-style interaction attached to a creature."
+      },
+      {
+        "primary": false,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Oracle text also destroys an enchantment, making it clean enchantment removal on-board."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "A 3/1 for {1}{W} can pressure early, though its main deckbuilding pull is removable hatebear utility."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

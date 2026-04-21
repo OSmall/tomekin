@@ -1,0 +1,46 @@
+{
+  "oracle_id": "965139fb-2e58-4ef2-b639-3ceaa2995c00",
+  "name": "Catalog",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant-speed draw-two with a discard rider; primarily card selection/velocity, not true card advantage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "It makes you discard a card, which can enable graveyard setup, but that is secondary to the draw/filtering role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Draws two cards immediately at instant speed; the discard is a loot-style drawback/filter, so the card is mainly a draw spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

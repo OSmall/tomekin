@@ -1,0 +1,30 @@
+{
+  "oracle_id": "de12ca82-4824-4975-9a31-309a6d9101a7",
+  "name": "The Balrog, Flame of Udûn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Oracle text gives trample, and a 7/7 body for five mana is primarily a trampling game-ending threat."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.67,
+        "reasoning_notes": "Efficient 7/7 legendary creature plays as a large battlefield threat, though its legendary-death clause is mostly a drawback."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

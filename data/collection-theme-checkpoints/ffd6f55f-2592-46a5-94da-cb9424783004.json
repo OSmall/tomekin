@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ffd6f55f-2592-46a5-94da-cb9424783004",
+  "name": "Polis Crusher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Protection from enchantments and repeatable enchantment destruction after monstrosity make it a clear anti-enchantment card."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "finisher",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Native trample helps push combat damage through, which also enables its monstrous hit trigger."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "enchantment hate"
+    ]
+  }
+}

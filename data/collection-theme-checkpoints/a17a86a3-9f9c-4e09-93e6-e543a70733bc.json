@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a17a86a3-9f9c-4e09-93e6-e543a70733bc",
+  "name": "Vastwood Gorger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Vanilla 6-drop with only large stats; functions as a generic big creature, not a synergy piece or themed payoff."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

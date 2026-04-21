@@ -1,0 +1,53 @@
+{
+  "oracle_id": "29b3cb3e-aeb1-43eb-8095-9f7881aa34bd",
+  "name": "Prodigal Pyromancer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Repeatable tap ability deals 1 damage to any target, a classic pinger that steadily converts turns into direct damage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Its repeatable 1-damage ping picks off X/1s and utility creatures, functioning as small-scale creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Repeatable tap ability deals 1 damage to any target, a classic pinger that steadily converts turns into direct damage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Its repeatable 1-damage ping picks off X/1s and utility creatures, functioning as small-scale creature removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

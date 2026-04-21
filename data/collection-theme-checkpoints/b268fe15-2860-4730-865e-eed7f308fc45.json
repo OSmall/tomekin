@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b268fe15-2860-4730-865e-eed7f308fc45",
+  "name": "Agoraphobia",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Aura-based creature debuff; recurring bounce mode lets it be reused on new targets."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "-5/-0 suppresses attackers efficiently, and self-bounce supports repeated tempo-positive redeployment."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Aura-based creature debuff; recurring bounce mode lets it be reused on new targets."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.81,
+        "reasoning_notes": "-5/-0 suppresses attackers efficiently, and self-bounce supports repeated tempo-positive redeployment."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b876101b-7b18-48d7-9c8c-aaa6b1b5c199",
+  "name": "Elusive Krasis",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Evolve repeatedly adds +1/+1 counters as larger creatures enter, making counters its clearest deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Can't be blocked turns its growing body into reliable combat damage, supporting evasive-pressure plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Evolve repeatedly adds +1/+1 counters as larger creatures enter, making counters its clearest deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Can't be blocked turns its growing body into reliable combat damage, supporting evasive-pressure plans."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

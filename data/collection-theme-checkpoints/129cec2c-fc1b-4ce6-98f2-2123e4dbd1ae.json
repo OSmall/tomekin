@@ -1,0 +1,30 @@
+{
+  "oracle_id": "129cec2c-fc1b-4ce6-98f2-2123e4dbd1ae",
+  "name": "Paranoid Delusions",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text explicitly mills 3, and cipher lets repeated combat-damage triggers recast it for ongoing milling."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.44,
+        "reasoning_notes": "Cipher rewards evasive hits and incremental pressure, but the card is not a strong standalone tempo piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

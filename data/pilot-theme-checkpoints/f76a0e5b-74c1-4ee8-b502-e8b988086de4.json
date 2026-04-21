@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f76a0e5b-74c1-4ee8-b502-e8b988086de4",
+  "name": "Wild Slash",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "One-mana instant that deals 2 damage to any target; classic cheap removal/burn interaction."
+      },
+      {
+        "primary": false,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Efficient face-burn mode and low cost can support aggressive red decks, but removal is the main role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "One-mana instant that deals 2 damage to any target; its primary deckbuilding role is efficient cheap removal, with occasional reach."
+      },
+      {
+        "primary": false,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Low cost and face-damage mode can support aggressive red decks, but that is secondary to its removal function."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

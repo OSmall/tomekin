@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cdd37bbf-09db-4c1f-9947-312de48a0f4c",
+  "name": "Nyxborn Triton",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Bestow lets it be cast as an Aura, and its main gameplay use is suiting up a creature with +2/+3."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "It's an enchantment creature and Aura via bestow, so it incidentally supports enchantment-count and constellation-style synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

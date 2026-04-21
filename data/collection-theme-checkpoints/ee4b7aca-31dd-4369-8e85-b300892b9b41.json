@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ee4b7aca-31dd-4369-8e85-b300892b9b41",
+  "name": "Perennial Behemoth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Lets you play lands from your graveyard repeatedly; unearth adds a one-shot self-recursion layer."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "Extra land access from the graveyard supports continued land drops and mana development."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Artifact creature body gives it incidental synergy in artifact-focused shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

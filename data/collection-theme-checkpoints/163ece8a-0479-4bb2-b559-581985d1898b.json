@@ -1,0 +1,39 @@
+{
+  "oracle_id": "163ece8a-0479-4bb2-b559-581985d1898b",
+  "name": "Sunbond",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Turns each life-gain event into that many +1/+1 counters on the enchanted creature; built specifically to reward lifegain decks."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "Its granted triggered ability repeatedly adds +1/+1 counters, making it a direct counters enabler tied to lifegain."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It is an Aura and fits Aura-centric shells, though its main deckbuilding pull is lifegain synergy rather than Aura density."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

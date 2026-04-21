@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f2933616-211b-4d3f-8064-2be61c26079a",
+  "name": "Mnemonic Wall",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "ETB returns an instant or sorcery to hand, directly supporting spell-heavy recursion loops and value plans."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "A reusable ETB on a creature makes it a strong blink target for repeated instant/sorcery buyback."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.59,
+        "reasoning_notes": "Defender body stalls combat while rebuying removal or countermagic in slower control shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "caeaad5e-2d68-481c-9a35-c2c3b345963d",
+  "name": "Overwhelm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Team-wide +3/+3 sorcery is a classic go-wide overrun effect that converts a wide board into lethal combat damage."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Token decks most reliably supply the wide board needed, and convoke also rewards having many creatures in play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Team-wide +3/+3 sorcery is a classic go-wide overrun effect that converts a wide board into lethal combat damage."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Token decks most reliably supply the wide board needed, and convoke also rewards having many creatures in play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

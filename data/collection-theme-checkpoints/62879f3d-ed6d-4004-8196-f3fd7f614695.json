@@ -1,0 +1,35 @@
+{
+  "oracle_id": "62879f3d-ed6d-4004-8196-f3fd7f614695",
+  "name": "Cone of Flame",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Deals 1, 2, and 3 damage divided across three different targets, functioning as multi-target creature/player removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Deals 1, 2, and 3 damage divided across three different targets, functioning as multi-target creature/player removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ab52988f-ffd0-4154-9052-593a9d450d98",
+  "name": "Goblin Heelcutter",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Attack trigger forces a blocker out, pushing damage; dash adds haste and repeatable pressure for aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Temporarily removes a blocker each combat, creating short-term battlefield advantage rather than permanent removal."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.42,
+        "reasoning_notes": "Goblin typing can matter in Goblin decks, but the card's text is not explicitly tribal-focused."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

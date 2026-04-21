@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6ca999d7-48c9-4517-8e63-82ddccdb430e",
+  "name": "Pinnacle of Rage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery that directly deals 3 damage to each of two targets; clean burn-style removal/reach spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Can remove up to two small creatures or utility targets by dividing damage across exactly two targets."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery that directly deals 3 damage to each of two targets; clean burn-style removal/reach spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Can remove up to two small creatures or utility targets by dividing damage across exactly two targets."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

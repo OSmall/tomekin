@@ -1,0 +1,30 @@
+{
+  "oracle_id": "571c1923-790f-48b7-86d2-70c3e79fdba3",
+  "name": "Shriekhorn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Cheap artifact with 3 activations that repeatedly mills any player for 2; direct, efficient mill piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Can target its controller, so it commonly fuels graveyard setups like delirium or recursion."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

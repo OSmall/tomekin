@@ -1,0 +1,57 @@
+{
+  "oracle_id": "79eed0c6-1853-4032-9d12-aebf5e15e78c",
+  "name": "Boonweaver Giant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "ETB tutors an Aura from hand, library, or graveyard directly onto itself, strongly rewarding Aura-centric builds."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Can retrieve an Aura from the graveyard straight to the battlefield, giving limited recursion utility within Aura decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "ETB puts any Aura from hand, graveyard, or library directly onto itself; this is a strong, explicit Aura-build payoff/enabler."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "It can recover an Aura from your graveyard, but only incidentally and only within Aura-focused decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

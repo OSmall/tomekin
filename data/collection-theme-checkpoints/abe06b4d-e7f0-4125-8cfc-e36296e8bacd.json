@@ -1,0 +1,21 @@
+{
+  "oracle_id": "abe06b4d-e7f0-4125-8cfc-e36296e8bacd",
+  "name": "Witch's Familiar",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "Vanilla 2/3 for three reads as a low-impact board stabilizer; no text suggests a narrower synergy theme."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

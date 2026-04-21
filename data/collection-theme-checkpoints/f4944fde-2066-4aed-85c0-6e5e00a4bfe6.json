@@ -1,0 +1,73 @@
+{
+  "oracle_id": "f4944fde-2066-4aed-85c0-6e5e00a4bfe6",
+  "name": "Fires of Mount Doom",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "ETB deals 2 to a creature and can also destroy its Equipment, making this chiefly a removal piece."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Specifically destroys Equipment attached to the damaged creature, giving it narrow anti-Equipment utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "Activated impulse draw exiles the top card to play this turn, providing repeatable card-flow support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "ETB deals 2 to an opposing creature, so its clearest deckbuilding role is a removal piece."
+      },
+      {
+        "primary": false,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "It also destroys all Equipment attached to that creature, which is narrower artifact interaction, not an Equipment payoff."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "Its activated ability gives repeatable impulse draw by exiling the top card and letting you play it this turn."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

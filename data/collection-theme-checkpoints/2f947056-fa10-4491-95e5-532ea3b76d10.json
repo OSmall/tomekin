@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2f947056-fa10-4491-95e5-532ea3b76d10",
+  "name": "Scab-Clan Charger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Bloodrush discards it at instant speed to pump an attacking creature +2/+4, functioning as a creature-backed combat trick."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Only works on attacking creatures, so it mainly supports proactive combat decks rather than defensive shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

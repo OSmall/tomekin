@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0f94d1a7-351f-4d37-8dab-1ebf2e8ee213",
+  "name": "Paragon of Fierce Defiance",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Red-creature lord that grants +1/+1 teamwide and can give another red creature haste, supporting proactive combat-heavy decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Red-creature lord that grants +1/+1 teamwide and can give another red creature haste, supporting proactive combat-heavy decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

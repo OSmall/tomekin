@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3b7b862a-7edd-4e96-b4b9-f7113b4c93f9",
+  "name": "Loyal Pegasus",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "One-mana 2/1 flier pressures early life totals, but its team-dependent attack/block clause keeps it as a low-curve aggro piece."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Flying gives reliable evasion, making it a small evasive attacker in decks that can keep another creature in play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "One-mana 2/1 flier pressures early life totals, but its team-dependent attack/block clause keeps it as a low-curve aggro piece."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Flying gives reliable evasion, making it a small evasive attacker in decks that can keep another creature in play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

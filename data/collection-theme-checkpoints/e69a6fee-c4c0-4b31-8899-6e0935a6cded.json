@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e69a6fee-c4c0-4b31-8899-6e0935a6cded",
+  "name": "Furious Resistance",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Cheap instant grants +3/+0 and first strike in combat, functioning as a classic red combat trick for blocks."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Best in aggressive decks that leverage combat math, but it is narrower than a general aggro staple because it only targets blockers."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

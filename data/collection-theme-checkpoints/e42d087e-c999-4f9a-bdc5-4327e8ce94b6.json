@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e42d087e-c999-4f9a-bdc5-4327e8ce94b6",
+  "name": "Numbing Dose",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Aura locks an artifact or creature by stopping untaps; classic blue board-control piece with minor life-loss pressure."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "It is an Aura enchantment, so it naturally fits Aura-focused enchantment shells as a utility piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Aura locks an artifact or creature by stopping untaps; classic blue board-control piece with minor life-loss pressure."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.85,
+        "reasoning_notes": "It is an Aura enchantment, so it naturally fits Aura-focused enchantment shells as a utility piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

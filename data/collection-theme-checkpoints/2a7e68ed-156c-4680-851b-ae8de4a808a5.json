@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2a7e68ed-156c-4680-851b-ae8de4a808a5",
+  "name": "Wavecrash Triton",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Built around Heroic; targeted spells repeatedly trigger a tap-plus-frost effect for sustained board control."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Each trigger taps a blocker or attacker and keeps it locked down for a turn, creating strong tempo swings."
+      },
+      {
+        "primary": false,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.65,
+        "reasoning_notes": "A 1/4 body blocks early attackers well while supporting a spell-targeting game plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

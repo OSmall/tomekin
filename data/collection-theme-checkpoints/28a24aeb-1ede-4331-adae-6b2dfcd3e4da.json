@@ -1,0 +1,57 @@
+{
+  "oracle_id": "28a24aeb-1ede-4331-adae-6b2dfcd3e4da",
+  "name": "Cutthroat Maneuver",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Instant-speed pump for up to two creatures in combat; temporary +1/+1 and lifelink is classic combat-trick play."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Grants lifelink until end of turn, enabling a burst of life gain if the creatures connect or deal combat damage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Instant-speed temporary pump on up to two creatures is a clean combat-trick effect; lifelink is rider text, not the main deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It can produce a one-shot life swing via temporary lifelink, but it does not reward or repeatedly support a dedicated lifegain plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

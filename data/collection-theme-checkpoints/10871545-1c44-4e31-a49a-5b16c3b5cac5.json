@@ -1,0 +1,37 @@
+{
+  "oracle_id": "10871545-1c44-4e31-a49a-5b16c3b5cac5",
+  "name": "Felhide Minotaur",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Its only deckbuilding hook is the Minotaur type line; no rules text supports other themes."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.94,
+        "reasoning_notes": "Vanilla Minotaur with no rules text; its only meaningful deckbuilding relevance is as a tribal typeline filler."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

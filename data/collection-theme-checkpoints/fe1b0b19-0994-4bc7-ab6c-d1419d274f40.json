@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fe1b0b19-0994-4bc7-ab6c-d1419d274f40",
+  "name": "Search the City",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "card advantage / deck construction",
+        "theme": "name matters",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Exiles cards and rewards casting cards with matching names, making it a duplicate-name build-around engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Matching names convert exiled cards into cards in hand, functioning as delayed card advantage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "proposed_theme"
+    ],
+    "proposed_themes": [
+      "name matters"
+    ]
+  }
+}

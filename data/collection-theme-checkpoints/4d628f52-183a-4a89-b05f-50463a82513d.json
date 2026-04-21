@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4d628f52-183a-4a89-b05f-50463a82513d",
+  "name": "Volcanic Upheaval",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text is only 'Destroy target land.' making it a pure land-destruction spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text is only 'Destroy target land.' making it a pure land-destruction spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3e81c22e-52ec-4142-9a98-88681d04ce60",
+  "name": "Viashino Outrider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "A 4/3 for three mana is an aggressive rate; echo is a tempo drawback but it still fits beatdown decks seeking early pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "A 4/3 for three mana is an aggressive rate; echo is a tempo drawback but it still fits beatdown decks seeking early pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

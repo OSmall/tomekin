@@ -1,0 +1,57 @@
+{
+  "oracle_id": "de96ef93-a2e0-409d-9d25-fcb2405039b5",
+  "name": "Dazzling Beauty",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Instant used in combat to alter blocking unexpectedly; mainly a niche defensive trick that can ambush even 'unblockable' attackers."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "It replaces itself on the next upkeep, so card draw is present but clearly secondary to the combat effect."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.8,
+        "reasoning_notes": "Only cast in declare blockers step; it functions as a very narrow defensive combat trick by forcing an unblocked attacker to become blocked."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "It replaces itself at the next upkeep, but the delayed cantrip is incidental to the card's highly specific combat use."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

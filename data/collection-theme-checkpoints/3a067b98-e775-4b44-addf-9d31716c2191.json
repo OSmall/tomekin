@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3a067b98-e775-4b44-addf-9d31716c2191",
+  "name": "Syndicate Enforcer",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, fitting classic lifegain-drain support."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Extort scales with casting many spells, so it modestly rewards a spell-dense game plan."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

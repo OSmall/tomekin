@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d8a0c3ff-7042-4b52-a216-15e170c8094f",
+  "name": "Python",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Vanilla Snake creature; its only clear deckbuilding relevance is contributing to Snake/tribal creature-count synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

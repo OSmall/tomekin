@@ -1,0 +1,57 @@
+{
+  "oracle_id": "805d1f48-dd91-4034-b42c-3f1f1cb75cc9",
+  "name": "Ephara's Warden",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Repeatable tap effect suppresses small creatures, fitting white board-control/tempo play more than any synergy theme."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "Activated tapping can buy attacks or stall blockers, but the card is slower and more defensive than a dedicated tempo piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / defensive creatures",
+        "theme": "defensive creature",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.77,
+        "reasoning_notes": "1/2 body with repeatable tap-down ability mainly plays as a blocker and board-stabilizer rather than a dedicated control engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Repeatable creature tapping is a control-adjacent effect, but the power restriction and fragile body make it a modest support piece."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

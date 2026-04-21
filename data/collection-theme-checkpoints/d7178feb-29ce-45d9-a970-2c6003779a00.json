@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d7178feb-29ce-45d9-a970-2c6003779a00",
+  "name": "Faerie Swarm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Has flying and functions as a scaling evasive threat; blue-permanent count boosts its body but doesn't point to a narrower deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Has flying and functions as a scaling evasive threat; blue-permanent count boosts its body but doesn't point to a narrower deck theme."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

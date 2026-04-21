@@ -1,0 +1,30 @@
+{
+  "oracle_id": "15f8049c-f21d-4cd0-aa81-1a533936cf77",
+  "name": "Torch Fiend",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Activated ability sacs it to destroy target artifact, making it dedicated artifact removal on a creature body."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "Its removal ability requires sacrificing itself, but the card is mainly used for artifact interaction rather than sac synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "43ace4d5-9006-4bad-bd17-3d368c20564d",
+  "name": "Aerie Bowmasters",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Megamorph turns it face up with a +1/+1 counter; counter use is incidental, not a dedicated payoff or engine."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.37,
+        "reasoning_notes": "Reach lets it check flyers in combat, but it is mostly a defensive body rather than true control support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "creature mechanics",
+        "theme": "morph / megamorph",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.95,
+        "reasoning_notes": "Megamorph is the card's defining mechanic; it supports face-down/morph synergies more than counter synergies."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "Reach specifically interacts with flyers, giving it a small anti-flying role in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

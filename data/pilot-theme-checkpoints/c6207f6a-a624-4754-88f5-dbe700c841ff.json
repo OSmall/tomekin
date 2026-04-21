@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c6207f6a-a624-4754-88f5-dbe700c841ff",
+  "name": "Sign in Blood",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Sorcery that directly draws two cards for 2 mana; life loss is a minor cost, not a lifegain/drain payoff."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Efficient 2-mana sorcery that directly draws two cards; targeting any player is mostly flexibility, with life loss as a minor rider."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3bd3156f-dbc7-48f7-9e50-1f2b8b227f97",
+  "name": "Fade into Antiquity",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery-speed answer that cleanly exiles a target artifact or enchantment; narrow but direct permanent removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Sorcery-speed answer that cleanly exiles a target artifact or enchantment; narrow but direct permanent removal."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

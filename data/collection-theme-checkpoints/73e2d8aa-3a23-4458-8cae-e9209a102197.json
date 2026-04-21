@@ -1,0 +1,53 @@
+{
+  "oracle_id": "73e2d8aa-3a23-4458-8cae-e9209a102197",
+  "name": "Markov Dreadknight",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Activated ability repeatedly adds two +1/+1 counters to itself, making it a scalable counters threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Built-in flying lets its growing body close games in the air once it has been pumped."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Activated ability repeatedly adds two +1/+1 counters to itself, making it a scalable counters threat."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Built-in flying lets its growing body close games in the air once it has been pumped."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

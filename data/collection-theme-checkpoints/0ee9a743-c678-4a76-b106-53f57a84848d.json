@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0ee9a743-c678-4a76-b106-53f57a84848d",
+  "name": "Shifting Loyalties",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "threaten / theft",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Directly exchanges control of permanents, making it a classic theft effect rather than generic control support."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Fits slower control shells as a swingy answer, but the card's defining identity is permanent theft."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

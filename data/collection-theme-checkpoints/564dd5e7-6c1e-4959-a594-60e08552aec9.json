@@ -1,0 +1,39 @@
+{
+  "oracle_id": "564dd5e7-6c1e-4959-a594-60e08552aec9",
+  "name": "Urbis Protector",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB creates a 4/4 Angel token, making it a straightforward token-producing creature."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "blink",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Its value is tied to an enters-the-battlefield trigger, so blinking it repeats token creation."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.57,
+        "reasoning_notes": "The created Angel token has flying, giving the card a small but real flying-theme connection."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

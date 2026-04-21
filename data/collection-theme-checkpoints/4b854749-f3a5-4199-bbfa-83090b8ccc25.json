@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4b854749-f3a5-4199-bbfa-83090b8ccc25",
+  "name": "Centaur Battlemaster",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Heroic directly rewards targeting it with spells, making it a classic heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Its heroic trigger adds three +1/+1 counters each time it is targeted by your spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Heroic directly rewards targeting it with spells, making it a classic heroic payoff."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Its heroic trigger adds three +1/+1 counters each time it is targeted by your spell."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "892c8fd1-9553-4ced-84ec-9fc35c314c76",
+  "name": "Grave Betrayal",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "reanimator",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.91,
+        "reasoning_notes": "Turns opposing dead creatures into your board at end step; a repeatable reanimation engine tied to creature death."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.73,
+        "reasoning_notes": "Best in removal-heavy shells where killing enemy creatures converts interaction into lasting board advantage."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

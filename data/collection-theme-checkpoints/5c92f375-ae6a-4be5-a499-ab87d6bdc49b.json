@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5c92f375-ae6a-4be5-a499-ab87d6bdc49b",
+  "name": "Palace Guard",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "A 1/4 that can block any number of creatures is a defensive stall piece, mainly supporting board control and combat stabilization."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "A 1/4 that can block any number of creatures is a defensive stall piece, mainly supporting board control and combat stabilization."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d28b7c07-ef65-4187-a15e-2180bdc593d1",
+  "name": "Spectral Shepherd",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Specifically supports Spirit tribal by repeatedly returning Spirits you control to hand for protection or ETB reuse."
+      },
+      {
+        "primary": false,
+        "category": "evasion",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "Has flying itself, but it does not reward or reference fliers beyond being an evasive body."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Activated ability targets only Spirits you control, making it a clear Spirit-tribal support piece; flying is incidental rather than a fliers payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

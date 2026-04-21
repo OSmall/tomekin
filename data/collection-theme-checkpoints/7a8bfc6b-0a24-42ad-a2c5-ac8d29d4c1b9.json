@@ -1,0 +1,71 @@
+{
+  "oracle_id": "7a8bfc6b-0a24-42ad-a2c5-ac8d29d4c1b9",
+  "name": "Mogis's Marauder",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "devotion",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB scales with your devotion to black, directly rewarding heavy black pip density with a larger team buff."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Grants intimidate to multiple creatures for an alpha strike, functioning as temporary evasion."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Team haste plus evasion pushes immediate combat damage and helps close games in aggressive black shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "color synergies",
+        "theme": "devotion",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB scales with your devotion to black, directly rewarding heavy black pip density with a larger team buff."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Grants intimidate to multiple creatures for an alpha strike, functioning as temporary evasion."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Team haste plus evasion pushes immediate combat damage and helps close games in aggressive black shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "db849660-1ad4-4af4-8822-40ba6c0b6d73",
+  "name": "Defiant Ogre",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "ETB can destroy target artifact, making it a removal creature despite the narrow target range."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.43,
+        "reasoning_notes": "Alternate ETB mode places a +1/+1 counter on itself, but only incidentally."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Modal ETB includes 'Destroy target artifact'; that is specific artifact interaction, not general spot removal."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.55,
+        "reasoning_notes": "One mode adds a single +1/+1 counter to itself, but this reads as incidental flexibility rather than a counters-theme card."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

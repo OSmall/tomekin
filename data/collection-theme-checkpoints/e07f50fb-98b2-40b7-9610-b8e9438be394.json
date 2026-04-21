@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e07f50fb-98b2-40b7-9610-b8e9438be394",
+  "name": "Bolt of Keranos",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Three damage to any target is straightforward burn-based removal; scry 1 adds minor selection but doesn't change its main role."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "Cheap red sorcery helps count noncreature spells, but it has no dedicated spell-matter payoff text itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Deals 3 damage to any target, making it a flexible direct-damage spell first; scry 1 is minor smoothing."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "Cheap noncreature sorcery can support spell-count decks, but it has no spell-matter payoff text itself."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

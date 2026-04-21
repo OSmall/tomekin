@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f922150c-8f79-412b-a611-59064e3e3cea",
+  "name": "Tethmos High Priest",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Heroic rewards targeting it with your own spells, making it a core repeatable payoff/engine for heroic-style decks."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Each heroic trigger reanimates a creature with mana value 2 or less from your graveyard to the battlefield."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "heroic",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Heroic rewards targeting it with your own spells, making it a core repeatable payoff/engine for heroic-style decks."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Each heroic trigger reanimates a creature with mana value 2 or less from your graveyard to the battlefield."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "b43ba23b-ff92-4f52-a4f4-2d0825abb7ed",
+  "name": "Way of the Thief",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its unblockable clause specifically rewards controlling a Gate, making it a clear Gate-deck payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "An Aura that enchants and buffs one creature, so it naturally fits Aura-focused shells."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "+2/+2 plus conditional unblockability helps suit up one attacker and push commander damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lands / color synergies",
+        "theme": "gates",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Its unblockable clause specifically rewards controlling a Gate, making it a clear Gate-deck payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "An Aura that enchants and buffs one creature, so it naturally fits Aura-focused shells."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "+2/+2 plus conditional unblockability helps suit up one attacker and push commander damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

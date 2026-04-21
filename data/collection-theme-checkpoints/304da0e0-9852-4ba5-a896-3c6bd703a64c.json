@@ -1,0 +1,30 @@
+{
+  "oracle_id": "304da0e0-9852-4ba5-a896-3c6bd703a64c",
+  "name": "Incite",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "One-mana instant that forces a creature to attack, creating favorable combat or forcing a bad swing."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.53,
+        "reasoning_notes": "Can disrupt combat math by compelling an attack at an inconvenient time, but only for one turn."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

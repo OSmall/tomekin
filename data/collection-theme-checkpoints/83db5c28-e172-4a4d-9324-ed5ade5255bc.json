@@ -1,0 +1,40 @@
+{
+  "oracle_id": "83db5c28-e172-4a4d-9324-ed5ade5255bc",
+  "name": "Stoneforge Masterwork",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Buff scales with how many creatures share a type, making it a clear tribal payoff."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "equipment",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "It is an Equipment with a cheap casting cost and standard equip cost."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.71,
+        "reasoning_notes": "Concentrates a potentially large stat boost onto one attacker or blocker."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

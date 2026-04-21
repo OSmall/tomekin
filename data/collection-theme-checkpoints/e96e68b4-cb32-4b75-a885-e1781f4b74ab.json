@@ -1,0 +1,71 @@
+{
+  "oracle_id": "e96e68b4-cb32-4b75-a885-e1781f4b74ab",
+  "name": "Nightscape Battlemage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Modal kicker creature provides disruptive ETB interaction: bounce up to two creatures or destroy a land."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Blue kicker mode sets opponents back by returning up to two nonblack creatures to hand."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Red kicker mode specifically destroys a target land, a clear land-destruction rider."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Modal kicker creature provides disruptive ETB interaction: bounce up to two creatures or destroy a land."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Blue kicker mode sets opponents back by returning up to two nonblack creatures to hand."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.9,
+        "reasoning_notes": "Red kicker mode specifically destroys a target land, a clear land-destruction rider."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

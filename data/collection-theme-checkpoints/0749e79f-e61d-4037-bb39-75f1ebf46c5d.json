@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0749e79f-e61d-4037-bb39-75f1ebf46c5d",
+  "name": "Zarichi Tiger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Activated ability repeatedly gains 2 life; its main deckbuilding relevance is as a repeatable lifegain source."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Activated ability repeatedly gains 2 life; its main deckbuilding relevance is as a repeatable lifegain source."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

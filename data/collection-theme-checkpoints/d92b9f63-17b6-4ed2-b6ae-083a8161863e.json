@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d92b9f63-17b6-4ed2-b6ae-083a8161863e",
+  "name": "Victim of Night",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Cheap instant that destroys a target creature, with only tribe-based targeting restrictions; its gameplay role is straightforward removal."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

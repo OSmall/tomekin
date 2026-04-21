@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8f5822ae-651f-410e-9316-5522eeb52d72",
+  "name": "Sisay's Ring",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Artifact mana rock; taps for {C}{C}, directly advancing mana development."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Pure artifact permanent that chiefly contributes as an artifact-based mana source."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Artifact mana rock; taps for {C}{C}, directly advancing mana development."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.84,
+        "reasoning_notes": "Pure artifact permanent that chiefly contributes as an artifact-based mana source."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

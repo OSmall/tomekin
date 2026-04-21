@@ -1,0 +1,71 @@
+{
+  "oracle_id": "e76a1371-76c8-46dd-ba43-87fb0ab940d4",
+  "name": "Pallid Mycoderm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Builds Saproling tokens repeatedly via spore counters; token production is central to the card's gameplay."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Sac outlet pumps Fungus and Saproling creatures, making it a clear Fungus/Saproling tribal payoff."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Uses sacrificing Saprolings as a cost to convert tokens into team-wide combat buffs."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.94,
+        "reasoning_notes": "Builds Saproling tokens repeatedly via spore counters; token production is central to the card's gameplay."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Sac outlet pumps Fungus and Saproling creatures, making it a clear Fungus/Saproling tribal payoff."
+      },
+      {
+        "primary": false,
+        "category": "sacrifice",
+        "theme": "sacrifice",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Uses sacrificing Saprolings as a cost to convert tokens into team-wide combat buffs."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

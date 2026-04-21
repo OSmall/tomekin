@@ -1,0 +1,53 @@
+{
+  "oracle_id": "85bde6ac-3dd4-4946-8b57-24f57e3eae2b",
+  "name": "Plummet",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text only targets and destroys creatures with flying, making it a textbook anti-flying interaction spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "It is single-target creature removal, but highly conditional since it only answers fliers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "flying hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Oracle text only targets and destroys creatures with flying, making it a textbook anti-flying interaction spell."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "It is single-target creature removal, but highly conditional since it only answers fliers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

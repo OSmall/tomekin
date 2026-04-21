@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1b5c2ba0-3df7-4394-a3f1-8e8330d7ac81",
+  "name": "Leaping Master",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Can gain flying on demand, giving temporary evasion to get through blockers."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "Cheap 2/1 attacker; activated flying can push damage, fitting low-curve aggressive decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

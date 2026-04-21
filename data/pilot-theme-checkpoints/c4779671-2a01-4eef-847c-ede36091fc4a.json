@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c4779671-2a01-4eef-847c-ede36091fc4a",
+  "name": "Pestilent Souleater",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Can repeatedly gain infect for Phyrexian mana, making it a poison-damage attacker in infect shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Can repeatedly gain infect for Phyrexian mana, making it a poison-damage attacker in infect shells."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

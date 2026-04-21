@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ad2e4ab0-d990-472d-8788-3f85215da51c",
+  "name": "Mark for Death",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Sorcery creates an alpha-strike by forcing one blocker and preventing all others from blocking that turn."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Best when attacking with multiple creatures, since it clears the way for the rest of your team."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Sorcery creates an alpha-strike by forcing one blocker and preventing all others from blocking that turn."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Best when attacking with multiple creatures, since it clears the way for the rest of your team."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

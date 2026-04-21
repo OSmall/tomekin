@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6156bd59-d623-4612-8e86-b5228d5de750",
+  "name": "Howling Banshee",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Has flying on a 3/3 body; evasion is the clearest deckbuilding hook."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "ETB makes each player lose 3 life, a small symmetrical drain effect that can support life-total pressure."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

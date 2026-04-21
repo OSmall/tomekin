@@ -1,0 +1,75 @@
+{
+  "oracle_id": "ec136f6f-015b-4200-97b6-a2c1bf39e135",
+  "name": "Butterbur, Bree Innkeeper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Repeatedly makes Food, a built-in life gain resource, giving steady lifegain support each end step if you lack one."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.79,
+        "reasoning_notes": "Creates Food artifact tokens, so it incidentally supports artifact-count or artifact-sacrifice shells."
+      },
+      {
+        "primary": false,
+        "category": "legendary",
+        "theme": "legendary matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Legendary supertype can matter in commander or legends-matter builds, but it's not part of its text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Repeatedly creates a Food token at each end step if you lack one, making it a steady token-generation engine."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Food tokens convert into life gain, so it reliably feeds lifegain decks even though the card itself does not gain life directly."
+      },
+      {
+        "primary": false,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Food is an artifact token, giving light support for artifact count or artifact-sacrifice synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

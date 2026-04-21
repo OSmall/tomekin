@@ -1,0 +1,35 @@
+{
+  "oracle_id": "50bc464e-1c8d-455c-a870-ddbbc4618343",
+  "name": "Pyre Charger",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap red haste creature with repeatable firebreathing; built to push early combat damage in aggressive decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Cheap red haste creature with repeatable firebreathing; built to push early combat damage in aggressive decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

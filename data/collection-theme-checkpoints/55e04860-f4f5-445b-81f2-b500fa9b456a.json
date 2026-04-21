@@ -1,0 +1,53 @@
+{
+  "oracle_id": "55e04860-f4f5-445b-81f2-b500fa9b456a",
+  "name": "Contaminated Ground",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Aura that enchants a land; most natural fit is Aura-matters, though it functions as disruptive utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Turns a land into a Swamp and punishes tapping it, acting as mana disruption and incremental pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Aura that enchants a land; most natural fit is Aura-matters, though it functions as disruptive utility."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Turns a land into a Swamp and punishes tapping it, acting as mana disruption and incremental pressure."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

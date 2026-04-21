@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4960c3a0-77ca-48d8-b565-6c5f1e6522cf",
+  "name": "Press for Answers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Sorcery-speed tap plus stun-for-a-turn effect buys time and pushes race-oriented interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Investigate creates a Clue that later cashes in for a card, giving small built-in card advantage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Sorcery-speed tap plus stun-for-a-turn effect buys time and pushes race-oriented interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Investigate creates a Clue that later cashes in for a card, giving small built-in card advantage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5bf93d4f-be59-4aa7-83d5-7c35d1f07fae",
+  "name": "Righteous Aura",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Repeatable damage prevention from any chosen source protects your life total and supports defensive, board-controlling play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Repeatable damage prevention from any chosen source protects your life total and supports defensive, board-controlling play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

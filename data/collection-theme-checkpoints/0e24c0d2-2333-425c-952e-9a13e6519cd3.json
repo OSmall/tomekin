@@ -1,0 +1,57 @@
+{
+  "oracle_id": "0e24c0d2-2333-425c-952e-9a13e6519cd3",
+  "name": "Ethereal Guidance",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "Team-wide +2/+1 sorcery rewards going wide and converts a board of multiple creatures into a combat kill push."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Cheap mass pump supports aggressive white creature decks by increasing burst damage for one attack step."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "One-shot team pump for all creatures is a classic go-wide finisher, turning a developed board into lethal combat damage."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Also fits white aggro as a burst-damage pump spell, but it is broader than dedicated aggro and best framed as go-wide support."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

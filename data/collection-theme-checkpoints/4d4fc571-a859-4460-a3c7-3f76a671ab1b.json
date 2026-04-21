@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4d4fc571-a859-4460-a3c7-3f76a671ab1b",
+  "name": "Siege Veteran",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.85,
+        "reasoning_notes": "Death trigger rewards Soldier density, specifically nontoken Soldiers, and replaces them with Soldier bodies for tribal decks."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Beginning-of-combat trigger puts a +1/+1 counter on a creature each turn, supporting counters plans."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Turns dead nontoken Soldiers into 1/1 Soldier artifact creature tokens, providing steady token generation."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

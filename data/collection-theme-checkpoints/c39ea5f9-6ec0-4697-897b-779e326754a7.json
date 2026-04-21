@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c39ea5f9-6ec0-4697-897b-779e326754a7",
+  "name": "Mahamoti Djinn",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Large blue flyer with no text beyond flying; its main deckbuilding fit is as an evasive airborne threat."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "A 5/6 evasive body for six mana can serve as a generic top-end threat, though it has no broader synergy text."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

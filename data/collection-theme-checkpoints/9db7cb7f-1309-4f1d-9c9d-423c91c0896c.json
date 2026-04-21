@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9db7cb7f-1309-4f1d-9c9d-423c91c0896c",
+  "name": "Vizkopa Confessor",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "ETB lets you pay life to look at cards from an opponent's hand and exile one, functioning as scalable hand disruption."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, giving incidental Orzhov drain value."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "discard",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "ETB lets you pay life to look at cards from an opponent's hand and exile one, functioning as scalable hand disruption."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain-drain",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.77,
+        "reasoning_notes": "Extort repeatedly drains each opponent and gains life whenever you cast spells, giving incidental Orzhov drain value."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

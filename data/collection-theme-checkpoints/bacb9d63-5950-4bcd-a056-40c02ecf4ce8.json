@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bacb9d63-5950-4bcd-a056-40c02ecf4ce8",
+  "name": "Hexplate Golem",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.69,
+        "reasoning_notes": "Colorless Artifact Creature with no other text; it mainly contributes to artifact count and generic artifact-matters synergies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

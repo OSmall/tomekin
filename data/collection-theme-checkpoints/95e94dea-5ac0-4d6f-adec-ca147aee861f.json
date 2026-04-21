@@ -1,0 +1,58 @@
+{
+  "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+  "name": "Ajani's Pridemate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Triggers on every life-gain event and grows with +1/+1 counters, a classic lifegain reward creature."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Its growth mechanism is repeated +1/+1 counter placement, so it naturally overlaps with counters synergies."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "lifegain",
+        "theme": "lifegain payoffs",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Directly rewards every life-gain event by growing, making it a textbook lifegain payoff creature."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Uses +1/+1 counters as its growth mechanism, but only on itself rather than broadly enabling counters strategies."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

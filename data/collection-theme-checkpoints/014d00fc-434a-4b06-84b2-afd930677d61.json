@@ -1,0 +1,35 @@
+{
+  "oracle_id": "014d00fc-434a-4b06-84b2-afd930677d61",
+  "name": "Oreskos Swiftclaw",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Efficient 2-drop with 3 power and no text; a straightforward low-curve attacker for aggressive decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Efficient 2-drop with 3 power and no text; a straightforward low-curve attacker for aggressive decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

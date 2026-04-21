@@ -1,0 +1,30 @@
+{
+  "oracle_id": "726ba167-9e7b-4d46-a52c-72d5a500aee2",
+  "name": "Sultai Skullkeeper",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "graveyard",
+        "theme": "self-mill",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "ETB mills two cards, primarily filling your own graveyard cheaply rather than providing board impact."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "mill",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.58,
+        "reasoning_notes": "It has the mill keyword, but only mills two on ETB and is usually used as self-mill setup, not dedicated opponent mill."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

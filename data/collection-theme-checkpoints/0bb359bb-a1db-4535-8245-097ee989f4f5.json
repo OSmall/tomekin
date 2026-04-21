@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0bb359bb-a1db-4535-8245-097ee989f4f5",
+  "name": "Grisly Transformation",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura that replaces itself on ETB; its core identity is efficient Aura support rather than broad enchantments-matter."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Grants intimidate, making one creature harder to block and helping connect in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Aura that replaces itself on ETB; its core identity is efficient Aura support rather than broad enchantments-matter."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Grants intimidate, making one creature harder to block and helping connect in combat."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

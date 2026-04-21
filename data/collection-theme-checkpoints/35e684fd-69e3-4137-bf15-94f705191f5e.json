@@ -1,0 +1,21 @@
+{
+  "oracle_id": "35e684fd-69e3-4137-bf15-94f705191f5e",
+  "name": "Murmuring Phantasm",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "Cheap 0/5 defender is a pure stall piece, mainly buying time for controlling decks rather than advancing combat themes."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

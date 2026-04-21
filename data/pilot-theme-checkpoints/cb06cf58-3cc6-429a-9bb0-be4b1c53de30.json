@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cb06cf58-3cc6-429a-9bb0-be4b1c53de30",
+  "name": "Baloth Pup",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Gets trample only while it has a +1/+1 counter, so it specifically rewards counter support rather than enabling it."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.92,
+        "reasoning_notes": "Gets trample only while it has a +1/+1 counter, so it specifically rewards counter support rather than enabling it."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "722f2965-a1ec-4b97-a4bd-b99364f58b1e",
+  "name": "Return to the Earth",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Instantly destroys a single artifact, enchantment, or flier; this is flexible targeted interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Instantly destroys a single artifact, enchantment, or flier; this is flexible targeted interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

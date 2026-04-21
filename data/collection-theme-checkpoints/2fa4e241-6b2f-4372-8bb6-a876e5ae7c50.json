@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2fa4e241-6b2f-4372-8bb6-a876e5ae7c50",
+  "name": "Graceblade Artisan",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Scales directly with each Aura attached to it, making it a dedicated Aura payoff body."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Rewards piling multiple Auras onto one creature, a classic Voltron play pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Scales directly with each Aura attached to it, making it a dedicated Aura payoff body."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Rewards piling multiple Auras onto one creature, a classic Voltron play pattern."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

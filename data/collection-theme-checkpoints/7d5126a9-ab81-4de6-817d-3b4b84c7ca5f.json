@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7d5126a9-ab81-4de6-817d-3b4b84c7ca5f",
+  "name": "Prismwake Merrow",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.6,
+        "reasoning_notes": "Flash lets it act at instant speed; temporary color-changing mainly enables tricky combat or narrow interaction windows."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

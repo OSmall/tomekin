@@ -1,0 +1,57 @@
+{
+  "oracle_id": "fab8c985-d7a9-41eb-9884-01128b97af5c",
+  "name": "Flaming Gambit",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.84,
+        "reasoning_notes": "Cheap scalable instant with flashback gives two spell casts and fits graveyard/spell-count decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.52,
+        "reasoning_notes": "Can remove a creature only if that player/controller redirects it, so removal use is real but unreliable."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Oracle text is scalable direct damage to a player or planeswalker; that is a clear burn card despite the optional creature redirection."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Flashback gives a second cast, so it modestly supports spell-count shells, but that is secondary to its direct-damage role."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

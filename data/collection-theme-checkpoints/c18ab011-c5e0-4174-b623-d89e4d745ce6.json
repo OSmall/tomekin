@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c18ab011-c5e0-4174-b623-d89e4d745ce6",
+  "name": "Mardu Scout",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Cheap 3/1 for {R}{R}; dash grants haste for immediate pressure, fitting low-curve aggressive decks."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "goblins",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Goblin typeline gives tribal relevance, but the card has no explicit Goblin synergy text."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.53,
+        "reasoning_notes": "Dash enables recurring hasty attacks while dodging sorcery-speed interaction, a minor tempo play pattern."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

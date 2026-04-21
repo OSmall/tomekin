@@ -1,0 +1,53 @@
+{
+  "oracle_id": "59b6bf51-d15d-4032-85ac-29b234b59fc9",
+  "name": "Cloud Manta",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "French-vanilla blue creature with flying; primarily contributes to flying/evasion-based creature plans."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Flying is a core evasive keyword, though the card has no broader text beyond being an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "French-vanilla blue creature with flying; primarily contributes to flying/evasion-based creature plans."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.87,
+        "reasoning_notes": "Flying is a core evasive keyword, though the card has no broader text beyond being an evasive body."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

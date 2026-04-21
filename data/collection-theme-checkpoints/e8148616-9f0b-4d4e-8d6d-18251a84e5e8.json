@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e8148616-9f0b-4d4e-8d6d-18251a84e5e8",
+  "name": "Foundry Street Denizen",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.93,
+        "reasoning_notes": "One-drop attacker that grows whenever another red creature enters, rewarding low-curve creature swarms and early combat pressure."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Best when multiple red creatures enter in a turn, especially token-heavy swarm turns that stack its temporary power boosts."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Goblin typing can matter in Goblin decks, though its rules text specifically cares about red creatures rather than Goblins."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

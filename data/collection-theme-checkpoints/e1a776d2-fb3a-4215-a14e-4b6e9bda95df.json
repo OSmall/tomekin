@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e1a776d2-fb3a-4215-a14e-4b6e9bda95df",
+  "name": "Hunter's Prowess",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "One-shot pump spell that boosts a creature for combat and rewards connecting; classic creature-combat support."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "If the creature hits a player, it draws cards equal to damage dealt, making the spell a major burst-draw effect."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "trample",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Explicitly grants trample, helping the creature push damage through and enable the draw trigger."
+      }
+    ],
+    "audit_reasons": [
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6b142a4a-769b-4e1b-aae6-ba6e11f35836",
+  "name": "Kinsbaile Skirmisher",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Cheap 2/2 that adds immediate temporary power on ETB, fitting low-curve combat pressure decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.67,
+        "reasoning_notes": "Its ETB grants +1/+1 until end of turn, functioning like a small body-attached combat trick."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

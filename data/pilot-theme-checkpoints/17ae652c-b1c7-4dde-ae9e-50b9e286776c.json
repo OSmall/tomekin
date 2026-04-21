@@ -1,0 +1,57 @@
+{
+  "oracle_id": "17ae652c-b1c7-4dde-ae9e-50b9e286776c",
+  "name": "Warpath Ghoul",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.64,
+        "reasoning_notes": "A rate-based 3/2 for three with no text; fits low-curve combat plans better than synergy-driven shells."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.34,
+        "reasoning_notes": "Zombie typing gives incidental tribal relevance, but it has no tribe-specific text or payoff function."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "Vanilla 3/2 for three contributes only as below-rate curve filler for straightforward attacking decks; no text creates stronger synergy themes."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.26,
+        "reasoning_notes": "Zombie creature type gives minimal tribal relevance, but with no Zombie-facing text it is only incidental tribe material."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

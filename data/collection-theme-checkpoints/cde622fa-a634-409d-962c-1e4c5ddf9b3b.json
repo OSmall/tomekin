@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cde622fa-a634-409d-962c-1e4c5ddf9b3b",
+  "name": "Gatstaf Arsonists // Gatstaf Ravagers",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.88,
+        "reasoning_notes": "Human Werewolf // Werewolf creature with transform; best home is Werewolf/tribal shells that care about the creature type."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Back face has menace, giving it a clear evasive combat angle once transformed."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

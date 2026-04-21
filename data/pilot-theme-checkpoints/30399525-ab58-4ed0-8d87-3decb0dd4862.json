@@ -1,0 +1,35 @@
+{
+  "oracle_id": "30399525-ab58-4ed0-8d87-3decb0dd4862",
+  "name": "Research Assistant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Repeatable looting ability ({3}{U}, {T}) provides slow card selection/card flow; fits card-draw engines more than discard-focused themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.93,
+        "reasoning_notes": "Repeatable looting ability ({3}{U}, {T}) provides slow card selection/card flow; fits card-draw engines more than discard-focused themes."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

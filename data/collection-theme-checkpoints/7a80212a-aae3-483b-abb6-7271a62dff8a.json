@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7a80212a-aae3-483b-abb6-7271a62dff8a",
+  "name": "Gandalf, White Rider",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "payoff",
+        "strength": 3,
+        "confidence": 0.9,
+        "reasoning_notes": "Triggers on every spell cast, team-pumping your board and adding scry, making it a clear spell-cast payoff."
+      },
+      {
+        "primary": false,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.74,
+        "reasoning_notes": "The global +1/+0 buff rewards having multiple creatures and converting repeated spell casts into wider-board pressure."
+      },
+      {
+        "primary": false,
+        "category": "legendary",
+        "theme": "legendary matters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.31,
+        "reasoning_notes": "Legendary supertype matters only marginally here; death replacement helps preserve a commander-gameplan presence."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "95649140-7978-4684-a1f1-af771e1d345a",
+  "name": "Nephalia Moondrakes",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Has flying, grants a creature flying on ETB, and later gives your whole team flying from graveyard for an evasive alpha strike."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "fliers",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Has flying, grants a creature flying on ETB, and later gives your whole team flying from graveyard for an evasive alpha strike."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

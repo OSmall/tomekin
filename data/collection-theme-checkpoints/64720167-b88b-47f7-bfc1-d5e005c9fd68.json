@@ -1,0 +1,30 @@
+{
+  "oracle_id": "64720167-b88b-47f7-bfc1-d5e005c9fd68",
+  "name": "Geier Reach Bandit // Vildin-Pack Alpha",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.96,
+        "reasoning_notes": "Werewolf-specific backside transforms Werewolves as they enter; this is a direct Werewolf tribal payoff/enabler on a Human Werewolf body."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.54,
+        "reasoning_notes": "Front face has haste, so it can support aggressive Werewolf curves, but its main value is tribal synergy rather than raw pressure."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

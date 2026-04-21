@@ -1,0 +1,39 @@
+{
+  "oracle_id": "de97ec82-d09d-440e-8c7d-a3f0fb552418",
+  "name": "Structural Collapse",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts / interaction",
+        "theme": "artifact hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Explicitly makes target player sacrifice an artifact, so it cleanly functions as artifact interaction."
+      },
+      {
+        "primary": false,
+        "category": "lands / interaction",
+        "theme": "land destruction",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.79,
+        "reasoning_notes": "Forces a player to sacrifice a land; this is primarily a land-denial sorcery with extra artifact pressure."
+      },
+      {
+        "primary": false,
+        "category": "interaction / direct damage",
+        "theme": "burn",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "The 2 damage rider is minor, but it does add direct damage to the spell's interaction package."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

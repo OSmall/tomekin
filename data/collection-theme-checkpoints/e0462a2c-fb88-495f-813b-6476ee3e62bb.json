@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e0462a2c-fb88-495f-813b-6476ee3e62bb",
+  "name": "Totally Lost",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant-speed top-of-library bounce sets opponent back a draw step and preserves tempo."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Answers any nonland permanent temporarily, fitting blue control as flexible delay interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Instant-speed top-of-library bounce sets opponent back a draw step and preserves tempo."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.75,
+        "reasoning_notes": "Answers any nonland permanent temporarily, fitting blue control as flexible delay interaction."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

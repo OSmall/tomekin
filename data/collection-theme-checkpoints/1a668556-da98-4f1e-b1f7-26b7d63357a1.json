@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1a668556-da98-4f1e-b1f7-26b7d63357a1",
+  "name": "Molting Snakeskin",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura that cheaply boosts one creature and grants regeneration; directly fits aura-centric decks."
+      },
+      {
+        "primary": false,
+        "category": "combat / single-creature",
+        "theme": "voltron",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Single-creature pump plus protection helps suit up and preserve a primary attacker."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "+2/+0 for one mana is an efficient offensive stat boost, though it is not broadly aggro-specific."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "54dd35ee-6f89-460d-9370-72bc3fa6840a",
+  "name": "Part the Waterveil",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "engine",
+        "strength": 3,
+        "confidence": 0.89,
+        "reasoning_notes": "Extra-turn sorcery is a classic control finisher/engine, buying a full turn cycle and often closing once ahead."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.68,
+        "reasoning_notes": "Awaken 6 adds six +1/+1 counters to a land, giving incidental counters synergy when cast for its awaken cost."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  }
+}

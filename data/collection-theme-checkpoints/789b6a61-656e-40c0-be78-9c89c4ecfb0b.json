@@ -1,0 +1,35 @@
+{
+  "oracle_id": "789b6a61-656e-40c0-be78-9c89c4ecfb0b",
+  "name": "Smoldering Efreet",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Cheap 2/2 for {1}{R} fits low-curve beatdown; the death trigger is a drawback that pushes attacking over blocking or attrition play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Cheap 2/2 for {1}{R} fits low-curve beatdown; the death trigger is a drawback that pushes attacking over blocking or attrition play."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

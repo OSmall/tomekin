@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531",
+  "name": "Swiftwater Cliffs",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Tapped dual land that adds {U} or {R}; its main deckbuilding role is color smoothing for Izzet decks."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.74,
+        "reasoning_notes": "Enters and gains 1 life, a minor but real lifegain rider common to gainlands."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

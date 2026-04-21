@@ -1,0 +1,71 @@
+{
+  "oracle_id": "c96402dc-1509-4136-bbfd-c86a85e3ee6f",
+  "name": "Swarming of Moria",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Makes a Treasure token and usually an Orc Army token via amass, directly contributing multiple token bodies/types."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.91,
+        "reasoning_notes": "Creates a Treasure token, giving one-shot mana acceleration and color fixing."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Amass Orcs 2 places +1/+1 counters on an Army, fitting counters support more than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.94,
+        "reasoning_notes": "Makes a Treasure token and usually an Orc Army token via amass, directly contributing multiple token bodies/types."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 1,
+        "confidence": 0.91,
+        "reasoning_notes": "Creates a Treasure token, giving one-shot mana acceleration and color fixing."
+      },
+      {
+        "primary": false,
+        "category": "counters",
+        "theme": "+1/+1 counters",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.83,
+        "reasoning_notes": "Amass Orcs 2 places +1/+1 counters on an Army, fitting counters support more than a dedicated payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

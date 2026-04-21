@@ -1,0 +1,55 @@
+{
+  "oracle_id": "467c9fe6-d1d3-4242-bc0c-e522b4f21d56",
+  "name": "Landroval, Horizon Witness",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Triggers when two or more creatures attack, directly rewarding multi-creature combat patterns typical of go-wide decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Gives a nonflying attacker temporary flying, adding evasion to push damage through in combat."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "go-wide",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Attacks trigger requires two or more creatures attacking, directly rewarding multi-creature combat plans."
+      },
+      {
+        "primary": false,
+        "category": "combat",
+        "theme": "evasion",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "It grants a nonflying attacker flying until end of turn, helping push combat damage through blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1950067a-cc57-42a8-b1ee-f03e1b50591b",
+  "name": "Vector Asp",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability grants infect on demand, making it a cheap poison/-1/-1 counter enabler rather than a generic artifact card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "poison",
+        "theme": "infect / proliferate",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Activated ability grants infect on demand, making it a cheap poison/-1/-1 counter enabler rather than a generic artifact card."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

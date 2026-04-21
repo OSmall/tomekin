@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ad2e4ab0-d990-472d-8788-3f85215da51c",
+  "name": "Mark for Death",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Forces a single blocker and prevents all others from blocking, functioning as a sorcery-speed alpha-strike evasion piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Forces a single blocker and prevents all others from blocking, functioning as a sorcery-speed alpha-strike evasion piece."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

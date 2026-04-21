@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d2567448-f8a5-4bf3-9804-f5aac3b645ce",
+  "name": "Jund Battlemage",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Repeatable {G},{T} makes 1/1 Saprolings, giving steady token production from a creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tokens",
+        "theme": "tokens",
+        "role": "engine",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Repeatable {G},{T} makes 1/1 Saprolings, giving steady token production from a creature."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d578ef54-6a6b-4839-a059-261728fdaef1",
+  "name": "Fate Foretold",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "ETB draws a card immediately, making this a cantripping Aura more than an Aura-synergy payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It is an Aura and can trigger Aura/enchantress-style synergies, but its text mainly supports drawing cards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "card draw",
+        "role": "draw",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "ETB draws a card immediately, making this a cantripping Aura more than an Aura-synergy payoff."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.78,
+        "reasoning_notes": "It is an Aura and can trigger Aura/enchantress-style synergies, but its text mainly supports drawing cards."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

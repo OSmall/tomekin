@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7cdeecb5-354a-4a6c-989f-d8c9554befb7",
+  "name": "Fleshpulper Giant",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.91,
+        "reasoning_notes": "ETB can destroy a small creature, making it a creature-based removal piece more than a dedicated threat."
+      },
+      {
+        "primary": false,
+        "category": "midrange",
+        "theme": "midrange threats",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.39,
+        "reasoning_notes": "A 7-mana 4/4 with attached ETB value can play as a clunky top-end body, but the removal mode is the clearer identity."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "ETB destroys a creature with toughness 2 or less; this is clearly a conditional removal creature, not a real midrange-theme payoff."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

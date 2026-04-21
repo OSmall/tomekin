@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6b19377c-f178-49cb-95f8-fd3451acc7cf",
+  "name": "Angelic Benediction",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Exalted rewards attacking with one creature, and the attack trigger taps a blocker to push damage and swing combat tempo."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.8,
+        "reasoning_notes": "Exalted rewards attacking with one creature, and the attack trigger taps a blocker to push damage and swing combat tempo."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bd9e416a-89b3-4912-be9b-49fce6a93dc9",
+  "name": "Manalith",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Three-mana artifact that taps for any color; classic generic mana acceleration and fixing piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Adds one mana of any color, supporting multicolor costs more than any other synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "ramp",
+        "role": "ramp",
+        "strength": 2,
+        "confidence": 0.98,
+        "reasoning_notes": "Three-mana artifact that taps for any color; classic generic mana acceleration and fixing piece."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.96,
+        "reasoning_notes": "Adds one mana of any color, supporting multicolor costs more than any other synergy."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

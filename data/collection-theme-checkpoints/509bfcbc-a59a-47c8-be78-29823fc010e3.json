@@ -1,0 +1,53 @@
+{
+  "oracle_id": "509bfcbc-a59a-47c8-be78-29823fc010e3",
+  "name": "Ray of Dissolution",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instantly destroys a target enchantment; the life gain is incidental to its main role."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Gains 3 life on resolution, but this is a small rider rather than the card's main game plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments / interaction",
+        "theme": "enchantment hate",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Instantly destroys a target enchantment; the life gain is incidental to its main role."
+      },
+      {
+        "primary": false,
+        "category": "lifegain",
+        "theme": "lifegain",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.76,
+        "reasoning_notes": "Gains 3 life on resolution, but this is a small rider rather than the card's main game plan."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

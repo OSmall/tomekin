@@ -1,0 +1,71 @@
+{
+  "oracle_id": "bc540259-459d-4561-9268-c4f323ea62d2",
+  "name": "Order // Chaos",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Chaos is an unblockable alpha-strike effect; this most cleanly supports aggressive combat-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Order exiles a single attacking creature at instant speed, functioning as narrow spot removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Both modes swing combat for a turn, either removing one attacker or forcing damage through immediately."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Chaos is an unblockable alpha-strike effect; this most cleanly supports aggressive combat-focused decks."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Order exiles a single attacking creature at instant speed, functioning as narrow spot removal."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.76,
+        "reasoning_notes": "Both modes swing combat for a turn, either removing one attacker or forcing damage through immediately."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

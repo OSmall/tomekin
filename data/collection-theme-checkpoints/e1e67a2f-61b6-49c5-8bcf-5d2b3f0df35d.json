@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e1e67a2f-61b6-49c5-8bcf-5d2b3f0df35d",
+  "name": "Bog Tatters",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Swampwalk makes it unblockable vs Swamp decks, so its main deckbuilding relevance is conditional evasion."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Swampwalk makes it unblockable vs Swamp decks, so its main deckbuilding relevance is conditional evasion."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

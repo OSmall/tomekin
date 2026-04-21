@@ -1,0 +1,57 @@
+{
+  "oracle_id": "fb901095-2ea4-4b9e-ad5a-2892894dc4c3",
+  "name": "Unstable Footing",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "Cheap red instant that pushes lethal by stopping prevention; kicked mode adds 5 face damage, fitting aggressive burn-close games."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.63,
+        "reasoning_notes": "Its main text counters damage prevention effects for the turn, a narrow but relevant combat/damage-stack trick."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "combat",
+        "theme": "aggro",
+        "role": "finisher",
+        "strength": 2,
+        "confidence": 0.83,
+        "reasoning_notes": "Kicked mode is direct face damage, and the prevention-hosing text mainly helps aggressive red decks push lethal through Fog-style effects."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "combat tricks",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.46,
+        "reasoning_notes": "Preventing all damage prevention can function as a narrow anti-Fog combat trick, but that use is situational rather than a core theme pull."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

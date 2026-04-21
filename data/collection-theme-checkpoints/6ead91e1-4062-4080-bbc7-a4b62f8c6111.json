@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6ead91e1-4062-4080-bbc7-a4b62f8c6111",
+  "name": "Cavern Lampad",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 3,
+        "confidence": 0.93,
+        "reasoning_notes": "Bestow lets it function as an Aura that buffs a creature with +2/+2 and grants intimidate."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.89,
+        "reasoning_notes": "Native intimidate and granted intimidate make it a clear evasion piece for pushing damage."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "enchantments matter",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.67,
+        "reasoning_notes": "As an enchantment creature with Bestow, it naturally slots into enchantment-synergy shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Bestow makes it a real Aura option, but it is mostly a rate/flex card rather than a dedicated Aura payoff or major build-around."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Both creature and bestowed modes provide intimidate, so it consistently helps one threat push damage through blockers."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

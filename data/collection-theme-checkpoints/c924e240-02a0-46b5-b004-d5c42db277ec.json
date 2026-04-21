@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c924e240-02a0-46b5-b004-d5c42db277ec",
+  "name": "Blinding Drone",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Repeatable tap ability acts as board control/creature lockdown if colorless mana is available."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Cheap body that repeatedly taps blockers or attackers to buy time and swing combat tempo."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Repeatable tap ability acts as board control/creature lockdown if colorless mana is available."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Cheap body that repeatedly taps blockers or attackers to buy time and swing combat tempo."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

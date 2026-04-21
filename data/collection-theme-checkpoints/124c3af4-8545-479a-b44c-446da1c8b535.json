@@ -1,0 +1,30 @@
+{
+  "oracle_id": "124c3af4-8545-479a-b44c-446da1c8b535",
+  "name": "Woodcaller Automaton",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "artifacts",
+        "theme": "artifacts",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.92,
+        "reasoning_notes": "Artifact creature with prototype; most natural home is artifact-focused decks that want artifact bodies and synergies."
+      },
+      {
+        "primary": false,
+        "category": "mana",
+        "theme": "lands matter",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.73,
+        "reasoning_notes": "ETB untaps and animates one of your lands into a hasty Treefolk, giving it a direct land-centric play pattern."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

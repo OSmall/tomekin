@@ -1,0 +1,30 @@
+{
+  "oracle_id": "59f57c25-ebb7-49df-8cdd-c6f069d1358d",
+  "name": "Koth's Courier",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Forestwalk makes it unblockable against players with a Forest, fitting conditional evasion more than generic aggro."
+      },
+      {
+        "primary": false,
+        "category": "combat / aggressive creatures",
+        "theme": "aggro",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.53,
+        "reasoning_notes": "A 3-mana 2/3 with landwalk can chip in reliably, but its stats are modest and it is mainly an evasive attacker."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}

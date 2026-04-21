@@ -1,0 +1,64 @@
+{
+  "oracle_id": "b9ba00f2-b11c-45d8-9c38-f9ade5d07d0f",
+  "name": "Elusive Spellfist",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Triggers on every noncreature spell, rewarding a spell-heavy deck with repeatable combat pressure."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.86,
+        "reasoning_notes": "Those same spell casts make it unblockable for the turn, turning spells into reliable evasive damage."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "payoff",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Cheap threat that converts low-cost noncreature spells into immediate pressure, fitting tempo play patterns."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "spells",
+        "theme": "prowess / spell-matter",
+        "role": "enabler",
+        "strength": 3,
+        "confidence": 0.95,
+        "reasoning_notes": "Directly rewards each noncreature spell with repeatable power boost, making it a clean spell-matter attacker."
+      },
+      {
+        "primary": false,
+        "category": "evasive creatures",
+        "theme": "evasion",
+        "role": "payoff",
+        "strength": 2,
+        "confidence": 0.9,
+        "reasoning_notes": "Each noncreature spell also makes it unblockable for the turn, turning spell chains into reliable combat damage."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

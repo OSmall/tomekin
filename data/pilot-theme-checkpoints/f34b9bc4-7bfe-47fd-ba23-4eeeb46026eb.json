@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+  "name": "Lightning Strike",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.99,
+        "reasoning_notes": "Cheap instant that deals 3 to any target; classic burn-based creature removal with player/planeswalker reach."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.66,
+        "reasoning_notes": "Low-cost instant contributes to spell count and triggers for spell-matter shells, but its main job is removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.97,
+        "reasoning_notes": "Two-mana instant that deals 3 to any target; primarily efficient burn-based removal with some face reach."
+      },
+      {
+        "primary": false,
+        "category": "spells",
+        "theme": "spellslinger",
+        "role": "enabler",
+        "strength": 1,
+        "confidence": 0.72,
+        "reasoning_notes": "Cheap instant modestly supports spell-count and cast-trigger shells, but that is clearly secondary to removal."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence",
+      "high_impact"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

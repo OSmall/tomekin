@@ -1,0 +1,57 @@
+{
+  "oracle_id": "541c6564-ec39-4b14-8c02-dd6a5d122ed3",
+  "name": "Debtor's Pulpit",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.85,
+        "reasoning_notes": "Repeatable tap effect on a land lets white decks lock down attackers or blockers over multiple turns."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.41,
+        "reasoning_notes": "It is an Aura, though it supports Aura synergies less than creature-focused Aura plans."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.78,
+        "reasoning_notes": "Grants a land repeatable creature tapping, supporting board control over combat across multiple turns."
+      },
+      {
+        "primary": false,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.56,
+        "reasoning_notes": "It is an Aura, but enchanting a land makes it only a light fit for dedicated Aura synergy decks."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

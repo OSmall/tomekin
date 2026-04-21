@@ -1,0 +1,35 @@
+{
+  "oracle_id": "169705c3-32c1-4628-b108-c37ca5f27e24",
+  "name": "Ruin Ghost",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatedly exiles and returns your own land, reliably retriggering landfall and land ETB abilities."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "landfall",
+        "role": "enabler",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Repeatedly exiles and returns your own land, reliably retriggering landfall and land ETB abilities."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

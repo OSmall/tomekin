@@ -1,0 +1,57 @@
+{
+  "oracle_id": "567b676b-54f3-44c7-8654-4d2b0262ea12",
+  "name": "Banishment Decree",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.95,
+        "reasoning_notes": "Instant-speed library bounce removes a permanent and time-walks the redraw, fitting tempo interaction."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.71,
+        "reasoning_notes": "Broad instant answer to artifact, creature, or enchantment supports reactive control shells."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "control",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.82,
+        "reasoning_notes": "Instant-speed tuck for an artifact, creature, or enchantment is broad reactive interaction that fits control more than proactive shells."
+      },
+      {
+        "primary": false,
+        "category": "interaction",
+        "theme": "tempo",
+        "role": "interaction",
+        "strength": 1,
+        "confidence": 0.62,
+        "reasoning_notes": "Putting a permanent on top of library denies the next draw, but at five mana the tempo angle is real yet limited."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

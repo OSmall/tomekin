@@ -1,0 +1,35 @@
+{
+  "oracle_id": "361f534b-39d1-4421-b5a8-d3813c62f86d",
+  "name": "Rakdos Guildgate",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Produces either {B} or {R}; tapped dual land mainly supports two-color mana consistency."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "mana",
+        "theme": "mana fixing",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.99,
+        "reasoning_notes": "Produces either {B} or {R}; tapped dual land mainly supports two-color mana consistency."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

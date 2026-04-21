@@ -1,0 +1,39 @@
+{
+  "oracle_id": "22ff4e16-5c66-4076-94cc-32c281d42f03",
+  "name": "Mindless Null",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.7,
+        "reasoning_notes": "Its only relevant text is Vampire-matters tribal gating; otherwise it's just an inefficient Zombie creature with no broader synergy."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "tribal",
+        "theme": "tribal",
+        "role": "support",
+        "strength": 1,
+        "confidence": 0.35,
+        "reasoning_notes": "Only tribal hook is a Vampire check that removes its blocking restriction; it is not a Zombie payoff and offers merely incidental tribal relevance."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": [],
+    "audited": true
+  }
+}

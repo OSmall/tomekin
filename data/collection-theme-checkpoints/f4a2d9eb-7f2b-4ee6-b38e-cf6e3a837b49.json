@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f4a2d9eb-7f2b-4ee6-b38e-cf6e3a837b49",
+  "name": "Vineweft",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura that cheaply buffs a creature; its card type and enchant-creature text make it a clear auras piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Activated ability returns itself from graveyard to hand, giving repeatable recursion for aura-based decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": []
+  },
+  "final": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "enchantments",
+        "theme": "auras",
+        "role": "support",
+        "strength": 2,
+        "confidence": 0.97,
+        "reasoning_notes": "Aura that cheaply buffs a creature; its card type and enchant-creature text make it a clear auras piece."
+      },
+      {
+        "primary": false,
+        "category": "graveyard",
+        "theme": "graveyard recursion",
+        "role": "engine",
+        "strength": 1,
+        "confidence": 0.86,
+        "reasoning_notes": "Activated ability returns itself from graveyard to hand, giving repeatable recursion for aura-based decks."
+      }
+    ],
+    "audit_reasons": [],
+    "proposed_themes": [],
+    "audited": false
+  }
+}

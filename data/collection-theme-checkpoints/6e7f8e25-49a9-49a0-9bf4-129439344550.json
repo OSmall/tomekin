@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6e7f8e25-49a9-49a0-9bf4-129439344550",
+  "name": "Homing Lightning",
+  "first_pass": {
+    "themes": [
+      {
+        "primary": true,
+        "category": "interaction",
+        "theme": "spot removal",
+        "role": "interaction",
+        "strength": 3,
+        "confidence": 0.98,
+        "reasoning_notes": "Instant that deals 4 to a target creature; primary use is efficient creature removal."
+      },
+      {
+        "primary": false,
+        "category": "tribal",
+        "theme": "tribal hate",
+        "role": "interaction",
+        "strength": 2,
+        "confidence": 0.72,
+        "reasoning_notes": "It also hits each creature with the same name, punishing token swarms or same-name creature clusters."
+      }
+    ],
+    "audit_reasons": [
+      "low_confidence"
+    ],
+    "proposed_themes": []
+  }
+}
