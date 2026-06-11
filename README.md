@@ -9,7 +9,11 @@ The project is a collection-first deck builder. The MVP emphasises Commander/EDH
 - [`CONTEXT.md`](./CONTEXT.md): canonical glossary and domain language.
 - [`docs/product-scope.md`](./docs/product-scope.md): product promise, scope boundaries, format direction, and non-goals.
 - [`docs/mvp.md`](./docs/mvp.md): MVP workflow, deck-building behaviour, capability boundaries, and output expectations.
+- [`docs/architecture.md`](./docs/architecture.md): current architecture direction, portability philosophy, and unresolved technology decisions.
+- [`docs/data-model.md`](./docs/data-model.md): persisted records and relationships for the MVP data model.
+- [`docs/design-branches.md`](./docs/design-branches.md): unresolved design branches to resume later.
 - [`docs/future-direction.md`](./docs/future-direction.md): deferred scope and likely future product directions.
+- [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 
 ## Documentation Ownership
 
@@ -21,4 +25,4 @@ The project is a collection-first deck builder. The MVP emphasises Commander/EDH
 
 ## Current Status
 
-This repository is in product definition. Technology, architecture, storage, runtime, user interface, and deployment decisions are intentionally deferred until requirements are clearer.
+This repository is in product definition. The first architecture direction is to deliver the MVP as local opencode tooling over a portable TypeScript core running on Bun. Further storage, user interface, and deployment decisions remain deferred until requirements are clearer.

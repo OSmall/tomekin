@@ -8,6 +8,10 @@ This context describes the language of a collection-first MTG deck-building assi
 The user's owned MTG cards, including cards stored loose and cards currently assigned to decks. A Collection may include quantities, printings, condition, finish, language, purchase details, and location where known.
 _Avoid_: Wishlist, card pool, inventory, library
 
+**Collection Location**:
+A named place or grouping from source collection data where owned cards are recorded, such as a binder, box, or Existing Deck. A Collection Location may affect Availability when the Collection Access Policy allows, protects, or excludes that location.
+_Avoid_: Container, source group
+
 **Availability**:
 Whether an owned card can be used in a proposed deck without taking it from another deck. Availability is distinct from ownership.
 _Avoid_: Ownership

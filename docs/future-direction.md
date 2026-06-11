@@ -76,6 +76,8 @@ Future protected-card workflows may cover sentimental, display, trade, high-valu
 
 ## Technology And Architecture
 
-Programming language, runtime, database, AI model provider, agent framework, repository architecture, user interface shape, hosting, and deployment strategy remain deferred.
+The MVP will start as local opencode tooling over a TypeScript portable core running on Bun. This keeps the first implementation quick while preserving a path to a later web-based, multi-user hosted product.
+
+Database, AI model provider, repository architecture, user interface shape, hosting, and deployment strategy remain otherwise deferred.
 
 Those decisions should be made when the product requirements are clearer.
