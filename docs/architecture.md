@@ -33,6 +33,7 @@ Persisted records and relationships are documented in [`data-model.md`](./data-m
 - **External card data**: explicit local Scryfall sync; no automatic background sync in the MVP.
 - **Toolchain installation**: Bun should be installable through mise for local development.
 - **Runtime posture**: Bun is a first-class project dependency, not only a convenience wrapper around Node.js workflows.
+- **Testing posture**: `bun test` is the default test runner. Testing behaviour and TDD expectations are documented in [`testing.md`](./testing.md).
 
 ## Repository Shape
 
@@ -61,5 +62,5 @@ The following decisions have not been resolved yet:
 
 - LLM orchestration boundary.
 - External MTG data refresh cadence and caching strategy.
-- Testing strategy.
+- Fixture shape and first import test cases.
 - Deployment shape for any future hosted product.

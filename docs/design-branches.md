@@ -39,7 +39,6 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Testing
 
-- Define unit, integration, and golden-test strategy.
 - Create small ManaBox CSV fixtures.
 - Create Scryfall bulk-data subset fixtures for `oracle_cards`, `all_cards`, and Oracle Tags.
 - Test import failure behavior, transactionality, computed Availability, generated Portable Decklists, and agent-facing Markdown shape.

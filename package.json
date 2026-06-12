@@ -1,0 +1,16 @@
+{
+  "name": "mtg-agent",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}

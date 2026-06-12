@@ -1,0 +1,17 @@
+{
+  "name": "@mtg-agent/opencode",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@mtg-agent/core": "workspace:*",
+    "@mtg-agent/sqlite": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}
