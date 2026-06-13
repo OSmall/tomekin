@@ -1,18 +1,16 @@
-import { err, ok, type Result } from "neverthrow";
+import { err, type Result } from "neverthrow";
 import { z } from "zod";
+import {
+  createScryfallSyncServices,
+  type Clock,
+  type ImportStatus,
+  type ScryfallSyncError,
+  type ScryfallSyncRequest,
+  type ScryfallSyncSummary,
+} from "./scryfall-sync";
 
 export const CollectionSourceFormatSchema = z.literal("manabox_collection_csv");
 export type CollectionSourceFormat = z.infer<typeof CollectionSourceFormatSchema>;
-
-export const ScryfallBulkDataTypeSchema = z.enum([
-  "oracle_cards",
-  "all_cards",
-  "oracle_tags",
-]);
-export type ScryfallBulkDataType = z.infer<typeof ScryfallBulkDataTypeSchema>;
-
-export const ImportStatusSchema = z.enum(["succeeded", "failed"]);
-export type ImportStatus = z.infer<typeof ImportStatusSchema>;
 
 export const ManaBoxCollectionImportRequestSchema = z.object({
   sourceFormat: CollectionSourceFormatSchema,
@@ -23,11 +21,6 @@ export type ManaBoxCollectionImportRequest = z.infer<
   typeof ManaBoxCollectionImportRequestSchema
 >;
 
-export const ScryfallSyncRequestSchema = z.object({
-  bulkDataTypes: z.array(ScryfallBulkDataTypeSchema).min(1),
-});
-export type ScryfallSyncRequest = z.infer<typeof ScryfallSyncRequestSchema>;
-
 export type ImportServiceError =
   | {
       type: "validation_failed";
@@ -37,7 +30,8 @@ export type ImportServiceError =
   | {
       type: "not_implemented";
       message: string;
-    };
+    }
+  | ScryfallSyncError;
 
 export type ImportSummary = {
   readonly status: ImportStatus;
@@ -53,19 +47,6 @@ export type ImportSummary = {
   readonly warnings: readonly string[];
 };
 
-export type ScryfallSyncSummary = {
-  readonly status: ImportStatus;
-  readonly syncedAt: Date;
-  readonly bulkDataTypes: readonly ScryfallBulkDataType[];
-  readonly importedRecordCounts: Readonly<Record<ScryfallBulkDataType, number>>;
-  readonly validationErrors: readonly string[];
-  readonly warnings: readonly string[];
-};
-
-export type Clock = {
-  now(): Date;
-};
-
 export type ImportFoundationServices = {
   importManaBoxCollection(
     request: ManaBoxCollectionImportRequest,
@@ -76,6 +57,18 @@ export type ImportFoundationServices = {
 };
 
 export function createImportFoundationServices(clock: Clock): ImportFoundationServices {
+  const scryfallSyncServices = createScryfallSyncServices(
+    {
+      async getLatestSuccessfulBulkDataImport() {
+        return err({
+          type: "repository_error",
+          message: "Scryfall repository is not configured.",
+        });
+      },
+    },
+    clock,
+  );
+
   return {
     async importManaBoxCollection(request) {
       const parsed = ManaBoxCollectionImportRequestSchema.safeParse(request);
@@ -92,26 +85,7 @@ export function createImportFoundationServices(clock: Clock): ImportFoundationSe
     },
 
     async syncScryfallData(request) {
-      const parsed = ScryfallSyncRequestSchema.safeParse(request);
-
-      if (!parsed.success) {
-        return err(toValidationError(parsed.error));
-      }
-
-      return ok({
-        status: "failed",
-        syncedAt: clock.now(),
-        bulkDataTypes: parsed.data.bulkDataTypes,
-        importedRecordCounts: {
-          oracle_cards: 0,
-          all_cards: 0,
-          oracle_tags: 0,
-        },
-        validationErrors: [
-          "Scryfall bulk data download, validation, and persistence are not implemented yet.",
-        ],
-        warnings: [],
-      });
+      return scryfallSyncServices.syncScryfallData(request);
     },
   };
 }

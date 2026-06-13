@@ -39,6 +39,7 @@
       "dependencies": {
         "@mtg-agent/core": "workspace:*",
         "drizzle-orm": "latest",
+        "neverthrow": "latest",
       },
       "devDependencies": {
         "@types/bun": "latest",

@@ -44,3 +44,31 @@ export const scryfallBulkDataImports = sqliteTable("scryfall_bulk_data_imports",
     .notNull()
     .default(sql`'[]'`),
 });
+
+export const cardIdentities = sqliteTable("card_identities", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  manaCost: text("mana_cost"),
+  typeLine: text("type_line").notNull(),
+  oracleText: text("oracle_text"),
+  colorIdentityJson: text("color_identity_json", { mode: "json" })
+    .notNull()
+    .default(sql`'[]'`),
+  commanderLegality: text("commander_legality", {
+    enum: ["legal", "not_legal", "banned", "restricted"],
+  }),
+});
+
+export const cardPrintings = sqliteTable("card_printings", {
+  id: text("id").primaryKey(),
+  cardIdentityId: text("card_identity_id")
+    .notNull()
+    .references(() => cardIdentities.id),
+  name: text("name").notNull(),
+  setCode: text("set_code").notNull(),
+  collectorNumber: text("collector_number").notNull(),
+  finishesJson: text("finishes_json", { mode: "json" })
+    .notNull()
+    .default(sql`'[]'`),
+  language: text("language"),
+});
