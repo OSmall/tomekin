@@ -108,7 +108,7 @@ ManaBox import tests should use small package-local fixtures and must not call l
 
 Scryfall sync should have its own tested done bar before ManaBox Collection import is considered complete.
 
-Scryfall sync tests should prove successful and failed `ScryfallBulkDataImport` attempts are recorded, failed sync preserves the last usable dataset, `oracle_cards` imports before `all_cards`, `all_cards` rows reference existing `OracleCard` rows, and operations that need card identity fail clearly when required Scryfall datasets are missing.
+Scryfall sync tests should prove successful and failed `ScryfallBulkDataImport` attempts are recorded, failed sync preserves the last usable dataset, `oracle_cards` imports before `all_cards`, `all_cards` rows reference existing `CardIdentity` rows, and operations that need card identity fail clearly when required Scryfall datasets are missing.
 
 Scryfall sync tests should use small package-local Scryfall fixtures, not real Scryfall bulk data files. Real Scryfall bulk files are too large for ordinary tests and must not be required by `bun test`.
 

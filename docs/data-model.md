@@ -11,13 +11,13 @@ The data model should preserve the product boundary between the user's Collectio
 - Keep Deck Candidates separate from Collection state until the user updates their source collection system and reimports.
 - Use repository interfaces from the portable core so SQLite and Drizzle do not leak into service contracts.
 - Prefer relational records for deck cards and collection cards where relationships, refresh, and querying matter.
-- Preserve Scryfall's distinction between print-specific card records and Oracle card records.
+- Preserve the distinction between print-specific card records and canonical card identities without making the domain model Scryfall-specific.
 
 ## Store Versus Compute
 
 The MVP should store agent decisions, user inputs, source data, and rationale. It should compute current factual status from those stored inputs.
 
-Store records and fields that answer what was decided, imported, synced, or explained at the time: Deck Opportunities, Deck Candidates, Deck Candidate cards, Deck Building Briefs, Collection imports, Scryfall bulk data imports, current Collection rows, Scryfall card data, Oracle card tags, and Markdown rationale.
+Store records and fields that answer what was decided, imported, synced, or explained at the time: Deck Opportunities, Deck Candidates, Deck Candidate cards, Deck Building Briefs, Collection imports, Scryfall bulk data imports, current Collection rows, card reference data, Card Identity Tags, and Markdown rationale.
 
 Compute outputs that answer what is true now: Availability, Available Cards, Committed Cards, Missing Cards, Collection Status, Collection Pull Lists, freshness status, and legality assessment.
 
@@ -27,7 +27,9 @@ This keeps saved agent decisions stable while allowing current facts to change w
 
 Product records should use internal UUIDv7 identifiers. UUIDv7 keeps identifiers globally unique while preserving creation-time ordering as part of the identifier.
 
-Scryfall-derived records should use Scryfall's identifiers as their record IDs. `ScryfallCard` should use the Scryfall card ID, and `OracleCard` should use the Scryfall oracle ID.
+Scryfall-derived reference records should use Scryfall's identifiers as their record IDs. `CardPrinting` should use the Scryfall card ID, `CardIdentity` should use the Scryfall oracle ID, and `CardIdentityTag` should use the Scryfall tag ID.
+
+Physical table and relationship column names should use source-neutral model names, such as `card_printings`, `card_identities`, `card_identity_tags`, `card_identity_taggings`, and `card_identity_tag_hierarchy`. Source-specific values should remain where they are external protocol values, such as `ScryfallBulkDataImport.bulkDataType` values of `oracle_cards`, `all_cards`, and `oracle_tags`.
 
 Other external source identifiers should be preserved as separate fields, such as ManaBox IDs where available. External IDs should not replace internal product record IDs.
 
@@ -72,30 +74,31 @@ It is the collection-owned record, not the canonical card definition. It should 
 Relationships:
 
 - A `CollectionCard` belongs to one `CollectionLocation`.
-- A `CollectionCard` references one `ScryfallCard` for the specific imported card or printing.
-- Multiple `CollectionCard` records may reference the same `ScryfallCard` when the user owns the same printing in multiple locations or source rows.
+- A `CollectionCard` references one `CardPrinting` for the specific imported card or printing through `card_printing_id`.
+- Multiple `CollectionCard` records may reference the same `CardPrinting` when the user owns the same printing in multiple locations or source rows.
+- `CollectionCard` should not also store `card_identity_id`; Card Identity is derived through `CardPrinting`.
 
-### ScryfallCard
+### CardPrinting
 
-`ScryfallCard` represents a Scryfall card record, including print-specific card data where Scryfall models a card at that level.
+`CardPrinting` represents a source-backed record for a specific printed or print-like version of a card.
 
-It is Scryfall source data, not an owned collection row. It may include Scryfall card ID, oracle ID, name, set, collector number, rarity, image data, prices, and other Scryfall fields useful for resolving imported collection rows and displaying exact printings.
+It is source reference data, not an owned collection row. It should include only source fields directly needed for resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`, the related Card Identity as `card_identity_id`, source printing name, set code, collector number, finish-related data, and language. Source-specific URI fields should be omitted unless a concrete display or debugging need appears.
 
-Scryfall card data should be loaded through a separate explicit sync/import path, not as a side effect of ManaBox Collection import. The MVP should use Scryfall's All Cards bulk data export so ManaBox rows can resolve by Scryfall ID to exact `ScryfallCard` records. ManaBox import should resolve rows against local `ScryfallCard` and `OracleCard` records. If required Scryfall data is missing or a card cannot be resolved, Collection import should fail clearly rather than continuing with uncertain card identity.
+Scryfall card data should be loaded through a separate explicit sync/import path, not as a side effect of ManaBox Collection import. The MVP should use Scryfall's All Cards bulk data export so ManaBox rows can resolve by Scryfall ID to exact `CardPrinting` records. ManaBox import should resolve rows against local `CardPrinting` and `CardIdentity` records. If required Scryfall data is missing or a card cannot be resolved, Collection import should fail clearly rather than continuing with uncertain card identity.
 
 The MVP should provide an explicit local sync tool for Scryfall data. It should not run automatic background Scryfall syncs or make hidden network calls during normal deck-building or Collection import.
 
-The default Scryfall sync path should sync the required and recommended bulk datasets together in dependency order: `oracle_cards`, then `all_cards`, then Oracle Tags. The sync tool may also support syncing a single bulk data type for repair or debugging. Singular imports should fail fast when foreign-key dependencies are missing or mismatched. Each bulk data type should create its own `ScryfallBulkDataImport` record, and a failed import of one type should preserve the last usable data for that type.
+The default Scryfall sync path should sync the required and recommended bulk datasets together in dependency order: `oracle_cards`, then `all_cards`, then `oracle_tags`. The sync tool may also support syncing a single bulk data type for repair or debugging. Singular imports should fail fast when foreign-key dependencies are missing or mismatched. Each bulk data type should create its own `ScryfallBulkDataImport` record, and a failed import of one type should preserve the last usable data for that type. The `oracle_tags` import depends on `CardIdentity` records but does not depend on `CardPrinting` records.
 
 If required Scryfall data is missing, operations that depend on card identity or card data should fail clearly. If Scryfall data exists but is more than 14 days old, the MVP should warn rather than block by default. Outputs that depend on Scryfall data should expose the relevant Scryfall dataset timestamp when freshness matters.
 
-ManaBox Collection import should require local `all_cards` and `oracle_cards` datasets to exist. Oracle Tags are not required for raw Collection import, but synergy-based Deck Opportunity discovery should require local Oracle Tags data.
+ManaBox Collection import should require local `all_cards` and `oracle_cards` datasets to exist. The `oracle_tags` dataset is not required for raw Collection import, but synergy-based Deck Opportunity discovery should require local Card Identity Tag data from `oracle_tags`.
 
 Relationships:
 
-- A `ScryfallCard` references one `OracleCard`.
-- Many `ScryfallCard` records may reference the same `OracleCard`.
-- A `ScryfallCard` may be referenced by many `CollectionCard` records.
+- A `CardPrinting` references one `CardIdentity`.
+- Many `CardPrinting` records may reference the same `CardIdentity`.
+- A `CardPrinting` may be referenced by many `CollectionCard` records.
 
 ### ScryfallBulkDataImport
 
@@ -107,37 +110,87 @@ Successful Scryfall bulk data imports update the corresponding Scryfall-backed r
 
 Scryfall bulk data imports should use transactional full replacement per dataset with staging. The importer should load and validate the complete dataset before replacing the target records. A successful import replaces the target dataset and records a successful `ScryfallBulkDataImport`; a failed import leaves the previous usable dataset unchanged.
 
-Relationships:
+Writes to `CardIdentity`, `CardPrinting`, and Card Identity Tag reference data should be owned by the Scryfall bulk import path for the MVP. General card reference query services should not expose arbitrary write methods for these records unless another real source or editing workflow exists.
 
-- `ScryfallCard` records are loaded from successful `all_cards` bulk data imports.
-- `OracleCard` records are loaded from successful `oracle_cards` bulk data imports.
-- `OracleCardTag` records are loaded from successful Oracle Tags bulk data imports.
+Repository ports should keep source-sync provenance separate from card reference queries. A Scryfall bulk import repository should record import attempts, replace Scryfall-backed datasets, and answer dataset availability or freshness status. A card reference repository should expose read-only queries over Card Identities, Card Printings, and Card Identity Tags.
 
-### OracleCard
-
-`OracleCard` represents Scryfall oracle card data used for canonical card identity and deck-building reasoning.
-
-It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, legality checks, color identity, card text, card typing, and synergy analysis.
+`oracle_cards`, `all_cards`, and `oracle_tags` replacements should each be independently transactional and independently recorded, even when invoked by a default full sync. A standalone `oracle_cards` replacement should fail fast if it would orphan existing `CardPrinting` or `CardIdentityTagging` records. This should be rare with Scryfall data, but preserving referential integrity is more important than accepting a partial reference-data refresh. An `all_cards` replacement should fail if any imported `CardPrinting.card_identity_id` does not exist in the currently usable `CardIdentity` dataset.
 
 Relationships:
 
-- A single `OracleCard` may be referenced by many `ScryfallCard` records.
-- A single `OracleCard` may be reached from many `CollectionCard` records through `ScryfallCard`.
-- A single `OracleCard` may be referenced by many `DeckCandidateCard` records.
-- A single `OracleCard` may have many `OracleCardTag` records.
-- `OracleCard` is the bridge between owned collection rows and proposed deck cards.
+- `CardPrinting` records are loaded from successful `all_cards` bulk data imports.
+- `CardIdentity` records are loaded from successful `oracle_cards` bulk data imports.
+- `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` records are loaded from successful `oracle_tags` bulk data imports.
+- A successful `oracle_tags` import transactionally replaces the tag, alias, tagging, and hierarchy dataset together.
 
-### OracleCardTag
+### CardIdentity
 
-`OracleCardTag` represents a tag from Scryfall's Oracle Tags bulk data associated with an `OracleCard`.
+`CardIdentity` represents canonical card identity data used for deck-building reasoning.
 
-Oracle card tags should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The exact fields should be resolved from the Scryfall Oracle Tags bulk data specification.
+It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, legality checks, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.name` preserves the source printing name for exact printing display.
 
 Relationships:
 
-- An `OracleCardTag` belongs to one `OracleCard`.
-- An `OracleCard` may have many `OracleCardTag` records.
-- Future tag sources may add records alongside Scryfall Oracle Tags if they can be distinguished without changing the core card identity model.
+- A single `CardIdentity` may be referenced by many `CardPrinting` records.
+- A single `CardIdentity` may be reached from many `CollectionCard` records through `CardPrinting`.
+- A single `CardIdentity` may be referenced by many `DeckCandidateCard` records.
+- A single `CardIdentity` may have many `CardIdentityTagging` records.
+- `CardIdentity` is the bridge between owned collection rows and proposed deck cards.
+
+### CardIdentityTag
+
+`CardIdentityTag` represents a reusable tag from Scryfall's `oracle_tags` bulk data that may apply to Card Identities.
+
+Card Identity Tags should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The MVP should import only Scryfall `oracle` tags, not `illustration` tags, and does not need to store tag type because every persisted Card Identity Tag is an oracle tag. `CardIdentityTag` should preserve Scryfall's stable tag UUID as its primary ID and store Scryfall tag metadata including slug, label, and nullable description. Slug should be unique in the current imported dataset but should not be treated as the stable identity. Label is display metadata and should not be unique. Tag aliases and hierarchy should be stored relationally.
+
+All imported Card Identity Tags should be stored, even when they have no direct Card Identity Taggings. Broad parent-tag matches should be inferred from descendant taggings at query or reasoning time rather than materialized as additional taggings.
+
+Core services should expose deterministic tag lookup and search primitives over stored tag data without depending on an LLM. Exact tag resolution should match slug, label, and aliases. Exploratory matching for fuzzy user language belongs in the adapter or agent layer, which may turn user phrases into candidate search terms and then ask core for deterministic candidate tags with enough context to choose or clarify.
+
+Relationships:
+
+- A `CardIdentityTag` may have many `CardIdentityTagging` records.
+- A `CardIdentityTag` may have many `CardIdentityTagAlias` records.
+- A `CardIdentityTag` may have many parent and child `CardIdentityTag` records through `CardIdentityTagHierarchy`.
+- Future tag sources may add records alongside Scryfall `oracle_tags` data if they can be distinguished without changing the core card identity model.
+
+### CardIdentityTagAlias
+
+`CardIdentityTagAlias` represents an alternate lookup name for a Card Identity Tag.
+
+It should be relational rather than stored only as JSON because users may refer to tag concepts with language that differs from Scryfall's canonical label. The MVP should populate aliases from Scryfall tag data and should not include alias provenance until user-defined aliases are a real feature.
+
+It should store the source alias string directly without a separate normalized lookup value. The row should use a composite primary key of `card_identity_tag_id` and `alias`.
+
+Relationships:
+
+- A `CardIdentityTagAlias` belongs to one `CardIdentityTag`.
+- A `CardIdentityTag` may have many aliases.
+- A `CardIdentityTag` and alias pair should be unique. Alias values should not be globally unique across all tags.
+
+### CardIdentityTagging
+
+`CardIdentityTagging` represents the direct relationship between a Card Identity and a Card Identity Tag.
+
+It should use a composite primary key of `card_identity_id` and `card_identity_tag_id`. Relationship-specific Scryfall tagging fields such as weight and annotation belong on `CardIdentityTagging`. Tagging weight should be constrained to Scryfall's documented values: `very_strong`, `strong`, `median`, and `weak`. If a tagging references a missing `CardIdentity`, or if the same `card_identity_id` and `card_identity_tag_id` pair appears more than once in the imported data, the `oracle_tags` import should fail and preserve the previous usable tag dataset.
+
+Relationships:
+
+- A `CardIdentityTagging` belongs to one `CardIdentity`.
+- A `CardIdentityTagging` belongs to one `CardIdentityTag`.
+- A `CardIdentity` and `CardIdentityTag` pair should have at most one direct `CardIdentityTagging`.
+
+### CardIdentityTagHierarchy
+
+`CardIdentityTagHierarchy` represents a direct parent-child relationship between two Card Identity Tags.
+
+It should use a composite primary key of `parent_card_identity_tag_id` and `child_card_identity_tag_id`. The importer should build hierarchy only from Scryfall `parent_ids` and should ignore `child_ids` for persistence and validation. If a `parent_ids` value references a tag missing from the imported `oracle_tags` dataset, the import should fail and preserve the previous usable tag dataset. Self-parenting and hierarchy cycles should be rejected.
+
+Relationships:
+
+- A `CardIdentityTagHierarchy` references one parent `CardIdentityTag`.
+- A `CardIdentityTagHierarchy` references one child `CardIdentityTag`.
+- A `CardIdentityTag` may have many parent and child tags.
 
 ### DeckOpportunity
 
@@ -164,7 +217,7 @@ The decklist should be stored through `DeckCandidateCard` rows. The larger Deck 
 
 The Collection import timestamp is provenance metadata. It supports freshness checks by comparison with the latest successful `CollectionImport`; Availability, Missing Cards, Collection Status, and Collection Pull Lists should be computed when needed.
 
-The Portable Decklist should be generated from `DeckCandidateCard` rows and `OracleCard` names when needed.
+The Portable Decklist should be generated from `DeckCandidateCard` rows and `CardIdentity` names when needed.
 
 Deck Candidates should be mutable for the MVP and should include `createdAt` and `updatedAt` timestamps.
 
@@ -179,14 +232,14 @@ Relationships:
 
 `DeckCandidateCard` represents one card entry in a Deck Candidate.
 
-It should be relational rather than stored only inside a JSON array so the system can refresh Collection Status, inspect Missing Cards, validate legality, and query deck contents. It should include the card quantity, Commander/EDH decklist section, stable sort order, and optional notes when card-level explanation needs to be persisted. Portable Decklist card names should come from `OracleCard`, not duplicated display names on `DeckCandidateCard`.
+It should be relational rather than stored only inside a JSON array so the system can refresh Collection Status, inspect Missing Cards, validate legality, and query deck contents. It should include the card quantity, Commander/EDH decklist section, stable sort order, and optional notes when card-level explanation needs to be persisted. Portable Decklist card names should come from `CardIdentity`, not duplicated display names on `DeckCandidateCard`.
 
 Relationships:
 
 - A `DeckCandidateCard` belongs to one `DeckCandidate`.
-- A `DeckCandidateCard` references one `OracleCard`.
-- A `DeckCandidateCard` should not reference `CollectionCard` directly because current owned-copy matching can be derived through `OracleCard` and the active Collection snapshot.
-- A `DeckCandidateCard` should not reference `ScryfallCard` by default because Deck Candidates care about canonical card choice, not exact printing.
+- A `DeckCandidateCard` references one `CardIdentity`.
+- A `DeckCandidateCard` should not reference `CollectionCard` directly because current owned-copy matching can be derived through `CardIdentity` and the active Collection snapshot.
+- A `DeckCandidateCard` should not reference `CardPrinting` by default because Deck Candidates care about canonical card choice, not exact printing.
 - Availability status should not be stored as permanent truth on `DeckCandidateCard`; it should be recalculated against the active Collection snapshot.
 
 ## Relationship Summary
@@ -195,21 +248,26 @@ Relationships:
 CollectionImport
   -> CollectionLocation
        -> CollectionCard
-            -> ScryfallCard
-                 -> OracleCard
-                      -> OracleCardTag
+            -> CardPrinting
+                 -> CardIdentity
+                      -> CardIdentityTagging
+                           -> CardIdentityTag
+                                -> CardIdentityTagAlias
+                                -> CardIdentityTagHierarchy
 
 DeckOpportunity
   -> DeckCandidate
        -> DeckCandidateCard
-            -> OracleCard
-                 -> OracleCardTag
+            -> CardIdentity
+                 -> CardIdentityTagging
+                      -> CardIdentityTag
+                           -> CardIdentityTagAlias
+                           -> CardIdentityTagHierarchy
 ```
 
-`ScryfallCard` represents Scryfall's card-level data, including print-specific records. `OracleCard` represents Scryfall's canonical oracle-level card identity. `OracleCardTag` describes tag data associated with that canonical identity. `CollectionCard` describes owned source rows. `DeckCandidateCard` describes proposed deck entries and references `OracleCard` because Deck Candidates do not choose exact printings by default.
+`CardPrinting` represents source-backed print-specific records. `CardIdentity` represents canonical card identity. `CardIdentityTag` describes reusable functional tag data associated through `CardIdentityTagging`. `CollectionCard` describes owned source rows. `DeckCandidateCard` describes proposed deck entries and references `CardIdentity` because Deck Candidates do not choose exact printings by default.
 
 ## Open Questions
 
-- The exact record fields for `OracleCardTag`, resolved from the Scryfall Oracle Tags bulk data specification.
 - How split cards, rebalanced digital cards, and print-specific exceptions should be represented when Scryfall's card and oracle identities are not enough by themselves.
 - Whether `DeckOpportunity` needs separate child records for key cards, packages, or Synergies, or whether those can remain structured JSON for the MVP.

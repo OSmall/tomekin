@@ -68,6 +68,22 @@ _Avoid_: Export, raw list
 The assembly-focused list that shows the user's matching owned card copies for a Deck Candidate, including location and exact printing details where known. The user decides which physical copies to use.
 _Avoid_: Decklist, shopping list
 
+**Card Printing**:
+A source-backed record for a specific printed or print-like version of a card, distinct from both owned Collection rows and canonical card identity.
+_Avoid_: Scryfall Card, card pool entry
+
+**Card Identity**:
+The canonical card-level identity used for deck-building reasoning, legality, names, rules text, and matching Deck Candidate entries across printings.
+_Avoid_: Oracle Card, card definition
+
+**Card Identity Tag**:
+A reusable descriptive tag that can apply to Card Identities for search, grouping, and Synergy analysis.
+_Avoid_: Oracle Tag, card label
+
+**Card Identity Tagging**:
+The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific meaning such as prominence or annotation.
+_Avoid_: Card tag link, tag assignment
+
 **Deck Opportunity**:
 A promising deck-building direction identified from the Collection, usually combining a Format Anchor, theme, available support cards, expected play pattern, and likely Missing Cards.
 _Avoid_: Theme, idea, suggestion

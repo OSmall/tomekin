@@ -4,7 +4,7 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Data Model Details
 
-- Resolve the exact fields for `OracleCardTag` from the Scryfall Oracle Tags bulk data specification.
+- Define the implementation slice for `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` from the Scryfall `oracle_tags` bulk data specification.
 - Define the exact scalar metadata fields for `DeckOpportunity` and `DeckCandidate`.
 - Define the Zod schemas for `DeckBuildingBrief` and `CollectionAccessPolicy`.
 - Decide how to handle split cards, multi-face cards, attractions, stickers, digital cards, rebalanced cards, and other Scryfall identity edge cases.
@@ -32,7 +32,7 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Deck Opportunity Discovery
 
-- Define how Oracle Tags, Collection density, Format Anchors, and Collection Access Policy produce candidate Deck Opportunities.
+- Define how Card Identity Tags, Collection density, Format Anchors, and Collection Access Policy produce candidate Deck Opportunities.
 - Decide how much discovery is deterministic candidate generation versus LLM ranking and explanation.
 - Define ranking inputs and output shape for Deck Opportunity shortlists.
 - Decide how to detect weak or impossible opportunities and recommend constrained alternatives.
@@ -40,7 +40,7 @@ This document captures unresolved design branches to resume later. It should sta
 ## Testing
 
 - Create small ManaBox CSV fixtures.
-- Create Scryfall bulk-data subset fixtures for `oracle_cards`, `all_cards`, and Oracle Tags.
+- Create Scryfall bulk-data subset fixtures for `oracle_cards`, `all_cards`, and `oracle_tags`.
 - Test import failure behavior, transactionality, computed Availability, generated Portable Decklists, and agent-facing Markdown shape.
 
 ## Initial Implementation Sequence

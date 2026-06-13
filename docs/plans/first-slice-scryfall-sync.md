@@ -13,9 +13,9 @@ The slice should prove that the system can persist and replace local Scryfall-ba
 Implement the minimum useful Scryfall sync path for:
 
 - Recording successful and failed `ScryfallBulkDataImport` attempts.
-- Importing minimal `OracleCard` records from local `oracle_cards` fixture data.
-- Importing minimal `ScryfallCard` records from local `all_cards` fixture data.
-- Enforcing that `all_cards` records reference existing `OracleCard` records.
+- Importing minimal `CardIdentity` records from local `oracle_cards` fixture data.
+- Importing minimal `CardPrinting` records from local `all_cards` fixture data.
+- Enforcing that `all_cards` records reference existing `CardIdentity` records.
 - Preserving the last usable dataset when an import fails.
 - Reporting clearly when required Scryfall datasets are missing.
 
@@ -25,7 +25,7 @@ Do not import real Scryfall bulk files in this slice.
 
 Do not implement ManaBox Collection import in this slice.
 
-Do not implement Oracle Tags in this slice unless the first tests require a placeholder boundary.
+Do not implement Card Identity Tags from `oracle_tags` in this slice unless the first tests require a placeholder boundary.
 
 ## Test First
 
@@ -39,11 +39,11 @@ SQLite integration tests should use isolated temporary on-disk database files, n
 
 Create tests in `packages/sqlite/test/` that prove repository-observable behaviour:
 
-- A successful `oracle_cards` import records a succeeded `ScryfallBulkDataImport` and makes imported Oracle cards available through the repository.
-- A failed `oracle_cards` import records a failed `ScryfallBulkDataImport` and preserves the previous usable Oracle card dataset.
-- A successful `all_cards` import records a succeeded `ScryfallBulkDataImport` and makes imported Scryfall cards available through the repository.
-- An `all_cards` import fails when a card references a missing Oracle ID.
-- A failed `all_cards` import preserves the previous usable Scryfall card dataset.
+- A successful `oracle_cards` import records a succeeded `ScryfallBulkDataImport` and makes imported Card Identities available through the repository.
+- A failed `oracle_cards` import records a failed `ScryfallBulkDataImport` and preserves the previous usable Card Identity dataset.
+- A successful `all_cards` import records a succeeded `ScryfallBulkDataImport` and makes imported Card Printings available through the repository.
+- An `all_cards` import fails when a card references a missing Card Identity ID.
+- A failed `all_cards` import preserves the previous usable Card Printing dataset.
 - Required-dataset checks report missing `oracle_cards` and `all_cards` clearly.
 
 ### First Core Service Tests
@@ -58,7 +58,7 @@ Create tests in `packages/core/test/` that prove service-level behaviour:
 
 Start with only fields needed by the next ManaBox import slice.
 
-`OracleCard` should include enough data for canonical card identity and later deck-building checks:
+`CardIdentity` should include enough data for canonical card identity and later deck-building checks:
 
 - Scryfall oracle ID.
 - Name.
@@ -68,10 +68,10 @@ Start with only fields needed by the next ManaBox import slice.
 - Colour identity.
 - Legalities needed for Commander/EDH checks when available.
 
-`ScryfallCard` should include enough data to resolve exact Collection printings:
+`CardPrinting` should include enough data to resolve exact Collection printings:
 
 - Scryfall card ID.
-- Oracle ID.
+- Card Identity ID.
 - Name.
 - Set code.
 - Collector number.
@@ -83,8 +83,8 @@ Keep fixture payloads smaller than real Scryfall records. Include only fields co
 ## Implementation Steps
 
 1. Add Scryfall repository interfaces to `@mtg-agent/core`.
-2. Add domain-facing Scryfall record types and Zod schemas to `@mtg-agent/core`.
-3. Add Drizzle tables for `oracle_cards` and `scryfall_cards` in `@mtg-agent/sqlite`.
+2. Add domain-facing card reference record types and Zod schemas to `@mtg-agent/core`.
+3. Add Drizzle tables for `card_identities` and `card_printings` in `@mtg-agent/sqlite`.
 4. Add SQLite repository implementation for Scryfall imports.
 5. Add transactional full-replacement behaviour per dataset.
 6. Add minimal fixture readers inside tests or test helpers, not production code.
@@ -110,7 +110,7 @@ This slice is done when:
 After this slice, start ManaBox Collection import:
 
 - Parse small ManaBox CSV fixtures.
-- Resolve rows against local Scryfall data.
+- Resolve rows against local card reference data.
 - Skip ManaBox Lists visibly.
 - Fail fast on identity, quantity, or usable-location issues.
 - Transactionally replace the current Collection snapshot only after full validation.
