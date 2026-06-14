@@ -12,7 +12,6 @@ The project is a collection-first deck builder. The MVP emphasises Commander/EDH
 - [`docs/architecture.md`](./docs/architecture.md): current architecture direction, portability philosophy, and unresolved technology decisions.
 - [`docs/data-model.md`](./docs/data-model.md): persisted records and relationships for the MVP data model.
 - [`docs/testing.md`](./docs/testing.md): testing posture, TDD expectations, test layers, fixture guidance, and LLM test boundary.
-- [`docs/plans/`](./docs/plans/): implementation plans for upcoming coding slices.
 - [`docs/design-branches.md`](./docs/design-branches.md): unresolved design branches to resume later.
 - [`docs/future-direction.md`](./docs/future-direction.md): deferred scope and likely future product directions.
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
@@ -26,12 +25,18 @@ bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
 bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
 ```
 
-Run `oracle_cards` before `all_cards`. The command only reads local files, reports source-read progress while it runs, and does not download from Scryfall.
+Run `oracle_cards` before `all_cards`. The command only reads local files, reports timestamped source-read progress while it runs, and does not download from Scryfall.
 
 By default, imports write to `.data/mtg-agent.sqlite`. Override the database for one run with `--db`:
 
 ```sh
 bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
+```
+
+Add `--timing` to print diagnostic import timing, record counters, finalization timings, and lightweight JavaScript heap snapshots for large-file smoke testing:
+
+```sh
+bun run import:scryfall -- --timing all_cards ./data/all-cards.json
 ```
 
 ## Current Status

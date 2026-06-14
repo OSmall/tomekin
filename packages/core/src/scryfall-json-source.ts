@@ -1,3 +1,14 @@
+/**
+ * Streams one object at a time from a Scryfall bulk-data JSON source.
+ *
+ * This parser intentionally supports only the Scryfall bulk-data shape: a
+ * top-level JSON array whose items are JSON objects. It does not try to be a
+ * general JSON streaming parser. Keeping the boundary this narrow lets core
+ * accept any `ReadableStream<Uint8Array>` source, including local files and
+ * future fetch response bodies, while avoiding the cost of generic token
+ * parsers materializing large nested Scryfall fields that the importer later
+ * discards.
+ */
 export async function* parseJsonArrayItems(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<unknown> {
