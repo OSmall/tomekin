@@ -1,0 +1,21 @@
+{
+  "name": "@mtg-agent/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "import:scryfall": "bun src/import-scryfall.ts"
+  },
+  "dependencies": {
+    "@mtg-agent/core": "workspace:*",
+    "@mtg-agent/sqlite": "workspace:*",
+    "neverthrow": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}

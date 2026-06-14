@@ -3,6 +3,7 @@
   "references": [
     { "path": "./packages/core" },
     { "path": "./packages/sqlite" },
+    { "path": "./packages/cli" },
     { "path": "./packages/opencode" }
   ]
 }

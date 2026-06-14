@@ -1,10 +1,14 @@
-import { desc, notInArray, sql } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
 import type {
   CardIdentity,
   CardPrinting,
+  Clock,
   ScryfallBulkDataImport,
   ScryfallBulkDataType,
+  ScryfallFinalizationPhase,
+  ScryfallImportObserver,
+  ScryfallBulkImportInput,
   ScryfallRepository,
   ScryfallRepositoryError,
 } from "@mtg-agent/core";
@@ -16,13 +20,7 @@ import {
   scryfallBulkDataImports,
 } from "./schema";
 
-export type ScryfallBulkImportInput<TRecord> = {
-  readonly startedAt: Date;
-  readonly completedAt: Date;
-  readonly sourceUpdatedAt?: Date;
-  readonly sourceUri?: string;
-  readonly records: readonly TRecord[];
-};
+const SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL = 25_000;
 
 export type SqliteScryfallRepository = ScryfallRepository & {
   importCardIdentities(
@@ -40,125 +38,237 @@ export type SqliteScryfallRepository = ScryfallRepository & {
 
 export function createSqliteScryfallRepository(
   db: MtgAgentDatabase,
+  clock: Clock,
 ): SqliteScryfallRepository {
   return {
     async importCardIdentities(input) {
-      const duplicateIds = findDuplicateIds(input.records);
-      if (duplicateIds.length > 0) {
-        return recordFailedImport(db, "oracle_cards", input, [
-          `Duplicate Card Identity IDs: ${duplicateIds.join(", ")}.`,
-        ]);
-      }
-
-      const newIds = input.records.map((record) => record.id);
-      const orphanedPrintingIdentityIds = await findPrintingIdentityIdsOutside(
-        db,
-        newIds,
-      );
-      if (orphanedPrintingIdentityIds.length > 0) {
-        return recordFailedImport(db, "oracle_cards", input, [
-          `oracle_cards import would orphan existing Card Printings for Card Identity IDs: ${orphanedPrintingIdentityIds.join(", ")}.`,
-        ]);
-      }
-
+      let importedRecordCount = 0;
       try {
-        const imported = db.transaction((tx) => {
-          if (newIds.length > 0) {
-            tx.delete(cardIdentities)
-              .where(notInArray(cardIdentities.id, newIds))
-              .run();
-          } else {
-            tx.delete(cardIdentities).run();
-          }
+        beginTransaction(db);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identities`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identities (
+            id TEXT PRIMARY KEY NOT NULL,
+            name TEXT NOT NULL,
+            mana_cost TEXT,
+            type_line TEXT NOT NULL,
+            oracle_text TEXT,
+            color_identity_json TEXT NOT NULL,
+            commander_legality TEXT
+          )
+        `);
 
-          for (const record of input.records) {
-            tx.run(sql`
-              INSERT INTO card_identities (
-                id,
-                name,
-                mana_cost,
-                type_line,
-                oracle_text,
-                color_identity_json,
-                commander_legality
-              )
-              VALUES (
-                ${record.id},
-                ${record.name},
-                ${record.manaCost},
-                ${record.typeLine},
-                ${record.oracleText},
-                ${JSON.stringify(record.colorIdentity)},
-                ${record.commanderLegality}
-              )
-              ON CONFLICT(id) DO UPDATE SET
-                name = excluded.name,
-                mana_cost = excluded.mana_cost,
-                type_line = excluded.type_line,
-                oracle_text = excluded.oracle_text,
-                color_identity_json = excluded.color_identity_json,
-                commander_legality = excluded.commander_legality
-            `);
+        const insertIdentity = db.$client.prepare(`
+          INSERT INTO import_card_identities (
+            id,
+            name,
+            mana_cost,
+            type_line,
+            oracle_text,
+            color_identity_json,
+            commander_legality
+          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+        `);
+        try {
+          for await (const record of input.records) {
+            insertIdentity.run(
+              record.id,
+              record.name,
+              record.manaCost,
+              record.typeLine,
+              record.oracleText,
+              JSON.stringify(record.colorIdentity),
+              record.commanderLegality,
+            );
+            importedRecordCount += 1;
+            emitStagedRecordCounter(input.observer, importedRecordCount);
           }
+        } finally {
+          insertIdentity.finalize();
+        }
+        emitStagedRecordCounter(input.observer, importedRecordCount, true);
 
-          return insertImportRecord(tx, "oracle_cards", "succeeded", input, [], []);
+        const orphaned = timedFinalizationPhase(
+          input.observer,
+          "orphaned_identity_check",
+          () =>
+            db.all<{ id: string }>(sql`
+              SELECT DISTINCT card_identity_id AS id
+              FROM card_printings
+              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identities)
+            `),
+        );
+        if (orphaned.length > 0) {
+          throw importRejection([
+            `oracle_cards import would orphan existing Card Printings for Card Identity IDs: ${orphaned.map((row) => row.id).join(", ")}.`,
+          ]);
+        }
+
+        timedFinalizationPhase(input.observer, "delete_existing_records", () => {
+          db.run(sql`
+            DELETE FROM card_identities
+            WHERE id NOT IN (SELECT id FROM import_card_identities)
+          `);
         });
+        timedFinalizationPhase(input.observer, "upsert_from_staging", () => {
+          db.run(sql`
+            INSERT INTO card_identities (
+              id,
+              name,
+              mana_cost,
+              type_line,
+              oracle_text,
+              color_identity_json,
+              commander_legality
+            )
+            SELECT
+              id,
+              name,
+              mana_cost,
+              type_line,
+              oracle_text,
+              color_identity_json,
+              commander_legality
+            FROM import_card_identities
+            WHERE true
+            ON CONFLICT(id) DO UPDATE SET
+              name = excluded.name,
+              mana_cost = excluded.mana_cost,
+              type_line = excluded.type_line,
+              oracle_text = excluded.oracle_text,
+              color_identity_json = excluded.color_identity_json,
+              commander_legality = excluded.commander_legality
+          `);
+        });
+
+        const imported = timedFinalizationPhase(
+          input.observer,
+          "record_import_attempt",
+          () =>
+            insertImportRecord(
+              db,
+              "oracle_cards",
+              "succeeded",
+              { ...input, completedAt: clock.now(), importedRecordCount },
+              [],
+              [],
+            ),
+        );
+        commitTransaction(db);
         return ok(imported);
       } catch (error) {
-        return recordFailedImport(db, "oracle_cards", input, [toErrorMessage(error)]);
+        rollbackTransaction(db);
+        return err(toRepositoryError(error));
       }
     },
 
     async importCardPrintings(input) {
-      const duplicateIds = findDuplicateIds(input.records);
-      if (duplicateIds.length > 0) {
-        return recordFailedImport(db, "all_cards", input, [
-          `Duplicate Card Printing IDs: ${duplicateIds.join(", ")}.`,
-        ]);
-      }
-
-      const identityIds = new Set(
-        (await db.select({ id: cardIdentities.id }).from(cardIdentities)).map(
-          (row) => row.id,
-        ),
-      );
-      const missingIdentityIds = [
-        ...new Set(
-          input.records
-            .filter((record) => !identityIds.has(record.cardIdentityId))
-            .map((record) => record.cardIdentityId),
-        ),
-      ];
-
-      if (missingIdentityIds.length > 0) {
-        return recordFailedImport(db, "all_cards", input, [
-          `all_cards import references missing Card Identity IDs: ${missingIdentityIds.join(", ")}.`,
-        ]);
-      }
-
+      let importedRecordCount = 0;
       try {
-        const imported = db.transaction((tx) => {
-          tx.delete(cardPrintings).run();
+        beginTransaction(db);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printings`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_printings (
+            id TEXT PRIMARY KEY NOT NULL,
+            card_identity_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            set_code TEXT NOT NULL,
+            collector_number TEXT NOT NULL,
+            finishes_json TEXT NOT NULL,
+            language TEXT
+          )
+        `);
 
-          for (const record of input.records) {
-            tx.insert(cardPrintings)
-              .values({
-                id: record.id,
-                cardIdentityId: record.cardIdentityId,
-                name: record.name,
-                setCode: record.setCode,
-                collectorNumber: record.collectorNumber,
-                finishesJson: [...record.finishes],
-                language: record.language,
-              })
-              .run();
+        const insertPrinting = db.$client.prepare(`
+          INSERT INTO import_card_printings (
+            id,
+            card_identity_id,
+            name,
+            set_code,
+            collector_number,
+            finishes_json,
+            language
+          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+        `);
+        try {
+          for await (const record of input.records) {
+            insertPrinting.run(
+              record.id,
+              record.cardIdentityId,
+              record.name,
+              record.setCode,
+              record.collectorNumber,
+              JSON.stringify(record.finishes),
+              record.language,
+            );
+            importedRecordCount += 1;
+            emitStagedRecordCounter(input.observer, importedRecordCount);
           }
+        } finally {
+          insertPrinting.finalize();
+        }
+        emitStagedRecordCounter(input.observer, importedRecordCount, true);
 
-          return insertImportRecord(tx, "all_cards", "succeeded", input, [], []);
+        const missingIdentityIds = timedFinalizationPhase(
+          input.observer,
+          "missing_identity_check",
+          () =>
+            db.all<{ id: string }>(sql`
+              SELECT DISTINCT card_identity_id AS id
+              FROM import_card_printings
+              WHERE card_identity_id NOT IN (SELECT id FROM card_identities)
+            `),
+        );
+        if (missingIdentityIds.length > 0) {
+          throw importRejection([
+            `all_cards import references missing Card Identity IDs: ${missingIdentityIds.map((row) => row.id).join(", ")}.`,
+          ]);
+        }
+
+        timedFinalizationPhase(input.observer, "delete_existing_records", () => {
+          db.delete(cardPrintings).run();
         });
+        timedFinalizationPhase(input.observer, "insert_from_staging", () => {
+          db.run(sql`
+            INSERT INTO card_printings (
+              id,
+              card_identity_id,
+              name,
+              set_code,
+              collector_number,
+              finishes_json,
+              language
+            )
+            SELECT
+              id,
+              card_identity_id,
+              name,
+              set_code,
+              collector_number,
+              finishes_json,
+              language
+            FROM import_card_printings
+          `);
+        });
+
+        const imported = timedFinalizationPhase(
+          input.observer,
+          "record_import_attempt",
+          () =>
+            insertImportRecord(
+              db,
+              "all_cards",
+              "succeeded",
+              { ...input, completedAt: clock.now(), importedRecordCount },
+              [],
+              [],
+            ),
+        );
+        commitTransaction(db);
         return ok(imported);
       } catch (error) {
-        return recordFailedImport(db, "all_cards", input, [toErrorMessage(error)]);
+        rollbackTransaction(db);
+        return err(toRepositoryError(error));
       }
     },
 
@@ -213,28 +323,25 @@ export function createSqliteScryfallRepository(
         return err(toRepositoryError(error));
       }
     },
+
+    async recordFailedBulkDataImport(bulkDataType, input) {
+      return recordFailedImport(db, bulkDataType, input, input.blockingErrors);
+    },
   };
 }
 
-async function findPrintingIdentityIdsOutside(
-  db: MtgAgentDatabase,
-  identityIds: readonly string[],
-): Promise<readonly string[]> {
-  const rows =
-    identityIds.length > 0
-      ? await db
-          .selectDistinct({ id: cardPrintings.cardIdentityId })
-          .from(cardPrintings)
-          .where(notInArray(cardPrintings.cardIdentityId, [...identityIds]))
-      : await db.selectDistinct({ id: cardPrintings.cardIdentityId }).from(cardPrintings);
+type ScryfallImportRecordInput = {
+  readonly startedAt: Date;
+  readonly completedAt: Date;
+  readonly sourceUpdatedAt?: Date | undefined;
+  readonly sourceUri?: string | undefined;
+  readonly importedRecordCount?: number | undefined;
+};
 
-  return rows.map((row) => row.id);
-}
-
-async function recordFailedImport<TRecord>(
+async function recordFailedImport(
   db: MtgAgentDatabase,
   bulkDataType: ScryfallBulkDataType,
-  input: ScryfallBulkImportInput<TRecord>,
+  input: ScryfallImportRecordInput,
   blockingErrors: readonly string[],
 ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>> {
   try {
@@ -256,7 +363,7 @@ function insertImportRecord<TRecord>(
   db: Pick<MtgAgentDatabase, "insert">,
   bulkDataType: ScryfallBulkDataType,
   status: "succeeded" | "failed",
-  input: ScryfallBulkImportInput<TRecord>,
+  input: ScryfallImportRecordInput,
   warnings: readonly string[],
   blockingErrors: readonly string[],
 ): ScryfallBulkDataImport {
@@ -268,7 +375,7 @@ function insertImportRecord<TRecord>(
     completedAt: input.completedAt,
     sourceUpdatedAt: input.sourceUpdatedAt ?? null,
     sourceUri: input.sourceUri ?? null,
-    importedRecordCount: status === "succeeded" ? input.records.length : 0,
+    importedRecordCount: status === "succeeded" ? input.importedRecordCount ?? 0 : 0,
     warnings,
     blockingErrors,
   };
@@ -291,18 +398,55 @@ function insertImportRecord<TRecord>(
   return imported;
 }
 
-function findDuplicateIds(records: readonly { readonly id: string }[]): readonly string[] {
-  const seen = new Set<string>();
-  const duplicates = new Set<string>();
+function beginTransaction(db: MtgAgentDatabase): void {
+  db.run(sql`BEGIN IMMEDIATE`);
+}
 
-  for (const record of records) {
-    if (seen.has(record.id)) {
-      duplicates.add(record.id);
-    }
-    seen.add(record.id);
+function commitTransaction(db: MtgAgentDatabase): void {
+  db.run(sql`COMMIT`);
+}
+
+function rollbackTransaction(db: MtgAgentDatabase): void {
+  try {
+    db.run(sql`ROLLBACK`);
+  } catch {
+    // No active transaction remains when BEGIN itself fails.
   }
+}
 
-  return [...duplicates];
+function emitStagedRecordCounter(
+  observer: ScryfallImportObserver | undefined,
+  stagedRecordCount: number,
+  force = false,
+): void {
+  if (!observer || stagedRecordCount === 0) return;
+  if (!force && stagedRecordCount % SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL !== 0) return;
+
+  observer.onEvent({ type: "record_staged", stagedRecordCount });
+}
+
+function timedFinalizationPhase<T>(
+  observer: ScryfallImportObserver | undefined,
+  phase: ScryfallFinalizationPhase,
+  run: () => T,
+): T {
+  const startedAt = performance.now();
+  observer?.onEvent({ type: "finalization_started", phase });
+  try {
+    return run();
+  } finally {
+    observer?.onEvent({
+      type: "finalization_finished",
+      phase,
+      elapsedMs: performance.now() - startedAt,
+    });
+  }
+}
+
+function importRejection(blockingErrors: readonly string[]): Error {
+  const error = new Error(blockingErrors.join(" "));
+  Object.assign(error, { blockingErrors });
+  return error;
 }
 
 function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
@@ -351,10 +495,24 @@ function asStringArray(value: unknown): readonly string[] {
 }
 
 function toRepositoryError(error: unknown): ScryfallRepositoryError {
+  const blockingErrors = getBlockingErrors(error);
   return {
     type: "repository_error",
     message: toErrorMessage(error),
+    ...(blockingErrors ? { blockingErrors } : {}),
   };
+}
+
+function getBlockingErrors(error: unknown): readonly string[] | undefined {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    Array.isArray((error as { readonly blockingErrors?: unknown }).blockingErrors)
+  ) {
+    return (error as { readonly blockingErrors: readonly string[] }).blockingErrors;
+  }
+
+  return undefined;
 }
 
 function toErrorMessage(error: unknown): string {

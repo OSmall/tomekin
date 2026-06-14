@@ -9,6 +9,19 @@
         "typescript": "latest",
       },
     },
+    "packages/cli": {
+      "name": "@mtg-agent/cli",
+      "version": "0.0.0",
+      "dependencies": {
+        "@mtg-agent/core": "workspace:*",
+        "@mtg-agent/sqlite": "workspace:*",
+        "neverthrow": "latest",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "latest",
+      },
+    },
     "packages/core": {
       "name": "@mtg-agent/core",
       "version": "0.0.0",
@@ -48,6 +61,8 @@
     },
   },
   "packages": {
+    "@mtg-agent/cli": ["@mtg-agent/cli@workspace:packages/cli"],
+
     "@mtg-agent/core": ["@mtg-agent/core@workspace:packages/core"],
 
     "@mtg-agent/opencode": ["@mtg-agent/opencode@workspace:packages/opencode"],

@@ -6,6 +6,7 @@ import {
   CardIdentitySchema,
   CardPrintingSchema,
   createScryfallSyncServices,
+  hasScryfallOracleId,
   mapRawScryfallAllCardToCardPrinting,
   mapRawScryfallOracleCardToCardIdentity,
   RawScryfallAllCardSchema,
@@ -77,10 +78,7 @@ describe("SQLite Scryfall repository", () => {
       ]),
     );
 
-    expect(failed.isOk()).toBe(true);
-    if (failed.isErr()) throw new Error(failed.error.message);
-    expect(failed.value.status).toBe("failed");
-    expect(failed.value.blockingErrors[0]).toContain("Duplicate Card Identity IDs");
+    expect(failed.isErr()).toBe(true);
 
     const imported = await repository.listCardIdentities();
     expect(imported.isOk()).toBe(true);
@@ -140,12 +138,7 @@ describe("SQLite Scryfall repository", () => {
 
     const result = await repository.importCardPrintings(importInput(printings));
 
-    expect(result.isOk()).toBe(true);
-    if (result.isErr()) throw new Error(result.error.message);
-    expect(result.value.status).toBe("failed");
-    expect(result.value.blockingErrors[0]).toContain(
-      "all_cards import references missing Card Identity IDs",
-    );
+    expect(result.isErr()).toBe(true);
 
     const imported = await repository.listCardPrintings();
     expect(imported.isOk()).toBe(true);
@@ -173,9 +166,7 @@ describe("SQLite Scryfall repository", () => {
       ]),
     );
 
-    expect(failed.isOk()).toBe(true);
-    if (failed.isErr()) throw new Error(failed.error.message);
-    expect(failed.value.status).toBe("failed");
+    expect(failed.isErr()).toBe(true);
 
     const imported = await repository.listCardPrintings();
     expect(imported.isOk()).toBe(true);
@@ -210,7 +201,9 @@ function createTestRepository() {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
   const db = openDatabase(join(dir, "test.sqlite"));
   initializeDatabaseSchema(db);
-  return createSqliteScryfallRepository(db);
+  return createSqliteScryfallRepository(db, {
+    now: () => new Date("2025-01-01T00:00:01.000Z"),
+  });
 }
 
 async function readFixture<T>(
@@ -239,7 +232,7 @@ async function readAllCardPrintingsFixture(): Promise<readonly CardPrinting[]> {
     RawScryfallAllCardSchema.array(),
   );
   return CardPrintingSchema.array().parse(
-    rawCards.map(mapRawScryfallAllCardToCardPrinting),
+    rawCards.filter(hasScryfallOracleId).map(mapRawScryfallAllCardToCardPrinting),
   );
 }
 
@@ -254,9 +247,12 @@ function filterPrintingsWithKnownIdentities(
 function importInput<TRecord>(records: readonly TRecord[]) {
   return {
     startedAt: new Date("2025-01-01T00:00:00.000Z"),
-    completedAt: new Date("2025-01-01T00:00:01.000Z"),
     sourceUpdatedAt: new Date("2024-12-31T00:00:00.000Z"),
     sourceUri: "fixture://scryfall",
-    records,
+    records: toAsyncIterable(records),
   };
+}
+
+async function* toAsyncIterable<T>(records: readonly T[]): AsyncIterable<T> {
+  yield* records;
 }

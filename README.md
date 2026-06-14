@@ -17,15 +17,22 @@ The project is a collection-first deck builder. The MVP emphasises Commander/EDH
 - [`docs/future-direction.md`](./docs/future-direction.md): deferred scope and likely future product directions.
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 
-## Documentation Ownership
+## Local Scryfall Import
 
-- Update `CONTEXT.md` only for glossary and domain language changes.
-- Update `docs/product-scope.md` for product promise, principles, and current boundaries.
-- Update `docs/mvp.md` for current MVP behaviour and requirements.
-- Update `docs/future-direction.md` for deferred scope and later possibilities.
-- Update `docs/testing.md` for testing posture, test layers, fixture guidance, and LLM test boundaries.
-- Add implementation plans under `docs/plans/` when a coding slice is defined but not yet complete.
-- Add ADRs under `docs/adr/` only for hard-to-reverse, surprising trade-off decisions.
+Import local Scryfall bulk data JSON files into SQLite:
+
+```sh
+bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
+bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
+```
+
+Run `oracle_cards` before `all_cards`. The command only reads local files, reports source-read progress while it runs, and does not download from Scryfall.
+
+By default, imports write to `.data/mtg-agent.sqlite`. Override the database for one run with `--db`:
+
+```sh
+bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
+```
 
 ## Current Status
 

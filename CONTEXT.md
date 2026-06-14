@@ -84,6 +84,10 @@ _Avoid_: Oracle Tag, card label
 The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific meaning such as prominence or annotation.
 _Avoid_: Card tag link, tag assignment
 
+**Scryfall Bulk Data Import**:
+A manual import of one or more local Scryfall bulk data files into the card reference data used by the assistant. A Scryfall Bulk Data Import is distinct from a sync or refresh because it does not imply automatic downloading or hidden network access.
+_Avoid_: Sync, refresh, card data load
+
 **Deck Opportunity**:
 A promising deck-building direction identified from the Collection, usually combining a Format Anchor, theme, available support cards, expected play pattern, and likely Missing Cards.
 _Avoid_: Theme, idea, suggestion

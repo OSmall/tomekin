@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "import:scryfall": "bun packages/cli/src/import-scryfall.ts",
     "test": "bun test",
     "typecheck": "tsc -b"
   },

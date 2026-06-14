@@ -1,5 +1,49 @@
 import { err, ok, type Result } from "neverthrow";
 import { z } from "zod";
+import { parseJsonArrayItems } from "./scryfall-json-source";
+
+const MAX_SOURCE_FORMAT_DIAGNOSTICS = 20;
+const SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL = 25_000;
+
+export type ScryfallFinalizationPhase =
+  | "missing_identity_check"
+  | "orphaned_identity_check"
+  | "delete_existing_records"
+  | "insert_from_staging"
+  | "upsert_from_staging"
+  | "record_import_attempt";
+
+export type ScryfallImportEvent =
+  | {
+      readonly type: "source_bytes_consumed";
+      readonly bytesConsumed: number;
+      readonly totalBytes?: number | undefined;
+    }
+  | { readonly type: "raw_record_parsed"; readonly rawRecordCount: number }
+  | { readonly type: "record_mapped"; readonly mappedRecordCount: number }
+  | {
+      readonly type: "record_skipped";
+      readonly reason: "missing_oracle_id";
+      readonly skippedRecordCount: number;
+    }
+  | {
+      readonly type: "source_validation_failed";
+      readonly validationErrorCount: number;
+    }
+  | { readonly type: "record_staged"; readonly stagedRecordCount: number }
+  | {
+      readonly type: "finalization_started";
+      readonly phase: ScryfallFinalizationPhase;
+    }
+  | {
+      readonly type: "finalization_finished";
+      readonly phase: ScryfallFinalizationPhase;
+      readonly elapsedMs: number;
+    };
+
+export type ScryfallImportObserver = {
+  onEvent(event: ScryfallImportEvent): void;
+};
 
 export const ScryfallBulkDataTypeSchema = z.enum([
   "oracle_cards",
@@ -54,13 +98,15 @@ export const RawScryfallOracleCardSchema = z
     legalities: z
       .object({
         commander: CommanderLegalitySchema.optional(),
-      })
-      .passthrough(),
-  })
-  .passthrough();
+      }),
+  });
 export type RawScryfallOracleCard = z.infer<typeof RawScryfallOracleCardSchema>;
 
-export const RawScryfallAllCardSchema = RawScryfallOracleCardSchema.extend({
+export const RawScryfallAllCardSchema = z.object({
+  object: z.literal("card"),
+  id: z.string().min(1),
+  oracle_id: z.string().min(1).optional(),
+  name: z.string().min(1),
   set: z.string().min(1),
   collector_number: z.string().min(1),
   finishes: z.array(z.string()),
@@ -83,7 +129,7 @@ export function mapRawScryfallOracleCardToCardIdentity(
 }
 
 export function mapRawScryfallAllCardToCardPrinting(
-  card: RawScryfallAllCard,
+  card: RawScryfallAllCard & { readonly oracle_id: string },
 ): CardPrinting {
   return {
     id: card.id,
@@ -94,6 +140,12 @@ export function mapRawScryfallAllCardToCardPrinting(
     finishes: card.finishes,
     language: card.lang,
   };
+}
+
+export function hasScryfallOracleId(
+  card: RawScryfallAllCard,
+): card is RawScryfallAllCard & { readonly oracle_id: string } {
+  return typeof card.oracle_id === "string" && card.oracle_id.length > 0;
 }
 
 export const ScryfallBulkDataImportSchema = z.object({
@@ -110,6 +162,23 @@ export const ScryfallBulkDataImportSchema = z.object({
 });
 export type ScryfallBulkDataImport = z.infer<typeof ScryfallBulkDataImportSchema>;
 
+export type ScryfallBulkImportInput<TRecord> = {
+  readonly startedAt: Date;
+  readonly sourceUpdatedAt?: Date | undefined;
+  readonly sourceUri?: string | undefined;
+  readonly records: AsyncIterable<TRecord>;
+  readonly observer?: ScryfallImportObserver | undefined;
+};
+
+export type FailedScryfallBulkDataImportInput = {
+  readonly startedAt: Date;
+  readonly completedAt: Date;
+  readonly sourceUpdatedAt?: Date | undefined;
+  readonly sourceUri?: string | undefined;
+  readonly warnings?: readonly string[] | undefined;
+  readonly blockingErrors: readonly string[];
+};
+
 export const ScryfallSyncRequestSchema = z.object({
   bulkDataTypes: z.array(ScryfallBulkDataTypeSchema).min(1),
 });
@@ -118,6 +187,7 @@ export type ScryfallSyncRequest = z.infer<typeof ScryfallSyncRequestSchema>;
 export type ScryfallRepositoryError = {
   readonly type: "repository_error";
   readonly message: string;
+  readonly blockingErrors?: readonly string[] | undefined;
 };
 
 export type ScryfallSyncError =
@@ -154,6 +224,50 @@ export type ScryfallRepository = {
   getLatestSuccessfulBulkDataImport(
     bulkDataType: ScryfallBulkDataType,
   ): Promise<Result<ScryfallBulkDataImport | null, ScryfallRepositoryError>>;
+  importCardIdentities(
+    input: ScryfallBulkImportInput<CardIdentity>,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  importCardPrintings(
+    input: ScryfallBulkImportInput<CardPrinting>,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  recordFailedBulkDataImport(
+    bulkDataType: ScryfallBulkDataType,
+    input: FailedScryfallBulkDataImportInput,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+};
+
+export type ScryfallBulkDataSource = {
+  stream(): ReadableStream<Uint8Array>;
+};
+
+export type ScryfallBulkDataSourceMetadata = {
+  readonly sourceUri: string;
+  readonly sourceUpdatedAt?: Date | undefined;
+};
+
+export type ScryfallLocalImportOptions = {
+  readonly observer?: ScryfallImportObserver | undefined;
+};
+
+export type ScryfallLocalImportError =
+  | {
+      readonly type: "import_failed";
+      readonly message: string;
+      readonly importAttempt: ScryfallBulkDataImport;
+    }
+  | ScryfallRepositoryError;
+
+export type ScryfallLocalImportServices = {
+  importOracleCards(
+    source: ScryfallBulkDataSource,
+    metadata: ScryfallBulkDataSourceMetadata,
+    options?: ScryfallLocalImportOptions,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallLocalImportError>>;
+  importAllCards(
+    source: ScryfallBulkDataSource,
+    metadata: ScryfallBulkDataSourceMetadata,
+    options?: ScryfallLocalImportOptions,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallLocalImportError>>;
 };
 
 export type ScryfallSyncServices = {
@@ -214,10 +328,286 @@ export function createScryfallSyncServices(
   };
 }
 
+export function createScryfallLocalImportServices(
+  repository: ScryfallRepository,
+  clock: Clock,
+): ScryfallLocalImportServices {
+  return {
+    async importOracleCards(source, metadata, options) {
+      const startedAt = clock.now();
+
+      const imported = await repository.importCardIdentities({
+        startedAt,
+        sourceUpdatedAt: metadata.sourceUpdatedAt,
+        sourceUri: metadata.sourceUri,
+        observer: options?.observer,
+        records: mapScryfallRecords(
+          source,
+          RawScryfallOracleCardSchema,
+          mapRawScryfallOracleCardToCardIdentity,
+          CardIdentitySchema,
+          options?.observer,
+        ),
+      });
+      if (imported.isErr()) {
+        return recordFailedLocalImport(repository, "oracle_cards", {
+          startedAt,
+          completedAt: clock.now(),
+          sourceUpdatedAt: metadata.sourceUpdatedAt,
+          sourceUri: metadata.sourceUri,
+          blockingErrors: imported.error.blockingErrors ?? [imported.error.message],
+        });
+      }
+
+      return ok(imported.value);
+    },
+
+    async importAllCards(source, metadata, options) {
+      const startedAt = clock.now();
+      const oracleCardsImport = await repository.getLatestSuccessfulBulkDataImport(
+        "oracle_cards",
+      );
+      if (oracleCardsImport.isErr()) {
+        return err(oracleCardsImport.error);
+      }
+      if (oracleCardsImport.value === null) {
+        return recordFailedLocalImport(repository, "all_cards", {
+          startedAt,
+          completedAt: clock.now(),
+          sourceUpdatedAt: metadata.sourceUpdatedAt,
+          sourceUri: metadata.sourceUri,
+          blockingErrors: [
+            "all_cards import requires a latest successful oracle_cards Scryfall Bulk Data Import.",
+          ],
+        });
+      }
+
+      const imported = await repository.importCardPrintings({
+        startedAt,
+        sourceUpdatedAt: metadata.sourceUpdatedAt,
+        sourceUri: metadata.sourceUri,
+        observer: options?.observer,
+        records: mapAllCardPrintings(source, options?.observer),
+      });
+      if (imported.isErr()) {
+        return recordFailedLocalImport(repository, "all_cards", {
+          startedAt,
+          completedAt: clock.now(),
+          sourceUpdatedAt: metadata.sourceUpdatedAt,
+          sourceUri: metadata.sourceUri,
+          blockingErrors: imported.error.blockingErrors ?? [imported.error.message],
+        });
+      }
+
+      return ok(imported.value);
+    },
+  };
+}
+
+async function* mapScryfallRecords<TRaw, TRecord>(
+  source: ScryfallBulkDataSource,
+  rawSchema: z.ZodType<TRaw>,
+  map: (record: TRaw) => TRecord,
+  recordSchema: z.ZodType<TRecord>,
+  observer?: ScryfallImportObserver,
+): AsyncIterable<TRecord> {
+  const issues: string[] = [];
+  let index = 0;
+  let mappedRecordCount = 0;
+
+  try {
+    for await (const item of parseJsonArrayItems(source.stream())) {
+      emitRecordCounter(observer, "raw_record_parsed", index + 1);
+      const raw = rawSchema.safeParse(item);
+      if (!raw.success) {
+        issues.push(...toIndexedZodIssues(index, raw.error));
+      } else {
+        const record = recordSchema.safeParse(map(raw.data));
+        if (record.success) {
+          mappedRecordCount += 1;
+          emitRecordCounter(observer, "record_mapped", mappedRecordCount);
+          yield record.data;
+        } else {
+          issues.push(...toIndexedZodIssues(index, record.error));
+        }
+      }
+
+      if (issues.length >= MAX_SOURCE_FORMAT_DIAGNOSTICS) {
+        observer?.onEvent({
+          type: "source_validation_failed",
+          validationErrorCount: issues.length,
+        });
+        throw sourceFormatError(issues.slice(0, MAX_SOURCE_FORMAT_DIAGNOSTICS));
+      }
+      index += 1;
+    }
+  } catch (error) {
+    if (isBlockingError(error)) {
+      throw error;
+    }
+    throw sourceFormatError([`Failed to parse Scryfall source: ${toErrorMessage(error)}.`]);
+  }
+
+  if (issues.length > 0) {
+    observer?.onEvent({
+      type: "source_validation_failed",
+      validationErrorCount: issues.length,
+    });
+    throw sourceFormatError(issues);
+  }
+
+  emitRecordCounter(observer, "raw_record_parsed", index, true);
+  emitRecordCounter(observer, "record_mapped", mappedRecordCount, true);
+}
+
+async function* mapAllCardPrintings(
+  source: ScryfallBulkDataSource,
+  observer?: ScryfallImportObserver,
+): AsyncIterable<CardPrinting> {
+  const issues: string[] = [];
+  let index = 0;
+  let mappedRecordCount = 0;
+  let skippedRecordCount = 0;
+
+  try {
+    for await (const item of parseJsonArrayItems(source.stream())) {
+      emitRecordCounter(observer, "raw_record_parsed", index + 1);
+      const raw = RawScryfallAllCardSchema.safeParse(item);
+      if (!raw.success) {
+        issues.push(...toIndexedZodIssues(index, raw.error));
+      } else if (!hasScryfallOracleId(raw.data)) {
+        skippedRecordCount += 1;
+        emitSkippedRecordCounter(observer, skippedRecordCount);
+      } else {
+        const record = CardPrintingSchema.safeParse(
+          mapRawScryfallAllCardToCardPrinting(raw.data),
+        );
+        if (record.success) {
+          mappedRecordCount += 1;
+          emitRecordCounter(observer, "record_mapped", mappedRecordCount);
+          yield record.data;
+        } else {
+          issues.push(...toIndexedZodIssues(index, record.error));
+        }
+      }
+
+      if (issues.length >= MAX_SOURCE_FORMAT_DIAGNOSTICS) {
+        observer?.onEvent({
+          type: "source_validation_failed",
+          validationErrorCount: issues.length,
+        });
+        throw sourceFormatError(issues.slice(0, MAX_SOURCE_FORMAT_DIAGNOSTICS));
+      }
+      index += 1;
+    }
+  } catch (error) {
+    if (isBlockingError(error)) {
+      throw error;
+    }
+    throw sourceFormatError([`Failed to parse Scryfall source: ${toErrorMessage(error)}.`]);
+  }
+
+  if (issues.length > 0) {
+    observer?.onEvent({
+      type: "source_validation_failed",
+      validationErrorCount: issues.length,
+    });
+    throw sourceFormatError(issues);
+  }
+
+  emitRecordCounter(observer, "raw_record_parsed", index, true);
+  emitRecordCounter(observer, "record_mapped", mappedRecordCount, true);
+  emitSkippedRecordCounter(observer, skippedRecordCount, true);
+}
+
+function emitRecordCounter(
+  observer: ScryfallImportObserver | undefined,
+  type: "raw_record_parsed" | "record_mapped" | "record_staged",
+  count: number,
+  force = false,
+): void {
+  if (!observer || count === 0) return;
+  if (!force && count % SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL !== 0) return;
+
+  if (type === "raw_record_parsed") {
+    observer.onEvent({ type, rawRecordCount: count });
+    return;
+  }
+  if (type === "record_mapped") {
+    observer.onEvent({ type, mappedRecordCount: count });
+    return;
+  }
+  observer.onEvent({ type, stagedRecordCount: count });
+}
+
+function emitSkippedRecordCounter(
+  observer: ScryfallImportObserver | undefined,
+  count: number,
+  force = false,
+): void {
+  if (!observer || count === 0) return;
+  if (!force && count % SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL !== 0) return;
+
+  observer.onEvent({
+    type: "record_skipped",
+    reason: "missing_oracle_id",
+    skippedRecordCount: count,
+  });
+}
+
+async function recordFailedLocalImport(
+  repository: ScryfallRepository,
+  bulkDataType: ScryfallBulkDataType,
+  input: FailedScryfallBulkDataImportInput,
+): Promise<Result<ScryfallBulkDataImport, ScryfallLocalImportError>> {
+  const recorded = await repository.recordFailedBulkDataImport(bulkDataType, input);
+  if (recorded.isErr()) {
+    return err(recorded.error);
+  }
+
+  return err({
+    type: "import_failed",
+    message: recorded.value.blockingErrors.join(" ") || "Scryfall import failed.",
+    importAttempt: recorded.value,
+  });
+}
+
 function toValidationError(error: z.ZodError): ScryfallSyncError {
   return {
     type: "validation_failed",
     message: "Scryfall sync request validation failed.",
     issues: error.issues.map((issue) => issue.message),
   };
+}
+
+function toZodIssues(error: z.ZodError): readonly string[] {
+  return error.issues.map((issue) => {
+    const path = issue.path.length > 0 ? `${issue.path.join(".")}: ` : "";
+    return `${path}${issue.message}`;
+  });
+}
+
+function toIndexedZodIssues(index: number, error: z.ZodError): readonly string[] {
+  return error.issues.map((issue) => {
+    const path = [index, ...issue.path].join(".");
+    return `${path}: ${issue.message}`;
+  });
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function sourceFormatError(blockingErrors: readonly string[]): Error {
+  const error = new Error(blockingErrors.join(" ") || "Scryfall source validation failed.");
+  Object.assign(error, { blockingErrors });
+  return error;
+}
+
+function isBlockingError(error: unknown): error is { readonly blockingErrors: readonly string[] } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    Array.isArray((error as { readonly blockingErrors?: unknown }).blockingErrors)
+  );
 }

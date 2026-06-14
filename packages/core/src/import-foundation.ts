@@ -65,6 +65,24 @@ export function createImportFoundationServices(clock: Clock): ImportFoundationSe
           message: "Scryfall repository is not configured.",
         });
       },
+      async importCardIdentities() {
+        return err({
+          type: "repository_error",
+          message: "Scryfall repository is not configured.",
+        });
+      },
+      async importCardPrintings() {
+        return err({
+          type: "repository_error",
+          message: "Scryfall repository is not configured.",
+        });
+      },
+      async recordFailedBulkDataImport() {
+        return err({
+          type: "repository_error",
+          message: "Scryfall repository is not configured.",
+        });
+      },
     },
     clock,
   );

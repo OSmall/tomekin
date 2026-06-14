@@ -43,9 +43,10 @@ Initial package boundaries:
 
 - **Core package**: portable MTG collection and deck-building product logic.
 - **SQLite package**: Drizzle schema, migrations, and local repository implementations.
+- **CLI package**: local command-line entrypoints that wire the core and SQLite implementation together for manual imports and other local operations.
 - **Opencode package**: local opencode tools, agents, skills, and adapter glue that wires the core and SQLite implementation together.
 
-The workspace boundary exists to keep the core reusable by later interfaces. It should not imply a large monorepo, distributed system, or premature package proliferation.
+The workspace boundary exists to keep the core reusable by later interfaces. CLI and opencode are sibling adapters over the same core and persistence packages. This should not imply a large monorepo, distributed system, or premature package proliferation.
 
 The MVP should not add Turborepo by default. Bun workspaces are enough for the initial package count, and avoiding Turborepo keeps local tooling simpler. The workspace structure should remain compatible with adding Turborepo later if task orchestration, caching, CI performance, or additional apps make it useful.
 

@@ -12,15 +12,26 @@ The command should prove that the repository-level Scryfall import foundation ca
 
 ## Scope
 
-Implement the minimum useful local CLI or Bun script for:
+Implement the minimum useful local CLI or Bun script for one explicitly selected Scryfall Bulk Data Import per invocation:
 
-- Reading local raw Scryfall `oracle_cards` and `all_cards` JSON files.
-- Mapping raw Scryfall card objects into `CardIdentity` and `CardPrinting` records.
-- Importing `oracle_cards` before `all_cards` by default.
+- Reading one local raw Scryfall `oracle_cards` or `all_cards` JSON file.
+- Mapping raw Scryfall card objects into the corresponding `CardIdentity` or `CardPrinting` records.
+- Importing only the bulk data type named by the command invocation.
 - Using the configured SQLite database path, defaulting to `.data/mtg-agent.sqlite` and respecting `MTG_AGENT_DB_PATH`.
 - Initialising the local SQLite schema when needed.
 - Reporting imported record counts, failed import diagnostics, and the target database path.
-- Exiting non-zero when a required file is missing, JSON is invalid, Scryfall records do not validate, or `all_cards` references missing Card Identities.
+- Exiting non-zero when a required file is missing, JSON is invalid, Scryfall records do not validate, or the selected import references missing dependency records.
+- Recording source read, parse, source-format validation, and repository constraint failures as failed `ScryfallBulkDataImport` attempts when the source reaches the import pipeline.
+- Treating missing local files as CLI source-resolution failures that exit non-zero without creating a `ScryfallBulkDataImport` record.
+- Failing an `all_cards` import before reading or replacing Card Printings when there is no latest successful `oracle_cards` Scryfall Bulk Data Import in the target database.
+- Failing an `all_cards` import transactionally when any imported Card Printing references a missing Card Identity.
+- Exercising a core local Scryfall Bulk Data Import service seam rather than calling SQLite repository replacement methods directly from the CLI.
+- Keeping raw Scryfall source-format validation and mapping in `@mtg-agent/core` so future adapters reuse the same import rules.
+- Exposing separate core methods for each supported Scryfall Bulk Data Import type, rather than a single method with a bulk-data-type gate.
+- Exposing a repository port method for recording failed Scryfall Bulk Data Import attempts so core can persist pre-replacement failures without the CLI writing import records directly.
+- Passing file or download content into core through a small source object with `text(): Promise<string>`, so local files and future fetch responses can use the same import path.
+- Passing source metadata into core with a required `sourceUri` and `sourceUpdatedAt` when known.
+- Keeping CLI command logic in an importable runner function with a thin process entrypoint for Bun script execution.
 
 Do not implement live Scryfall downloads in this slice.
 
@@ -28,7 +39,7 @@ Do not implement the opencode adapter or MCP interface in this slice.
 
 Do not implement ManaBox Collection import in this slice.
 
-Do not import `oracle_tags` in this slice unless the CLI boundary makes it trivial and tests stay focused.
+Do not import `oracle_tags` or Card Identity Tags in this slice. That requires new repository and schema behaviour and should be handled as a later data-model/repository slice before being exposed through this command.
 
 Do not add background sync, automatic refresh, or hidden network calls.
 
@@ -37,28 +48,33 @@ Do not add background sync, automatic refresh, or hidden network calls.
 Prefer a workspace script that can be run through Bun first, for example:
 
 ```sh
-bun run sync:scryfall -- --oracle-cards ./data/oracle-cards.json --all-cards ./data/all-cards.json
+bun run import:scryfall -- oracle_cards ./data/oracle-cards.json
+bun run import:scryfall -- all_cards ./data/all-cards.json
 ```
 
-The exact script name and package location are open for review. The command should be boring and local-first. It should not require opencode to run.
+The command should live in a dedicated `packages/cli` adapter package and be exposed from the root workspace scripts. It should be boring and local-first. It should not require opencode to run. Use import terminology for this local-file-only feature; reserve sync terminology for a future feature that can discover, download, or refresh Scryfall bulk data.
 
 Required options for the first version:
 
-- `--oracle-cards <path>`: path to a local Scryfall `oracle_cards` JSON file.
-- `--all-cards <path>`: path to a local Scryfall `all_cards` JSON file.
+- `<bulk-data-type>`: one explicit Scryfall bulk data type to import.
+- `<path>`: path to the local Scryfall bulk data JSON file for that type.
+
+Supported bulk data types for this slice:
+
+- `oracle_cards`
+- `all_cards`
 
 Optional options if they remain simple:
 
 - `--db <path>`: override `MTG_AGENT_DB_PATH` for one command invocation.
-- `--only oracle_cards|all_cards`: import one dataset for repair or debugging, while preserving dependency checks.
 
-If `--only` adds branching or weakens dependency checks, defer it.
+Do not support implicit default imports or multi-dataset imports in this slice. A user who wants to import multiple Scryfall bulk data files should run the command once per file in dependency order.
 
 ## Input Expectations
 
-The command should read local JSON arrays of Scryfall card objects, not the project's normalised `CardIdentity` or `CardPrinting` shapes.
+The command should read local JSON arrays of Scryfall card objects, not the project's normalised reference record shapes.
 
-The first implementation may load the full JSON file into memory if that keeps the slice small, but this should be called out in command output or docs as a temporary limitation. The Scryfall `all_cards` file is large, so streaming import may become necessary after this smoke path is proven.
+The importer should load and validate the complete dataset before replacing target records, matching the documented Scryfall Bulk Data Import model. The first implementation should accept source content through a small object with `text(): Promise<string>` and may load the full JSON payload into memory. `Bun.file(path)` and future `fetch()` responses both fit this shape. The Scryfall `all_cards` file is large, so streaming JSON parsing may become necessary after this smoke path is proven, but that should not weaken the full-dataset validation and transactional replacement rule.
 
 The default test suite should continue to use small package-local fixtures. Tests must not require real Scryfall bulk files and must not call live Scryfall services.
 
@@ -72,39 +88,49 @@ Create tests that prove command-observable behaviour against temporary on-disk S
 
 - A command with valid small raw `oracle_cards` and `all_cards` fixtures exits successfully and reports imported record counts.
 - The command writes Card Identities and Card Printings into the configured SQLite database.
-- The command imports `oracle_cards` before `all_cards` when both paths are provided.
+- The command imports exactly the one Scryfall bulk data type requested by the invocation.
+- An `all_cards` import fails clearly when the required Card Identity records are missing.
+- An `all_cards` import fails clearly when the target database has no latest successful `oracle_cards` Scryfall Bulk Data Import.
 - A missing input file exits non-zero and reports the missing path clearly.
-- Invalid JSON exits non-zero without replacing the previous usable dataset.
+- A missing input file does not create a `ScryfallBulkDataImport` record.
+- Invalid JSON exits non-zero, records a failed `ScryfallBulkDataImport`, and preserves the previous usable dataset.
+- A source object whose `text()` method rejects records a failed `ScryfallBulkDataImport` and preserves the previous usable dataset.
 - An `all_cards` file containing a missing `oracle_id` exits non-zero and preserves the previous usable Card Printing dataset.
 - The command respects `MTG_AGENT_DB_PATH` or `--db` and never writes to `.data/mtg-agent.sqlite` during tests.
 
 ### Core Or Adapter Tests
 
-Keep parsing and mapping tests in `@mtg-agent/core` if the behaviour is source-format validation or Scryfall object mapping.
+Keep raw Scryfall source-format validation, mapping, and import dependency tests in `@mtg-agent/core` if the behaviour is source-format validation, Scryfall object mapping, or product-level import rules.
 
-Keep process execution, argument parsing, filesystem, and exit-code tests outside core. Those are adapter concerns.
+Keep process execution, argument parsing, filesystem, JSON decoding, output rendering, and exit-code tests outside core. Those are adapter concerns.
+
+Most CLI behaviour should be tested through an importable runner function with fake IO and temporary SQLite paths. Add only thin process-level smoke coverage for the actual Bun script wiring and exit code behaviour.
 
 ## Implementation Steps
 
-1. Decide the script location, likely a small local CLI entrypoint under `packages/opencode` or a new scripts-oriented package only if there is a concrete need.
-2. Add argument parsing without introducing a CLI framework unless manual parsing becomes awkward.
-3. Resolve the database path from `--db`, then `MTG_AGENT_DB_PATH`, then `.data/mtg-agent.sqlite`.
-4. Ensure the database parent directory exists for the configured path.
-5. Open SQLite and initialise the schema.
-6. Read and validate the raw `oracle_cards` fixture or file with raw Scryfall schemas.
-7. Map and import Card Identities through the SQLite Scryfall repository.
-8. Read and validate the raw `all_cards` fixture or file with raw Scryfall schemas.
-9. Map and import Card Printings through the SQLite Scryfall repository.
-10. Render a concise success or failure summary suitable for a human and later adapter wrapping.
-11. Run `mise exec -- bun run typecheck` and `mise exec -- bun test`.
+1. Add a dedicated `packages/cli` adapter package for local command-line entrypoints that sit alongside, not inside, the opencode adapter.
+2. Add an importable command runner such as `runImportScryfallCommand(args, env, io)` plus a thin process entrypoint that passes `process.argv`, `process.env`, stdout/stderr, and exits.
+3. Add manual argument parsing for this first command. Do not introduce a CLI framework unless later command growth creates a concrete need.
+4. Resolve the database path from `--db`, then `MTG_AGENT_DB_PATH`, then `.data/mtg-agent.sqlite`.
+5. Ensure the database parent directory exists for the configured path.
+6. Open SQLite and initialise the schema.
+7. Open the selected raw Scryfall file in the CLI boundary and hand the source to the import pipeline with the selected bulk data type and source metadata. The CLI should set `sourceUri` to an absolute `file://` URI resolved with standard path/URL utilities, not by hand-built string concatenation. It should set `sourceUpdatedAt` from the file modified time when cheap, falling back to the command's current time.
+8. Add reusable core Scryfall Bulk Data Import service methods, such as `importOracleCards` and `importAllCards`, that accept a source object with `text(): Promise<string>` and can be called by both the manual CLI and a future automated sync path without branching on which caller supplied the source.
+9. Decode JSON, validate the raw parsed JSON value, and map it into the matching reference record shape inside the reusable import pipeline.
+10. Add a repository port method for recording failed Scryfall Bulk Data Import attempts. Use it from core for source read failures, JSON parse failures, source-format validation failures, and missing prerequisite `oracle_cards` before `all_cards`.
+11. Continue letting SQLite replacement methods record failures that occur during actual dataset replacement, such as missing Card Identity references during `all_cards` replacement.
+12. Have the core service fail `all_cards` before replacement when there is no latest successful `oracle_cards` Scryfall Bulk Data Import in the target repository.
+13. Import the selected reference records through the SQLite Scryfall repository while preserving repository-level dependency checks, including missing Card Identity references during `all_cards` replacement.
+14. Render a concise success or failure summary suitable for a human and later adapter wrapping.
+15. Run `mise exec -- bun run typecheck` and `mise exec -- bun test`.
 
 ## Output Expectations
 
 On success, output should include:
 
 - Target database path.
-- Imported `oracle_cards` count.
-- Imported `all_cards` count.
+- Imported bulk data type.
+- Imported record count.
 - Source file paths.
 - A clear statement that no live Scryfall network call was made.
 
@@ -115,7 +141,7 @@ On failure, output should include:
 - Blocking validation or repository errors.
 - The target database path.
 
-Exact wording does not need to be locked unless an Exact Output Test is added intentionally.
+Exact wording should not be locked in this slice. Tests should assert required fields, exit codes, and preservation statements without treating full output wording as an Exact Output Test contract.
 
 ## Done Bar
 
@@ -125,6 +151,7 @@ This slice is done when:
 - The same command can be pointed at a configured local database path.
 - Successful imports create `ScryfallBulkDataImport`, `CardIdentity`, and `CardPrinting` records.
 - Failed imports exit non-zero and preserve the previous usable dataset.
+- Each invocation imports exactly one explicitly selected Scryfall bulk data type.
 - The command makes no live network calls.
 - Tests do not depend on real Scryfall bulk files.
 - `mise exec -- bun run typecheck` passes.
@@ -132,11 +159,13 @@ This slice is done when:
 
 ## Open Questions For Grill
 
-- Should this command live in `packages/opencode`, or should the workspace have a separate local CLI package?
-- Should the first command accept only both required datasets, or should it support `--only` immediately?
-- Is loading the full `all_cards` JSON into memory acceptable as a smoke path, or should this slice start with streaming JSON parsing?
-- Should command output be treated as an Exact Output Test contract now, or kept flexible until the opencode/MCP adapter shape is clearer?
-- Should schema initialisation stay as a code helper for now, or should migrations be introduced before importing real local files?
+- Resolved: create a dedicated `packages/cli` adapter package for local command-line entrypoints.
+- Resolved: include only `oracle_cards` and `all_cards`. Defer `oracle_tags` and Card Identity Tags until their repository behaviour exists.
+- Resolved: the importer should load and validate the complete dataset before replacing target records. The first implementation should accept a source object with `text(): Promise<string>` and may load the full JSON payload into memory; streaming JSON parsing can be introduced later without weakening full-dataset validation.
+- Resolved: use manual argument parsing for this first command; defer CLI framework adoption until there is a concrete need.
+- Resolved: add a repository port method for recording failed Scryfall Bulk Data Import attempts so core records pre-replacement failures through the repository rather than through CLI persistence code.
+- Resolved: keep using the existing schema initialisation helper for this slice. Add migrations when other users start using the tool or when long-lived local databases need safe schema evolution.
+- Resolved: keep command output flexible in this slice. Assert required fields and behaviour, not exact wording.
 
 ## Follow-Up Slice
 
