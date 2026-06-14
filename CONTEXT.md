@@ -72,9 +72,17 @@ _Avoid_: Decklist, shopping list
 A source-backed record for a specific printed or print-like version of a card, distinct from both owned Collection rows and canonical card identity.
 _Avoid_: Scryfall Card, card pool entry
 
+**Printed Name**:
+The name shown for a specific Card Printing. It may differ from the canonical Card Identity name because of localization, alternate in-world naming, or other print-specific presentation.
+_Avoid_: Card name, Oracle name
+
 **Card Identity**:
 The canonical card-level identity used for deck-building reasoning, legality, names, rules text, and matching Deck Candidate entries across printings.
 _Avoid_: Oracle Card, card definition
+
+**Color Identity**:
+The set of MTG colors that constrain where a card can be used for format rules such as Commander/EDH deck construction. Colorless means the set contains no colors; it is not a sixth color.
+_Avoid_: Color, mana cost
 
 **Card Identity Tag**:
 A reusable descriptive tag that can apply to Card Identities for search, grouping, and Synergy analysis.

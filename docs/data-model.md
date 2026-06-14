@@ -82,7 +82,7 @@ Relationships:
 
 `CardPrinting` represents a source-backed record for a specific printed or print-like version of a card.
 
-It is source reference data, not an owned collection row. It should include only source fields directly needed for resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`, the related Card Identity as `card_identity_id`, source printing name, set code, collector number, finish-related data, and language. Source-specific URI fields should be omitted unless a concrete display or debugging need appears.
+It is source reference data, not an owned collection row. It should include only source fields directly needed for resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`, the related Card Identity as `card_identity_id`, nullable Printed Name, set code, collector number, finish-related data, language, and the source page URI for opening the printing in the source system. Printed Name should preserve Scryfall `printed_name` when present and remain null when the source omits a top-level print-local name.
 
 Scryfall card data should be loaded through a separate explicit sync/import path, not as a side effect of ManaBox Collection import. The MVP should use Scryfall's All Cards bulk data export so ManaBox rows can resolve by Scryfall ID to exact `CardPrinting` records. ManaBox import should resolve rows against local `CardPrinting` and `CardIdentity` records. If required Scryfall data is missing or a card cannot be resolved, Collection import should fail clearly rather than continuing with uncertain card identity.
 
@@ -127,7 +127,11 @@ Relationships:
 
 `CardIdentity` represents canonical card identity data used for deck-building reasoning.
 
-It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, legality checks, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.name` preserves the source printing name for exact printing display.
+It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.printedName` preserves the source printing name when the source provides one.
+
+`CardIdentity.colorIdentity` should be stored and exposed as a canonical WUBRG-ordered scalar. Colorless cards have an empty Color Identity, not a `C` identity. Exact color identity search should use equality on the scalar. Commander-playable subset searches should be implemented as query logic over the scalar.
+
+`CardIdentity` should include the source page URI for opening the source reference page. Format legality should not live as Commander-specific columns on `CardIdentity`; it belongs in `CardIdentityFormatLegality` records.
 
 Relationships:
 
@@ -136,6 +140,18 @@ Relationships:
 - A single `CardIdentity` may be referenced by many `DeckCandidateCard` records.
 - A single `CardIdentity` may have many `CardIdentityTagging` records.
 - `CardIdentity` is the bridge between owned collection rows and proposed deck cards.
+
+### CardIdentityFormatLegality
+
+`CardIdentityFormatLegality` represents one source-provided legality status for a Card Identity in one Format.
+
+It should be imported from Scryfall `oracle_cards.legalities` with the `oracle_cards` replacement transaction. Format should remain source-defined non-empty text so new Scryfall formats do not require schema changes. Legality should be constrained to the known Scryfall legality states: `legal`, `not_legal`, `banned`, and `restricted`. Entries with `not_legal` should be stored, because absence would otherwise be ambiguous.
+
+Relationships:
+
+- A `CardIdentityFormatLegality` belongs to one `CardIdentity`.
+- A `CardIdentity` may have many `CardIdentityFormatLegality` records.
+- `CardIdentityFormatLegality` should use a composite primary key of `card_identity_id` and `format`.
 
 ### CardIdentityTag
 

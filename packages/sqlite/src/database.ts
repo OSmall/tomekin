@@ -42,8 +42,8 @@ export function initializeDatabaseSchema(db: MtgAgentDatabase): void {
   db.run(sql`
     CREATE TABLE IF NOT EXISTS scryfall_bulk_data_imports (
       id TEXT PRIMARY KEY NOT NULL,
-      bulk_data_type TEXT NOT NULL,
-      status TEXT NOT NULL,
+      bulk_data_type TEXT NOT NULL CHECK (bulk_data_type IN ('oracle_cards', 'all_cards', 'oracle_tags')),
+      status TEXT NOT NULL CHECK (status IN ('succeeded', 'failed')),
       started_at INTEGER NOT NULL,
       completed_at INTEGER,
       source_updated_at INTEGER,
@@ -60,19 +60,32 @@ export function initializeDatabaseSchema(db: MtgAgentDatabase): void {
       mana_cost TEXT,
       type_line TEXT NOT NULL,
       oracle_text TEXT,
-      color_identity_json TEXT NOT NULL DEFAULT '[]',
-      commander_legality TEXT
+      color_identity TEXT NOT NULL DEFAULT '' CHECK (color_identity IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')),
+      source_page_uri TEXT NOT NULL
+    )
+  `);
+  db.run(sql`
+    CREATE TABLE IF NOT EXISTS card_identity_format_legalities (
+      card_identity_id TEXT NOT NULL REFERENCES card_identities(id),
+      format TEXT NOT NULL CHECK (length(format) > 0),
+      legality TEXT NOT NULL CHECK (legality IN ('legal', 'not_legal', 'banned', 'restricted')),
+      PRIMARY KEY (card_identity_id, format)
     )
   `);
   db.run(sql`
     CREATE TABLE IF NOT EXISTS card_printings (
       id TEXT PRIMARY KEY NOT NULL,
       card_identity_id TEXT NOT NULL REFERENCES card_identities(id),
-      name TEXT NOT NULL,
+      printed_name TEXT,
       set_code TEXT NOT NULL,
       collector_number TEXT NOT NULL,
       finishes_json TEXT NOT NULL DEFAULT '[]',
-      language TEXT
+      language TEXT NOT NULL,
+      source_page_uri TEXT NOT NULL
     )
   `);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_printings_card_identity_id ON card_printings(card_identity_id)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identities_color_identity ON card_identities(color_identity)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_format_legalities_card_identity_id ON card_identity_format_legalities(card_identity_id)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_format_legalities_format_legality ON card_identity_format_legalities(format, legality)`);
 }

@@ -127,8 +127,8 @@ describe("Scryfall sync services", () => {
   test("raw Scryfall schemas accept unknown fields without preserving them", () => {
     const oracle = RawScryfallOracleCardSchema.parse({
       object: "card",
-      id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-      oracle_id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       name: "Sol Ring",
       mana_cost: "{1}",
       type_line: "Artifact",
@@ -138,22 +138,25 @@ describe("Scryfall sync services", () => {
         commander: "legal",
         future_format: "legal",
       },
+      scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
       future_scryfall_field: "accepted but stripped",
     });
     const allCard = RawScryfallAllCardSchema.parse({
       object: "card",
-      id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
-      oracle_id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       name: "Sol Ring",
+      printed_name: "Sol Ring",
       set: "v10",
       collector_number: "12",
       finishes: ["foil"],
       lang: "en",
+      scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
       future_scryfall_field: "accepted but stripped",
     });
 
     expect("future_scryfall_field" in oracle).toBe(false);
-    expect("future_format" in oracle.legalities).toBe(false);
+    expect(oracle.legalities.future_format).toBe("legal");
     expect("future_scryfall_field" in allCard).toBe(false);
   });
 });

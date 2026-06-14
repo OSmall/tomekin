@@ -1,9 +1,13 @@
 # Todos
 
-Authored by osmall
+Authored and edited only by osmall, not agents.
 
 ## List
 
 - Improve logging. Add a logging framework and make it robust.
 - Pin versions of dependencies.
-- Improve db columns. Use timestamps instead of ints, UUIDv7 for internal IDS, etc.
+- handle double face cards
+- include mana value in card_identities
+- remove ./tools
+- rename tables to singular
+- figure out schema.ts ```.default(sql`'[]'`)```

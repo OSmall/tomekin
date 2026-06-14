@@ -3,15 +3,16 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  CardIdentitySchema,
+  CardIdentityImportRecordSchema,
   CardPrintingSchema,
   createScryfallSyncServices,
   hasScryfallOracleId,
   mapRawScryfallAllCardToCardPrinting,
-  mapRawScryfallOracleCardToCardIdentity,
+  mapRawScryfallOracleCardToCardIdentityImportRecord,
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
   type CardIdentity,
+  type CardIdentityImportRecord,
   type CardPrinting,
 } from "@mtg-agent/core";
 import {
@@ -23,12 +24,13 @@ import {
 describe("SQLite Scryfall repository", () => {
   test("successful oracle_cards import records success and exposes Card Identities", async () => {
     const repository = createTestRepository();
-    const identities = await readOracleCardIdentitiesFixture();
+    const records = await readOracleCardIdentityRecordsFixture();
 
-    const result = await repository.importCardIdentities(importInput(identities));
+    const result = await repository.importCardIdentities(importInput(records));
 
     expect(result.isOk()).toBe(true);
     if (result.isErr()) throw new Error(result.error.message);
+    expect(result.value.id).toMatch(uuidV7Pattern);
     expect(result.value.status).toBe("succeeded");
     expect(result.value.bulkDataType).toBe("oracle_cards");
     expect(result.value.importedRecordCount).toBe(7);
@@ -43,8 +45,8 @@ describe("SQLite Scryfall repository", () => {
         manaCost: "{1}",
         typeLine: "Artifact",
         oracleText: "{T}: Add {C}{C}.",
-        colorIdentity: [],
-        commanderLegality: "legal",
+        colorIdentity: "",
+        sourcePageUri: expect.stringContaining("scryfall.com/card/"),
       }),
     );
     expect(imported.value).toContainEqual(
@@ -54,10 +56,18 @@ describe("SQLite Scryfall repository", () => {
         manaCost: null,
         typeLine: "Sorcery // Land",
         oracleText: null,
-        colorIdentity: ["G"],
-        commanderLegality: "legal",
+        colorIdentity: "G",
+        sourcePageUri: expect.stringContaining("scryfall.com/card/"),
       }),
     );
+    const legalities = await repository.listCardIdentityFormatLegalities();
+    expect(legalities.isOk()).toBe(true);
+    if (legalities.isErr()) throw new Error(legalities.error.message);
+    expect(legalities.value).toContainEqual({
+      cardIdentityId: "6ad8011d-3471-4369-9d68-b264cc027487",
+      format: "commander",
+      legality: "legal",
+    });
 
     const attempts = await repository.listBulkDataImports();
     expect(attempts.isOk()).toBe(true);
@@ -67,14 +77,17 @@ describe("SQLite Scryfall repository", () => {
 
   test("failed oracle_cards import records failure and preserves previous Card Identity dataset", async () => {
     const repository = createTestRepository();
-    const identities = await readOracleCardIdentitiesFixture();
-    const initial = await repository.importCardIdentities(importInput(identities));
+    const records = await readOracleCardIdentityRecordsFixture();
+    const initial = await repository.importCardIdentities(importInput(records));
     expect(initial.isOk()).toBe(true);
 
     const failed = await repository.importCardIdentities(
-      importInput<CardIdentity>([
-        identities[0],
-        { ...identities[0], name: "Duplicate Sol Ring" },
+      importInput<CardIdentityImportRecord>([
+        records[0],
+        {
+          ...records[0],
+          identity: { ...records[0].identity, name: "Duplicate Sol Ring" },
+        },
       ]),
     );
 
@@ -89,13 +102,14 @@ describe("SQLite Scryfall repository", () => {
 
   test("successful all_cards import records success and exposes Card Printings", async () => {
     const repository = createTestRepository();
-    const identities = await readOracleCardIdentitiesFixture();
+    const records = await readOracleCardIdentityRecordsFixture();
+    const identities = records.map((record) => record.identity);
     const printings = await readAllCardPrintingsFixture();
     const printingsWithImportedIdentities = filterPrintingsWithKnownIdentities(
       printings,
       identities,
     );
-    const identityImport = await repository.importCardIdentities(importInput(identities));
+    const identityImport = await repository.importCardIdentities(importInput(records));
     expect(identityImport.isOk()).toBe(true);
 
     const result = await repository.importCardPrintings(
@@ -115,19 +129,27 @@ describe("SQLite Scryfall repository", () => {
       expect.objectContaining({
         id: "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
         cardIdentityId: "6ad8011d-3471-4369-9d68-b264cc027487",
-        name: "Sol Ring",
+        printedName: null,
         setCode: "v10",
         collectorNumber: "12",
         finishes: ["foil"],
         language: "en",
+        sourcePageUri: expect.stringContaining("scryfall.com/card/"),
       }),
     );
     expect(imported.value).toContainEqual(
       expect.objectContaining({
         id: "54cf4f5c-1305-48bb-b046-d56706e9b81e",
         cardIdentityId: "ae92942b-919c-4ea9-b693-85fcef765d5a",
-        name: "Fire // Ice",
+        printedName: null,
         language: "ja",
+      }),
+    );
+    expect(imported.value).toContainEqual(
+      expect.objectContaining({
+        id: "10b624fe-3eec-487d-8a0d-a9f2e2708263",
+        printedName: "Sigillo Arcano",
+        language: "it",
       }),
     );
   });
@@ -148,12 +170,13 @@ describe("SQLite Scryfall repository", () => {
 
   test("failed all_cards import preserves previous Card Printing dataset", async () => {
     const repository = createTestRepository();
-    const identities = await readOracleCardIdentitiesFixture();
+    const records = await readOracleCardIdentityRecordsFixture();
+    const identities = records.map((record) => record.identity);
     const printings = filterPrintingsWithKnownIdentities(
       await readAllCardPrintingsFixture(),
       identities,
     );
-    expect((await repository.importCardIdentities(importInput(identities))).isOk()).toBe(true);
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
     expect((await repository.importCardPrintings(importInput(printings))).isOk()).toBe(true);
 
     const failed = await repository.importCardPrintings(
@@ -197,6 +220,9 @@ describe("SQLite Scryfall repository", () => {
   });
 });
 
+const uuidV7Pattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+
 function createTestRepository() {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
   const db = openDatabase(join(dir, "test.sqlite"));
@@ -216,13 +242,15 @@ async function readFixture<T>(
   return schema.parse(value);
 }
 
-async function readOracleCardIdentitiesFixture(): Promise<readonly CardIdentity[]> {
+async function readOracleCardIdentityRecordsFixture(): Promise<
+  readonly CardIdentityImportRecord[]
+> {
   const rawCards = await readFixture(
     "oracle-cards-minimal.json",
     RawScryfallOracleCardSchema.array(),
   );
-  return CardIdentitySchema.array().parse(
-    rawCards.map(mapRawScryfallOracleCardToCardIdentity),
+  return CardIdentityImportRecordSchema.array().parse(
+    rawCards.map(mapRawScryfallOracleCardToCardIdentityImportRecord),
   );
 }
 

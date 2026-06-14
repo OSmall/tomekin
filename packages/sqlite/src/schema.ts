@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { colorIdentityValues, formatLegalityValues } from "@mtg-agent/core";
 
 export const collectionImports = sqliteTable("collection_imports", {
   id: text("id").primaryKey(),
@@ -51,12 +52,18 @@ export const cardIdentities = sqliteTable("card_identities", {
   manaCost: text("mana_cost"),
   typeLine: text("type_line").notNull(),
   oracleText: text("oracle_text"),
-  colorIdentityJson: text("color_identity_json", { mode: "json" })
+  colorIdentity: text("color_identity", { enum: colorIdentityValues })
     .notNull()
-    .default(sql`'[]'`),
-  commanderLegality: text("commander_legality", {
-    enum: ["legal", "not_legal", "banned", "restricted"],
-  }),
+    .default(""),
+  sourcePageUri: text("source_page_uri").notNull(),
+});
+
+export const cardIdentityFormatLegalities = sqliteTable("card_identity_format_legalities", {
+  cardIdentityId: text("card_identity_id")
+    .notNull()
+    .references(() => cardIdentities.id),
+  format: text("format").notNull(),
+  legality: text("legality", { enum: formatLegalityValues }).notNull(),
 });
 
 export const cardPrintings = sqliteTable("card_printings", {
@@ -64,11 +71,12 @@ export const cardPrintings = sqliteTable("card_printings", {
   cardIdentityId: text("card_identity_id")
     .notNull()
     .references(() => cardIdentities.id),
-  name: text("name").notNull(),
+  printedName: text("printed_name"),
   setCode: text("set_code").notNull(),
   collectorNumber: text("collector_number").notNull(),
   finishesJson: text("finishes_json", { mode: "json" })
     .notNull()
     .default(sql`'[]'`),
-  language: text("language"),
+  language: text("language").notNull(),
+  sourcePageUri: text("source_page_uri").notNull(),
 });

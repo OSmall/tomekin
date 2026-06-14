@@ -55,76 +55,146 @@ export type ScryfallBulkDataType = z.infer<typeof ScryfallBulkDataTypeSchema>;
 export const ImportStatusSchema = z.enum(["succeeded", "failed"]);
 export type ImportStatus = z.infer<typeof ImportStatusSchema>;
 
-export const CommanderLegalitySchema = z.enum([
+export const formatLegalityValues = [
   "legal",
   "not_legal",
   "banned",
   "restricted",
-]);
-export type CommanderLegality = z.infer<typeof CommanderLegalitySchema>;
+] as const;
+
+export const FormatLegalitySchema = z.enum(formatLegalityValues);
+export type FormatLegality = z.infer<typeof FormatLegalitySchema>;
+
+export const colorIdentityValues = [
+  "",
+  "W",
+  "U",
+  "B",
+  "R",
+  "G",
+  "WU",
+  "WB",
+  "WR",
+  "WG",
+  "UB",
+  "UR",
+  "UG",
+  "BR",
+  "BG",
+  "RG",
+  "WUB",
+  "WUR",
+  "WUG",
+  "WBR",
+  "WBG",
+  "WRG",
+  "UBR",
+  "UBG",
+  "URG",
+  "BRG",
+  "WUBR",
+  "WUBG",
+  "WURG",
+  "WBRG",
+  "UBRG",
+  "WUBRG",
+] as const;
+
+export const ColorIdentitySchema = z.enum(colorIdentityValues);
+export type ColorIdentity = z.infer<typeof ColorIdentitySchema>;
+
+const colorIdentityOrder = ["W", "U", "B", "R", "G"] as const;
+const colorIdentitySymbols = new Set<string>(colorIdentityOrder);
 
 export const CardIdentitySchema = z.object({
-  id: z.string().min(1),
+  id: z.uuid(),
   name: z.string().min(1),
   manaCost: z.string().nullable(),
   typeLine: z.string().min(1),
   oracleText: z.string().nullable(),
-  colorIdentity: z.array(z.string()).readonly(),
-  commanderLegality: CommanderLegalitySchema.nullable(),
+  colorIdentity: ColorIdentitySchema,
+  sourcePageUri: z.url(),
 });
 export type CardIdentity = z.infer<typeof CardIdentitySchema>;
 
+export const CardIdentityFormatLegalitySchema = z.object({
+  cardIdentityId: z.uuid(),
+  format: z.string().min(1),
+  legality: FormatLegalitySchema,
+});
+export type CardIdentityFormatLegality = z.infer<
+  typeof CardIdentityFormatLegalitySchema
+>;
+
+export const CardIdentityImportRecordSchema = z.object({
+  identity: CardIdentitySchema,
+  formatLegalities: z.array(CardIdentityFormatLegalitySchema).readonly(),
+});
+export type CardIdentityImportRecord = z.infer<
+  typeof CardIdentityImportRecordSchema
+>;
+
 export const CardPrintingSchema = z.object({
-  id: z.string().min(1),
-  cardIdentityId: z.string().min(1),
-  name: z.string().min(1),
+  id: z.uuid(),
+  cardIdentityId: z.uuid(),
+  printedName: z.string().min(1).nullable(),
   setCode: z.string().min(1),
   collectorNumber: z.string().min(1),
   finishes: z.array(z.string()).readonly(),
-  language: z.string().min(1).nullable(),
+  language: z.string().min(1),
+  sourcePageUri: z.url(),
 });
 export type CardPrinting = z.infer<typeof CardPrintingSchema>;
 
 export const RawScryfallOracleCardSchema = z
   .object({
     object: z.literal("card"),
-    id: z.string().min(1),
-    oracle_id: z.string().min(1),
+    id: z.uuid(),
+    oracle_id: z.uuid(),
     name: z.string().min(1),
     mana_cost: z.string().optional(),
     type_line: z.string().min(1),
     oracle_text: z.string().optional(),
     color_identity: z.array(z.string()),
-    legalities: z
-      .object({
-        commander: CommanderLegalitySchema.optional(),
-      }),
+    legalities: z.record(z.string().min(1), FormatLegalitySchema),
+    scryfall_uri: z.url(),
   });
 export type RawScryfallOracleCard = z.infer<typeof RawScryfallOracleCardSchema>;
 
 export const RawScryfallAllCardSchema = z.object({
   object: z.literal("card"),
-  id: z.string().min(1),
-  oracle_id: z.string().min(1).optional(),
+  id: z.uuid(),
+  oracle_id: z.uuid().optional(),
   name: z.string().min(1),
+  printed_name: z.string().min(1).nullish(),
   set: z.string().min(1),
   collector_number: z.string().min(1),
   finishes: z.array(z.string()),
   lang: z.string().min(1),
+  scryfall_uri: z.url(),
 });
 export type RawScryfallAllCard = z.infer<typeof RawScryfallAllCardSchema>;
 
-export function mapRawScryfallOracleCardToCardIdentity(
+export function mapRawScryfallOracleCardToCardIdentityImportRecord(
   card: RawScryfallOracleCard,
-): CardIdentity {
-  return {
+): CardIdentityImportRecord {
+  const identity: CardIdentity = {
     id: card.oracle_id,
     name: card.name,
     manaCost: card.mana_cost ?? null,
     typeLine: card.type_line,
     oracleText: card.oracle_text ?? null,
-    colorIdentity: card.color_identity,
-    commanderLegality: card.legalities.commander ?? null,
+    colorIdentity: toColorIdentity(card.color_identity),
+    sourcePageUri: card.scryfall_uri,
+  };
+
+  return {
+    identity,
+    formatLegalities: Object.entries(card.legalities).map(([format, legality]) => ({
+      cardIdentityId: card.oracle_id,
+      format,
+      legality,
+    })),
   };
 }
 
@@ -134,12 +204,29 @@ export function mapRawScryfallAllCardToCardPrinting(
   return {
     id: card.id,
     cardIdentityId: card.oracle_id,
-    name: card.name,
+    printedName: card.printed_name ?? null,
     setCode: card.set,
     collectorNumber: card.collector_number,
     finishes: card.finishes,
     language: card.lang,
+    sourcePageUri: card.scryfall_uri,
   };
+}
+
+export function toColorIdentity(colors: readonly string[]): ColorIdentity {
+  const seen = new Set<string>();
+  for (const color of colors) {
+    if (!colorIdentitySymbols.has(color)) {
+      throw new Error(`Unexpected color identity symbol: ${color}.`);
+    }
+    if (seen.has(color)) {
+      throw new Error(`Duplicate color identity symbol: ${color}.`);
+    }
+    seen.add(color);
+  }
+
+  const canonical = colorIdentityOrder.filter((color) => seen.has(color)).join("");
+  return ColorIdentitySchema.parse(canonical);
 }
 
 export function hasScryfallOracleId(
@@ -149,7 +236,7 @@ export function hasScryfallOracleId(
 }
 
 export const ScryfallBulkDataImportSchema = z.object({
-  id: z.string().min(1),
+  id: z.uuid(),
   bulkDataType: ScryfallBulkDataTypeSchema,
   status: ImportStatusSchema,
   startedAt: z.date(),
@@ -225,7 +312,7 @@ export type ScryfallRepository = {
     bulkDataType: ScryfallBulkDataType,
   ): Promise<Result<ScryfallBulkDataImport | null, ScryfallRepositoryError>>;
   importCardIdentities(
-    input: ScryfallBulkImportInput<CardIdentity>,
+    input: ScryfallBulkImportInput<CardIdentityImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
   importCardPrintings(
     input: ScryfallBulkImportInput<CardPrinting>,
@@ -344,8 +431,8 @@ export function createScryfallLocalImportServices(
         records: mapScryfallRecords(
           source,
           RawScryfallOracleCardSchema,
-          mapRawScryfallOracleCardToCardIdentity,
-          CardIdentitySchema,
+          mapRawScryfallOracleCardToCardIdentityImportRecord,
+          CardIdentityImportRecordSchema,
           options?.observer,
         ),
       });

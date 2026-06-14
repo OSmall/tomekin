@@ -1,7 +1,10 @@
+import { randomUUIDv7 } from "bun";
 import { desc, sql } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
 import type {
   CardIdentity,
+  CardIdentityFormatLegality,
+  CardIdentityImportRecord,
   CardPrinting,
   Clock,
   ScryfallBulkDataImport,
@@ -15,6 +18,7 @@ import type {
 
 import type { MtgAgentDatabase } from "./database";
 import {
+  cardIdentityFormatLegalities,
   cardIdentities,
   cardPrintings,
   scryfallBulkDataImports,
@@ -24,8 +28,11 @@ const SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL = 25_000;
 
 export type SqliteScryfallRepository = ScryfallRepository & {
   importCardIdentities(
-    input: ScryfallBulkImportInput<CardIdentity>,
+    input: ScryfallBulkImportInput<CardIdentityImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  listCardIdentityFormatLegalities(): Promise<
+    Result<readonly CardIdentityFormatLegality[], ScryfallRepositoryError>
+  >;
   importCardPrintings(
     input: ScryfallBulkImportInput<CardPrinting>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
@@ -53,8 +60,17 @@ export function createSqliteScryfallRepository(
             mana_cost TEXT,
             type_line TEXT NOT NULL,
             oracle_text TEXT,
-            color_identity_json TEXT NOT NULL,
-            commander_legality TEXT
+            color_identity TEXT NOT NULL,
+            source_page_uri TEXT NOT NULL
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_format_legalities`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identity_format_legalities (
+            card_identity_id TEXT NOT NULL,
+            format TEXT NOT NULL,
+            legality TEXT NOT NULL,
+            PRIMARY KEY (card_identity_id, format)
           )
         `);
 
@@ -65,25 +81,41 @@ export function createSqliteScryfallRepository(
             mana_cost,
             type_line,
             oracle_text,
-            color_identity_json,
-            commander_legality
+            color_identity,
+            source_page_uri
           ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+        `);
+        const insertLegality = db.$client.prepare(`
+          INSERT INTO import_card_identity_format_legalities (
+            card_identity_id,
+            format,
+            legality
+          ) VALUES (?1, ?2, ?3)
         `);
         try {
           for await (const record of input.records) {
+            const { identity, formatLegalities } = record;
             insertIdentity.run(
-              record.id,
-              record.name,
-              record.manaCost,
-              record.typeLine,
-              record.oracleText,
-              JSON.stringify(record.colorIdentity),
-              record.commanderLegality,
+              identity.id,
+              identity.name,
+              identity.manaCost,
+              identity.typeLine,
+              identity.oracleText,
+              identity.colorIdentity,
+              identity.sourcePageUri,
             );
+            for (const legality of formatLegalities) {
+              insertLegality.run(
+                legality.cardIdentityId,
+                legality.format,
+                legality.legality,
+              );
+            }
             importedRecordCount += 1;
             emitStagedRecordCounter(input.observer, importedRecordCount);
           }
         } finally {
+          insertLegality.finalize();
           insertIdentity.finalize();
         }
         emitStagedRecordCounter(input.observer, importedRecordCount, true);
@@ -105,6 +137,7 @@ export function createSqliteScryfallRepository(
         }
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
+          db.delete(cardIdentityFormatLegalities).run();
           db.run(sql`
             DELETE FROM card_identities
             WHERE id NOT IN (SELECT id FROM import_card_identities)
@@ -118,8 +151,8 @@ export function createSqliteScryfallRepository(
               mana_cost,
               type_line,
               oracle_text,
-              color_identity_json,
-              commander_legality
+              color_identity,
+              source_page_uri
             )
             SELECT
               id,
@@ -127,8 +160,8 @@ export function createSqliteScryfallRepository(
               mana_cost,
               type_line,
               oracle_text,
-              color_identity_json,
-              commander_legality
+              color_identity,
+              source_page_uri
             FROM import_card_identities
             WHERE true
             ON CONFLICT(id) DO UPDATE SET
@@ -136,8 +169,20 @@ export function createSqliteScryfallRepository(
               mana_cost = excluded.mana_cost,
               type_line = excluded.type_line,
               oracle_text = excluded.oracle_text,
-              color_identity_json = excluded.color_identity_json,
-              commander_legality = excluded.commander_legality
+              color_identity = excluded.color_identity,
+              source_page_uri = excluded.source_page_uri
+          `);
+          db.run(sql`
+            INSERT INTO card_identity_format_legalities (
+              card_identity_id,
+              format,
+              legality
+            )
+            SELECT
+              card_identity_id,
+              format,
+              legality
+            FROM import_card_identity_format_legalities
           `);
         });
 
@@ -171,11 +216,12 @@ export function createSqliteScryfallRepository(
           CREATE TEMP TABLE import_card_printings (
             id TEXT PRIMARY KEY NOT NULL,
             card_identity_id TEXT NOT NULL,
-            name TEXT NOT NULL,
+            printed_name TEXT,
             set_code TEXT NOT NULL,
             collector_number TEXT NOT NULL,
             finishes_json TEXT NOT NULL,
-            language TEXT
+            language TEXT NOT NULL,
+            source_page_uri TEXT NOT NULL
           )
         `);
 
@@ -183,23 +229,25 @@ export function createSqliteScryfallRepository(
           INSERT INTO import_card_printings (
             id,
             card_identity_id,
-            name,
+            printed_name,
             set_code,
             collector_number,
             finishes_json,
-            language
-          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+            language,
+            source_page_uri
+          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
         `);
         try {
           for await (const record of input.records) {
             insertPrinting.run(
               record.id,
               record.cardIdentityId,
-              record.name,
+              record.printedName,
               record.setCode,
               record.collectorNumber,
               JSON.stringify(record.finishes),
               record.language,
+              record.sourcePageUri,
             );
             importedRecordCount += 1;
             emitStagedRecordCounter(input.observer, importedRecordCount);
@@ -233,20 +281,22 @@ export function createSqliteScryfallRepository(
             INSERT INTO card_printings (
               id,
               card_identity_id,
-              name,
+              printed_name,
               set_code,
               collector_number,
               finishes_json,
-              language
+              language,
+              source_page_uri
             )
             SELECT
               id,
               card_identity_id,
-              name,
+              printed_name,
               set_code,
               collector_number,
               finishes_json,
-              language
+              language,
+              source_page_uri
             FROM import_card_printings
           `);
         });
@@ -289,8 +339,23 @@ export function createSqliteScryfallRepository(
         const rows = await db
           .select()
           .from(cardPrintings)
-          .orderBy(cardPrintings.name, cardPrintings.setCode, cardPrintings.collectorNumber);
+          .orderBy(cardPrintings.printedName, cardPrintings.setCode, cardPrintings.collectorNumber);
         return ok(rows.map(toCardPrinting));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardIdentityFormatLegalities() {
+      try {
+        const rows = await db
+          .select()
+          .from(cardIdentityFormatLegalities)
+          .orderBy(
+            cardIdentityFormatLegalities.cardIdentityId,
+            cardIdentityFormatLegalities.format,
+          );
+        return ok(rows.map(toCardIdentityFormatLegality));
       } catch (error) {
         return err(toRepositoryError(error));
       }
@@ -368,7 +433,7 @@ function insertImportRecord<TRecord>(
   blockingErrors: readonly string[],
 ): ScryfallBulkDataImport {
   const imported: ScryfallBulkDataImport = {
-    id: crypto.randomUUID(),
+    id: randomUUIDv7("hex", input.startedAt.getTime()),
     bulkDataType,
     status,
     startedAt: input.startedAt,
@@ -456,8 +521,18 @@ function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
     manaCost: row.manaCost,
     typeLine: row.typeLine,
     oracleText: row.oracleText,
-    colorIdentity: asStringArray(row.colorIdentityJson),
-    commanderLegality: row.commanderLegality,
+    colorIdentity: row.colorIdentity,
+    sourcePageUri: row.sourcePageUri,
+  };
+}
+
+function toCardIdentityFormatLegality(
+  row: typeof cardIdentityFormatLegalities.$inferSelect,
+): CardIdentityFormatLegality {
+  return {
+    cardIdentityId: row.cardIdentityId,
+    format: row.format,
+    legality: row.legality,
   };
 }
 
@@ -465,11 +540,12 @@ function toCardPrinting(row: typeof cardPrintings.$inferSelect): CardPrinting {
   return {
     id: row.id,
     cardIdentityId: row.cardIdentityId,
-    name: row.name,
+    printedName: row.printedName,
     setCode: row.setCode,
     collectorNumber: row.collectorNumber,
     finishes: asStringArray(row.finishesJson),
     language: row.language,
+    sourcePageUri: row.sourcePageUri,
   };
 }
 

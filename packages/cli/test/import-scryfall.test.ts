@@ -44,10 +44,7 @@ describe("import:scryfall command", () => {
       "Cultivate",
       "Sol Ring",
     ]);
-    expect(snapshot.printings.map((card) => card.name).sort()).toEqual([
-      "Cultivate",
-      "Sol Ring",
-    ]);
+    expect(snapshot.printings.map((card) => card.printedName)).toEqual([null, null]);
     expect(snapshot.imports.map((attempt) => attempt.bulkDataType)).toEqual([
       "oracle_cards",
       "all_cards",
@@ -158,8 +155,8 @@ describe("import:scryfall command", () => {
       JSON.stringify([
         {
           ...rawAllCards[0],
-          id: "33333333-3333-3333-3333-333333333333",
-          oracle_id: "99999999-9999-9999-9999-999999999999",
+          id: "33333333-3333-4333-8333-333333333333",
+          oracle_id: "99999999-9999-4999-8999-999999999999",
         },
       ]),
     );
@@ -185,8 +182,8 @@ describe("import:scryfall command", () => {
 
     const snapshot = await readRepositorySnapshot(paths.dbPath);
     expect(snapshot.printings.map((printing) => printing.id).sort()).toEqual([
-      "11111111-1111-1111-1111-111111111111",
-      "22222222-2222-2222-2222-222222222222",
+      "11111111-1111-4111-8111-111111111111",
+      "22222222-2222-4222-8222-222222222222",
     ]);
   });
 });
@@ -248,7 +245,7 @@ async function readRepositorySnapshot(dbPath: string) {
 const rawOracleCards = [
   {
     object: "card",
-    id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
     oracle_id: "6ad8011d-3471-4369-9d68-b264cc027487",
     name: "Sol Ring",
     mana_cost: "{1}",
@@ -256,10 +253,11 @@ const rawOracleCards = [
     oracle_text: "{T}: Add {C}{C}.",
     color_identity: [],
     legalities: { commander: "legal" },
+    scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
   },
   {
     object: "card",
-    id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
     oracle_id: "8b755881-a72d-4e21-a369-d2924eb4585a",
     name: "Cultivate",
     mana_cost: "{2}{G}",
@@ -268,13 +266,14 @@ const rawOracleCards = [
       "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
     color_identity: ["G"],
     legalities: { commander: "legal" },
+    scryfall_uri: "https://scryfall.com/card/m11/168/cultivate",
   },
 ] as const;
 
 const rawAllCards = [
   {
     ...rawOracleCards[0],
-    id: "11111111-1111-1111-1111-111111111111",
+    id: "11111111-1111-4111-8111-111111111111",
     set: "v10",
     collector_number: "12",
     finishes: ["foil"],
@@ -282,7 +281,7 @@ const rawAllCards = [
   },
   {
     ...rawOracleCards[1],
-    id: "22222222-2222-2222-2222-222222222222",
+    id: "22222222-2222-4222-8222-222222222222",
     set: "m11",
     collector_number: "168",
     finishes: ["nonfoil"],
