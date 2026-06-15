@@ -8,6 +8,5 @@ Authored and edited only by osmall, not agents.
 - Pin versions of dependencies.
 - handle double face cards
 - include mana value in card_identities
-- remove ./tools
 - rename tables to singular
 - figure out schema.ts ```.default(sql`'[]'`)```
