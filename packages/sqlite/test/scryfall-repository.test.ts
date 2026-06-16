@@ -1,10 +1,14 @@
-import { describe, expect, test } from "bun:test";
-import { mkdtempSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import {describe, expect, test} from "bun:test";
+import {mkdtempSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
 import {
+  type CardIdentity,
+  type CardIdentityImportRecord,
   CardIdentityImportRecordSchema,
+  type CardIdentityTagImportRecord,
   CardIdentityTagImportRecordSchema,
+  type CardPrinting,
   CardPrintingSchema,
   createScryfallSyncServices,
   hasScryfallOracleId,
@@ -14,16 +18,8 @@ import {
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
   RawScryfallOracleTagSchema,
-  type CardIdentity,
-  type CardIdentityImportRecord,
-  type CardIdentityTagImportRecord,
-  type CardPrinting,
 } from "@mtg-agent/core";
-import {
-  createSqliteScryfallRepository,
-  initializeDatabaseSchema,
-  openDatabase,
-} from "@mtg-agent/sqlite";
+import {applySqliteMigrations, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
 
 describe("SQLite Scryfall repository", () => {
   test("successful oracle_cards import records success and exposes Card Identities", async () => {
@@ -382,8 +378,9 @@ const uuidV7Pattern =
 
 function createTestRepository() {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
-  const db = openDatabase(join(dir, "test.sqlite"));
-  initializeDatabaseSchema(db);
+  const dbPath = join(dir, "test.sqlite");
+  applySqliteMigrations(dbPath);
+  const db = openDatabase(dbPath);
   return createSqliteScryfallRepository(db, {
     now: () => new Date("2025-01-01T00:00:01.000Z"),
   });

@@ -16,6 +16,20 @@ The project is a collection-first deck builder. The MVP emphasises Commander/EDH
 - [`docs/future-direction.md`](./docs/future-direction.md): deferred scope and likely future product directions.
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 
+## Quickstart
+
+Install tool and package dependencies, then prepare the local SQLite database before importing Scryfall reference data:
+
+```sh
+mise install
+bun install
+bun run db:sqlite:migration:apply
+bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
+```
+
+Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
+SQLite database path and applies migrations from `packages/sqlite/drizzle/`.
+
 ## Local Scryfall Import
 
 Import local Scryfall bulk data JSON files into SQLite:
@@ -28,9 +42,20 @@ bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
 
 Run `oracle_cards` before `oracle_tags` or `all_cards`. The command only reads local files, reports timestamped source-read progress while it runs, and does not download from Scryfall.
 
+The import command does not create or migrate the database. Apply SQLite migrations first with
+`bun run db:sqlite:migration:apply`.
+
 By default, imports write to `.data/mtg-agent.sqlite`. Override the database for one run with `--db`:
 
 ```sh
+bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
+```
+
+When using a non-default database path, set `MTG_AGENT_DB_PATH` for the migration command or apply migrations to the
+same path before importing:
+
+```sh
+MTG_AGENT_DB_PATH=./tmp/test.sqlite bun run db:sqlite:migration:apply
 bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
 ```
 

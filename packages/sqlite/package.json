@@ -6,6 +6,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "db:sqlite:migration:apply": "bun src/apply-migrations.ts",
+    "db:sqlite:migration:generate": "drizzle-kit generate"
+  },
   "dependencies": {
     "@mtg-agent/core": "workspace:*",
     "drizzle-orm": "latest",

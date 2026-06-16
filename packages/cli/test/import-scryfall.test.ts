@@ -1,14 +1,9 @@
-import { describe, expect, test } from "bun:test";
-import { mkdtempSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { runImportScryfallCommand } from "@mtg-agent/cli";
-import {
-  closeDatabase,
-  createSqliteScryfallRepository,
-  initializeDatabaseSchema,
-  openDatabase,
-} from "@mtg-agent/sqlite";
+import {describe, expect, test} from "bun:test";
+import {mkdtempSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
+import {runImportScryfallCommand} from "@mtg-agent/cli";
+import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
 
 const clock = {
   now: () => new Date("2025-01-01T00:00:00.000Z"),
@@ -293,13 +288,13 @@ async function createFixtureFiles(): Promise<{
   await Bun.write(oraclePath, JSON.stringify(rawOracleCards));
   await Bun.write(allCardsPath, JSON.stringify(rawAllCards));
   await Bun.write(oracleTagsPath, JSON.stringify(rawOracleTags));
+  applySqliteMigrations(dbPath);
   return { dir, dbPath, oraclePath, allCardsPath, oracleTagsPath };
 }
 
 async function readRepositorySnapshot(dbPath: string) {
   const db = openDatabase(dbPath);
   try {
-    initializeDatabaseSchema(db);
     const repository = createSqliteScryfallRepository(db, clock);
     const identities = await repository.listCardIdentities();
     const printings = await repository.listCardPrintings();

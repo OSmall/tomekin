@@ -1,5 +1,5 @@
-import {mkdir, stat} from "node:fs/promises";
-import {dirname, resolve} from "node:path";
+import {stat} from "node:fs/promises";
+import {resolve} from "node:path";
 import {pathToFileURL} from "node:url";
 import {heapStats} from "bun:jsc";
 import {
@@ -11,13 +11,7 @@ import {
   type ScryfallImportEvent,
   type ScryfallImportObserver,
 } from "@mtg-agent/core";
-import {
-  closeDatabase,
-  createSqliteScryfallRepository,
-  initializeDatabaseSchema,
-  openDatabase,
-  resolveDatabasePath,
-} from "@mtg-agent/sqlite";
+import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath,} from "@mtg-agent/sqlite";
 
 const SOURCE_PROGRESS_STEP_PERCENT = 5;
 const TIMING_RENDER_INTERVAL_MS = 5_000;
@@ -61,11 +55,9 @@ export async function runImportScryfallCommand(
     return 1;
   }
 
-  await ensureDatabaseParentDirectory(dbPath);
   const db = openDatabase(dbPath);
 
   try {
-    initializeDatabaseSchema(db);
     const repository = createSqliteScryfallRepository(db, clock);
     const services = createScryfallLocalImportServices(repository, clock);
     renderProgressStart(io, {
@@ -190,11 +182,6 @@ function parseArgs(args: readonly string[]): ParsedArgs {
     timing,
     ...(dbPath ? { dbPath } : {}),
   };
-}
-
-async function ensureDatabaseParentDirectory(dbPath: string): Promise<void> {
-  const parent = dirname(resolve(dbPath));
-  await mkdir(parent, { recursive: true });
 }
 
 function renderSuccess(

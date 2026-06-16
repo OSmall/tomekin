@@ -6,12 +6,15 @@
     "packages/*"
   ],
   "scripts": {
+    "db:sqlite:migration:apply": "bun packages/sqlite/src/apply-migrations.ts",
+    "db:sqlite:migration:generate": "bun run --cwd packages/sqlite drizzle-kit generate",
     "import:scryfall": "bun packages/cli/src/import-scryfall.ts",
     "test": "bun test",
     "typecheck": "tsc -b"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "drizzle-kit": "latest",
     "typescript": "latest"
   }
 }

@@ -12,4 +12,4 @@ Authored and edited only by osmall, not agents.
 - figure out schema.ts ```.default(sql`'[]'`)```
 - import and handle card faces
 - import and handle all relevant fields to the cards
-- DB migrations
+- use T3.env for environment variables
