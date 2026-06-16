@@ -127,7 +127,7 @@ Relationships:
 
 `CardIdentity` represents canonical card identity data used for deck-building reasoning.
 
-It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.printedName` preserves the source printing name when the source provides one.
+It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, Mana Value, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.printedName` preserves the source printing name when the source provides one.
 
 `CardIdentity.colorIdentity` should be stored and exposed as a canonical WUBRG-ordered scalar. Colorless cards have an empty Color Identity, not a `C` identity. Exact color identity search should use equality on the scalar. Commander-playable subset searches should be implemented as query logic over the scalar.
 

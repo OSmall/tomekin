@@ -58,6 +58,7 @@ export function createSqliteScryfallRepository(
             id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             mana_cost TEXT,
+            mana_value REAL NOT NULL,
             type_line TEXT NOT NULL,
             oracle_text TEXT,
             color_identity TEXT NOT NULL,
@@ -79,11 +80,12 @@ export function createSqliteScryfallRepository(
             id,
             name,
             mana_cost,
+            mana_value,
             type_line,
             oracle_text,
             color_identity,
             source_page_uri
-          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
         `);
         const insertLegality = db.$client.prepare(`
           INSERT INTO import_card_identity_format_legalities (
@@ -99,6 +101,7 @@ export function createSqliteScryfallRepository(
               identity.id,
               identity.name,
               identity.manaCost,
+              identity.manaValue,
               identity.typeLine,
               identity.oracleText,
               identity.colorIdentity,
@@ -149,6 +152,7 @@ export function createSqliteScryfallRepository(
               id,
               name,
               mana_cost,
+              mana_value,
               type_line,
               oracle_text,
               color_identity,
@@ -158,6 +162,7 @@ export function createSqliteScryfallRepository(
               id,
               name,
               mana_cost,
+              mana_value,
               type_line,
               oracle_text,
               color_identity,
@@ -167,6 +172,7 @@ export function createSqliteScryfallRepository(
             ON CONFLICT(id) DO UPDATE SET
               name = excluded.name,
               mana_cost = excluded.mana_cost,
+              mana_value = excluded.mana_value,
               type_line = excluded.type_line,
               oracle_text = excluded.oracle_text,
               color_identity = excluded.color_identity,
@@ -519,6 +525,7 @@ function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
     id: row.id,
     name: row.name,
     manaCost: row.manaCost,
+    manaValue: row.manaValue,
     typeLine: row.typeLine,
     oracleText: row.oracleText,
     colorIdentity: row.colorIdentity,

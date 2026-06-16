@@ -58,6 +58,7 @@ export function initializeDatabaseSchema(db: MtgAgentDatabase): void {
       id TEXT PRIMARY KEY NOT NULL,
       name TEXT NOT NULL,
       mana_cost TEXT,
+      mana_value REAL NOT NULL,
       type_line TEXT NOT NULL,
       oracle_text TEXT,
       color_identity TEXT NOT NULL DEFAULT '' CHECK (color_identity IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')),

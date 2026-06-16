@@ -10,3 +10,6 @@ Authored and edited only by osmall, not agents.
 - include mana value in card_identities
 - rename tables to singular
 - figure out schema.ts ```.default(sql`'[]'`)```
+- import and handle card faces
+- import and handle all relevant fields to the cards
+- DB migrations

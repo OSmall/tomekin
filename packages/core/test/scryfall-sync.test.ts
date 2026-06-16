@@ -131,6 +131,7 @@ describe("Scryfall sync services", () => {
       oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       name: "Sol Ring",
       mana_cost: "{1}",
+      cmc: 1,
       type_line: "Artifact",
       oracle_text: "{T}: Add {C}{C}.",
       color_identity: [],

@@ -84,6 +84,10 @@ _Avoid_: Oracle Card, card definition
 The set of MTG colors that constrain where a card can be used for format rules such as Commander/EDH deck construction. Colorless means the set contains no colors; it is not a sixth color.
 _Avoid_: Color, mana cost
 
+**Mana Value**:
+The numeric value of a card's mana cost as used by MTG rules for deck-building reasoning, filtering, and curve analysis.
+_Avoid_: Converted mana cost, CMC
+
 **Card Identity Tag**:
 A reusable descriptive tag that can apply to Card Identities for search, grouping, and Synergy analysis.
 _Avoid_: Oracle Tag, card label

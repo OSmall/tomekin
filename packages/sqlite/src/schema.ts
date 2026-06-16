@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { colorIdentityValues, formatLegalityValues } from "@mtg-agent/core";
 
 export const collectionImports = sqliteTable("collection_imports", {
@@ -50,6 +50,7 @@ export const cardIdentities = sqliteTable("card_identities", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   manaCost: text("mana_cost"),
+  manaValue: real("mana_value").notNull(),
   typeLine: text("type_line").notNull(),
   oracleText: text("oracle_text"),
   colorIdentity: text("color_identity", { enum: colorIdentityValues })

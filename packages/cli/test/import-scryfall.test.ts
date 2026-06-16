@@ -44,6 +44,7 @@ describe("import:scryfall command", () => {
       "Cultivate",
       "Sol Ring",
     ]);
+    expect(snapshot.identities.map((card) => card.manaValue).sort()).toEqual([1, 3]);
     expect(snapshot.printings.map((card) => card.printedName)).toEqual([null, null]);
     expect(snapshot.imports.map((attempt) => attempt.bulkDataType)).toEqual([
       "oracle_cards",
@@ -249,6 +250,7 @@ const rawOracleCards = [
     oracle_id: "6ad8011d-3471-4369-9d68-b264cc027487",
     name: "Sol Ring",
     mana_cost: "{1}",
+    cmc: 1,
     type_line: "Artifact",
     oracle_text: "{T}: Add {C}{C}.",
     color_identity: [],
@@ -261,6 +263,7 @@ const rawOracleCards = [
     oracle_id: "8b755881-a72d-4e21-a369-d2924eb4585a",
     name: "Cultivate",
     mana_cost: "{2}{G}",
+    cmc: 3,
     type_line: "Sorcery",
     oracle_text:
       "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",

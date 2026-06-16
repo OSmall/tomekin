@@ -33,7 +33,7 @@ describe("SQLite Scryfall repository", () => {
     expect(result.value.id).toMatch(uuidV7Pattern);
     expect(result.value.status).toBe("succeeded");
     expect(result.value.bulkDataType).toBe("oracle_cards");
-    expect(result.value.importedRecordCount).toBe(7);
+    expect(result.value.importedRecordCount).toBe(8);
 
     const imported = await repository.listCardIdentities();
     expect(imported.isOk()).toBe(true);
@@ -43,6 +43,7 @@ describe("SQLite Scryfall repository", () => {
         id: "6ad8011d-3471-4369-9d68-b264cc027487",
         name: "Sol Ring",
         manaCost: "{1}",
+        manaValue: 1,
         typeLine: "Artifact",
         oracleText: "{T}: Add {C}{C}.",
         colorIdentity: "",
@@ -54,10 +55,22 @@ describe("SQLite Scryfall repository", () => {
         id: "d2075f58-b0e9-4e85-b7e6-0523a27a1d5b",
         name: "Bala Ged Recovery // Bala Ged Sanctuary",
         manaCost: null,
+        manaValue: 3,
         typeLine: "Sorcery // Land",
         oracleText: null,
         colorIdentity: "G",
         sourcePageUri: expect.stringContaining("scryfall.com/card/"),
+      }),
+    );
+    expect(imported.value).toContainEqual(
+      expect.objectContaining({
+        id: "b0d1c34c-30f1-4c07-9527-38b49231eb9f",
+        name: "Little Girl",
+        manaCost: "{HW}",
+        manaValue: 0.5,
+        typeLine: "Creature — Human Child",
+        oracleText: "",
+        colorIdentity: "W",
       }),
     );
     const legalities = await repository.listCardIdentityFormatLegalities();
@@ -97,7 +110,7 @@ describe("SQLite Scryfall repository", () => {
     expect(imported.isOk()).toBe(true);
     if (imported.isErr()) throw new Error(imported.error.message);
     expect(imported.value.map((card) => card.name)).toContain("Sol Ring");
-    expect(imported.value).toHaveLength(7);
+    expect(imported.value).toHaveLength(8);
   });
 
   test("successful all_cards import records success and exposes Card Printings", async () => {
