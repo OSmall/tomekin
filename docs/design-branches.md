@@ -4,7 +4,7 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Data Model Details
 
-- Define the implementation slice for `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` from the Scryfall `oracle_tags` bulk data specification.
+- Complete the planned implementation slice for `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` in [`plans/oracle-tags-import.md`](./plans/oracle-tags-import.md).
 - Define the exact scalar metadata fields for `DeckOpportunity` and `DeckCandidate`.
 - Define the Zod schemas for `DeckBuildingBrief` and `CollectionAccessPolicy`.
 - Decide how to handle split cards, multi-face cards, attractions, stickers, digital cards, rebalanced cards, and other Scryfall identity edge cases.

@@ -4,15 +4,19 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   CardIdentityImportRecordSchema,
+  CardIdentityTagImportRecordSchema,
   CardPrintingSchema,
   createScryfallSyncServices,
   hasScryfallOracleId,
   mapRawScryfallAllCardToCardPrinting,
   mapRawScryfallOracleCardToCardIdentityImportRecord,
+  mapRawScryfallOracleTagToCardIdentityTagImportRecord,
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
+  RawScryfallOracleTagSchema,
   type CardIdentity,
   type CardIdentityImportRecord,
+  type CardIdentityTagImportRecord,
   type CardPrinting,
 } from "@mtg-agent/core";
 import {
@@ -213,6 +217,146 @@ describe("SQLite Scryfall repository", () => {
     expect(imported.value).toHaveLength(6);
   });
 
+  test("successful oracle_tags import records success and exposes tags, aliases, taggings, and hierarchy", async () => {
+    const repository = createTestRepository();
+    const records = await readOracleCardIdentityRecordsFixture();
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+
+    const result = await repository.importCardIdentityTags(
+      importInput(oracleTagImportRecords()),
+    );
+
+    expect(result.isOk()).toBe(true);
+    if (result.isErr()) throw new Error(result.error.message);
+    expect(result.value.bulkDataType).toBe("oracle_tags");
+    expect(result.value.importedRecordCount).toBe(2);
+
+    const tags = await repository.listCardIdentityTags();
+    const aliases = await repository.listCardIdentityTagAliases();
+    const taggings = await repository.listCardIdentityTaggings();
+    const hierarchy = await repository.listCardIdentityTagHierarchy();
+    if (tags.isErr()) throw new Error(tags.error.message);
+    if (aliases.isErr()) throw new Error(aliases.error.message);
+    if (taggings.isErr()) throw new Error(taggings.error.message);
+    if (hierarchy.isErr()) throw new Error(hierarchy.error.message);
+    expect(tags.value).toContainEqual(
+      expect.objectContaining({
+        id: "11111111-1111-4111-8111-111111111111",
+        slug: "mana-rock",
+        label: "mana rock",
+        description: null,
+      }),
+    );
+    expect(aliases.value).toEqual([
+      { tagId: "11111111-1111-4111-8111-111111111111", alias: "mana-stone" },
+    ]);
+    expect(taggings.value).toContainEqual({
+      tagId: "11111111-1111-4111-8111-111111111111",
+      cardIdentityId: "6ad8011d-3471-4369-9d68-b264cc027487",
+      weight: "very_strong",
+      annotation: "format staple",
+    });
+    expect(hierarchy.value).toEqual([
+      {
+        parentTagId: "33333333-3333-4333-8333-333333333333",
+        childTagId: "11111111-1111-4111-8111-111111111111",
+      },
+    ]);
+  });
+
+  test("failed oracle_tags import preserves previous tag dataset", async () => {
+    const repository = createTestRepository();
+    const records = await readOracleCardIdentityRecordsFixture();
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+    expect(
+      (await repository.importCardIdentityTags(importInput(oracleTagImportRecords()))).isOk(),
+    ).toBe(true);
+
+    const failed = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([
+        {
+          ...oracleTagImportRecords()[0],
+          taggings: [
+            {
+              tagId: "11111111-1111-4111-8111-111111111111",
+              cardIdentityId: "99999999-9999-4999-8999-999999999999",
+              weight: "median",
+              annotation: null,
+            },
+          ],
+        },
+      ]),
+    );
+
+    expect(failed.isErr()).toBe(true);
+    const tags = await repository.listCardIdentityTags();
+    if (tags.isErr()) throw new Error(tags.error.message);
+    expect(tags.value.map((tag) => tag.slug).sort()).toEqual(["artifact-ramp", "mana-rock"]);
+  });
+
+  test("oracle_tags rejects duplicate and invalid staged data", async () => {
+    const repository = createTestRepository();
+    const records = await readOracleCardIdentityRecordsFixture();
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+    const valid = oracleTagImportRecords();
+
+    const duplicateId = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([valid[0], { ...valid[0], tag: { ...valid[0].tag, slug: "copy" } }]),
+    );
+    const duplicateSlug = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([valid[0], { ...valid[1], tag: { ...valid[1].tag, slug: valid[0].tag.slug } }]),
+    );
+    const duplicateAlias = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([{ ...valid[0], aliases: [valid[0].aliases[0], valid[0].aliases[0]] }]),
+    );
+    const duplicateTagging = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([{ ...valid[0], taggings: [valid[0].taggings[0], valid[0].taggings[0]] }]),
+    );
+    const duplicateHierarchy = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([{ ...valid[0], hierarchy: [valid[0].hierarchy[0], valid[0].hierarchy[0]] }, valid[1]]),
+    );
+    const missingParent = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([{ ...valid[1], hierarchy: [{ parentTagId: "99999999-9999-4999-8999-999999999999", childTagId: valid[1].tag.id }] }]),
+    );
+    const selfParent = await repository.importCardIdentityTags(
+      importInput<CardIdentityTagImportRecord>([{ ...valid[1], hierarchy: [{ parentTagId: valid[1].tag.id, childTagId: valid[1].tag.id }] }]),
+    );
+    const zeroTags = await repository.importCardIdentityTags(importInput([]));
+
+    for (const result of [
+      duplicateId,
+      duplicateSlug,
+      duplicateAlias,
+      duplicateTagging,
+      duplicateHierarchy,
+      missingParent,
+      selfParent,
+      zeroTags,
+    ]) {
+      expect(result.isErr()).toBe(true);
+    }
+  });
+
+  test("oracle_cards replacement fails before orphaning existing Card Identity Taggings", async () => {
+    const repository = createTestRepository();
+    const records = await readOracleCardIdentityRecordsFixture();
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+    expect(
+      (await repository.importCardIdentityTags(importInput(oracleTagImportRecords()))).isOk(),
+    ).toBe(true);
+
+    const result = await repository.importCardIdentities(
+      importInput(records.filter((record) => record.identity.name !== "Sol Ring")),
+    );
+
+    expect(result.isErr()).toBe(true);
+    if (result.isOk()) throw new Error("expected failed import");
+    expect(result.error.message).toContain("orphan");
+    const identities = await repository.listCardIdentities();
+    if (identities.isErr()) throw new Error(identities.error.message);
+    expect(identities.value.map((identity) => identity.name)).toContain("Sol Ring");
+  });
+
   test("required-dataset checks report missing oracle_cards and all_cards clearly", async () => {
     const repository = createTestRepository();
     const services = createScryfallSyncServices(repository, {
@@ -285,6 +429,16 @@ function filterPrintingsWithKnownIdentities(
   return printings.filter((printing) => identityIds.has(printing.cardIdentityId));
 }
 
+function oracleTagImportRecords(): readonly CardIdentityTagImportRecord[] {
+  return CardIdentityTagImportRecordSchema.array().parse(
+    rawOracleTags.map((tag) =>
+      mapRawScryfallOracleTagToCardIdentityTagImportRecord(
+        RawScryfallOracleTagSchema.parse(tag),
+      ),
+    ),
+  );
+}
+
 function importInput<TRecord>(records: readonly TRecord[]) {
   return {
     startedAt: new Date("2025-01-01T00:00:00.000Z"),
@@ -297,3 +451,38 @@ function importInput<TRecord>(records: readonly TRecord[]) {
 async function* toAsyncIterable<T>(records: readonly T[]): AsyncIterable<T> {
   yield* records;
 }
+
+const rawOracleTags = [
+  {
+    object: "tag",
+    id: "11111111-1111-4111-8111-111111111111",
+    label: "mana rock",
+    slug: "mana-rock",
+    type: "oracle",
+    uri: "https://tagger.scryfall.com/tags/card/mana-rock",
+    description: null,
+    parent_ids: ["33333333-3333-4333-8333-333333333333"],
+    child_ids: [],
+    aliases: ["mana-stone"],
+    taggings: [
+      {
+        oracle_id: "6ad8011d-3471-4369-9d68-b264cc027487",
+        weight: "very_strong",
+        annotation: "format staple",
+      },
+    ],
+  },
+  {
+    object: "tag",
+    id: "33333333-3333-4333-8333-333333333333",
+    label: "artifact ramp",
+    slug: "artifact-ramp",
+    type: "oracle",
+    uri: "https://tagger.scryfall.com/tags/card/artifact-ramp",
+    description: "Artifacts that produce mana.",
+    parent_ids: [],
+    child_ids: ["11111111-1111-4111-8111-111111111111"],
+    aliases: [],
+    taggings: [],
+  },
+] as const;

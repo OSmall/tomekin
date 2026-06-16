@@ -22,10 +22,11 @@ Import local Scryfall bulk data JSON files into SQLite:
 
 ```sh
 bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
+bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.json
 bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
 ```
 
-Run `oracle_cards` before `all_cards`. The command only reads local files, reports timestamped source-read progress while it runs, and does not download from Scryfall.
+Run `oracle_cards` before `oracle_tags` or `all_cards`. The command only reads local files, reports timestamped source-read progress while it runs, and does not download from Scryfall.
 
 By default, imports write to `.data/mtg-agent.sqlite`. Override the database for one run with `--db`:
 

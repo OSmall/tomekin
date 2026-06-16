@@ -2,8 +2,10 @@ import { describe, expect, test } from "bun:test";
 import {
   createScryfallSyncServices,
   createScryfallLocalImportServices,
+  mapRawScryfallOracleTagToCardIdentityTagImportRecord,
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
+  RawScryfallOracleTagSchema,
   type ScryfallBulkDataImport,
   type ScryfallBulkDataType,
   type ScryfallRepository,
@@ -106,6 +108,26 @@ describe("Scryfall sync services", () => {
     expect(result.error.type).toBe("import_failed");
   });
 
+  test("local oracle_tags import fails before reading source without oracle_cards", async () => {
+    const services = createScryfallLocalImportServices(fakeRepository([]), clock);
+    let read = false;
+
+    const result = await services.importOracleTags(
+      {
+        stream() {
+          read = true;
+          return new ReadableStream<Uint8Array>();
+        },
+      },
+      { sourceUri: "fixture://oracle-tags" },
+    );
+
+    expect(result.isErr()).toBe(true);
+    expect(read).toBe(false);
+    if (result.isOk()) throw new Error("expected failed import");
+    expect(result.error.type).toBe("import_failed");
+  });
+
   test("local import caps source-format validation diagnostics", async () => {
     const repository = fakeRepository(["oracle_cards"]);
     const services = createScryfallLocalImportServices(repository, clock);
@@ -160,6 +182,49 @@ describe("Scryfall sync services", () => {
     expect(oracle.legalities.future_format).toBe("legal");
     expect("future_scryfall_field" in allCard).toBe(false);
   });
+
+  test("maps raw Scryfall oracle tags including nullable fields, aliases, annotations, and parents", () => {
+    const raw = RawScryfallOracleTagSchema.parse(rawOracleTag());
+
+    const record = mapRawScryfallOracleTagToCardIdentityTagImportRecord(raw);
+
+    expect(record.tag).toEqual({
+      id: "11111111-1111-4111-8111-111111111111",
+      slug: "mana-rock",
+      label: "mana rock",
+      description: null,
+      sourcePageUri: "https://tagger.scryfall.com/tags/card/mana-rock",
+    });
+    expect(record.aliases).toEqual([
+      { tagId: "11111111-1111-4111-8111-111111111111", alias: "mana-stone" },
+    ]);
+    expect(record.taggings).toEqual([
+      {
+        tagId: "11111111-1111-4111-8111-111111111111",
+        cardIdentityId: "22222222-2222-4222-8222-222222222222",
+        weight: "very_strong",
+        annotation: "format staple",
+      },
+    ]);
+    expect(record.hierarchy).toEqual([
+      {
+        parentTagId: "33333333-3333-4333-8333-333333333333",
+        childTagId: "11111111-1111-4111-8111-111111111111",
+      },
+    ]);
+  });
+
+  test("raw Scryfall oracle tags reject unknown types and weights", () => {
+    expect(() =>
+      RawScryfallOracleTagSchema.parse({ ...rawOracleTag(), type: "art" }),
+    ).toThrow();
+    expect(() =>
+      RawScryfallOracleTagSchema.parse({
+        ...rawOracleTag(),
+        taggings: [{ oracle_id: "22222222-2222-4222-8222-222222222222", weight: "heavy" }],
+      }),
+    ).toThrow();
+  });
 });
 
 function fakeRepository(
@@ -198,6 +263,13 @@ function fakeRepository(
         return err(toRepositoryError(error));
       }
     },
+    async importCardIdentityTags(input) {
+      try {
+        return ok(importAttempt("oracle_tags", await countRecords(input.records), "succeeded"));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
     async recordFailedBulkDataImport(bulkDataType, input) {
       return ok({
         ...importAttempt(bulkDataType, 0, "failed"),
@@ -207,6 +279,28 @@ function fakeRepository(
         warnings: input.warnings ?? [],
       });
     },
+  };
+}
+
+function rawOracleTag() {
+  return {
+    object: "tag",
+    id: "11111111-1111-4111-8111-111111111111",
+    label: "mana rock",
+    slug: "mana-rock",
+    type: "oracle",
+    uri: "https://tagger.scryfall.com/tags/card/mana-rock",
+    description: null,
+    parent_ids: ["33333333-3333-4333-8333-333333333333"],
+    child_ids: [],
+    aliases: ["mana-stone"],
+    taggings: [
+      {
+        oracle_id: "22222222-2222-4222-8222-222222222222",
+        weight: "very_strong",
+        annotation: "format staple",
+      },
+    ],
   };
 }
 

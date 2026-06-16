@@ -1,12 +1,12 @@
-import { mkdir, stat } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
-import { heapStats } from "bun:jsc";
+import {mkdir, stat} from "node:fs/promises";
+import {dirname, resolve} from "node:path";
+import {pathToFileURL} from "node:url";
+import {heapStats} from "bun:jsc";
 import {
-  createScryfallLocalImportServices,
-  ScryfallBulkDataTypeSchema,
   type Clock,
+  createScryfallLocalImportServices,
   type ScryfallBulkDataType,
+  ScryfallBulkDataTypeSchema,
   type ScryfallFinalizationPhase,
   type ScryfallImportEvent,
   type ScryfallImportObserver,
@@ -14,7 +14,6 @@ import {
 import {
   closeDatabase,
   createSqliteScryfallRepository,
-  defaultDatabasePath,
   initializeDatabaseSchema,
   openDatabase,
   resolveDatabasePath,
@@ -94,6 +93,10 @@ export async function runImportScryfallCommand(
         ? await services.importOracleCards(source, metadata, {
             observer: timingObserver,
           })
+        : parsed.bulkDataType === "oracle_tags"
+          ? await services.importOracleTags(source, metadata, {
+              observer: timingObserver,
+            })
         : await services.importAllCards(source, metadata, {
             observer: timingObserver,
           });
@@ -127,7 +130,7 @@ export async function runImportScryfallCommand(
 type ParsedArgs =
   | {
       readonly type: "ok";
-      readonly bulkDataType: Extract<ScryfallBulkDataType, "oracle_cards" | "all_cards">;
+      readonly bulkDataType: ScryfallBulkDataType;
       readonly sourcePath: string;
       readonly dbPath?: string;
       readonly timing: boolean;
@@ -173,10 +176,10 @@ function parseArgs(args: readonly string[]): ParsedArgs {
   }
 
   const bulkDataType = ScryfallBulkDataTypeSchema.safeParse(positional[0]);
-  if (!bulkDataType.success || bulkDataType.data === "oracle_tags") {
+  if (!bulkDataType.success) {
     return {
       type: "error",
-      message: "Supported bulk data types are oracle_cards and all_cards.",
+      message: "Supported bulk data types are oracle_cards, all_cards, and oracle_tags.",
     };
   }
 
@@ -499,7 +502,7 @@ function renderFailure(
 }
 
 function usage(): string {
-  return `Usage: bun run import:scryfall -- [--timing] [--db <path>] <oracle_cards|all_cards> <path>`;
+  return `Usage: bun run import:scryfall -- [--timing] [--db <path>] <oracle_cards|all_cards|oracle_tags> <path>`;
 }
 
 if (import.meta.main) {

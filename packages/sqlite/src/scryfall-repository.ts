@@ -5,6 +5,11 @@ import type {
   CardIdentity,
   CardIdentityFormatLegality,
   CardIdentityImportRecord,
+  CardIdentityTag,
+  CardIdentityTagAlias,
+  CardIdentityTagging,
+  CardIdentityTagHierarchy,
+  CardIdentityTagImportRecord,
   CardPrinting,
   Clock,
   ScryfallBulkDataImport,
@@ -19,6 +24,10 @@ import type {
 import type { MtgAgentDatabase } from "./database";
 import {
   cardIdentityFormatLegalities,
+  cardIdentityTagAliases,
+  cardIdentityTagHierarchy,
+  cardIdentityTaggings,
+  cardIdentityTags,
   cardIdentities,
   cardPrintings,
   scryfallBulkDataImports,
@@ -36,8 +45,21 @@ export type SqliteScryfallRepository = ScryfallRepository & {
   importCardPrintings(
     input: ScryfallBulkImportInput<CardPrinting>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  importCardIdentityTags(
+    input: ScryfallBulkImportInput<CardIdentityTagImportRecord>,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
   listCardIdentities(): Promise<Result<readonly CardIdentity[], ScryfallRepositoryError>>;
   listCardPrintings(): Promise<Result<readonly CardPrinting[], ScryfallRepositoryError>>;
+  listCardIdentityTags(): Promise<Result<readonly CardIdentityTag[], ScryfallRepositoryError>>;
+  listCardIdentityTagAliases(): Promise<
+    Result<readonly CardIdentityTagAlias[], ScryfallRepositoryError>
+  >;
+  listCardIdentityTaggings(): Promise<
+    Result<readonly CardIdentityTagging[], ScryfallRepositoryError>
+  >;
+  listCardIdentityTagHierarchy(): Promise<
+    Result<readonly CardIdentityTagHierarchy[], ScryfallRepositoryError>
+  >;
   listBulkDataImports(): Promise<
     Result<readonly ScryfallBulkDataImport[], ScryfallRepositoryError>
   >;
@@ -127,15 +149,19 @@ export function createSqliteScryfallRepository(
           input.observer,
           "orphaned_identity_check",
           () =>
-            db.all<{ id: string }>(sql`
-              SELECT DISTINCT card_identity_id AS id
+            db.all<{ id: string; source: string }>(sql`
+              SELECT DISTINCT card_identity_id AS id, 'Card Printings' AS source
               FROM card_printings
+              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identities)
+              UNION
+              SELECT DISTINCT card_identity_id AS id, 'Card Identity Taggings' AS source
+              FROM card_identity_taggings
               WHERE card_identity_id NOT IN (SELECT id FROM import_card_identities)
             `),
         );
         if (orphaned.length > 0) {
           throw importRejection([
-            `oracle_cards import would orphan existing Card Printings for Card Identity IDs: ${orphaned.map((row) => row.id).join(", ")}.`,
+            `oracle_cards import would orphan existing Card Identity references for Card Identity IDs: ${orphaned.map((row) => row.id).join(", ")}.`,
           ]);
         }
 
@@ -328,6 +354,200 @@ export function createSqliteScryfallRepository(
       }
     },
 
+    async importCardIdentityTags(input) {
+      let importedRecordCount = 0;
+      try {
+        beginTransaction(db);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tags`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identity_tags (
+            id TEXT PRIMARY KEY NOT NULL,
+            slug TEXT NOT NULL UNIQUE,
+            label TEXT NOT NULL,
+            description TEXT,
+            source_page_uri TEXT NOT NULL
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tag_aliases`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identity_tag_aliases (
+            tag_id TEXT NOT NULL,
+            alias TEXT NOT NULL,
+            PRIMARY KEY (tag_id, alias)
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_taggings`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identity_taggings (
+            tag_id TEXT NOT NULL,
+            card_identity_id TEXT NOT NULL,
+            weight TEXT NOT NULL,
+            annotation TEXT,
+            PRIMARY KEY (tag_id, card_identity_id)
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tag_hierarchy`);
+        db.run(sql`
+          CREATE TEMP TABLE import_card_identity_tag_hierarchy (
+            parent_tag_id TEXT NOT NULL,
+            child_tag_id TEXT NOT NULL,
+            PRIMARY KEY (parent_tag_id, child_tag_id)
+          )
+        `);
+
+        const insertTag = db.$client.prepare(`
+          INSERT INTO import_card_identity_tags (
+            id, slug, label, description, source_page_uri
+          ) VALUES (?1, ?2, ?3, ?4, ?5)
+        `);
+        const insertAlias = db.$client.prepare(`
+          INSERT INTO import_card_identity_tag_aliases (tag_id, alias)
+          VALUES (?1, ?2)
+        `);
+        const insertTagging = db.$client.prepare(`
+          INSERT INTO import_card_identity_taggings (
+            tag_id, card_identity_id, weight, annotation
+          ) VALUES (?1, ?2, ?3, ?4)
+        `);
+        const insertHierarchy = db.$client.prepare(`
+          INSERT INTO import_card_identity_tag_hierarchy (parent_tag_id, child_tag_id)
+          VALUES (?1, ?2)
+        `);
+        try {
+          for await (const record of input.records) {
+            insertTag.run(
+              record.tag.id,
+              record.tag.slug,
+              record.tag.label,
+              record.tag.description,
+              record.tag.sourcePageUri,
+            );
+            for (const alias of record.aliases) {
+              insertAlias.run(alias.tagId, alias.alias);
+            }
+            for (const tagging of record.taggings) {
+              insertTagging.run(
+                tagging.tagId,
+                tagging.cardIdentityId,
+                tagging.weight,
+                tagging.annotation,
+              );
+            }
+            for (const link of record.hierarchy) {
+              insertHierarchy.run(link.parentTagId, link.childTagId);
+            }
+            importedRecordCount += 1;
+            emitStagedRecordCounter(input.observer, importedRecordCount);
+          }
+        } finally {
+          insertHierarchy.finalize();
+          insertTagging.finalize();
+          insertAlias.finalize();
+          insertTag.finalize();
+        }
+        emitStagedRecordCounter(input.observer, importedRecordCount, true);
+
+        if (importedRecordCount === 0) {
+          throw importRejection(["oracle_tags import must contain at least one tag."]);
+        }
+
+        const missingIdentityIds = timedFinalizationPhase(
+          input.observer,
+          "missing_identity_check",
+          () =>
+            db.all<{ id: string }>(sql`
+              SELECT DISTINCT card_identity_id AS id
+              FROM import_card_identity_taggings
+              WHERE card_identity_id NOT IN (SELECT id FROM card_identities)
+            `),
+        );
+        if (missingIdentityIds.length > 0) {
+          throw importRejection([
+            `oracle_tags import references missing Card Identity IDs: ${missingIdentityIds.map((row) => row.id).join(", ")}.`,
+          ]);
+        }
+
+        const hierarchyErrors = timedFinalizationPhase(
+          input.observer,
+          "missing_identity_check",
+          () => {
+            const missingParents = db.all<{ id: string }>(sql`
+              SELECT DISTINCT parent_tag_id AS id
+              FROM import_card_identity_tag_hierarchy
+              WHERE parent_tag_id NOT IN (SELECT id FROM import_card_identity_tags)
+            `);
+            const selfParents = db.all<{ id: string }>(sql`
+              SELECT DISTINCT child_tag_id AS id
+              FROM import_card_identity_tag_hierarchy
+              WHERE parent_tag_id = child_tag_id
+            `);
+            return { missingParents, selfParents };
+          },
+        );
+        const blockingErrors: string[] = [];
+        if (hierarchyErrors.missingParents.length > 0) {
+          blockingErrors.push(
+            `oracle_tags import references missing parent Tag IDs: ${hierarchyErrors.missingParents.map((row) => row.id).join(", ")}.`,
+          );
+        }
+        if (hierarchyErrors.selfParents.length > 0) {
+          blockingErrors.push(
+            `oracle_tags import contains self-parenting Tag IDs: ${hierarchyErrors.selfParents.map((row) => row.id).join(", ")}.`,
+          );
+        }
+        if (blockingErrors.length > 0) {
+          throw importRejection(blockingErrors);
+        }
+
+        timedFinalizationPhase(input.observer, "delete_existing_records", () => {
+          db.delete(cardIdentityTagHierarchy).run();
+          db.delete(cardIdentityTaggings).run();
+          db.delete(cardIdentityTagAliases).run();
+          db.delete(cardIdentityTags).run();
+        });
+        timedFinalizationPhase(input.observer, "insert_from_staging", () => {
+          db.run(sql`
+            INSERT INTO card_identity_tags (id, slug, label, description, source_page_uri)
+            SELECT id, slug, label, description, source_page_uri
+            FROM import_card_identity_tags
+          `);
+          db.run(sql`
+            INSERT INTO card_identity_tag_aliases (tag_id, alias)
+            SELECT tag_id, alias FROM import_card_identity_tag_aliases
+          `);
+          db.run(sql`
+            INSERT INTO card_identity_taggings (tag_id, card_identity_id, weight, annotation)
+            SELECT tag_id, card_identity_id, weight, annotation
+            FROM import_card_identity_taggings
+          `);
+          db.run(sql`
+            INSERT INTO card_identity_tag_hierarchy (parent_tag_id, child_tag_id)
+            SELECT parent_tag_id, child_tag_id
+            FROM import_card_identity_tag_hierarchy
+          `);
+        });
+
+        const imported = timedFinalizationPhase(
+          input.observer,
+          "record_import_attempt",
+          () =>
+            insertImportRecord(
+              db,
+              "oracle_tags",
+              "succeeded",
+              { ...input, completedAt: clock.now(), importedRecordCount },
+              [],
+              [],
+            ),
+        );
+        commitTransaction(db);
+        return ok(imported);
+      } catch (error) {
+        rollbackTransaction(db);
+        return err(toRepositoryError(error));
+      }
+    },
+
     async listCardIdentities() {
       try {
         const rows = await db
@@ -335,6 +555,51 @@ export function createSqliteScryfallRepository(
           .from(cardIdentities)
           .orderBy(cardIdentities.name);
         return ok(rows.map(toCardIdentity));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardIdentityTags() {
+      try {
+        const rows = await db.select().from(cardIdentityTags).orderBy(cardIdentityTags.slug);
+        return ok(rows.map(toCardIdentityTag));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardIdentityTagAliases() {
+      try {
+        const rows = await db
+          .select()
+          .from(cardIdentityTagAliases)
+          .orderBy(cardIdentityTagAliases.tagId, cardIdentityTagAliases.alias);
+        return ok(rows.map(toCardIdentityTagAlias));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardIdentityTaggings() {
+      try {
+        const rows = await db
+          .select()
+          .from(cardIdentityTaggings)
+          .orderBy(cardIdentityTaggings.tagId, cardIdentityTaggings.cardIdentityId);
+        return ok(rows.map(toCardIdentityTagging));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardIdentityTagHierarchy() {
+      try {
+        const rows = await db
+          .select()
+          .from(cardIdentityTagHierarchy)
+          .orderBy(cardIdentityTagHierarchy.parentTagId, cardIdentityTagHierarchy.childTagId);
+        return ok(rows.map(toCardIdentityTagHierarchy));
       } catch (error) {
         return err(toRepositoryError(error));
       }
@@ -553,6 +818,45 @@ function toCardPrinting(row: typeof cardPrintings.$inferSelect): CardPrinting {
     finishes: asStringArray(row.finishesJson),
     language: row.language,
     sourcePageUri: row.sourcePageUri,
+  };
+}
+
+function toCardIdentityTag(row: typeof cardIdentityTags.$inferSelect): CardIdentityTag {
+  return {
+    id: row.id,
+    slug: row.slug,
+    label: row.label,
+    description: row.description,
+    sourcePageUri: row.sourcePageUri,
+  };
+}
+
+function toCardIdentityTagAlias(
+  row: typeof cardIdentityTagAliases.$inferSelect,
+): CardIdentityTagAlias {
+  return {
+    tagId: row.tagId,
+    alias: row.alias,
+  };
+}
+
+function toCardIdentityTagging(
+  row: typeof cardIdentityTaggings.$inferSelect,
+): CardIdentityTagging {
+  return {
+    tagId: row.tagId,
+    cardIdentityId: row.cardIdentityId,
+    weight: row.weight,
+    annotation: row.annotation,
+  };
+}
+
+function toCardIdentityTagHierarchy(
+  row: typeof cardIdentityTagHierarchy.$inferSelect,
+): CardIdentityTagHierarchy {
+  return {
+    parentTagId: row.parentTagId,
+    childTagId: row.childTagId,
   };
 }
 

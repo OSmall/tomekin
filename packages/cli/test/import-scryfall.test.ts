@@ -15,7 +15,7 @@ const clock = {
 };
 
 describe("import:scryfall command", () => {
-  test("imports oracle_cards and all_cards fixtures into the configured SQLite database", async () => {
+  test("imports oracle_cards, oracle_tags, and all_cards fixtures into the configured SQLite database", async () => {
     const paths = await createFixtureFiles();
 
     const oracleResult = await runCommand(
@@ -26,9 +26,14 @@ describe("import:scryfall command", () => {
       ["--db", paths.dbPath, "all_cards", paths.allCardsPath],
       {},
     );
+    const oracleTagsResult = await runCommand(
+      ["--db", paths.dbPath, "oracle_tags", paths.oracleTagsPath],
+      {},
+    );
 
     expect(oracleResult.exitCode).toBe(0);
     expect(allCardsResult.exitCode).toBe(0);
+    expect(oracleTagsResult.exitCode).toBe(0);
     expect(oracleResult.stdout).toContain("Target database");
     expect(oracleResult.stdout).toContain(paths.dbPath);
     expect(oracleResult.stdout).toContain("oracle_cards");
@@ -38,6 +43,7 @@ describe("import:scryfall command", () => {
     expect(oracleResult.stderr).toContain("finalizing database import");
     expect(allCardsResult.stdout).toContain("all_cards");
     expect(allCardsResult.stdout).toContain("No live Scryfall network call was made");
+    expect(oracleTagsResult.stdout).toContain("oracle_tags");
 
     const snapshot = await readRepositorySnapshot(paths.dbPath);
     expect(snapshot.identities.map((card) => card.name).sort()).toEqual([
@@ -46,9 +52,12 @@ describe("import:scryfall command", () => {
     ]);
     expect(snapshot.identities.map((card) => card.manaValue).sort()).toEqual([1, 3]);
     expect(snapshot.printings.map((card) => card.printedName)).toEqual([null, null]);
+    expect(snapshot.tags.map((tag) => tag.slug)).toEqual(["mana-rock"]);
+    expect(snapshot.taggings).toHaveLength(1);
     expect(snapshot.imports.map((attempt) => attempt.bulkDataType)).toEqual([
       "oracle_cards",
       "all_cards",
+      "oracle_tags",
     ]);
   });
 
@@ -100,6 +109,26 @@ describe("import:scryfall command", () => {
     expect(snapshot.printings).toHaveLength(0);
     expect(snapshot.imports).toContainEqual(
       expect.objectContaining({ bulkDataType: "all_cards", status: "failed" }),
+    );
+  });
+
+  test("oracle_tags fails clearly when oracle_cards has not succeeded", async () => {
+    const paths = await createFixtureFiles();
+
+    const result = await runCommand(
+      ["--db", paths.dbPath, "oracle_tags", paths.oracleTagsPath],
+      {},
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("oracle_tags");
+    expect(result.stderr).toContain("oracle_cards");
+    expect(result.stderr).toContain("Previous usable dataset was preserved");
+
+    const snapshot = await readRepositorySnapshot(paths.dbPath);
+    expect(snapshot.tags).toHaveLength(0);
+    expect(snapshot.imports).toContainEqual(
+      expect.objectContaining({ bulkDataType: "oracle_tags", status: "failed" }),
     );
   });
 
@@ -187,6 +216,48 @@ describe("import:scryfall command", () => {
       "22222222-2222-4222-8222-222222222222",
     ]);
   });
+
+  test("oracle_tags validation failure preserves the previous tag dataset", async () => {
+    const paths = await createFixtureFiles();
+    const badOracleTagsPath = join(paths.dir, "bad-oracle-tags.json");
+    await Bun.write(
+      badOracleTagsPath,
+      JSON.stringify([
+        {
+          ...rawOracleTags[0],
+          taggings: [
+            {
+              oracle_id: "99999999-9999-4999-8999-999999999999",
+              weight: "median",
+            },
+          ],
+        },
+      ]),
+    );
+
+    expect(
+      (
+        await runCommand(["--db", paths.dbPath, "oracle_cards", paths.oraclePath], {})
+      ).exitCode,
+    ).toBe(0);
+    expect(
+      (
+        await runCommand(["--db", paths.dbPath, "oracle_tags", paths.oracleTagsPath], {})
+      ).exitCode,
+    ).toBe(0);
+
+    const result = await runCommand(
+      ["--db", paths.dbPath, "oracle_tags", badOracleTagsPath],
+      {},
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("missing Card Identity IDs");
+    expect(result.stderr).toContain("Previous usable dataset was preserved");
+
+    const snapshot = await readRepositorySnapshot(paths.dbPath);
+    expect(snapshot.tags.map((tag) => tag.slug)).toEqual(["mana-rock"]);
+  });
 });
 
 async function runCommand(
@@ -212,14 +283,17 @@ async function createFixtureFiles(): Promise<{
   readonly dbPath: string;
   readonly oraclePath: string;
   readonly allCardsPath: string;
+  readonly oracleTagsPath: string;
 }> {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-cli-"));
   const dbPath = join(dir, "reference.sqlite");
   const oraclePath = join(dir, "oracle-cards.json");
   const allCardsPath = join(dir, "all-cards.json");
+  const oracleTagsPath = join(dir, "oracle-tags.json");
   await Bun.write(oraclePath, JSON.stringify(rawOracleCards));
   await Bun.write(allCardsPath, JSON.stringify(rawAllCards));
-  return { dir, dbPath, oraclePath, allCardsPath };
+  await Bun.write(oracleTagsPath, JSON.stringify(rawOracleTags));
+  return { dir, dbPath, oraclePath, allCardsPath, oracleTagsPath };
 }
 
 async function readRepositorySnapshot(dbPath: string) {
@@ -229,13 +303,19 @@ async function readRepositorySnapshot(dbPath: string) {
     const repository = createSqliteScryfallRepository(db, clock);
     const identities = await repository.listCardIdentities();
     const printings = await repository.listCardPrintings();
+    const tags = await repository.listCardIdentityTags();
+    const taggings = await repository.listCardIdentityTaggings();
     const imports = await repository.listBulkDataImports();
     if (identities.isErr()) throw new Error(identities.error.message);
     if (printings.isErr()) throw new Error(printings.error.message);
+    if (tags.isErr()) throw new Error(tags.error.message);
+    if (taggings.isErr()) throw new Error(taggings.error.message);
     if (imports.isErr()) throw new Error(imports.error.message);
     return {
       identities: identities.value,
       printings: printings.value,
+      tags: tags.value,
+      taggings: taggings.value,
       imports: imports.value,
     };
   } finally {
@@ -289,5 +369,27 @@ const rawAllCards = [
     collector_number: "168",
     finishes: ["nonfoil"],
     lang: "en",
+  },
+] as const;
+
+const rawOracleTags = [
+  {
+    object: "tag",
+    id: "11111111-1111-4111-8111-111111111111",
+    label: "mana rock",
+    slug: "mana-rock",
+    type: "oracle",
+    uri: "https://tagger.scryfall.com/tags/card/mana-rock",
+    description: null,
+    parent_ids: [],
+    child_ids: [],
+    aliases: ["mana-stone"],
+    taggings: [
+      {
+        oracle_id: "6ad8011d-3471-4369-9d68-b264cc027487",
+        weight: "very_strong",
+        annotation: "format staple",
+      },
+    ],
   },
 ] as const;

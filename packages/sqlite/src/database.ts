@@ -85,8 +85,44 @@ export function initializeDatabaseSchema(db: MtgAgentDatabase): void {
       source_page_uri TEXT NOT NULL
     )
   `);
+  db.run(sql`
+    CREATE TABLE IF NOT EXISTS card_identity_tags (
+      id TEXT PRIMARY KEY NOT NULL,
+      slug TEXT NOT NULL UNIQUE CHECK (length(slug) > 0),
+      label TEXT NOT NULL CHECK (length(label) > 0),
+      description TEXT,
+      source_page_uri TEXT NOT NULL
+    )
+  `);
+  db.run(sql`
+    CREATE TABLE IF NOT EXISTS card_identity_tag_aliases (
+      tag_id TEXT NOT NULL REFERENCES card_identity_tags(id),
+      alias TEXT NOT NULL CHECK (length(alias) > 0),
+      PRIMARY KEY (tag_id, alias)
+    )
+  `);
+  db.run(sql`
+    CREATE TABLE IF NOT EXISTS card_identity_taggings (
+      tag_id TEXT NOT NULL REFERENCES card_identity_tags(id),
+      card_identity_id TEXT NOT NULL REFERENCES card_identities(id),
+      weight TEXT NOT NULL CHECK (weight IN ('very_strong', 'strong', 'median', 'weak')),
+      annotation TEXT,
+      PRIMARY KEY (tag_id, card_identity_id)
+    )
+  `);
+  db.run(sql`
+    CREATE TABLE IF NOT EXISTS card_identity_tag_hierarchy (
+      parent_tag_id TEXT NOT NULL REFERENCES card_identity_tags(id),
+      child_tag_id TEXT NOT NULL REFERENCES card_identity_tags(id),
+      PRIMARY KEY (parent_tag_id, child_tag_id)
+    )
+  `);
   db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_printings_card_identity_id ON card_printings(card_identity_id)`);
   db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identities_color_identity ON card_identities(color_identity)`);
   db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_format_legalities_card_identity_id ON card_identity_format_legalities(card_identity_id)`);
   db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_format_legalities_format_legality ON card_identity_format_legalities(format, legality)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_tag_aliases_tag_id ON card_identity_tag_aliases(tag_id)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_taggings_card_identity_id ON card_identity_taggings(card_identity_id)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_taggings_tag_id ON card_identity_taggings(tag_id)`);
+  db.run(sql`CREATE INDEX IF NOT EXISTS idx_card_identity_tag_hierarchy_child_tag_id ON card_identity_tag_hierarchy(child_tag_id)`);
 }

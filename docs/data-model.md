@@ -157,7 +157,7 @@ Relationships:
 
 `CardIdentityTag` represents a reusable tag from Scryfall's `oracle_tags` bulk data that may apply to Card Identities.
 
-Card Identity Tags should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The MVP should import only Scryfall `oracle` tags, not `illustration` tags, and does not need to store tag type because every persisted Card Identity Tag is an oracle tag. `CardIdentityTag` should preserve Scryfall's stable tag UUID as its primary ID and store Scryfall tag metadata including slug, label, and nullable description. Slug should be unique in the current imported dataset but should not be treated as the stable identity. Label is display metadata and should not be unique. Tag aliases and hierarchy should be stored relationally.
+Card Identity Tags should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The MVP should import only Scryfall `oracle` tags, not `illustration` tags, and does not need to store tag type because every persisted Card Identity Tag is an oracle tag. `CardIdentityTag` should preserve Scryfall's stable tag UUID as its primary ID and store Scryfall tag metadata including slug, label, nullable description, and source page URI. Slug should be unique in the current imported dataset but should not be treated as the stable identity. Label is display metadata and should not be unique. Tag aliases and hierarchy should be stored relationally.
 
 All imported Card Identity Tags should be stored, even when they have no direct Card Identity Taggings. Broad parent-tag matches should be inferred from descendant taggings at query or reasoning time rather than materialized as additional taggings.
 
@@ -200,7 +200,7 @@ Relationships:
 
 `CardIdentityTagHierarchy` represents a direct parent-child relationship between two Card Identity Tags.
 
-It should use a composite primary key of `parent_card_identity_tag_id` and `child_card_identity_tag_id`. The importer should build hierarchy only from Scryfall `parent_ids` and should ignore `child_ids` for persistence and validation. If a `parent_ids` value references a tag missing from the imported `oracle_tags` dataset, the import should fail and preserve the previous usable tag dataset. Self-parenting and hierarchy cycles should be rejected.
+It should use a composite primary key of `parent_card_identity_tag_id` and `child_card_identity_tag_id`. The importer should build hierarchy only from Scryfall `parent_ids` and should ignore `child_ids` for persistence and validation. Root tags with no parents are valid. If a `parent_ids` value references a tag missing from the imported `oracle_tags` dataset, the import should fail and preserve the previous usable tag dataset. Self-parenting should be rejected. Full hierarchy cycle detection is deferred until hierarchy traversal is implemented.
 
 Relationships:
 

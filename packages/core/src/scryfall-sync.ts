@@ -147,6 +147,61 @@ export const CardPrintingSchema = z.object({
 });
 export type CardPrinting = z.infer<typeof CardPrintingSchema>;
 
+export const cardIdentityTaggingWeightValues = [
+  "very_strong",
+  "strong",
+  "median",
+  "weak",
+] as const;
+
+export const CardIdentityTaggingWeightSchema = z.enum(
+  cardIdentityTaggingWeightValues,
+);
+export type CardIdentityTaggingWeight = z.infer<
+  typeof CardIdentityTaggingWeightSchema
+>;
+
+export const CardIdentityTagSchema = z.object({
+  id: z.uuid(),
+  slug: z.string().min(1),
+  label: z.string().min(1),
+  description: z.string().nullable(),
+  sourcePageUri: z.url(),
+});
+export type CardIdentityTag = z.infer<typeof CardIdentityTagSchema>;
+
+export const CardIdentityTagAliasSchema = z.object({
+  tagId: z.uuid(),
+  alias: z.string().min(1),
+});
+export type CardIdentityTagAlias = z.infer<typeof CardIdentityTagAliasSchema>;
+
+export const CardIdentityTaggingSchema = z.object({
+  tagId: z.uuid(),
+  cardIdentityId: z.uuid(),
+  weight: CardIdentityTaggingWeightSchema,
+  annotation: z.string().nullable(),
+});
+export type CardIdentityTagging = z.infer<typeof CardIdentityTaggingSchema>;
+
+export const CardIdentityTagHierarchySchema = z.object({
+  parentTagId: z.uuid(),
+  childTagId: z.uuid(),
+});
+export type CardIdentityTagHierarchy = z.infer<
+  typeof CardIdentityTagHierarchySchema
+>;
+
+export const CardIdentityTagImportRecordSchema = z.object({
+  tag: CardIdentityTagSchema,
+  aliases: z.array(CardIdentityTagAliasSchema).readonly(),
+  taggings: z.array(CardIdentityTaggingSchema).readonly(),
+  hierarchy: z.array(CardIdentityTagHierarchySchema).readonly(),
+});
+export type CardIdentityTagImportRecord = z.infer<
+  typeof CardIdentityTagImportRecordSchema
+>;
+
 export const RawScryfallOracleCardSchema = z
   .object({
     object: z.literal("card"),
@@ -176,6 +231,27 @@ export const RawScryfallAllCardSchema = z.object({
   scryfall_uri: z.url(),
 });
 export type RawScryfallAllCard = z.infer<typeof RawScryfallAllCardSchema>;
+
+export const RawScryfallOracleTagSchema = z.object({
+  object: z.literal("tag"),
+  id: z.uuid(),
+  label: z.string().min(1),
+  slug: z.string().min(1),
+  type: z.literal("oracle"),
+  uri: z.url(),
+  description: z.string().nullable(),
+  parent_ids: z.array(z.uuid()),
+  child_ids: z.array(z.uuid()),
+  aliases: z.array(z.string().min(1)),
+  taggings: z.array(
+    z.object({
+      oracle_id: z.uuid(),
+      weight: CardIdentityTaggingWeightSchema,
+      annotation: z.string().nullish(),
+    }),
+  ),
+});
+export type RawScryfallOracleTag = z.infer<typeof RawScryfallOracleTagSchema>;
 
 export function mapRawScryfallOracleCardToCardIdentityImportRecord(
   card: RawScryfallOracleCard,
@@ -213,6 +289,31 @@ export function mapRawScryfallAllCardToCardPrinting(
     finishes: card.finishes,
     language: card.lang,
     sourcePageUri: card.scryfall_uri,
+  };
+}
+
+export function mapRawScryfallOracleTagToCardIdentityTagImportRecord(
+  rawTag: RawScryfallOracleTag,
+): CardIdentityTagImportRecord {
+  return {
+    tag: {
+      id: rawTag.id,
+      slug: rawTag.slug,
+      label: rawTag.label,
+      description: rawTag.description,
+      sourcePageUri: rawTag.uri,
+    },
+    aliases: rawTag.aliases.map((alias) => ({ tagId: rawTag.id, alias })),
+    taggings: rawTag.taggings.map((tagging) => ({
+      tagId: rawTag.id,
+      cardIdentityId: tagging.oracle_id,
+      weight: tagging.weight,
+      annotation: tagging.annotation ?? null,
+    })),
+    hierarchy: rawTag.parent_ids.map((parentTagId) => ({
+      parentTagId,
+      childTagId: rawTag.id,
+    })),
   };
 }
 
@@ -320,6 +421,9 @@ export type ScryfallRepository = {
   importCardPrintings(
     input: ScryfallBulkImportInput<CardPrinting>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  importCardIdentityTags(
+    input: ScryfallBulkImportInput<CardIdentityTagImportRecord>,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
   recordFailedBulkDataImport(
     bulkDataType: ScryfallBulkDataType,
     input: FailedScryfallBulkDataImportInput,
@@ -354,6 +458,11 @@ export type ScryfallLocalImportServices = {
     options?: ScryfallLocalImportOptions,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallLocalImportError>>;
   importAllCards(
+    source: ScryfallBulkDataSource,
+    metadata: ScryfallBulkDataSourceMetadata,
+    options?: ScryfallLocalImportOptions,
+  ): Promise<Result<ScryfallBulkDataImport, ScryfallLocalImportError>>;
+  importOracleTags(
     source: ScryfallBulkDataSource,
     metadata: ScryfallBulkDataSourceMetadata,
     options?: ScryfallLocalImportOptions,
@@ -481,6 +590,52 @@ export function createScryfallLocalImportServices(
       });
       if (imported.isErr()) {
         return recordFailedLocalImport(repository, "all_cards", {
+          startedAt,
+          completedAt: clock.now(),
+          sourceUpdatedAt: metadata.sourceUpdatedAt,
+          sourceUri: metadata.sourceUri,
+          blockingErrors: imported.error.blockingErrors ?? [imported.error.message],
+        });
+      }
+
+      return ok(imported.value);
+    },
+
+    async importOracleTags(source, metadata, options) {
+      const startedAt = clock.now();
+      const oracleCardsImport = await repository.getLatestSuccessfulBulkDataImport(
+        "oracle_cards",
+      );
+      if (oracleCardsImport.isErr()) {
+        return err(oracleCardsImport.error);
+      }
+      if (oracleCardsImport.value === null) {
+        return recordFailedLocalImport(repository, "oracle_tags", {
+          startedAt,
+          completedAt: clock.now(),
+          sourceUpdatedAt: metadata.sourceUpdatedAt,
+          sourceUri: metadata.sourceUri,
+          blockingErrors: [
+            "oracle_tags import requires a latest successful oracle_cards Scryfall Bulk Data Import.",
+          ],
+        });
+      }
+
+      const imported = await repository.importCardIdentityTags({
+        startedAt,
+        sourceUpdatedAt: metadata.sourceUpdatedAt,
+        sourceUri: metadata.sourceUri,
+        observer: options?.observer,
+        records: mapScryfallRecords(
+          source,
+          RawScryfallOracleTagSchema,
+          mapRawScryfallOracleTagToCardIdentityTagImportRecord,
+          CardIdentityTagImportRecordSchema,
+          options?.observer,
+        ),
+      });
+      if (imported.isErr()) {
+        return recordFailedLocalImport(repository, "oracle_tags", {
           startedAt,
           completedAt: clock.now(),
           sourceUpdatedAt: metadata.sourceUpdatedAt,

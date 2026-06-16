@@ -1,6 +1,10 @@
 import { sql } from "drizzle-orm";
 import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { colorIdentityValues, formatLegalityValues } from "@mtg-agent/core";
+import {
+  cardIdentityTaggingWeightValues,
+  colorIdentityValues,
+  formatLegalityValues,
+} from "@mtg-agent/core";
 
 export const collectionImports = sqliteTable("collection_imports", {
   id: text("id").primaryKey(),
@@ -80,4 +84,39 @@ export const cardPrintings = sqliteTable("card_printings", {
     .default(sql`'[]'`),
   language: text("language").notNull(),
   sourcePageUri: text("source_page_uri").notNull(),
+});
+
+export const cardIdentityTags = sqliteTable("card_identity_tags", {
+  id: text("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  label: text("label").notNull(),
+  description: text("description"),
+  sourcePageUri: text("source_page_uri").notNull(),
+});
+
+export const cardIdentityTagAliases = sqliteTable("card_identity_tag_aliases", {
+  tagId: text("tag_id")
+    .notNull()
+    .references(() => cardIdentityTags.id),
+  alias: text("alias").notNull(),
+});
+
+export const cardIdentityTaggings = sqliteTable("card_identity_taggings", {
+  tagId: text("tag_id")
+    .notNull()
+    .references(() => cardIdentityTags.id),
+  cardIdentityId: text("card_identity_id")
+    .notNull()
+    .references(() => cardIdentities.id),
+  weight: text("weight", { enum: cardIdentityTaggingWeightValues }).notNull(),
+  annotation: text("annotation"),
+});
+
+export const cardIdentityTagHierarchy = sqliteTable("card_identity_tag_hierarchy", {
+  parentTagId: text("parent_tag_id")
+    .notNull()
+    .references(() => cardIdentityTags.id),
+  childTagId: text("child_tag_id")
+    .notNull()
+    .references(() => cardIdentityTags.id),
 });
