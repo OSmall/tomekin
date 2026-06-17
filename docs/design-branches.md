@@ -32,7 +32,7 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Deck Opportunity Discovery
 
-- Define how Card Identity Tags, Collection density, Format Anchors, and Collection Access Policy produce candidate Deck Opportunities.
+- Define how `CardIdentityTag` records, Collection density, Format Anchors, and Collection Access Policy produce candidate Deck Opportunities.
 - Decide how much discovery is deterministic candidate generation versus LLM ranking and explanation.
 - Define ranking inputs and output shape for Deck Opportunity shortlists.
 - Decide how to detect weak or impossible opportunities and recommend constrained alternatives.

@@ -6,6 +6,5 @@ Authored and edited only by osmall, not agents.
 
 - Improve logging. Add a logging framework and make it robust.
 - Pin versions of dependencies.
-- rename tables to singular
 - figure out schema.ts ```.default(sql`'[]'`)```
 - use T3.env for environment variables

@@ -27,16 +27,16 @@ import {CardIdentityLayoutSchema} from "@mtg-agent/core";
 
 import type {MtgAgentDatabase} from "./database";
 import {
-  cardIdentities,
-  cardIdentityFormatLegalities,
-  cardIdentityParts,
-  cardIdentityTagAliases,
-  cardIdentityTaggings,
+  cardIdentity,
+  cardIdentityFormatLegality,
+  cardIdentityPart,
+  cardIdentityTagAlias,
+  cardIdentityTagging,
   cardIdentityTagHierarchy,
-  cardIdentityTags,
-  cardPrintingParts,
-  cardPrintings,
-  scryfallBulkDataImports,
+  cardIdentityTag,
+  cardPrintingPart,
+  cardPrinting,
+  scryfallBulkDataImport,
 } from "./schema";
 
 const SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL = 25_000;
@@ -82,9 +82,9 @@ export function createSqliteScryfallRepository(
       let importedRecordCount = 0;
       try {
         beginTransaction(db);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identities`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_identities (
+          CREATE TEMP TABLE import_card_identity (
             id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             layout TEXT NOT NULL,
@@ -106,10 +106,10 @@ export function createSqliteScryfallRepository(
             source_page_uri TEXT NOT NULL
           )
         `);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_parts`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_part`);
         db.run(sql`
           CREATE
-          TEMP TABLE import_card_identity_parts (
+          TEMP TABLE import_card_identity_part (
             card_identity_id TEXT NOT NULL,
             part_index INTEGER NOT NULL,
             name TEXT NOT NULL,
@@ -125,9 +125,9 @@ export function createSqliteScryfallRepository(
             PRIMARY KEY (card_identity_id, part_index)
           )
         `);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_format_legalities`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_format_legality`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_identity_format_legalities (
+          CREATE TEMP TABLE import_card_identity_format_legality (
             card_identity_id TEXT NOT NULL,
             format TEXT NOT NULL,
             legality TEXT NOT NULL,
@@ -136,7 +136,7 @@ export function createSqliteScryfallRepository(
         `);
 
         const insertIdentity = db.$client.prepare(`
-          INSERT INTO import_card_identities (
+          INSERT INTO import_card_identity (
             id,
             name,
             layout,
@@ -159,7 +159,7 @@ export function createSqliteScryfallRepository(
           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)
         `);
         const insertIdentityPart = db.$client.prepare(`
-          INSERT INTO import_card_identity_parts (card_identity_id,
+          INSERT INTO import_card_identity_part (card_identity_id,
                                                   part_index,
                                                   name,
                                                   mana_cost,
@@ -174,7 +174,7 @@ export function createSqliteScryfallRepository(
           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
         `);
         const insertLegality = db.$client.prepare(`
-          INSERT INTO import_card_identity_format_legalities (
+          INSERT INTO import_card_identity_format_legality (
             card_identity_id,
             format,
             legality
@@ -243,12 +243,12 @@ export function createSqliteScryfallRepository(
           () =>
             db.all<{ id: string; source: string }>(sql`
               SELECT DISTINCT card_identity_id AS id, 'Card Printings' AS source
-              FROM card_printings
-              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identities)
+              FROM card_printing
+              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identity)
               UNION
               SELECT DISTINCT card_identity_id AS id, 'Card Identity Taggings' AS source
-              FROM card_identity_taggings
-              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identities)
+              FROM card_identity_tagging
+              WHERE card_identity_id NOT IN (SELECT id FROM import_card_identity)
             `),
         );
         if (orphaned.length > 0) {
@@ -258,16 +258,16 @@ export function createSqliteScryfallRepository(
         }
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
-          db.delete(cardIdentityFormatLegalities).run();
-          db.delete(cardIdentityParts).run();
+          db.delete(cardIdentityFormatLegality).run();
+          db.delete(cardIdentityPart).run();
           db.run(sql`
-            DELETE FROM card_identities
-            WHERE id NOT IN (SELECT id FROM import_card_identities)
+            DELETE FROM card_identity
+            WHERE id NOT IN (SELECT id FROM import_card_identity)
           `);
         });
         timedFinalizationPhase(input.observer, "upsert_from_staging", () => {
           db.run(sql`
-            INSERT INTO card_identities (
+            INSERT INTO card_identity (
               id,
               name,
               layout,
@@ -308,7 +308,7 @@ export function createSqliteScryfallRepository(
               edhrec_rank,
               game_changer,
               source_page_uri
-            FROM import_card_identities
+            FROM import_card_identity
             WHERE true
             ON CONFLICT(id) DO UPDATE SET
               name = excluded.name,
@@ -331,7 +331,7 @@ export function createSqliteScryfallRepository(
               source_page_uri = excluded.source_page_uri
           `);
           db.run(sql`
-            INSERT INTO card_identity_parts (card_identity_id,
+            INSERT INTO card_identity_part (card_identity_id,
                                              part_index,
                                              name,
                                              mana_cost,
@@ -355,10 +355,10 @@ export function createSqliteScryfallRepository(
                    toughness,
                    loyalty,
                    defense
-            FROM import_card_identity_parts
+            FROM import_card_identity_part
           `);
           db.run(sql`
-            INSERT INTO card_identity_format_legalities (
+            INSERT INTO card_identity_format_legality (
               card_identity_id,
               format,
               legality
@@ -367,7 +367,7 @@ export function createSqliteScryfallRepository(
               card_identity_id,
               format,
               legality
-            FROM import_card_identity_format_legalities
+            FROM import_card_identity_format_legality
           `);
         });
 
@@ -396,9 +396,9 @@ export function createSqliteScryfallRepository(
       let importedRecordCount = 0;
       try {
         beginTransaction(db);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printings`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_printings (
+          CREATE TEMP TABLE import_card_printing (
             id TEXT PRIMARY KEY NOT NULL,
             card_identity_id TEXT NOT NULL,
             layout TEXT NOT NULL,
@@ -412,10 +412,10 @@ export function createSqliteScryfallRepository(
             source_page_uri TEXT NOT NULL
           )
         `);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing_parts`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing_part`);
         db.run(sql`
           CREATE
-          TEMP TABLE import_card_printing_parts (
+          TEMP TABLE import_card_printing_part (
             card_printing_id TEXT NOT NULL,
             part_index INTEGER NOT NULL,
             printed_name TEXT,
@@ -432,7 +432,7 @@ export function createSqliteScryfallRepository(
         `);
 
         const insertPrinting = db.$client.prepare(`
-          INSERT INTO import_card_printings (
+          INSERT INTO import_card_printing (
             id,
             card_identity_id,
             layout,
@@ -447,7 +447,7 @@ export function createSqliteScryfallRepository(
           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
         `);
         const insertPrintingPart = db.$client.prepare(`
-          INSERT INTO import_card_printing_parts (card_printing_id,
+          INSERT INTO import_card_printing_part (card_printing_id,
                                                   part_index,
                                                   printed_name,
                                                   flavor_name,
@@ -506,8 +506,8 @@ export function createSqliteScryfallRepository(
           () =>
             db.all<{ id: string }>(sql`
               SELECT DISTINCT card_identity_id AS id
-              FROM import_card_printings
-              WHERE card_identity_id NOT IN (SELECT id FROM card_identities)
+              FROM import_card_printing
+              WHERE card_identity_id NOT IN (SELECT id FROM card_identity)
             `),
         );
         if (missingIdentityIds.length > 0) {
@@ -517,12 +517,12 @@ export function createSqliteScryfallRepository(
         }
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
-          db.delete(cardPrintingParts).run();
-          db.delete(cardPrintings).run();
+          db.delete(cardPrintingPart).run();
+          db.delete(cardPrinting).run();
         });
         timedFinalizationPhase(input.observer, "insert_from_staging", () => {
           db.run(sql`
-            INSERT INTO card_printings (
+            INSERT INTO card_printing (
               id,
               card_identity_id,
               layout,
@@ -545,10 +545,10 @@ export function createSqliteScryfallRepository(
               finishes_json,
               language, tcgplayer_id, cardmarket_id,
               source_page_uri
-            FROM import_card_printings
+            FROM import_card_printing
           `);
           db.run(sql`
-            INSERT INTO card_printing_parts (card_printing_id,
+            INSERT INTO card_printing_part (card_printing_id,
                                              part_index,
                                              printed_name,
                                              flavor_name,
@@ -570,7 +570,7 @@ export function createSqliteScryfallRepository(
                    artist_id,
                    illustration_id,
                    image_uris_json
-            FROM import_card_printing_parts
+            FROM import_card_printing_part
           `);
         });
 
@@ -599,9 +599,9 @@ export function createSqliteScryfallRepository(
       let importedRecordCount = 0;
       try {
         beginTransaction(db);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tags`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tag`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_identity_tags (
+          CREATE TEMP TABLE import_card_identity_tag (
             id TEXT PRIMARY KEY NOT NULL,
             slug TEXT NOT NULL UNIQUE,
             label TEXT NOT NULL,
@@ -609,17 +609,17 @@ export function createSqliteScryfallRepository(
             source_page_uri TEXT NOT NULL
           )
         `);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tag_aliases`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tag_alias`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_identity_tag_aliases (
+          CREATE TEMP TABLE import_card_identity_tag_alias (
             tag_id TEXT NOT NULL,
             alias TEXT NOT NULL,
             PRIMARY KEY (tag_id, alias)
           )
         `);
-        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_taggings`);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_tagging`);
         db.run(sql`
-          CREATE TEMP TABLE import_card_identity_taggings (
+          CREATE TEMP TABLE import_card_identity_tagging (
             tag_id TEXT NOT NULL,
             card_identity_id TEXT NOT NULL,
             weight TEXT NOT NULL,
@@ -637,16 +637,16 @@ export function createSqliteScryfallRepository(
         `);
 
         const insertTag = db.$client.prepare(`
-          INSERT INTO import_card_identity_tags (
+          INSERT INTO import_card_identity_tag (
             id, slug, label, description, source_page_uri
           ) VALUES (?1, ?2, ?3, ?4, ?5)
         `);
         const insertAlias = db.$client.prepare(`
-          INSERT INTO import_card_identity_tag_aliases (tag_id, alias)
+          INSERT INTO import_card_identity_tag_alias (tag_id, alias)
           VALUES (?1, ?2)
         `);
         const insertTagging = db.$client.prepare(`
-          INSERT INTO import_card_identity_taggings (
+          INSERT INTO import_card_identity_tagging (
             tag_id, card_identity_id, weight, annotation
           ) VALUES (?1, ?2, ?3, ?4)
         `);
@@ -698,8 +698,8 @@ export function createSqliteScryfallRepository(
           () =>
             db.all<{ id: string }>(sql`
               SELECT DISTINCT card_identity_id AS id
-              FROM import_card_identity_taggings
-              WHERE card_identity_id NOT IN (SELECT id FROM card_identities)
+              FROM import_card_identity_tagging
+              WHERE card_identity_id NOT IN (SELECT id FROM card_identity)
             `),
         );
         if (missingIdentityIds.length > 0) {
@@ -715,7 +715,7 @@ export function createSqliteScryfallRepository(
             const missingParents = db.all<{ id: string }>(sql`
               SELECT DISTINCT parent_tag_id AS id
               FROM import_card_identity_tag_hierarchy
-              WHERE parent_tag_id NOT IN (SELECT id FROM import_card_identity_tags)
+              WHERE parent_tag_id NOT IN (SELECT id FROM import_card_identity_tag)
             `);
             const selfParents = db.all<{ id: string }>(sql`
               SELECT DISTINCT child_tag_id AS id
@@ -742,24 +742,24 @@ export function createSqliteScryfallRepository(
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
           db.delete(cardIdentityTagHierarchy).run();
-          db.delete(cardIdentityTaggings).run();
-          db.delete(cardIdentityTagAliases).run();
-          db.delete(cardIdentityTags).run();
+          db.delete(cardIdentityTagging).run();
+          db.delete(cardIdentityTagAlias).run();
+          db.delete(cardIdentityTag).run();
         });
         timedFinalizationPhase(input.observer, "insert_from_staging", () => {
           db.run(sql`
-            INSERT INTO card_identity_tags (id, slug, label, description, source_page_uri)
+            INSERT INTO card_identity_tag (id, slug, label, description, source_page_uri)
             SELECT id, slug, label, description, source_page_uri
-            FROM import_card_identity_tags
+            FROM import_card_identity_tag
           `);
           db.run(sql`
-            INSERT INTO card_identity_tag_aliases (tag_id, alias)
-            SELECT tag_id, alias FROM import_card_identity_tag_aliases
+            INSERT INTO card_identity_tag_alias (tag_id, alias)
+            SELECT tag_id, alias FROM import_card_identity_tag_alias
           `);
           db.run(sql`
-            INSERT INTO card_identity_taggings (tag_id, card_identity_id, weight, annotation)
+            INSERT INTO card_identity_tagging (tag_id, card_identity_id, weight, annotation)
             SELECT tag_id, card_identity_id, weight, annotation
-            FROM import_card_identity_taggings
+            FROM import_card_identity_tagging
           `);
           db.run(sql`
             INSERT INTO card_identity_tag_hierarchy (parent_tag_id, child_tag_id)
@@ -793,8 +793,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(cardIdentities)
-          .orderBy(cardIdentities.name);
+          .from(cardIdentity)
+          .orderBy(cardIdentity.name);
         return ok(rows.map(toCardIdentity));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -803,7 +803,7 @@ export function createSqliteScryfallRepository(
 
     async listCardIdentityTags() {
       try {
-        const rows = await db.select().from(cardIdentityTags).orderBy(cardIdentityTags.slug);
+        const rows = await db.select().from(cardIdentityTag).orderBy(cardIdentityTag.slug);
         return ok(rows.map(toCardIdentityTag));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -814,8 +814,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
             .select()
-            .from(cardIdentityParts)
-            .orderBy(cardIdentityParts.cardIdentityId, cardIdentityParts.partIndex);
+            .from(cardIdentityPart)
+            .orderBy(cardIdentityPart.cardIdentityId, cardIdentityPart.partIndex);
         return ok(rows.map(toCardIdentityPart));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -826,8 +826,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(cardIdentityTagAliases)
-          .orderBy(cardIdentityTagAliases.tagId, cardIdentityTagAliases.alias);
+          .from(cardIdentityTagAlias)
+          .orderBy(cardIdentityTagAlias.tagId, cardIdentityTagAlias.alias);
         return ok(rows.map(toCardIdentityTagAlias));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -838,8 +838,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(cardIdentityTaggings)
-          .orderBy(cardIdentityTaggings.tagId, cardIdentityTaggings.cardIdentityId);
+          .from(cardIdentityTagging)
+          .orderBy(cardIdentityTagging.tagId, cardIdentityTagging.cardIdentityId);
         return ok(rows.map(toCardIdentityTagging));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -862,8 +862,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(cardPrintings)
-          .orderBy(cardPrintings.printedName, cardPrintings.setCode, cardPrintings.collectorNumber);
+          .from(cardPrinting)
+          .orderBy(cardPrinting.printedName, cardPrinting.setCode, cardPrinting.collectorNumber);
         return ok(rows.map(toCardPrinting));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -874,8 +874,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
             .select()
-            .from(cardPrintingParts)
-            .orderBy(cardPrintingParts.cardPrintingId, cardPrintingParts.partIndex);
+            .from(cardPrintingPart)
+            .orderBy(cardPrintingPart.cardPrintingId, cardPrintingPart.partIndex);
         return ok(rows.map(toCardPrintingPart));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -886,10 +886,10 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(cardIdentityFormatLegalities)
+          .from(cardIdentityFormatLegality)
           .orderBy(
-            cardIdentityFormatLegalities.cardIdentityId,
-            cardIdentityFormatLegalities.format,
+            cardIdentityFormatLegality.cardIdentityId,
+            cardIdentityFormatLegality.format,
           );
         return ok(rows.map(toCardIdentityFormatLegality));
       } catch (error) {
@@ -901,8 +901,8 @@ export function createSqliteScryfallRepository(
       try {
         const rows = await db
           .select()
-          .from(scryfallBulkDataImports)
-          .orderBy(scryfallBulkDataImports.startedAt);
+          .from(scryfallBulkDataImport)
+          .orderBy(scryfallBulkDataImport.startedAt);
         return ok(rows.map(toScryfallBulkDataImport));
       } catch (error) {
         return err(toRepositoryError(error));
@@ -913,11 +913,11 @@ export function createSqliteScryfallRepository(
       try {
         const [row] = await db
           .select()
-          .from(scryfallBulkDataImports)
+          .from(scryfallBulkDataImport)
           .where(
-            sql`${scryfallBulkDataImports.bulkDataType} = ${bulkDataType} AND ${scryfallBulkDataImports.status} = 'succeeded'`,
+            sql`${scryfallBulkDataImport.bulkDataType} = ${bulkDataType} AND ${scryfallBulkDataImport.status} = 'succeeded'`,
           )
-          .orderBy(desc(scryfallBulkDataImports.completedAt))
+          .orderBy(desc(scryfallBulkDataImport.completedAt))
           .limit(1);
         return ok(row ? toScryfallBulkDataImport(row) : null);
       } catch (error) {
@@ -981,7 +981,7 @@ function insertImportRecord<TRecord>(
     blockingErrors,
   };
 
-  db.insert(scryfallBulkDataImports)
+  db.insert(scryfallBulkDataImport)
     .values({
       id: imported.id,
       bulkDataType: imported.bulkDataType,
@@ -1050,7 +1050,7 @@ function importRejection(blockingErrors: readonly string[]): Error {
   return error;
 }
 
-function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
+function toCardIdentity(row: typeof cardIdentity.$inferSelect): CardIdentity {
   return {
     id: row.id,
     name: row.name,
@@ -1074,7 +1074,7 @@ function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
   };
 }
 
-function toCardIdentityPart(row: typeof cardIdentityParts.$inferSelect): CardIdentityPart {
+function toCardIdentityPart(row: typeof cardIdentityPart.$inferSelect): CardIdentityPart {
   return {
     cardIdentityId: row.cardIdentityId,
     partIndex: row.partIndex,
@@ -1092,7 +1092,7 @@ function toCardIdentityPart(row: typeof cardIdentityParts.$inferSelect): CardIde
 }
 
 function toCardIdentityFormatLegality(
-  row: typeof cardIdentityFormatLegalities.$inferSelect,
+  row: typeof cardIdentityFormatLegality.$inferSelect,
 ): CardIdentityFormatLegality {
   return {
     cardIdentityId: row.cardIdentityId,
@@ -1101,7 +1101,7 @@ function toCardIdentityFormatLegality(
   };
 }
 
-function toCardPrinting(row: typeof cardPrintings.$inferSelect): CardPrinting {
+function toCardPrinting(row: typeof cardPrinting.$inferSelect): CardPrinting {
   return {
     id: row.id,
     cardIdentityId: row.cardIdentityId,
@@ -1117,7 +1117,7 @@ function toCardPrinting(row: typeof cardPrintings.$inferSelect): CardPrinting {
   };
 }
 
-function toCardPrintingPart(row: typeof cardPrintingParts.$inferSelect): CardPrintingPart {
+function toCardPrintingPart(row: typeof cardPrintingPart.$inferSelect): CardPrintingPart {
   return {
     cardPrintingId: row.cardPrintingId,
     partIndex: row.partIndex,
@@ -1133,7 +1133,7 @@ function toCardPrintingPart(row: typeof cardPrintingParts.$inferSelect): CardPri
   };
 }
 
-function toCardIdentityTag(row: typeof cardIdentityTags.$inferSelect): CardIdentityTag {
+function toCardIdentityTag(row: typeof cardIdentityTag.$inferSelect): CardIdentityTag {
   return {
     id: row.id,
     slug: row.slug,
@@ -1144,7 +1144,7 @@ function toCardIdentityTag(row: typeof cardIdentityTags.$inferSelect): CardIdent
 }
 
 function toCardIdentityTagAlias(
-  row: typeof cardIdentityTagAliases.$inferSelect,
+  row: typeof cardIdentityTagAlias.$inferSelect,
 ): CardIdentityTagAlias {
   return {
     tagId: row.tagId,
@@ -1153,7 +1153,7 @@ function toCardIdentityTagAlias(
 }
 
 function toCardIdentityTagging(
-  row: typeof cardIdentityTaggings.$inferSelect,
+  row: typeof cardIdentityTagging.$inferSelect,
 ): CardIdentityTagging {
   return {
     tagId: row.tagId,
@@ -1173,7 +1173,7 @@ function toCardIdentityTagHierarchy(
 }
 
 function toScryfallBulkDataImport(
-  row: typeof scryfallBulkDataImports.$inferSelect,
+  row: typeof scryfallBulkDataImport.$inferSelect,
 ): ScryfallBulkDataImport {
   return {
     id: row.id,

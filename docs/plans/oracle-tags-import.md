@@ -10,7 +10,7 @@ Import Scryfall's local `oracle_tags` bulk data file as Card Identity Tag refere
 
 - `oracle_cards` local import creates `CardIdentity` and format legality records.
 - `all_cards` local import creates `CardPrinting` records and requires `oracle_cards` first.
-- `oracle_tags` is already listed as a Scryfall bulk data type, but the CLI currently rejects it and no tag tables exist yet.
+- `oracle_tags` is already listed as a Scryfall bulk data type, but the CLI currently rejects it and no `CardIdentityTag` tables exist yet.
 - The downloaded `oracle_tags` file at `/Users/osmall/Downloads/oracle-tags-20260616090037.json` contains 4,487 oracle tags and 227,224 direct taggings.
 
 ## Resolved Decisions
@@ -40,10 +40,10 @@ Import Scryfall's local `oracle_tags` bulk data file as Card Identity Tag refere
 
 ## Planned Data Records
 
-- `card_identity_tags`: one row per imported Card Identity Tag.
-- `card_identity_tag_aliases`: alternate lookup names for a Card Identity Tag.
-- `card_identity_taggings`: direct relationship between a Card Identity and a Card Identity Tag.
-- `card_identity_tag_hierarchy`: direct parent-child relationship between Card Identity Tags, sourced from `parent_ids`.
+- `card_identity_tag`: one row per imported `CardIdentityTag`.
+- `card_identity_tag_alias`: alternate lookup names for a `CardIdentityTag`.
+- `card_identity_tagging`: direct relationship between a `CardIdentity` and a `CardIdentityTag`.
+- `card_identity_tag_hierarchy`: direct parent-child relationship between `CardIdentityTag` records, sourced from `parent_ids`.
 
 ## Test-First Implementation Slices
 
@@ -57,7 +57,7 @@ Import Scryfall's local `oracle_tags` bulk data file as Card Identity Tag refere
 
 3. SQLite success slice:
    - Add failing SQLite repository tests that import a small fixture containing tags, aliases, annotations, direct taggings, root tags, and parent-child hierarchy.
-   - Add SQLite tables, temp staging tables, transactional replacement, and repository-level list reads for tags, aliases, taggings, and hierarchy.
+   - Add SQLite tables, temp staging tables, transactional replacement, and repository-level list reads for `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` records.
 
 4. SQLite validation slice:
    - Add failing tests for missing `CardIdentity` references, duplicate tag IDs, duplicate slugs, duplicate aliases for the same tag, duplicate taggings, duplicate hierarchy links, nonexistent parent IDs, self-parenting, and zero-tag imports.

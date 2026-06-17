@@ -17,7 +17,7 @@ The data model should preserve the product boundary between the user's Collectio
 
 The MVP should store agent decisions, user inputs, source data, and rationale. It should compute current factual status from those stored inputs.
 
-Store records and fields that answer what was decided, imported, synced, or explained at the time: Deck Opportunities, Deck Candidates, Deck Candidate cards, Deck Building Briefs, Collection imports, Scryfall bulk data imports, current Collection rows, card reference data, Card Identity Tags, and Markdown rationale.
+Store records and fields that answer what was decided, imported, synced, or explained at the time: `DeckOpportunity`, `DeckCandidate`, `DeckCandidateCard`, `DeckBuildingBrief`, `CollectionImport`, `ScryfallBulkDataImport`, current Collection rows, card reference data, `CardIdentityTag`, and Markdown rationale.
 
 Compute outputs that answer what is true now: Availability, Available Cards, Committed Cards, Missing Cards, Collection Status, Collection Pull Lists, freshness status, and legality assessment.
 
@@ -29,7 +29,7 @@ Product records should use internal UUIDv7 identifiers. UUIDv7 keeps identifiers
 
 Scryfall-derived reference records should use Scryfall's identifiers as their record IDs. `CardPrinting` should use the Scryfall card ID, `CardIdentity` should use the Scryfall oracle ID, and `CardIdentityTag` should use the Scryfall tag ID.
 
-Physical table and relationship column names should use source-neutral model names, such as `card_printings`, `card_identities`, `card_identity_tags`, `card_identity_taggings`, and `card_identity_tag_hierarchy`. Source-specific values should remain where they are external protocol values, such as `ScryfallBulkDataImport.bulkDataType` values of `oracle_cards`, `all_cards`, and `oracle_tags`.
+Physical table names are canonical singular record names, such as `card_printing`, `card_identity`, `card_identity_tag`, `card_identity_tagging`, and `card_identity_tag_hierarchy`. Relationship column names should use source-neutral model names. Source-specific values should remain where they are external protocol values, such as `ScryfallBulkDataImport.bulkDataType` values of `oracle_cards`, `all_cards`, and `oracle_tags`.
 
 Other external source identifiers should be preserved as separate fields, such as ManaBox IDs where available. External IDs should not replace internal product record IDs.
 
@@ -133,13 +133,13 @@ Relationships:
 
 It should record the bulk data type, import status, started and completed timestamps, source updated timestamp where available, source URI or bulk data identifier where available, imported record counts, warnings, and blocking errors. The bulk data type should use Scryfall's canonical response `type` value, such as `all_cards`, rather than URL path slugs. URL path mapping belongs in the Scryfall adapter.
 
-Successful Scryfall bulk data imports update the corresponding Scryfall-backed records. Failed imports should preserve diagnostic information without replacing the last usable Scryfall-backed dataset.
+Successful `ScryfallBulkDataImport` records update the corresponding Scryfall-backed records. Failed imports should preserve diagnostic information without replacing the last usable Scryfall-backed dataset.
 
-Scryfall bulk data imports should use transactional full replacement per dataset with staging. The importer should load and validate the complete dataset before replacing the target records. A successful import replaces the target dataset and records a successful `ScryfallBulkDataImport`; a failed import leaves the previous usable dataset unchanged.
+`ScryfallBulkDataImport` writes should use transactional full replacement per dataset with staging. The importer should load and validate the complete dataset before replacing the target records. A successful import replaces the target dataset and records a successful `ScryfallBulkDataImport`; a failed import leaves the previous usable dataset unchanged.
 
 Writes to `CardIdentity`, `CardPrinting`, and Card Identity Tag reference data should be owned by the Scryfall bulk import path for the MVP. General card reference query services should not expose arbitrary write methods for these records unless another real source or editing workflow exists.
 
-Repository ports should keep source-sync provenance separate from card reference queries. A Scryfall bulk import repository should record import attempts, replace Scryfall-backed datasets, and answer dataset availability or freshness status. A card reference repository should expose read-only queries over Card Identities, Card Printings, and Card Identity Tags.
+Repository ports should keep source-sync provenance separate from card reference queries. A Scryfall bulk import repository should record import attempts, replace Scryfall-backed datasets, and answer dataset availability or freshness status. A card reference repository should expose read-only queries over `CardIdentity`, `CardPrinting`, and `CardIdentityTag` records.
 
 `oracle_cards`, `all_cards`, and `oracle_tags` replacements should each be independently transactional and independently recorded, even when invoked by a default full sync. A standalone `oracle_cards` replacement should fail fast if it would orphan existing `CardPrinting` or `CardIdentityTagging` records. This should be rare with Scryfall data, but preserving referential integrity is more important than accepting a partial reference-data refresh. An `all_cards` replacement should fail if any imported `CardPrinting.card_identity_id` does not exist in the currently usable `CardIdentity` dataset.
 
@@ -189,7 +189,7 @@ Relationships:
 `CardIdentityPart` represents one ordered canonical rules, side, half, face, or mode part from Scryfall
 `oracle_cards.card_faces` for a Card Identity.
 
-It should be created only when Scryfall provides `card_faces`; ordinary one-part Card Identities should not receive a
+It should be created only when Scryfall provides `card_faces`; ordinary one-part `CardIdentity` records should not receive a
 synthesized part row. It stores zero-based `part_index`, name, mana cost, type line, Oracle text, colors, color
 indicator, power, toughness, loyalty, and defense. Top-level `CardIdentity` also stores power, toughness, loyalty, and
 defense where Scryfall provides top-level values, while part rows preserve multi-part values.
@@ -213,11 +213,11 @@ Relationships:
 
 ### CardIdentityTag
 
-`CardIdentityTag` represents a reusable tag from Scryfall's `oracle_tags` bulk data that may apply to Card Identities.
+`CardIdentityTag` represents a reusable tag from Scryfall's `oracle_tags` bulk data that may apply to `CardIdentity` records.
 
-Card Identity Tags should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The MVP should import only Scryfall `oracle` tags, not `illustration` tags, and does not need to store tag type because every persisted Card Identity Tag is an oracle tag. `CardIdentityTag` should preserve Scryfall's stable tag UUID as its primary ID and store Scryfall tag metadata including slug, label, nullable description, and source page URI. Slug should be unique in the current imported dataset but should not be treated as the stable identity. Label is display metadata and should not be unique. Tag aliases and hierarchy should be stored relationally.
+`CardIdentityTag` should be stored as relational records because synergy calculations and Deck Opportunity discovery need to query tags across the Collection and candidate card space. The MVP should import only Scryfall `oracle` tags, not `illustration` tags, and does not need to store tag type because every persisted `CardIdentityTag` is an oracle tag. `CardIdentityTag` should preserve Scryfall's stable tag UUID as its primary ID and store Scryfall tag metadata including slug, label, nullable description, and source page URI. Slug should be unique in the current imported dataset but should not be treated as the stable identity. Label is display metadata and should not be unique. Tag aliases and hierarchy should be stored relationally.
 
-All imported Card Identity Tags should be stored, even when they have no direct Card Identity Taggings. Broad parent-tag matches should be inferred from descendant taggings at query or reasoning time rather than materialized as additional taggings.
+All imported `CardIdentityTag` records should be stored, even when they have no direct `CardIdentityTagging` records. Broad parent-tag matches should be inferred from descendant taggings at query or reasoning time rather than materialized as additional taggings.
 
 Core services should expose deterministic tag lookup and search primitives over stored tag data without depending on an LLM. Exact tag resolution should match slug, label, and aliases. Exploratory matching for fuzzy user language belongs in the adapter or agent layer, which may turn user phrases into candidate search terms and then ask core for deterministic candidate tags with enough context to choose or clarify.
 
@@ -256,7 +256,7 @@ Relationships:
 
 ### CardIdentityTagHierarchy
 
-`CardIdentityTagHierarchy` represents a direct parent-child relationship between two Card Identity Tags.
+`CardIdentityTagHierarchy` represents a direct parent-child relationship between two `CardIdentityTag` records.
 
 It should use a composite primary key of `parent_card_identity_tag_id` and `child_card_identity_tag_id`. The importer should build hierarchy only from Scryfall `parent_ids` and should ignore `child_ids` for persistence and validation. Root tags with no parents are valid. If a `parent_ids` value references a tag missing from the imported `oracle_tags` dataset, the import should fail and preserve the previous usable tag dataset. Self-parenting should be rejected. Full hierarchy cycle detection is deferred until hierarchy traversal is implemented.
 

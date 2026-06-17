@@ -14,6 +14,6 @@ Scryfall `layout` is also split into two concerns while keeping the field name `
 `CardPrinting.card_identity_id` remains the primary single-identity link for this migration. Reversible printings
 without a top-level `oracle_id` may derive that link from the one distinct face-level Oracle ID present in current
 Scryfall data. `CardPrintingPart` remains presentation-only and does not carry its own identity link. Current
-Magic/Scryfall data does not require representing one physical printing as multiple Card Identities, so if a future
+Magic/Scryfall data does not require representing one physical printing as multiple `CardIdentity` records, so if a future
 Scryfall object contains multiple distinct face-level Oracle IDs for one printing, the import should fail clearly rather
 than skip the card, guess a primary identity, or introduce a broader identity-join model in this migration.

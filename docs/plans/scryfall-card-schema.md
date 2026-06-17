@@ -49,12 +49,12 @@ multi-face and reversible card data without lossy flattening.
 - `CardPrinting.card_identity_id` should remain non-null for this migration. For `reversible_card` objects without
   top-level `oracle_id`, derive it from the one distinct face-level `oracle_id`; if a future Scryfall object has
   multiple distinct face-level `oracle_id` values, fail the import clearly rather than guessing. This preserves the
-  invariant that one exact Card Printing has one parent Card Identity, because current Magic/Scryfall data does not
+  invariant that one exact `CardPrinting` has one parent `CardIdentity`, because current Magic/Scryfall data does not
   require multi-identity physical printings.
 - Create `CardIdentityPart` rows only when `oracle_cards` provides `card_faces`; do not synthesize a single part for
-  ordinary one-part Card Identities.
+  ordinary one-part `CardIdentity` records.
 - Create `CardPrintingPart` rows only when `all_cards` provides `card_faces`; do not synthesize a single part for
-  ordinary one-part Card Printings.
+  ordinary one-part `CardPrinting` records.
 - `CardIdentityPart` should store canonical part-level rules fields: `name`, `mana_cost`, `type_line`, `oracle_text`,
   `colors`, `color_indicator`, `power`, `toughness`, `loyalty`, and `defense`.
 - `CardPrintingPart` should store print/presentation fields only; it should not duplicate canonical rules fields from

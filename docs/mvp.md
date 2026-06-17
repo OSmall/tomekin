@@ -332,7 +332,7 @@ Every Collection import should produce an Import Summary. The summary should inc
 
 Import Summary wording should be direct and actionable. A failed import should state that import failed, that the previous successful Collection remains current, the exact blocking issue, and what the user can change in the source export. A successful import with warnings should state that import succeeded, what was imported, what was skipped or ignored, and whether skipped or ignored data affects deck-building. Warnings should not sound like failures, and failures should not be hidden as warnings.
 
-Collection imports should be non-destructive. A failed import should not replace the previous successful Collection, should not change the latest successful Collection import timestamp, and should not make saved Deck Opportunities or Deck Candidates stale. The Import Summary should clearly state that the previous successful Collection remains current.
+`CollectionImport` writes should be non-destructive. A failed import should not replace the previous successful Collection, should not change the latest successful Collection import timestamp, and should not make saved Deck Opportunities or Deck Candidates stale. The Import Summary should clearly state that the previous successful Collection remains current.
 
 Import warnings should be limited to data the MVP intentionally ignores or can safely preserve without using. Examples include skipped ManaBox Lists, missing optional metadata such as purchase price, unsupported metadata that is ignored, or source columns that are preserved but not used in MVP deck-building.
 

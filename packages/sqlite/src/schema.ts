@@ -2,7 +2,7 @@ import {sql} from "drizzle-orm";
 import {check, index, integer, primaryKey, real, sqliteTable, text,} from "drizzle-orm/sqlite-core";
 import {cardIdentityTaggingWeightValues, colorIdentityValues, formatLegalityValues,} from "@mtg-agent/core";
 
-export const collectionImports = sqliteTable("collection_imports", {
+export const collectionImport = sqliteTable("collection_import", {
   id: text("id").primaryKey(),
   status: text("status", { enum: ["succeeded", "failed"] }).notNull(),
   importedAt: integer("imported_at", { mode: "timestamp" }).notNull(),
@@ -27,8 +27,8 @@ export const collectionImports = sqliteTable("collection_imports", {
     .default(sql`'[]'`),
 });
 
-export const scryfallBulkDataImports = sqliteTable(
-    "scryfall_bulk_data_imports",
+export const scryfallBulkDataImport = sqliteTable(
+    "scryfall_bulk_data_import",
     {
         id: text("id").primaryKey(),
         bulkDataType: text("bulk_data_type", {
@@ -49,18 +49,18 @@ export const scryfallBulkDataImports = sqliteTable(
     },
     (table) => [
         check(
-            "scryfall_bulk_data_imports_bulk_data_type_check",
+            "scryfall_bulk_data_import_bulk_data_type_check",
             sql`${table.bulkDataType} IN ('oracle_cards', 'all_cards', 'oracle_tags')`,
         ),
         check(
-            "scryfall_bulk_data_imports_status_check",
+            "scryfall_bulk_data_import_status_check",
             sql`${table.status} IN ('succeeded', 'failed')`,
         ),
     ],
 );
 
-export const cardIdentities = sqliteTable(
-    "card_identities",
+export const cardIdentity = sqliteTable(
+    "card_identity",
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
@@ -86,19 +86,19 @@ export const cardIdentities = sqliteTable(
     },
     (table) => [
         check(
-            "card_identities_color_identity_check",
+            "card_identity_color_identity_check",
             sql`${table.colorIdentity} IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')`,
         ),
-        index("idx_card_identities_color_identity").on(table.colorIdentity),
+        index("idx_card_identity_color_identity").on(table.colorIdentity),
     ],
 );
 
-export const cardIdentityParts = sqliteTable(
-    "card_identity_parts",
+export const cardIdentityPart = sqliteTable(
+    "card_identity_part",
     {
         cardIdentityId: text("card_identity_id")
             .notNull()
-            .references(() => cardIdentities.id),
+            .references(() => cardIdentity.id),
         partIndex: integer("part_index").notNull(),
         name: text("name").notNull(),
         manaCost: text("mana_cost"),
@@ -113,43 +113,43 @@ export const cardIdentityParts = sqliteTable(
     },
     (table) => [
         primaryKey({columns: [table.cardIdentityId, table.partIndex]}),
-        index("idx_card_identity_parts_card_identity_id").on(table.cardIdentityId),
+        index("idx_card_identity_part_card_identity_id").on(table.cardIdentityId),
     ],
 );
 
-export const cardIdentityFormatLegalities = sqliteTable(
-    "card_identity_format_legalities",
+export const cardIdentityFormatLegality = sqliteTable(
+    "card_identity_format_legality",
     {
         cardIdentityId: text("card_identity_id")
             .notNull()
-            .references(() => cardIdentities.id),
+            .references(() => cardIdentity.id),
         format: text("format").notNull(),
         legality: text("legality", {enum: formatLegalityValues}).notNull(),
     },
     (table) => [
         primaryKey({columns: [table.cardIdentityId, table.format]}),
-        check("card_identity_format_legalities_format_check", sql`length(${table.format}) > 0`),
+        check("card_identity_format_legality_format_check", sql`length(${table.format}) > 0`),
         check(
-            "card_identity_format_legalities_legality_check",
+            "card_identity_format_legality_legality_check",
             sql`${table.legality} IN ('legal', 'not_legal', 'banned', 'restricted')`,
         ),
-        index("idx_card_identity_format_legalities_card_identity_id").on(
+        index("idx_card_identity_format_legality_card_identity_id").on(
             table.cardIdentityId,
         ),
-        index("idx_card_identity_format_legalities_format_legality").on(
+        index("idx_card_identity_format_legality_format_legality").on(
             table.format,
             table.legality,
         ),
     ],
 );
 
-export const cardPrintings = sqliteTable(
-    "card_printings",
+export const cardPrinting = sqliteTable(
+    "card_printing",
     {
         id: text("id").primaryKey(),
         cardIdentityId: text("card_identity_id")
             .notNull()
-            .references(() => cardIdentities.id),
+            .references(() => cardIdentity.id),
         layout: text("layout", {enum: ["standard", "reversible_card"]})
             .notNull()
             .default("standard"),
@@ -164,15 +164,15 @@ export const cardPrintings = sqliteTable(
         cardmarketId: integer("cardmarket_id"),
         sourcePageUri: text("source_page_uri").notNull(),
     },
-    (table) => [index("idx_card_printings_card_identity_id").on(table.cardIdentityId)],
+    (table) => [index("idx_card_printing_card_identity_id").on(table.cardIdentityId)],
 );
 
-export const cardPrintingParts = sqliteTable(
-    "card_printing_parts",
+export const cardPrintingPart = sqliteTable(
+    "card_printing_part",
     {
         cardPrintingId: text("card_printing_id")
             .notNull()
-            .references(() => cardPrintings.id),
+            .references(() => cardPrinting.id),
         partIndex: integer("part_index").notNull(),
         printedName: text("printed_name"),
         flavorName: text("flavor_name"),
@@ -186,12 +186,12 @@ export const cardPrintingParts = sqliteTable(
     },
     (table) => [
         primaryKey({columns: [table.cardPrintingId, table.partIndex]}),
-        index("idx_card_printing_parts_card_printing_id").on(table.cardPrintingId),
+        index("idx_card_printing_part_card_printing_id").on(table.cardPrintingId),
     ],
 );
 
-export const cardIdentityTags = sqliteTable(
-    "card_identity_tags",
+export const cardIdentityTag = sqliteTable(
+    "card_identity_tag",
     {
         id: text("id").primaryKey(),
         slug: text("slug").notNull().unique(),
@@ -200,46 +200,46 @@ export const cardIdentityTags = sqliteTable(
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [
-        check("card_identity_tags_slug_check", sql`length(${table.slug}) > 0`),
-        check("card_identity_tags_label_check", sql`length(${table.label}) > 0`),
+        check("card_identity_tag_slug_check", sql`length(${table.slug}) > 0`),
+        check("card_identity_tag_label_check", sql`length(${table.label}) > 0`),
     ],
 );
 
-export const cardIdentityTagAliases = sqliteTable(
-    "card_identity_tag_aliases",
+export const cardIdentityTagAlias = sqliteTable(
+    "card_identity_tag_alias",
     {
         tagId: text("tag_id")
             .notNull()
-            .references(() => cardIdentityTags.id),
+            .references(() => cardIdentityTag.id),
         alias: text("alias").notNull(),
     },
     (table) => [
         primaryKey({columns: [table.tagId, table.alias]}),
-        check("card_identity_tag_aliases_alias_check", sql`length(${table.alias}) > 0`),
-        index("idx_card_identity_tag_aliases_tag_id").on(table.tagId),
+        check("card_identity_tag_alias_alias_check", sql`length(${table.alias}) > 0`),
+        index("idx_card_identity_tag_alias_tag_id").on(table.tagId),
     ],
 );
 
-export const cardIdentityTaggings = sqliteTable(
-    "card_identity_taggings",
+export const cardIdentityTagging = sqliteTable(
+    "card_identity_tagging",
     {
         tagId: text("tag_id")
             .notNull()
-            .references(() => cardIdentityTags.id),
+            .references(() => cardIdentityTag.id),
         cardIdentityId: text("card_identity_id")
             .notNull()
-            .references(() => cardIdentities.id),
+            .references(() => cardIdentity.id),
         weight: text("weight", {enum: cardIdentityTaggingWeightValues}).notNull(),
         annotation: text("annotation"),
     },
     (table) => [
         primaryKey({columns: [table.tagId, table.cardIdentityId]}),
         check(
-            "card_identity_taggings_weight_check",
+            "card_identity_tagging_weight_check",
             sql`${table.weight} IN ('very_strong', 'strong', 'median', 'weak')`,
         ),
-        index("idx_card_identity_taggings_card_identity_id").on(table.cardIdentityId),
-        index("idx_card_identity_taggings_tag_id").on(table.tagId),
+        index("idx_card_identity_tagging_card_identity_id").on(table.cardIdentityId),
+        index("idx_card_identity_tagging_tag_id").on(table.tagId),
     ],
 );
 
@@ -248,10 +248,10 @@ export const cardIdentityTagHierarchy = sqliteTable(
     {
         parentTagId: text("parent_tag_id")
             .notNull()
-            .references(() => cardIdentityTags.id),
+            .references(() => cardIdentityTag.id),
         childTagId: text("child_tag_id")
             .notNull()
-            .references(() => cardIdentityTags.id),
+            .references(() => cardIdentityTag.id),
     },
     (table) => [
         primaryKey({columns: [table.parentTagId, table.childTagId]}),
