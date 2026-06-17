@@ -72,6 +72,11 @@ _Avoid_: Decklist, shopping list
 A source-backed record for a specific printed or print-like version of a card, distinct from both owned Collection rows and canonical card identity.
 _Avoid_: Scryfall Card, card pool entry
 
+**Card Part**:
+An ordered face, side, half, or castable mode of a Card Printing or Card Identity. A Card Part describes part-specific
+card information without implying it is independently owned or always independently deck-buildable.
+_Avoid_: Card face when referring to all multi-part layouts, separate printing
+
 **Printed Name**:
 The name shown for a specific Card Printing. It may differ from the canonical Card Identity name because of localization, alternate in-world naming, or other print-specific presentation.
 _Avoid_: Card name, Oracle name
@@ -83,6 +88,16 @@ _Avoid_: Oracle Card, card definition
 **Color Identity**:
 The set of MTG colors that constrain where a card can be used for format rules such as Commander/EDH deck construction. Colorless means the set contains no colors; it is not a sixth color.
 _Avoid_: Color, mana cost
+
+**Colors**:
+The set of MTG colors a card or Card Part has under the rules, usually from its mana cost or color-defining rules.
+Colors are distinct from Color Identity and may be absent at the whole-card level when colors are part-specific.
+_Avoid_: Color Identity
+
+**Color Indicator**:
+The printed color marker that defines a card or Card Part's color when present, such as on some double-faced cards. A
+Color Indicator contributes to Colors but is distinct from Color Identity.
+_Avoid_: Color Identity, mana cost
 
 **Mana Value**:
 The numeric value of a card's mana cost as used by MTG rules for deck-building reasoning, filtering, and curve analysis.

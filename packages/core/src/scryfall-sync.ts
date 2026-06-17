@@ -1,6 +1,6 @@
-import { err, ok, type Result } from "neverthrow";
-import { z } from "zod";
-import { parseJsonArrayItems } from "./scryfall-json-source";
+import {err, ok, type Result} from "neverthrow";
+import {z} from "zod";
+import {parseJsonArrayItems} from "./scryfall-json-source";
 
 const MAX_SOURCE_FORMAT_DIAGNOSTICS = 20;
 const SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL = 25_000;
@@ -21,11 +21,6 @@ export type ScryfallImportEvent =
     }
   | { readonly type: "raw_record_parsed"; readonly rawRecordCount: number }
   | { readonly type: "record_mapped"; readonly mappedRecordCount: number }
-  | {
-      readonly type: "record_skipped";
-      readonly reason: "missing_oracle_id";
-      readonly skippedRecordCount: number;
-    }
   | {
       readonly type: "source_validation_failed";
       readonly validationErrorCount: number;
@@ -105,18 +100,89 @@ export type ColorIdentity = z.infer<typeof ColorIdentitySchema>;
 
 const colorIdentityOrder = ["W", "U", "B", "R", "G"] as const;
 const colorIdentitySymbols = new Set<string>(colorIdentityOrder);
+const producedManaOrder = ["W", "U", "B", "R", "G", "C", "T"] as const;
+const producedManaSymbols = new Set<string>(producedManaOrder);
+
+const cardIdentityLayoutValues = [
+    "normal",
+    "split",
+    "flip",
+    "transform",
+    "modal_dfc",
+    "meld",
+    "leveler",
+    "class",
+    "case",
+    "saga",
+    "adventure",
+    "prepare",
+    "mutate",
+    "prototype",
+    "battle",
+    "planar",
+    "scheme",
+    "vanguard",
+    "token",
+    "double_faced_token",
+    "emblem",
+    "augment",
+    "host",
+    "art_series",
+    "reversible_card",
+] as const;
+
+const cardPrintingLayoutValues = ["standard", "reversible_card"] as const;
+
+export const CardIdentityLayoutSchema = z
+    .enum(cardIdentityLayoutValues)
+    .refine((layout) => layout !== "reversible_card", {
+        message: "reversible_card is a Card Printing layout, not a Card Identity layout.",
+    });
+export type CardIdentityLayout = z.infer<typeof CardIdentityLayoutSchema>;
+
+export const CardPrintingLayoutSchema = z.enum(cardPrintingLayoutValues);
+export type CardPrintingLayout = z.infer<typeof CardPrintingLayoutSchema>;
+
+const NullableColorScalarSchema = ColorIdentitySchema.nullable();
 
 export const CardIdentitySchema = z.object({
   id: z.uuid(),
   name: z.string().min(1),
+    layout: CardIdentityLayoutSchema,
   manaCost: z.string().nullable(),
   manaValue: z.number(),
   typeLine: z.string().min(1),
   oracleText: z.string().nullable(),
   colorIdentity: ColorIdentitySchema,
+    colors: NullableColorScalarSchema,
+    colorIndicator: NullableColorScalarSchema,
+    producedMana: z.string().nullable(),
+    keywords: z.array(z.string()).readonly(),
+    power: z.string().nullable(),
+    toughness: z.string().nullable(),
+    loyalty: z.string().nullable(),
+    defense: z.string().nullable(),
+    edhrecRank: z.number().int().nullable(),
+    gameChanger: z.boolean().nullable(),
   sourcePageUri: z.url(),
 });
 export type CardIdentity = z.infer<typeof CardIdentitySchema>;
+
+export const CardIdentityPartSchema = z.object({
+    cardIdentityId: z.uuid(),
+    partIndex: z.number().int().nonnegative(),
+    name: z.string().min(1),
+    manaCost: z.string().nullable(),
+    typeLine: z.string().min(1).nullable(),
+    oracleText: z.string().nullable(),
+    colors: NullableColorScalarSchema,
+    colorIndicator: NullableColorScalarSchema,
+    power: z.string().nullable(),
+    toughness: z.string().nullable(),
+    loyalty: z.string().nullable(),
+    defense: z.string().nullable(),
+});
+export type CardIdentityPart = z.infer<typeof CardIdentityPartSchema>;
 
 export const CardIdentityFormatLegalitySchema = z.object({
   cardIdentityId: z.uuid(),
@@ -129,6 +195,7 @@ export type CardIdentityFormatLegality = z.infer<
 
 export const CardIdentityImportRecordSchema = z.object({
   identity: CardIdentitySchema,
+    parts: z.array(CardIdentityPartSchema).readonly(),
   formatLegalities: z.array(CardIdentityFormatLegalitySchema).readonly(),
 });
 export type CardIdentityImportRecord = z.infer<
@@ -138,14 +205,38 @@ export type CardIdentityImportRecord = z.infer<
 export const CardPrintingSchema = z.object({
   id: z.uuid(),
   cardIdentityId: z.uuid(),
+    layout: CardPrintingLayoutSchema,
   printedName: z.string().min(1).nullable(),
   setCode: z.string().min(1),
   collectorNumber: z.string().min(1),
   finishes: z.array(z.string()).readonly(),
   language: z.string().min(1),
+    tcgplayerId: z.number().int().nullable(),
+    cardmarketId: z.number().int().nullable(),
   sourcePageUri: z.url(),
 });
 export type CardPrinting = z.infer<typeof CardPrintingSchema>;
+
+export const CardPrintingPartSchema = z.object({
+    cardPrintingId: z.uuid(),
+    partIndex: z.number().int().nonnegative(),
+    printedName: z.string().min(1).nullable(),
+    flavorName: z.string().min(1).nullable(),
+    printedTypeLine: z.string().min(1).nullable(),
+    printedText: z.string().nullable(),
+    flavorText: z.string().nullable(),
+    artist: z.string().min(1).nullable(),
+    artistId: z.uuid().nullable(),
+    illustrationId: z.uuid().nullable(),
+    imageUris: z.record(z.string(), z.string()).nullable(),
+});
+export type CardPrintingPart = z.infer<typeof CardPrintingPartSchema>;
+
+export const CardPrintingImportRecordSchema = z.object({
+    printing: CardPrintingSchema,
+    parts: z.array(CardPrintingPartSchema).readonly(),
+});
+export type CardPrintingImportRecord = z.infer<typeof CardPrintingImportRecordSchema>;
 
 export const cardIdentityTaggingWeightValues = [
   "very_strong",
@@ -208,11 +299,39 @@ export const RawScryfallOracleCardSchema = z
     id: z.uuid(),
     oracle_id: z.uuid(),
     name: z.string().min(1),
+      layout: z.enum(cardIdentityLayoutValues),
     mana_cost: z.string().optional(),
     cmc: z.number(),
     type_line: z.string().min(1),
     oracle_text: z.string().optional(),
     color_identity: z.array(z.string()),
+      colors: z.array(z.string()).optional(),
+      color_indicator: z.array(z.string()).optional(),
+      produced_mana: z.array(z.string()).optional(),
+      keywords: z.array(z.string()),
+      power: z.string().optional(),
+      toughness: z.string().optional(),
+      loyalty: z.string().optional(),
+      defense: z.string().optional(),
+      edhrec_rank: z.number().int().optional(),
+      game_changer: z.boolean().optional(),
+      card_faces: z
+          .array(
+              z.object({
+                  object: z.literal("card_face"),
+                  name: z.string().min(1),
+                  mana_cost: z.string().optional(),
+                  type_line: z.string().min(1).optional(),
+                  oracle_text: z.string().optional(),
+                  colors: z.array(z.string()).optional(),
+                  color_indicator: z.array(z.string()).optional(),
+                  power: z.string().optional(),
+                  toughness: z.string().optional(),
+                  loyalty: z.string().optional(),
+                  defense: z.string().optional(),
+              }),
+          )
+          .optional(),
     legalities: z.record(z.string().min(1), FormatLegalitySchema),
     scryfall_uri: z.url(),
   });
@@ -223,7 +342,27 @@ export const RawScryfallAllCardSchema = z.object({
   id: z.uuid(),
   oracle_id: z.uuid().optional(),
   name: z.string().min(1),
+    layout: z.enum(cardIdentityLayoutValues),
   printed_name: z.string().min(1).nullish(),
+    tcgplayer_id: z.number().int().optional(),
+    cardmarket_id: z.number().int().optional(),
+    card_faces: z
+        .array(
+            z.object({
+                object: z.literal("card_face"),
+                oracle_id: z.uuid().optional(),
+                printed_name: z.string().min(1).nullish(),
+                flavor_name: z.string().min(1).nullish(),
+                printed_type_line: z.string().min(1).nullish(),
+                printed_text: z.string().nullish(),
+                flavor_text: z.string().nullish(),
+                artist: z.string().min(1).nullish(),
+                artist_id: z.uuid().nullish(),
+                illustration_id: z.uuid().nullish(),
+                image_uris: z.record(z.string(), z.string()).optional(),
+            }),
+        )
+        .optional(),
   set: z.string().min(1),
   collector_number: z.string().min(1),
   finishes: z.array(z.string()),
@@ -259,16 +398,46 @@ export function mapRawScryfallOracleCardToCardIdentityImportRecord(
   const identity: CardIdentity = {
     id: card.oracle_id,
     name: card.name,
+      layout: CardIdentityLayoutSchema.parse(card.layout),
     manaCost: card.mana_cost ?? null,
     manaValue: card.cmc,
     typeLine: card.type_line,
     oracleText: card.oracle_text ?? null,
     colorIdentity: toColorIdentity(card.color_identity),
+      colors: card.colors ? toColorIdentity(card.colors) : null,
+      colorIndicator: card.color_indicator
+          ? toColorIdentity(card.color_indicator)
+          : null,
+      producedMana: card.produced_mana ? toProducedMana(card.produced_mana) : null,
+      keywords: card.keywords,
+      power: card.power ?? null,
+      toughness: card.toughness ?? null,
+      loyalty: card.loyalty ?? null,
+      defense: card.defense ?? null,
+      edhrecRank: card.edhrec_rank ?? null,
+      gameChanger: card.game_changer ?? null,
     sourcePageUri: card.scryfall_uri,
   };
 
   return {
     identity,
+      parts:
+          card.card_faces?.map((face, partIndex) => ({
+              cardIdentityId: card.oracle_id,
+              partIndex,
+              name: face.name,
+              manaCost: face.mana_cost ?? null,
+              typeLine: face.type_line ?? null,
+              oracleText: face.oracle_text ?? null,
+              colors: face.colors ? toColorIdentity(face.colors) : null,
+              colorIndicator: face.color_indicator
+                  ? toColorIdentity(face.color_indicator)
+                  : null,
+              power: face.power ?? null,
+              toughness: face.toughness ?? null,
+              loyalty: face.loyalty ?? null,
+              defense: face.defense ?? null,
+          })) ?? [],
     formatLegalities: Object.entries(card.legalities).map(([format, legality]) => ({
       cardIdentityId: card.oracle_id,
       format,
@@ -277,19 +446,45 @@ export function mapRawScryfallOracleCardToCardIdentityImportRecord(
   };
 }
 
-export function mapRawScryfallAllCardToCardPrinting(
-  card: RawScryfallAllCard & { readonly oracle_id: string },
-): CardPrinting {
+export function mapRawScryfallAllCardToCardPrintingImportRecord(
+    card: RawScryfallAllCard,
+): CardPrintingImportRecord {
+    const cardIdentityId = getAllCardIdentityId(card);
   return {
-    id: card.id,
-    cardIdentityId: card.oracle_id,
-    printedName: card.printed_name ?? null,
-    setCode: card.set,
-    collectorNumber: card.collector_number,
-    finishes: card.finishes,
-    language: card.lang,
-    sourcePageUri: card.scryfall_uri,
+      printing: {
+          id: card.id,
+          cardIdentityId,
+          layout: card.layout === "reversible_card" ? "reversible_card" : "standard",
+          printedName: card.printed_name ?? null,
+          setCode: card.set,
+          collectorNumber: card.collector_number,
+          finishes: card.finishes,
+          language: card.lang,
+          tcgplayerId: card.tcgplayer_id ?? null,
+          cardmarketId: card.cardmarket_id ?? null,
+          sourcePageUri: card.scryfall_uri,
+      },
+      parts:
+          card.card_faces?.map((face, partIndex) => ({
+              cardPrintingId: card.id,
+              partIndex,
+              printedName: face.printed_name ?? null,
+              flavorName: face.flavor_name ?? null,
+              printedTypeLine: face.printed_type_line ?? null,
+              printedText: face.printed_text ?? null,
+              flavorText: face.flavor_text ?? null,
+              artist: face.artist ?? null,
+              artistId: face.artist_id ?? null,
+              illustrationId: face.illustration_id ?? null,
+              imageUris: face.image_uris ?? null,
+          })) ?? [],
   };
+}
+
+export function mapRawScryfallAllCardToCardPrinting(
+    card: RawScryfallAllCard,
+): CardPrinting {
+    return mapRawScryfallAllCardToCardPrintingImportRecord(card).printing;
 }
 
 export function mapRawScryfallOracleTagToCardIdentityTagImportRecord(
@@ -331,6 +526,48 @@ export function toColorIdentity(colors: readonly string[]): ColorIdentity {
 
   const canonical = colorIdentityOrder.filter((color) => seen.has(color)).join("");
   return ColorIdentitySchema.parse(canonical);
+}
+
+export function toProducedMana(symbols: readonly string[]): string {
+    const seen = new Set<string>();
+    for (const symbol of symbols) {
+        if (!producedManaSymbols.has(symbol)) {
+            throw new Error(`Unexpected produced mana symbol: ${symbol}.`);
+        }
+        if (seen.has(symbol)) {
+            throw new Error(`Duplicate produced mana symbol: ${symbol}.`);
+        }
+        seen.add(symbol);
+    }
+
+    return producedManaOrder.filter((symbol) => seen.has(symbol)).join("");
+}
+
+export function getAllCardIdentityId(card: RawScryfallAllCard): string {
+    if (hasScryfallOracleId(card)) return card.oracle_id;
+
+    if (card.layout !== "reversible_card") {
+        throw new Error(
+            `Scryfall card ${card.id} is missing oracle_id and is not a reversible_card.`,
+        );
+    }
+
+    const faceOracleIds = new Set(
+        card.card_faces
+            ?.map((face) => face.oracle_id)
+            .filter((id): id is string => typeof id === "string" && id.length > 0) ?? [],
+    );
+    if (faceOracleIds.size !== 1) {
+        throw new Error(
+            `Scryfall reversible_card ${card.id} has ${faceOracleIds.size} distinct face oracle_id values; expected exactly one.`,
+        );
+    }
+
+    const [oracleId] = faceOracleIds;
+    if (!oracleId) {
+        throw new Error(`Scryfall reversible_card ${card.id} has no face oracle_id.`);
+    }
+    return oracleId;
 }
 
 export function hasScryfallOracleId(
@@ -419,7 +656,7 @@ export type ScryfallRepository = {
     input: ScryfallBulkImportInput<CardIdentityImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
   importCardPrintings(
-    input: ScryfallBulkImportInput<CardPrinting>,
+      input: ScryfallBulkImportInput<CardPrintingImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
   importCardIdentityTags(
     input: ScryfallBulkImportInput<CardIdentityTagImportRecord>,
@@ -586,7 +823,13 @@ export function createScryfallLocalImportServices(
         sourceUpdatedAt: metadata.sourceUpdatedAt,
         sourceUri: metadata.sourceUri,
         observer: options?.observer,
-        records: mapAllCardPrintings(source, options?.observer),
+          records: mapScryfallRecords(
+              source,
+              RawScryfallAllCardSchema,
+              mapRawScryfallAllCardToCardPrintingImportRecord,
+              CardPrintingImportRecordSchema,
+              options?.observer,
+          ),
       });
       if (imported.isErr()) {
         return recordFailedLocalImport(repository, "all_cards", {
@@ -705,66 +948,6 @@ async function* mapScryfallRecords<TRaw, TRecord>(
   emitRecordCounter(observer, "record_mapped", mappedRecordCount, true);
 }
 
-async function* mapAllCardPrintings(
-  source: ScryfallBulkDataSource,
-  observer?: ScryfallImportObserver,
-): AsyncIterable<CardPrinting> {
-  const issues: string[] = [];
-  let index = 0;
-  let mappedRecordCount = 0;
-  let skippedRecordCount = 0;
-
-  try {
-    for await (const item of parseJsonArrayItems(source.stream())) {
-      emitRecordCounter(observer, "raw_record_parsed", index + 1);
-      const raw = RawScryfallAllCardSchema.safeParse(item);
-      if (!raw.success) {
-        issues.push(...toIndexedZodIssues(index, raw.error));
-      } else if (!hasScryfallOracleId(raw.data)) {
-        skippedRecordCount += 1;
-        emitSkippedRecordCounter(observer, skippedRecordCount);
-      } else {
-        const record = CardPrintingSchema.safeParse(
-          mapRawScryfallAllCardToCardPrinting(raw.data),
-        );
-        if (record.success) {
-          mappedRecordCount += 1;
-          emitRecordCounter(observer, "record_mapped", mappedRecordCount);
-          yield record.data;
-        } else {
-          issues.push(...toIndexedZodIssues(index, record.error));
-        }
-      }
-
-      if (issues.length >= MAX_SOURCE_FORMAT_DIAGNOSTICS) {
-        observer?.onEvent({
-          type: "source_validation_failed",
-          validationErrorCount: issues.length,
-        });
-        throw sourceFormatError(issues.slice(0, MAX_SOURCE_FORMAT_DIAGNOSTICS));
-      }
-      index += 1;
-    }
-  } catch (error) {
-    if (isBlockingError(error)) {
-      throw error;
-    }
-    throw sourceFormatError([`Failed to parse Scryfall source: ${toErrorMessage(error)}.`]);
-  }
-
-  if (issues.length > 0) {
-    observer?.onEvent({
-      type: "source_validation_failed",
-      validationErrorCount: issues.length,
-    });
-    throw sourceFormatError(issues);
-  }
-
-  emitRecordCounter(observer, "raw_record_parsed", index, true);
-  emitRecordCounter(observer, "record_mapped", mappedRecordCount, true);
-  emitSkippedRecordCounter(observer, skippedRecordCount, true);
-}
-
 function emitRecordCounter(
   observer: ScryfallImportObserver | undefined,
   type: "raw_record_parsed" | "record_mapped" | "record_staged",
@@ -783,21 +966,6 @@ function emitRecordCounter(
     return;
   }
   observer.onEvent({ type, stagedRecordCount: count });
-}
-
-function emitSkippedRecordCounter(
-  observer: ScryfallImportObserver | undefined,
-  count: number,
-  force = false,
-): void {
-  if (!observer || count === 0) return;
-  if (!force && count % SCRYFALL_IMPORT_TIMING_RECORD_INTERVAL !== 0) return;
-
-  observer.onEvent({
-    type: "record_skipped",
-    reason: "missing_oracle_id",
-    skippedRecordCount: count,
-  });
 }
 
 async function recordFailedLocalImport(

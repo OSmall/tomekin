@@ -1,34 +1,40 @@
-import { randomUUIDv7 } from "bun";
-import { desc, sql } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
+import {randomUUIDv7} from "bun";
+import {desc, sql} from "drizzle-orm";
+import {err, ok, type Result} from "neverthrow";
 import type {
   CardIdentity,
   CardIdentityFormatLegality,
   CardIdentityImportRecord,
+  CardIdentityPart,
   CardIdentityTag,
   CardIdentityTagAlias,
   CardIdentityTagging,
   CardIdentityTagHierarchy,
   CardIdentityTagImportRecord,
   CardPrinting,
+  CardPrintingImportRecord,
+  CardPrintingPart,
   Clock,
   ScryfallBulkDataImport,
   ScryfallBulkDataType,
+  ScryfallBulkImportInput,
   ScryfallFinalizationPhase,
   ScryfallImportObserver,
-  ScryfallBulkImportInput,
   ScryfallRepository,
   ScryfallRepositoryError,
 } from "@mtg-agent/core";
+import {CardIdentityLayoutSchema} from "@mtg-agent/core";
 
-import type { MtgAgentDatabase } from "./database";
+import type {MtgAgentDatabase} from "./database";
 import {
-  cardIdentityFormatLegalities,
-  cardIdentityTagAliases,
-  cardIdentityTagHierarchy,
-  cardIdentityTaggings,
-  cardIdentityTags,
   cardIdentities,
+  cardIdentityFormatLegalities,
+  cardIdentityParts,
+  cardIdentityTagAliases,
+  cardIdentityTaggings,
+  cardIdentityTagHierarchy,
+  cardIdentityTags,
+  cardPrintingParts,
   cardPrintings,
   scryfallBulkDataImports,
 } from "./schema";
@@ -43,8 +49,10 @@ export type SqliteScryfallRepository = ScryfallRepository & {
     Result<readonly CardIdentityFormatLegality[], ScryfallRepositoryError>
   >;
   importCardPrintings(
-    input: ScryfallBulkImportInput<CardPrinting>,
+      input: ScryfallBulkImportInput<CardPrintingImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
+  listCardIdentityParts(): Promise<Result<readonly CardIdentityPart[], ScryfallRepositoryError>>;
+  listCardPrintingParts(): Promise<Result<readonly CardPrintingPart[], ScryfallRepositoryError>>;
   importCardIdentityTags(
     input: ScryfallBulkImportInput<CardIdentityTagImportRecord>,
   ): Promise<Result<ScryfallBulkDataImport, ScryfallRepositoryError>>;
@@ -79,12 +87,42 @@ export function createSqliteScryfallRepository(
           CREATE TEMP TABLE import_card_identities (
             id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
+            layout TEXT NOT NULL,
             mana_cost TEXT,
             mana_value REAL NOT NULL,
             type_line TEXT NOT NULL,
             oracle_text TEXT,
             color_identity TEXT NOT NULL,
+            colors TEXT,
+            color_indicator TEXT,
+            produced_mana TEXT,
+            keywords_json TEXT NOT NULL,
+            power TEXT,
+            toughness TEXT,
+            loyalty TEXT,
+            defense TEXT,
+            edhrec_rank INTEGER,
+            game_changer INTEGER,
             source_page_uri TEXT NOT NULL
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_parts`);
+        db.run(sql`
+          CREATE
+          TEMP TABLE import_card_identity_parts (
+            card_identity_id TEXT NOT NULL,
+            part_index INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            mana_cost TEXT,
+            type_line TEXT,
+            oracle_text TEXT,
+            colors TEXT,
+            color_indicator TEXT,
+            power TEXT,
+            toughness TEXT,
+            loyalty TEXT,
+            defense TEXT,
+            PRIMARY KEY (card_identity_id, part_index)
           )
         `);
         db.run(sql`DROP TABLE IF EXISTS temp.import_card_identity_format_legalities`);
@@ -101,13 +139,39 @@ export function createSqliteScryfallRepository(
           INSERT INTO import_card_identities (
             id,
             name,
+            layout,
             mana_cost,
             mana_value,
             type_line,
             oracle_text,
             color_identity,
-            source_page_uri
-          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+            colors,
+            color_indicator,
+            produced_mana,
+            keywords_json,
+            power,
+            toughness,
+            loyalty,
+            defense,
+            edhrec_rank,
+            game_changer,
+            source_page_uri)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)
+        `);
+        const insertIdentityPart = db.$client.prepare(`
+          INSERT INTO import_card_identity_parts (card_identity_id,
+                                                  part_index,
+                                                  name,
+                                                  mana_cost,
+                                                  type_line,
+                                                  oracle_text,
+                                                  colors,
+                                                  color_indicator,
+                                                  power,
+                                                  toughness,
+                                                  loyalty,
+                                                  defense)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
         `);
         const insertLegality = db.$client.prepare(`
           INSERT INTO import_card_identity_format_legalities (
@@ -118,17 +182,44 @@ export function createSqliteScryfallRepository(
         `);
         try {
           for await (const record of input.records) {
-            const { identity, formatLegalities } = record;
+            const {identity, parts, formatLegalities} = record;
             insertIdentity.run(
               identity.id,
               identity.name,
+                identity.layout,
               identity.manaCost,
               identity.manaValue,
               identity.typeLine,
               identity.oracleText,
               identity.colorIdentity,
+                identity.colors,
+                identity.colorIndicator,
+                identity.producedMana,
+                JSON.stringify(identity.keywords),
+                identity.power,
+                identity.toughness,
+                identity.loyalty,
+                identity.defense,
+                identity.edhrecRank,
+                identity.gameChanger === null ? null : identity.gameChanger ? 1 : 0,
               identity.sourcePageUri,
             );
+            for (const part of parts) {
+              insertIdentityPart.run(
+                  part.cardIdentityId,
+                  part.partIndex,
+                  part.name,
+                  part.manaCost,
+                  part.typeLine,
+                  part.oracleText,
+                  part.colors,
+                  part.colorIndicator,
+                  part.power,
+                  part.toughness,
+                  part.loyalty,
+                  part.defense,
+              );
+            }
             for (const legality of formatLegalities) {
               insertLegality.run(
                 legality.cardIdentityId,
@@ -141,6 +232,7 @@ export function createSqliteScryfallRepository(
           }
         } finally {
           insertLegality.finalize();
+          insertIdentityPart.finalize();
           insertIdentity.finalize();
         }
         emitStagedRecordCounter(input.observer, importedRecordCount, true);
@@ -167,6 +259,7 @@ export function createSqliteScryfallRepository(
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
           db.delete(cardIdentityFormatLegalities).run();
+          db.delete(cardIdentityParts).run();
           db.run(sql`
             DELETE FROM card_identities
             WHERE id NOT IN (SELECT id FROM import_card_identities)
@@ -177,32 +270,92 @@ export function createSqliteScryfallRepository(
             INSERT INTO card_identities (
               id,
               name,
+              layout,
               mana_cost,
               mana_value,
               type_line,
               oracle_text,
               color_identity,
+              colors,
+              color_indicator,
+              produced_mana,
+              keywords_json,
+              power,
+              toughness,
+              loyalty,
+              defense,
+              edhrec_rank,
+              game_changer,
               source_page_uri
             )
             SELECT
               id,
               name,
+              layout,
               mana_cost,
               mana_value,
               type_line,
               oracle_text,
               color_identity,
+              colors,
+              color_indicator,
+              produced_mana,
+              keywords_json,
+              power,
+              toughness,
+              loyalty,
+              defense,
+              edhrec_rank,
+              game_changer,
               source_page_uri
             FROM import_card_identities
             WHERE true
             ON CONFLICT(id) DO UPDATE SET
               name = excluded.name,
+                                             layout = excluded.layout,
               mana_cost = excluded.mana_cost,
               mana_value = excluded.mana_value,
               type_line = excluded.type_line,
               oracle_text = excluded.oracle_text,
               color_identity = excluded.color_identity,
+                                             colors = excluded.colors,
+                                             color_indicator = excluded.color_indicator,
+                                             produced_mana = excluded.produced_mana,
+                                             keywords_json = excluded.keywords_json,
+                                             power = excluded.power,
+                                             toughness = excluded.toughness,
+                                             loyalty = excluded.loyalty,
+                                             defense = excluded.defense,
+                                             edhrec_rank = excluded.edhrec_rank,
+                                             game_changer = excluded.game_changer,
               source_page_uri = excluded.source_page_uri
+          `);
+          db.run(sql`
+            INSERT INTO card_identity_parts (card_identity_id,
+                                             part_index,
+                                             name,
+                                             mana_cost,
+                                             type_line,
+                                             oracle_text,
+                                             colors,
+                                             color_indicator,
+                                             power,
+                                             toughness,
+                                             loyalty,
+                                             defense)
+            SELECT card_identity_id,
+                   part_index,
+                   name,
+                   mana_cost,
+                   type_line,
+                   oracle_text,
+                   colors,
+                   color_indicator,
+                   power,
+                   toughness,
+                   loyalty,
+                   defense
+            FROM import_card_identity_parts
           `);
           db.run(sql`
             INSERT INTO card_identity_format_legalities (
@@ -248,12 +401,33 @@ export function createSqliteScryfallRepository(
           CREATE TEMP TABLE import_card_printings (
             id TEXT PRIMARY KEY NOT NULL,
             card_identity_id TEXT NOT NULL,
+            layout TEXT NOT NULL,
             printed_name TEXT,
             set_code TEXT NOT NULL,
             collector_number TEXT NOT NULL,
             finishes_json TEXT NOT NULL,
             language TEXT NOT NULL,
+            tcgplayer_id INTEGER,
+            cardmarket_id INTEGER,
             source_page_uri TEXT NOT NULL
+          )
+        `);
+        db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing_parts`);
+        db.run(sql`
+          CREATE
+          TEMP TABLE import_card_printing_parts (
+            card_printing_id TEXT NOT NULL,
+            part_index INTEGER NOT NULL,
+            printed_name TEXT,
+            flavor_name TEXT,
+            printed_type_line TEXT,
+            printed_text TEXT,
+            flavor_text TEXT,
+            artist TEXT,
+            artist_id TEXT,
+            illustration_id TEXT,
+            image_uris_json TEXT,
+            PRIMARY KEY (card_printing_id, part_index)
           )
         `);
 
@@ -261,30 +435,67 @@ export function createSqliteScryfallRepository(
           INSERT INTO import_card_printings (
             id,
             card_identity_id,
+            layout,
             printed_name,
             set_code,
             collector_number,
             finishes_json,
             language,
-            source_page_uri
-          ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+            tcgplayer_id,
+            cardmarket_id,
+            source_page_uri)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+        `);
+        const insertPrintingPart = db.$client.prepare(`
+          INSERT INTO import_card_printing_parts (card_printing_id,
+                                                  part_index,
+                                                  printed_name,
+                                                  flavor_name,
+                                                  printed_type_line,
+                                                  printed_text,
+                                                  flavor_text,
+                                                  artist,
+                                                  artist_id,
+                                                  illustration_id,
+                                                  image_uris_json)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
         `);
         try {
           for await (const record of input.records) {
+            const {printing, parts} = record;
             insertPrinting.run(
-              record.id,
-              record.cardIdentityId,
-              record.printedName,
-              record.setCode,
-              record.collectorNumber,
-              JSON.stringify(record.finishes),
-              record.language,
-              record.sourcePageUri,
+                printing.id,
+                printing.cardIdentityId,
+                printing.layout,
+                printing.printedName,
+                printing.setCode,
+                printing.collectorNumber,
+                JSON.stringify(printing.finishes),
+                printing.language,
+                printing.tcgplayerId,
+                printing.cardmarketId,
+                printing.sourcePageUri,
             );
+            for (const part of parts) {
+              insertPrintingPart.run(
+                  part.cardPrintingId,
+                  part.partIndex,
+                  part.printedName,
+                  part.flavorName,
+                  part.printedTypeLine,
+                  part.printedText,
+                  part.flavorText,
+                  part.artist,
+                  part.artistId,
+                  part.illustrationId,
+                  part.imageUris === null ? null : JSON.stringify(part.imageUris),
+              );
+            }
             importedRecordCount += 1;
             emitStagedRecordCounter(input.observer, importedRecordCount);
           }
         } finally {
+          insertPrintingPart.finalize();
           insertPrinting.finalize();
         }
         emitStagedRecordCounter(input.observer, importedRecordCount, true);
@@ -306,6 +517,7 @@ export function createSqliteScryfallRepository(
         }
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
+          db.delete(cardPrintingParts).run();
           db.delete(cardPrintings).run();
         });
         timedFinalizationPhase(input.observer, "insert_from_staging", () => {
@@ -313,23 +525,52 @@ export function createSqliteScryfallRepository(
             INSERT INTO card_printings (
               id,
               card_identity_id,
+              layout,
               printed_name,
               set_code,
               collector_number,
               finishes_json,
               language,
+              tcgplayer_id,
+              cardmarket_id,
               source_page_uri
             )
             SELECT
               id,
               card_identity_id,
+              layout,
               printed_name,
               set_code,
               collector_number,
               finishes_json,
-              language,
+              language, tcgplayer_id, cardmarket_id,
               source_page_uri
             FROM import_card_printings
+          `);
+          db.run(sql`
+            INSERT INTO card_printing_parts (card_printing_id,
+                                             part_index,
+                                             printed_name,
+                                             flavor_name,
+                                             printed_type_line,
+                                             printed_text,
+                                             flavor_text,
+                                             artist,
+                                             artist_id,
+                                             illustration_id,
+                                             image_uris_json)
+            SELECT card_printing_id,
+                   part_index,
+                   printed_name,
+                   flavor_name,
+                   printed_type_line,
+                   printed_text,
+                   flavor_text,
+                   artist,
+                   artist_id,
+                   illustration_id,
+                   image_uris_json
+            FROM import_card_printing_parts
           `);
         });
 
@@ -569,6 +810,18 @@ export function createSqliteScryfallRepository(
       }
     },
 
+    async listCardIdentityParts() {
+      try {
+        const rows = await db
+            .select()
+            .from(cardIdentityParts)
+            .orderBy(cardIdentityParts.cardIdentityId, cardIdentityParts.partIndex);
+        return ok(rows.map(toCardIdentityPart));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
     async listCardIdentityTagAliases() {
       try {
         const rows = await db
@@ -612,6 +865,18 @@ export function createSqliteScryfallRepository(
           .from(cardPrintings)
           .orderBy(cardPrintings.printedName, cardPrintings.setCode, cardPrintings.collectorNumber);
         return ok(rows.map(toCardPrinting));
+      } catch (error) {
+        return err(toRepositoryError(error));
+      }
+    },
+
+    async listCardPrintingParts() {
+      try {
+        const rows = await db
+            .select()
+            .from(cardPrintingParts)
+            .orderBy(cardPrintingParts.cardPrintingId, cardPrintingParts.partIndex);
+        return ok(rows.map(toCardPrintingPart));
       } catch (error) {
         return err(toRepositoryError(error));
       }
@@ -789,12 +1054,40 @@ function toCardIdentity(row: typeof cardIdentities.$inferSelect): CardIdentity {
   return {
     id: row.id,
     name: row.name,
+    layout: CardIdentityLayoutSchema.parse(row.layout),
     manaCost: row.manaCost,
     manaValue: row.manaValue,
     typeLine: row.typeLine,
     oracleText: row.oracleText,
     colorIdentity: row.colorIdentity,
+    colors: row.colors,
+    colorIndicator: row.colorIndicator,
+    producedMana: row.producedMana,
+    keywords: asStringArray(row.keywordsJson),
+    power: row.power,
+    toughness: row.toughness,
+    loyalty: row.loyalty,
+    defense: row.defense,
+    edhrecRank: row.edhrecRank,
+    gameChanger: row.gameChanger,
     sourcePageUri: row.sourcePageUri,
+  };
+}
+
+function toCardIdentityPart(row: typeof cardIdentityParts.$inferSelect): CardIdentityPart {
+  return {
+    cardIdentityId: row.cardIdentityId,
+    partIndex: row.partIndex,
+    name: row.name,
+    manaCost: row.manaCost,
+    typeLine: row.typeLine,
+    oracleText: row.oracleText,
+    colors: row.colors,
+    colorIndicator: row.colorIndicator,
+    power: row.power,
+    toughness: row.toughness,
+    loyalty: row.loyalty,
+    defense: row.defense,
   };
 }
 
@@ -812,12 +1105,31 @@ function toCardPrinting(row: typeof cardPrintings.$inferSelect): CardPrinting {
   return {
     id: row.id,
     cardIdentityId: row.cardIdentityId,
+    layout: row.layout,
     printedName: row.printedName,
     setCode: row.setCode,
     collectorNumber: row.collectorNumber,
     finishes: asStringArray(row.finishesJson),
     language: row.language,
+    tcgplayerId: row.tcgplayerId,
+    cardmarketId: row.cardmarketId,
     sourcePageUri: row.sourcePageUri,
+  };
+}
+
+function toCardPrintingPart(row: typeof cardPrintingParts.$inferSelect): CardPrintingPart {
+  return {
+    cardPrintingId: row.cardPrintingId,
+    partIndex: row.partIndex,
+    printedName: row.printedName,
+    flavorName: row.flavorName,
+    printedTypeLine: row.printedTypeLine,
+    printedText: row.printedText,
+    flavorText: row.flavorText,
+    artist: row.artist,
+    artistId: row.artistId,
+    illustrationId: row.illustrationId,
+    imageUris: isStringRecord(row.imageUrisJson) ? row.imageUrisJson : null,
   };
 }
 
@@ -879,6 +1191,14 @@ function toScryfallBulkDataImport(
 
 function asStringArray(value: unknown): readonly string[] {
   return Array.isArray(value) ? value.filter((item) => typeof item === "string") : [];
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+  return (
+      typeof value === "object" &&
+      value !== null &&
+      Object.values(value).every((item) => typeof item === "string")
+  );
 }
 
 function toRepositoryError(error: unknown): ScryfallRepositoryError {

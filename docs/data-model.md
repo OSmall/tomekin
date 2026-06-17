@@ -82,7 +82,18 @@ Relationships:
 
 `CardPrinting` represents a source-backed record for a specific printed or print-like version of a card.
 
-It is source reference data, not an owned collection row. It should include only source fields directly needed for resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`, the related Card Identity as `card_identity_id`, nullable Printed Name, set code, collector number, finish-related data, language, and the source page URI for opening the printing in the source system. Printed Name should preserve Scryfall `printed_name` when present and remain null when the source omits a top-level print-local name.
+It is source reference data, not an owned collection row. It should include only source fields directly needed for
+resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`,
+the related Card Identity as `card_identity_id`, printing `layout`, nullable Printed Name, set code, collector number,
+finish-related data, language, marketplace product IDs where Scryfall provides them, and the source page URI for opening
+the printing in the source system. Printed Name should preserve Scryfall `printed_name` when present and remain null
+when the source omits a top-level print-local name.
+
+`CardPrinting.layout` describes exact-printing presentation, not canonical card rules layout. It should initially use
+`standard` when the printing follows its Card Identity layout, and `reversible_card` for Scryfall reversible-card
+presentation. Reversible-card printings without a top-level Scryfall `oracle_id` should derive `card_identity_id` from
+the one distinct face-level `oracle_id`; if Scryfall ever provides multiple distinct face-level Oracle IDs for one
+printing, the import should fail rather than guessing.
 
 Scryfall card data should be loaded through a separate explicit sync/import path, not as a side effect of ManaBox Collection import. The MVP should use Scryfall's All Cards bulk data export so ManaBox rows can resolve by Scryfall ID to exact `CardPrinting` records. ManaBox import should resolve rows against local `CardPrinting` and `CardIdentity` records. If required Scryfall data is missing or a card cannot be resolved, Collection import should fail clearly rather than continuing with uncertain card identity.
 
@@ -98,7 +109,23 @@ Relationships:
 
 - A `CardPrinting` references one `CardIdentity`.
 - Many `CardPrinting` records may reference the same `CardIdentity`.
+- A `CardPrinting` may have many `CardPrintingPart` records when Scryfall `all_cards.card_faces` provides exact printing
+  or presentation parts.
 - A `CardPrinting` may be referenced by many `CollectionCard` records.
+
+### CardPrintingPart
+
+`CardPrintingPart` represents one ordered print or presentation part from Scryfall `all_cards.card_faces` for a specific
+Card Printing.
+
+It should store only exact printing or presentation fields: zero-based `part_index`, Printed Name, flavor name, printed
+type line, printed text, flavor text, artist metadata, illustration ID, and image URIs. It should not duplicate
+canonical rules fields from `CardIdentityPart`, and it should not carry its own `card_identity_id` in this migration.
+
+Relationships:
+
+- A `CardPrintingPart` belongs to one `CardPrinting`.
+- A `CardPrinting` and `part_index` pair should be unique.
 
 ### ScryfallBulkDataImport
 
@@ -127,19 +154,50 @@ Relationships:
 
 `CardIdentity` represents canonical card identity data used for deck-building reasoning.
 
-It is not an owned physical card and should not contain collection location, condition, finish, language, purchase details, or print-specific collection metadata. It should be imported from Scryfall's `oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the canonical card information needed for deck construction, Mana Value, color identity, card text, card typing, synergy analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name; `CardPrinting.printedName` preserves the source printing name when the source provides one.
+It is not an owned physical card and should not contain collection location, condition, finish, language, purchase
+details, marketplace product IDs, or print-specific collection metadata. It should be imported from Scryfall's
+`oracle_cards` bulk data because that source provides one Scryfall card object for each Oracle ID. It should provide the
+canonical card information needed for deck construction, Mana Value, color identity, card text, card typing, synergy
+analysis, and Portable Decklist names. `CardIdentity.name` is the canonical deck-building and Portable Decklist name;
+`CardPrinting.printedName` preserves the source printing name when the source provides one.
+
+`CardIdentity.layout` stores canonical Scryfall card layout values such as `normal`, `split`, `adventure`, `modal_dfc`,
+and `transform`. Reversible-card presentation is not a Card Identity layout in this model; it belongs on
+`CardPrinting.layout`.
 
 `CardIdentity.colorIdentity` should be stored and exposed as a canonical WUBRG-ordered scalar. Colorless cards have an empty Color Identity, not a `C` identity. Exact color identity search should use equality on the scalar. Commander-playable subset searches should be implemented as query logic over the scalar.
+
+`CardIdentity.colors`, `CardIdentity.colorIndicator`, `CardIdentityPart.colors`, and `CardIdentityPart.colorIndicator`
+should also use nullable WUBRG-ordered scalars. `CardIdentity.producedMana` should use a separate canonical scalar that
+allows `C` in addition to WUBRG, and also tolerates `T` for Un-card mana production present in Scryfall bulk data.
+`CardIdentity.keywords` remains JSON until relational keyword queries become important.
 
 `CardIdentity` should include the source page URI for opening the source reference page. Format legality should not live as Commander-specific columns on `CardIdentity`; it belongs in `CardIdentityFormatLegality` records.
 
 Relationships:
 
 - A single `CardIdentity` may be referenced by many `CardPrinting` records.
+- A single `CardIdentity` may have many `CardIdentityPart` records when Scryfall `oracle_cards.card_faces` provides
+  canonical rules or mode parts.
 - A single `CardIdentity` may be reached from many `CollectionCard` records through `CardPrinting`.
 - A single `CardIdentity` may be referenced by many `DeckCandidateCard` records.
 - A single `CardIdentity` may have many `CardIdentityTagging` records.
 - `CardIdentity` is the bridge between owned collection rows and proposed deck cards.
+
+### CardIdentityPart
+
+`CardIdentityPart` represents one ordered canonical rules, side, half, face, or mode part from Scryfall
+`oracle_cards.card_faces` for a Card Identity.
+
+It should be created only when Scryfall provides `card_faces`; ordinary one-part Card Identities should not receive a
+synthesized part row. It stores zero-based `part_index`, name, mana cost, type line, Oracle text, colors, color
+indicator, power, toughness, loyalty, and defense. Top-level `CardIdentity` also stores power, toughness, loyalty, and
+defense where Scryfall provides top-level values, while part rows preserve multi-part values.
+
+Relationships:
+
+- A `CardIdentityPart` belongs to one `CardIdentity`.
+- A `CardIdentity` and `part_index` pair should be unique.
 
 ### CardIdentityFormatLegality
 

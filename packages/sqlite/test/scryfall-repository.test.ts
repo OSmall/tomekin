@@ -8,11 +8,10 @@ import {
   CardIdentityImportRecordSchema,
   type CardIdentityTagImportRecord,
   CardIdentityTagImportRecordSchema,
-  type CardPrinting,
-  CardPrintingSchema,
+  type CardPrintingImportRecord,
+  CardPrintingImportRecordSchema,
   createScryfallSyncServices,
-  hasScryfallOracleId,
-  mapRawScryfallAllCardToCardPrinting,
+  mapRawScryfallAllCardToCardPrintingImportRecord,
   mapRawScryfallOracleCardToCardIdentityImportRecord,
   mapRawScryfallOracleTagToCardIdentityTagImportRecord,
   RawScryfallAllCardSchema,
@@ -54,13 +53,27 @@ describe("SQLite Scryfall repository", () => {
       expect.objectContaining({
         id: "d2075f58-b0e9-4e85-b7e6-0523a27a1d5b",
         name: "Bala Ged Recovery // Bala Ged Sanctuary",
+        layout: "modal_dfc",
         manaCost: null,
         manaValue: 3,
         typeLine: "Sorcery // Land",
         oracleText: null,
         colorIdentity: "G",
+        producedMana: "G",
         sourcePageUri: expect.stringContaining("scryfall.com/card/"),
       }),
+    );
+    const parts = await repository.listCardIdentityParts();
+    expect(parts.isOk()).toBe(true);
+    if (parts.isErr()) throw new Error(parts.error.message);
+    expect(parts.value).toContainEqual(
+        expect.objectContaining({
+          cardIdentityId: "d2075f58-b0e9-4e85-b7e6-0523a27a1d5b",
+          partIndex: 0,
+          name: "Bala Ged Recovery",
+          manaCost: "{2}{G}",
+          colors: "G",
+        }),
     );
     expect(imported.value).toContainEqual(
       expect.objectContaining({
@@ -142,11 +155,13 @@ describe("SQLite Scryfall repository", () => {
       expect.objectContaining({
         id: "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
         cardIdentityId: "6ad8011d-3471-4369-9d68-b264cc027487",
+        layout: "standard",
         printedName: null,
         setCode: "v10",
         collectorNumber: "12",
         finishes: ["foil"],
         language: "en",
+        tcgplayerId: 36767,
         sourcePageUri: expect.stringContaining("scryfall.com/card/"),
       }),
     );
@@ -163,6 +178,52 @@ describe("SQLite Scryfall repository", () => {
         id: "10b624fe-3eec-487d-8a0d-a9f2e2708263",
         printedName: "Sigillo Arcano",
         language: "it",
+      }),
+    );
+    const parts = await repository.listCardPrintingParts();
+    expect(parts.isOk()).toBe(true);
+    if (parts.isErr()) throw new Error(parts.error.message);
+    expect(parts.value).toContainEqual(
+        expect.objectContaining({
+          cardPrintingId: "54cf4f5c-1305-48bb-b046-d56706e9b81e",
+          partIndex: 0,
+          printedName: "火",
+          printedTypeLine: "インスタント",
+        }),
+    );
+  });
+
+  test("all_cards derives reversible_card Card Identity from a single face oracle_id", async () => {
+    const repository = createTestRepository();
+    const records = await readOracleCardIdentityRecordsFixture();
+    expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+    const rawCards = await readFixture(
+        "all-cards-minimal.json",
+        RawScryfallAllCardSchema.array(),
+    );
+    const {oracle_id: _oracleId, ...baseCard} = rawCards[0];
+    const reversible = mapRawScryfallAllCardToCardPrintingImportRecord(
+        RawScryfallAllCardSchema.parse({
+          ...baseCard,
+          id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+          layout: "reversible_card",
+          card_faces: [
+            {object: "card_face", oracle_id: records[0].identity.id, printed_name: "Front"},
+            {object: "card_face", oracle_id: records[0].identity.id, printed_name: "Back"},
+          ],
+        }),
+    );
+
+    const result = await repository.importCardPrintings(importInput([reversible]));
+
+    expect(result.isOk()).toBe(true);
+    const imported = await repository.listCardPrintings();
+    if (imported.isErr()) throw new Error(imported.error.message);
+    expect(imported.value).toContainEqual(
+        expect.objectContaining({
+          id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+          cardIdentityId: records[0].identity.id,
+          layout: "reversible_card",
       }),
     );
   });
@@ -193,11 +254,14 @@ describe("SQLite Scryfall repository", () => {
     expect((await repository.importCardPrintings(importInput(printings))).isOk()).toBe(true);
 
     const failed = await repository.importCardPrintings(
-      importInput<CardPrinting>([
+        importInput<CardPrintingImportRecord>([
         {
           ...printings[0],
-          id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
-          cardIdentityId: "99999999-9999-9999-9999-999999999999",
+          printing: {
+            ...printings[0].printing,
+            id: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+            cardIdentityId: "99999999-9999-9999-9999-999999999999",
+          },
         },
       ]),
     );
@@ -408,22 +472,22 @@ async function readOracleCardIdentityRecordsFixture(): Promise<
   );
 }
 
-async function readAllCardPrintingsFixture(): Promise<readonly CardPrinting[]> {
+async function readAllCardPrintingsFixture(): Promise<readonly CardPrintingImportRecord[]> {
   const rawCards = await readFixture(
     "all-cards-minimal.json",
     RawScryfallAllCardSchema.array(),
   );
-  return CardPrintingSchema.array().parse(
-    rawCards.filter(hasScryfallOracleId).map(mapRawScryfallAllCardToCardPrinting),
+  return CardPrintingImportRecordSchema.array().parse(
+      rawCards.map(mapRawScryfallAllCardToCardPrintingImportRecord),
   );
 }
 
 function filterPrintingsWithKnownIdentities(
-  printings: readonly CardPrinting[],
+    printings: readonly CardPrintingImportRecord[],
   identities: readonly CardIdentity[],
-): readonly CardPrinting[] {
+): readonly CardPrintingImportRecord[] {
   const identityIds = new Set(identities.map((identity) => identity.id));
-  return printings.filter((printing) => identityIds.has(printing.cardIdentityId));
+  return printings.filter((record) => identityIds.has(record.printing.cardIdentityId));
 }
 
 function oracleTagImportRecords(): readonly CardIdentityTagImportRecord[] {

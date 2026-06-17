@@ -80,6 +80,10 @@ Fixtures for card identity-sensitive behaviour should use real card names and Sc
 
 Scryfall JSON fixtures should stay minimal and include only fields consumed by the code under test.
 
+Scryfall card-shape regression fixtures may be extracted from real Scryfall bulk data and reduced to the consumed
+fields. Invalid-shape tests may minimally mutate those extracted real fixtures to create the invalid condition under
+test. These fixtures should remain tiny and package-local, and `bun test` must not require full Scryfall bulk files.
+
 Anonymised real-export regression fixtures may be added later when they protect against concrete import failures that small fixtures missed.
 
 ## SQLite Integration Tests

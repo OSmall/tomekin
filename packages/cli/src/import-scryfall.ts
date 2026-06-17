@@ -343,7 +343,6 @@ type TimingState = {
   totalBytes: number | null;
   rawRecordCount: number;
   mappedRecordCount: number;
-  skippedRecordCount: number;
   stagedRecordCount: number;
   validationErrorCount: number;
   finalizationPhases: Partial<Record<ScryfallFinalizationPhase, number>>;
@@ -360,7 +359,6 @@ function createCliTimingObserver(
     totalBytes: null,
     rawRecordCount: 0,
     mappedRecordCount: 0,
-    skippedRecordCount: 0,
     stagedRecordCount: 0,
     validationErrorCount: 0,
     finalizationPhases: {},
@@ -388,9 +386,6 @@ function applyTimingEvent(state: TimingState, event: ScryfallImportEvent): void 
       return;
     case "record_mapped":
       state.mappedRecordCount = event.mappedRecordCount;
-      return;
-    case "record_skipped":
-      state.skippedRecordCount = event.skippedRecordCount;
       return;
     case "source_validation_failed":
       state.validationErrorCount = event.validationErrorCount;
@@ -436,7 +431,7 @@ function renderTiming(
     : "";
 
   stderr.write(
-    `[timing] ${final ? "final" : "interval"}: ${formatDuration(elapsedMs)} elapsed; source ${source}; raw ${state.rawRecordCount}; mapped ${state.mappedRecordCount}; skipped ${state.skippedRecordCount}; staged ${state.stagedRecordCount}${validation}${formatFinalizationPhases(state.finalizationPhases)}${formatJavaScriptHeapStats()}\n`,
+      `[timing] ${final ? "final" : "interval"}: ${formatDuration(elapsedMs)} elapsed; source ${source}; raw ${state.rawRecordCount}; mapped ${state.mappedRecordCount}; staged ${state.stagedRecordCount}${validation}${formatFinalizationPhases(state.finalizationPhases)}${formatJavaScriptHeapStats()}\n`,
   );
 }
 

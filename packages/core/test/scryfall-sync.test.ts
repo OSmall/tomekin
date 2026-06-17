@@ -1,7 +1,8 @@
-import { describe, expect, test } from "bun:test";
+import {describe, expect, test} from "bun:test";
 import {
-  createScryfallSyncServices,
   createScryfallLocalImportServices,
+  createScryfallSyncServices,
+  mapRawScryfallOracleCardToCardIdentityImportRecord,
   mapRawScryfallOracleTagToCardIdentityTagImportRecord,
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
@@ -10,7 +11,7 @@ import {
   type ScryfallBulkDataType,
   type ScryfallRepository,
 } from "@mtg-agent/core";
-import { err, ok } from "neverthrow";
+import {err, ok} from "neverthrow";
 
 const clock = {
   now: () => new Date("2025-01-01T00:00:00.000Z"),
@@ -152,11 +153,13 @@ describe("Scryfall sync services", () => {
       id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
       oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       name: "Sol Ring",
+        layout: "normal",
       mana_cost: "{1}",
       cmc: 1,
       type_line: "Artifact",
       oracle_text: "{T}: Add {C}{C}.",
       color_identity: [],
+        keywords: [],
       legalities: {
         commander: "legal",
         future_format: "legal",
@@ -169,6 +172,7 @@ describe("Scryfall sync services", () => {
       id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
       oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
       name: "Sol Ring",
+        layout: "normal",
       printed_name: "Sol Ring",
       set: "v10",
       collector_number: "12",
@@ -182,6 +186,65 @@ describe("Scryfall sync services", () => {
     expect(oracle.legalities.future_format).toBe("legal");
     expect("future_scryfall_field" in allCard).toBe(false);
   });
+
+    test("oracle_cards accepts Scryfall prepare layout cards", () => {
+        const raw = RawScryfallOracleCardSchema.parse({
+            object: "card",
+            id: "d40cc7da-c731-418e-8547-7033d1939450",
+            oracle_id: "02125db4-4507-467a-ac0c-406de2c7d533",
+            name: "Adventurous Eater // Have a Bite",
+            layout: "prepare",
+            mana_cost: "{1}{G} // {G}",
+            cmc: 2,
+            type_line: "Creature — Halfling Citizen // Instant — Omen",
+            color_identity: ["G"],
+            colors: ["G"],
+            keywords: [],
+            card_faces: [
+                {
+                    object: "card_face",
+                    name: "Adventurous Eater",
+                    mana_cost: "{1}{G}",
+                    type_line: "Creature — Halfling Citizen",
+                    oracle_text: "When this creature enters, create a Food token.",
+                    colors: ["G"],
+                    power: "2",
+                    toughness: "2",
+                },
+                {
+                    object: "card_face",
+                    name: "Have a Bite",
+                    mana_cost: "{G}",
+                    type_line: "Instant — Omen",
+                    oracle_text: "Create a Food token.",
+                    colors: ["G"],
+                },
+            ],
+            legalities: {commander: "legal"},
+            scryfall_uri:
+                "https://scryfall.com/card/fin/000/adventurous-eater-have-a-bite",
+        });
+
+        const record = mapRawScryfallOracleCardToCardIdentityImportRecord(raw);
+
+        expect(record.identity.layout).toBe("prepare");
+        expect(record.parts).toHaveLength(2);
+        expect(record.parts[0]).toEqual(
+            expect.objectContaining({name: "Adventurous Eater", partIndex: 0}),
+        );
+    });
+
+    test("oracle_cards accepts Sole Performer's Un-card produced mana", async () => {
+        const rawJson = await Bun.file(
+            new URL("./fixtures/sole-performer.json", import.meta.url),
+        ).json();
+        const raw = RawScryfallOracleCardSchema.parse(rawJson);
+
+        const record = mapRawScryfallOracleCardToCardIdentityImportRecord(raw);
+
+        expect(record.identity.name).toBe("Sole Performer");
+        expect(record.identity.producedMana).toBe("T");
+    });
 
   test("maps raw Scryfall oracle tags including nullable fields, aliases, annotations, and parents", () => {
     const raw = RawScryfallOracleTagSchema.parse(rawOracleTag());

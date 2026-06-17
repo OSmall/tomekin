@@ -64,6 +64,7 @@ export const cardIdentities = sqliteTable(
     {
         id: text("id").primaryKey(),
         name: text("name").notNull(),
+        layout: text("layout").notNull().default("normal"),
         manaCost: text("mana_cost"),
         manaValue: real("mana_value").notNull(),
         typeLine: text("type_line").notNull(),
@@ -71,6 +72,16 @@ export const cardIdentities = sqliteTable(
         colorIdentity: text("color_identity", {enum: colorIdentityValues})
             .notNull()
             .default(""),
+        colors: text("colors", {enum: colorIdentityValues}),
+        colorIndicator: text("color_indicator", {enum: colorIdentityValues}),
+        producedMana: text("produced_mana"),
+        keywordsJson: text("keywords_json", {mode: "json"}).notNull().default(sql`'[]'`),
+        power: text("power"),
+        toughness: text("toughness"),
+        loyalty: text("loyalty"),
+        defense: text("defense"),
+        edhrecRank: integer("edhrec_rank"),
+        gameChanger: integer("game_changer", {mode: "boolean"}),
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [
@@ -79,6 +90,30 @@ export const cardIdentities = sqliteTable(
             sql`${table.colorIdentity} IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')`,
         ),
         index("idx_card_identities_color_identity").on(table.colorIdentity),
+    ],
+);
+
+export const cardIdentityParts = sqliteTable(
+    "card_identity_parts",
+    {
+        cardIdentityId: text("card_identity_id")
+            .notNull()
+            .references(() => cardIdentities.id),
+        partIndex: integer("part_index").notNull(),
+        name: text("name").notNull(),
+        manaCost: text("mana_cost"),
+        typeLine: text("type_line"),
+        oracleText: text("oracle_text"),
+        colors: text("colors", {enum: colorIdentityValues}),
+        colorIndicator: text("color_indicator", {enum: colorIdentityValues}),
+        power: text("power"),
+        toughness: text("toughness"),
+        loyalty: text("loyalty"),
+        defense: text("defense"),
+    },
+    (table) => [
+        primaryKey({columns: [table.cardIdentityId, table.partIndex]}),
+        index("idx_card_identity_parts_card_identity_id").on(table.cardIdentityId),
     ],
 );
 
@@ -93,11 +128,7 @@ export const cardIdentityFormatLegalities = sqliteTable(
     },
     (table) => [
         primaryKey({columns: [table.cardIdentityId, table.format]}),
-        check("card_identity_format_legalities_format_check", sql`length(
-        ${table.format}
-        )
-        >
-        0`),
+        check("card_identity_format_legalities_format_check", sql`length(${table.format}) > 0`),
         check(
             "card_identity_format_legalities_legality_check",
             sql`${table.legality} IN ('legal', 'not_legal', 'banned', 'restricted')`,
@@ -119,6 +150,9 @@ export const cardPrintings = sqliteTable(
         cardIdentityId: text("card_identity_id")
             .notNull()
             .references(() => cardIdentities.id),
+        layout: text("layout", {enum: ["standard", "reversible_card"]})
+            .notNull()
+            .default("standard"),
         printedName: text("printed_name"),
         setCode: text("set_code").notNull(),
         collectorNumber: text("collector_number").notNull(),
@@ -126,9 +160,34 @@ export const cardPrintings = sqliteTable(
             .notNull()
             .default(sql`'[]'`),
         language: text("language").notNull(),
+        tcgplayerId: integer("tcgplayer_id"),
+        cardmarketId: integer("cardmarket_id"),
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [index("idx_card_printings_card_identity_id").on(table.cardIdentityId)],
+);
+
+export const cardPrintingParts = sqliteTable(
+    "card_printing_parts",
+    {
+        cardPrintingId: text("card_printing_id")
+            .notNull()
+            .references(() => cardPrintings.id),
+        partIndex: integer("part_index").notNull(),
+        printedName: text("printed_name"),
+        flavorName: text("flavor_name"),
+        printedTypeLine: text("printed_type_line"),
+        printedText: text("printed_text"),
+        flavorText: text("flavor_text"),
+        artist: text("artist"),
+        artistId: text("artist_id"),
+        illustrationId: text("illustration_id"),
+        imageUrisJson: text("image_uris_json", {mode: "json"}),
+    },
+    (table) => [
+        primaryKey({columns: [table.cardPrintingId, table.partIndex]}),
+        index("idx_card_printing_parts_card_printing_id").on(table.cardPrintingId),
+    ],
 );
 
 export const cardIdentityTags = sqliteTable(
@@ -141,16 +200,8 @@ export const cardIdentityTags = sqliteTable(
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [
-        check("card_identity_tags_slug_check", sql`length(
-        ${table.slug}
-        )
-        >
-        0`),
-        check("card_identity_tags_label_check", sql`length(
-        ${table.label}
-        )
-        >
-        0`),
+        check("card_identity_tags_slug_check", sql`length(${table.slug}) > 0`),
+        check("card_identity_tags_label_check", sql`length(${table.label}) > 0`),
     ],
 );
 
@@ -164,11 +215,7 @@ export const cardIdentityTagAliases = sqliteTable(
     },
     (table) => [
         primaryKey({columns: [table.tagId, table.alias]}),
-        check("card_identity_tag_aliases_alias_check", sql`length(
-        ${table.alias}
-        )
-        >
-        0`),
+        check("card_identity_tag_aliases_alias_check", sql`length(${table.alias}) > 0`),
         index("idx_card_identity_tag_aliases_tag_id").on(table.tagId),
     ],
 );
