@@ -27,6 +27,49 @@ export const collectionImport = sqliteTable("collection_import", {
     .default(sql`'[]'`),
 });
 
+export const deckCandidate = sqliteTable(
+    "deck_candidate",
+    {
+        id: text("id").primaryKey(),
+        label: text("label").notNull(),
+        format: text("format", {enum: ["commander"]}).notNull(),
+        formatAnchor: text("format_anchor"),
+        commanderBracket: text("commander_bracket"),
+        briefJson: text("brief_json", {mode: "json"}).notNull(),
+        collectionImportTimestamp: integer("collection_import_timestamp", {mode: "timestamp"}),
+        markdown: text("markdown").notNull(),
+        createdAt: integer("created_at", {mode: "timestamp"}).notNull(),
+        updatedAt: integer("updated_at", {mode: "timestamp"}).notNull(),
+    },
+    (table) => [
+        check("deck_candidate_label_check", sql`length(${table.label}) > 0`),
+        check("deck_candidate_format_check", sql`${table.format} IN ('commander')`),
+    ],
+);
+
+export const deckCandidateCard = sqliteTable(
+    "deck_candidate_card",
+    {
+        id: text("id").primaryKey(),
+        deckCandidateId: text("deck_candidate_id")
+            .notNull()
+            .references(() => deckCandidate.id),
+        cardIdentityId: text("card_identity_id")
+            .notNull()
+            .references(() => cardIdentity.id),
+        quantity: integer("quantity").notNull(),
+        section: text("section", {enum: ["commander", "deck"]}).notNull(),
+        sortOrder: integer("sort_order").notNull(),
+        note: text("note"),
+    },
+    (table) => [
+        check("deck_candidate_card_quantity_check", sql`${table.quantity} > 0`),
+        check("deck_candidate_card_section_check", sql`${table.section} IN ('commander', 'deck')`),
+        index("idx_deck_candidate_card_deck_candidate_id").on(table.deckCandidateId),
+        index("idx_deck_candidate_card_card_identity_id").on(table.cardIdentityId),
+    ],
+);
+
 export const scryfallBulkDataImport = sqliteTable(
     "scryfall_bulk_data_import",
     {

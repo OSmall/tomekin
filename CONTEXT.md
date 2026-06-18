@@ -52,6 +52,10 @@ _Avoid_: Availability preference, ownership rule
 The confirmed working agreement for a deck-building task, summarising the user's goal, Deck Building Preferences, Collection Access Policy, and assumptions.
 _Avoid_: Prompt, request, deck settings
 
+**Agent Tool**:
+A protocol-neutral callable capability intended for AI-agent use, backed by product services and wrapped by one or more adapter surfaces.
+_Avoid_: Opencode tool, MCP tool, Vercel tool when referring to the reusable capability
+
 **Existing Deck**:
 A deck the user already has assembled or tracked. Cards in an Existing Deck are part of the Collection and may be available, committed, protected, or borrowable depending on the Collection Access Policy.
 _Avoid_: Current deck, real deck

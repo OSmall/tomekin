@@ -27,6 +27,8 @@ The primary MVP workflow is:
 
 The user may also provide the starting point directly, such as a commander, theme, colour identity, or desired play experience. In that case, discovery is constrained by the user's seed rather than skipped entirely.
 
+A Deck Candidate may also be built directly from a confirmed Deck Building Brief when the user has already provided a strong enough direction. Deck Opportunities are the decision layer for discovery, comparison, and choosing among possible directions; they are not a mandatory intermediate for every Deck Candidate.
+
 The standard happy-path workflow is:
 
 1. Import the Collection.
@@ -49,6 +51,8 @@ This workflow is product behaviour, not an implementation architecture.
 The product should not distinguish between a user who has not imported a Collection and a user who has imported an empty Collection. In both cases, the Collection is empty.
 
 The agent may build a Deck Candidate against an empty Collection. There are no Available Cards, Committed Cards, Existing Decks, binders, or owned card copies. Every card in the Deck Candidate should be treated as a Missing Card.
+
+The first local opencode slice implements this empty-Collection path for Commander/EDH over local Scryfall reference data. It can save Deck Candidates before ManaBox Collection import exists, but those saved candidates have unknown Collection freshness and no real Collection Pull List.
 
 The agent should still provide the usual deck-building explanation and Portable Decklist. It should not provide a Collection Pull List except to state that no owned copies are available because the Collection is empty.
 

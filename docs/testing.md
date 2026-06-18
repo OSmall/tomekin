@@ -35,6 +35,7 @@ Core unit tests should cover deterministic product behaviour first, including:
 - Freshness status.
 - Legality result shaping.
 - Service business errors.
+- Deck Building Brief schema defaults and confirmation assumptions.
 
 SQLite integration tests should cover repository-boundary behaviour, including:
 
@@ -42,8 +43,9 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - Repository transactionality.
 - Failed import non-destructiveness.
 - Current Collection snapshot replacement.
+- Deck Candidate save, reopen, list, and transactional card-row replacement.
 
-Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and user-facing output.
+Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and user-facing output. Live opencode execution and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is added.
 
 ## Test Layout
 

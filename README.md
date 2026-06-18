@@ -25,6 +25,8 @@ mise install
 bun install
 bun run db:sqlite:migration:apply
 bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
+bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
+bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.json
 ```
 
 Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
@@ -65,6 +67,21 @@ Add `--timing` to print diagnostic import timing, record counters, finalization 
 bun run import:scryfall -- --timing all_cards ./data/all-cards.json
 ```
 
+## Local Opencode Deck Builder
+
+The project includes a local primary opencode agent at `.opencode/agents/mtg-deck-builder.md`. It uses project-local custom tools from `.opencode/tools/mtg-agent.ts` and does not make live Scryfall calls.
+
+Before using it, apply migrations and import all three local Scryfall reference datasets:
+
+```sh
+bun run db:sqlite:migration:apply
+bun run import:scryfall -- oracle_cards /path/to/oracle-cards.json
+bun run import:scryfall -- all_cards /path/to/all-cards.json
+bun run import:scryfall -- oracle_tags /path/to/oracle-tags.json
+```
+
+The first slice is Commander/EDH only and treats the Collection as empty. Saved Deck Candidates are persisted in SQLite with `DeckCandidate` and `DeckCandidateCard` rows; every candidate card is reported as a Missing Card until Collection import exists.
+
 ## Current Status
 
-This repository is in product definition. The first architecture direction is to deliver the MVP as local opencode tooling over a portable TypeScript core running on Bun. Further storage, user interface, and deployment decisions remain deferred until requirements are clearer.
+This repository is implementing the first local opencode slice over a portable TypeScript core and SQLite persistence. Further collection import, hosted UI, and deployment decisions remain deferred until requirements are clearer.

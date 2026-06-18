@@ -287,13 +287,13 @@ Relationships:
 
 It should preserve enough structured information to reopen, compare, refresh, and export the proposal without depending on the original chat conversation. It remains separate from Collection state unless the user later updates their source collection system and reimports.
 
-The decklist should be stored through `DeckCandidateCard` rows. The larger Deck Candidate explanation should be stored as a Markdown body containing the stable MVP output sections. Scalar metadata needed for list, search, freshness, and comparison should live as fields on `DeckCandidate`, including label, Format, Format Anchor where applicable, Power Level or Commander Bracket where applicable, source Deck Opportunity reference where applicable, and the Collection import timestamp used for the latest Collection Status and Collection Pull List calculations. The Deck Building Brief used to build the candidate should be stored as Zod-validated structured JSON. The stored Markdown body is the canonical saved explanation and should be returned as stored on ordinary reads.
+The decklist is stored through `deck_candidate_card` rows. The larger Deck Candidate explanation is stored as a Markdown body containing the stable MVP output sections. The first SQLite implementation stores scalar metadata on `deck_candidate`: `id`, `label`, `format`, nullable `format_anchor`, nullable `commander_bracket`, Zod-validated `brief_json`, nullable `collection_import_timestamp`, `markdown`, `created_at`, and `updated_at`. The stored Markdown body is the canonical saved explanation and should be returned as stored on ordinary reads.
 
 The Collection import timestamp is provenance metadata. It supports freshness checks by comparison with the latest successful `CollectionImport`; Availability, Missing Cards, Collection Status, and Collection Pull Lists should be computed when needed.
 
 The Portable Decklist should be generated from `DeckCandidateCard` rows and `CardIdentity` names when needed.
 
-Deck Candidates should be mutable for the MVP and should include `createdAt` and `updatedAt` timestamps.
+Deck Candidates are mutable for the MVP and include `createdAt` and `updatedAt` timestamps. Saving an existing candidate replaces its card rows transactionally.
 
 Relationships:
 
@@ -306,7 +306,7 @@ Relationships:
 
 `DeckCandidateCard` represents one card entry in a Deck Candidate.
 
-It should be relational rather than stored only inside a JSON array so the system can refresh Collection Status, inspect Missing Cards, validate legality, and query deck contents. It should include the card quantity, Commander/EDH decklist section, stable sort order, and optional notes when card-level explanation needs to be persisted. Portable Decklist card names should come from `CardIdentity`, not duplicated display names on `DeckCandidateCard`.
+It should be relational rather than stored only inside a JSON array so the system can refresh Collection Status, inspect Missing Cards, validate legality, and query deck contents. The first SQLite implementation stores `id`, `deck_candidate_id`, `card_identity_id`, `quantity`, Commander/EDH decklist `section`, stable `sort_order`, and nullable `note`. Portable Decklist card names should come from `CardIdentity`, not duplicated display names on `DeckCandidateCard`.
 
 Relationships:
 

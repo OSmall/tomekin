@@ -7,6 +7,9 @@ This document captures unresolved design branches to resume later. It should sta
 - Complete the planned implementation slice for `CardIdentityTag`, `CardIdentityTagAlias`, `CardIdentityTagging`, and `CardIdentityTagHierarchy` in [`plans/oracle-tags-import.md`](./plans/oracle-tags-import.md).
 - Define the exact scalar metadata fields for `DeckOpportunity` and `DeckCandidate`.
 - Define the Zod schemas for `DeckBuildingBrief` and `CollectionAccessPolicy`.
+- Decide whether to add candidate-specific `DeckCandidateCardRole` records or fields for roles such as enabler, payoff,
+  win condition, and theme card. These roles describe why a card belongs in a specific Deck Candidate and should remain
+  distinct from source-backed `CardIdentityTag` data.
 - Decide how to handle split cards, multi-face cards, attractions, stickers, digital cards, rebalanced cards, and other Scryfall identity edge cases.
 
 ## Application Services
