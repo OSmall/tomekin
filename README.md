@@ -27,6 +27,7 @@ bun run db:sqlite:migration:apply
 bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
 bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
 bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.json
+bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
 ```
 
 Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
@@ -67,6 +68,34 @@ Add `--timing` to print diagnostic import timing, record counters, finalization 
 bun run import:scryfall -- --timing all_cards ./data/all-cards.json
 ```
 
+## ManaBox Collection Import
+
+Import a ManaBox Collection CSV into the current SQLite Collection snapshot:
+
+```sh
+bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
+```
+
+Collection import requires successful local `oracle_cards` and `all_cards` Scryfall imports first. `oracle_tags` is not
+required for raw Collection import.
+
+The command replaces the current `CollectionLocation` and `CollectionCard` snapshot only after all rows pass blocking
+validation. Failed attempts are recorded once the CSV file is readable, and the previous successful Collection snapshot
+is preserved. Row warnings are printed to stderr but do not skip rows.
+
+Override the database for one run with `--db`:
+
+```sh
+bun run import:collection -- --db ./tmp/test.sqlite manabox ./data/ManaBox_Collection.csv
+```
+
+Before pushing changes to this importer, smoke test the current real export manually after migrations and required
+Scryfall imports are present:
+
+```sh
+bun run import:collection -- manabox /Users/osmall/Downloads/ManaBox_Collection.csv
+```
+
 ## Local Opencode Deck Builder
 
 The project includes a local primary opencode agent at `.opencode/agents/mtg-deck-builder.md`. It uses project-local custom tools from `.opencode/tools/mtg-agent.ts` and does not make live Scryfall calls.
@@ -80,8 +109,11 @@ bun run import:scryfall -- all_cards /path/to/all-cards.json
 bun run import:scryfall -- oracle_tags /path/to/oracle-tags.json
 ```
 
-The first slice is Commander/EDH only and treats the Collection as empty. Saved Deck Candidates are persisted in SQLite with `DeckCandidate` and `DeckCandidateCard` rows; every candidate card is reported as a Missing Card until Collection import exists.
+The first deck-building slice is Commander/EDH only. Saved Deck Candidates are persisted in SQLite with `DeckCandidate`
+and `DeckCandidateCard` rows; Collection-aware availability reasoning remains deferred.
 
 ## Current Status
 
-This repository is implementing the first local opencode slice over a portable TypeScript core and SQLite persistence. Further collection import, hosted UI, and deployment decisions remain deferred until requirements are clearer.
+This repository is implementing local opencode slices over a portable TypeScript core and SQLite persistence.
+Collection-aware deck-building behavior, hosted UI, and deployment decisions remain deferred until requirements are
+clearer.

@@ -1,5 +1,5 @@
 import {sql} from "drizzle-orm";
-import {check, index, integer, primaryKey, real, sqliteTable, text,} from "drizzle-orm/sqlite-core";
+import {check, index, integer, primaryKey, real, sqliteTable, text, unique,} from "drizzle-orm/sqlite-core";
 import {cardIdentityTaggingWeightValues, colorIdentityValues, formatLegalityValues,} from "@mtg-agent/core";
 
 export const collectionImport = sqliteTable("collection_import", {
@@ -26,6 +26,49 @@ export const collectionImport = sqliteTable("collection_import", {
     .notNull()
     .default(sql`'[]'`),
 });
+
+export const collectionLocation = sqliteTable(
+    "collection_location",
+    {
+        id: text("id").primaryKey(),
+        name: text("name").notNull(),
+        type: text("type", {enum: ["binder", "deck"]}).notNull(),
+    },
+    (table) => [
+        unique("collection_location_type_name_unique").on(table.type, table.name),
+        check("collection_location_name_check", sql`length(${table.name}) > 0`),
+        check("collection_location_type_check", sql`${table.type} IN ('binder', 'deck')`),
+    ],
+);
+
+export const collectionCard = sqliteTable(
+    "collection_card",
+    {
+        id: text("id").primaryKey(),
+        quantity: integer("quantity").notNull(),
+        collectionLocationId: text("collection_location_id")
+            .notNull()
+            .references(() => collectionLocation.id),
+        finish: text("finish", {enum: ["nonfoil", "foil", "etched"]}).notNull(),
+        manaBoxId: text("mana_box_id"),
+        cardPrintingId: text("card_printing_id")
+            .notNull()
+            .references(() => cardPrinting.id),
+        misprint: integer("misprint", {mode: "boolean"}).notNull(),
+        altered: integer("altered", {mode: "boolean"}).notNull(),
+        condition: text("condition"),
+        purchasePriceCurrency: text("purchase_price_currency"),
+        purchasePrice: real("purchase_price"),
+        addedAt: integer("added_at", {mode: "timestamp"}),
+        sourceRowNumber: integer("source_row_number").notNull(),
+    },
+    (table) => [
+        check("collection_card_quantity_check", sql`${table.quantity} > 0`),
+        check("collection_card_finish_check", sql`${table.finish} IN ('nonfoil', 'foil', 'etched')`),
+        index("idx_collection_card_location_id").on(table.collectionLocationId),
+        index("idx_collection_card_card_printing_id").on(table.cardPrintingId),
+    ],
+);
 
 export const deckCandidate = sqliteTable(
     "deck_candidate",
@@ -199,15 +242,27 @@ export const cardPrinting = sqliteTable(
         printedName: text("printed_name"),
         setCode: text("set_code").notNull(),
         collectorNumber: text("collector_number").notNull(),
-        finishesJson: text("finishes_json", {mode: "json"})
-            .notNull()
-            .default(sql`'[]'`),
         language: text("language").notNull(),
         tcgplayerId: integer("tcgplayer_id"),
         cardmarketId: integer("cardmarket_id"),
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [index("idx_card_printing_card_identity_id").on(table.cardIdentityId)],
+);
+
+export const cardPrintingFinish = sqliteTable(
+    "card_printing_finish",
+    {
+        cardPrintingId: text("card_printing_id")
+            .notNull()
+            .references(() => cardPrinting.id),
+        finish: text("finish", {enum: ["nonfoil", "foil", "etched"]}).notNull(),
+    },
+    (table) => [
+        primaryKey({columns: [table.cardPrintingId, table.finish]}),
+        check("card_printing_finish_finish_check", sql`${table.finish} IN ('nonfoil', 'foil', 'etched')`),
+        index("idx_card_printing_finish_card_printing_id").on(table.cardPrintingId),
+    ],
 );
 
 export const cardPrintingPart = sqliteTable(

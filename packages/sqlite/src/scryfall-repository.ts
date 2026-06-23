@@ -30,12 +30,13 @@ import {
   cardIdentity,
   cardIdentityFormatLegality,
   cardIdentityPart,
+  cardIdentityTag,
   cardIdentityTagAlias,
   cardIdentityTagging,
   cardIdentityTagHierarchy,
-  cardIdentityTag,
-  cardPrintingPart,
   cardPrinting,
+  cardPrintingFinish,
+  cardPrintingPart,
   scryfallBulkDataImport,
 } from "./schema";
 
@@ -405,13 +406,21 @@ export function createSqliteScryfallRepository(
             printed_name TEXT,
             set_code TEXT NOT NULL,
             collector_number TEXT NOT NULL,
-            finishes_json TEXT NOT NULL,
             language TEXT NOT NULL,
             tcgplayer_id INTEGER,
             cardmarket_id INTEGER,
             source_page_uri TEXT NOT NULL
           )
         `);
+          db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing_finish`);
+          db.run(sql`
+              CREATE
+              TEMP TABLE import_card_printing_finish (
+            card_printing_id TEXT NOT NULL,
+            finish TEXT NOT NULL,
+            PRIMARY KEY (card_printing_id, finish)
+          )
+          `);
         db.run(sql`DROP TABLE IF EXISTS temp.import_card_printing_part`);
         db.run(sql`
           CREATE
@@ -439,12 +448,15 @@ export function createSqliteScryfallRepository(
             printed_name,
             set_code,
             collector_number,
-            finishes_json,
             language,
             tcgplayer_id,
             cardmarket_id,
             source_page_uri)
-          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+          VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+        `);
+          const insertPrintingFinish = db.$client.prepare(`
+          INSERT INTO import_card_printing_finish (card_printing_id, finish)
+          VALUES (?1, ?2)
         `);
         const insertPrintingPart = db.$client.prepare(`
           INSERT INTO import_card_printing_part (card_printing_id,
@@ -470,12 +482,14 @@ export function createSqliteScryfallRepository(
                 printing.printedName,
                 printing.setCode,
                 printing.collectorNumber,
-                JSON.stringify(printing.finishes),
                 printing.language,
                 printing.tcgplayerId,
                 printing.cardmarketId,
                 printing.sourcePageUri,
             );
+              for (const finish of printing.finishes) {
+                  insertPrintingFinish.run(printing.id, finish);
+              }
             for (const part of parts) {
               insertPrintingPart.run(
                   part.cardPrintingId,
@@ -496,6 +510,7 @@ export function createSqliteScryfallRepository(
           }
         } finally {
           insertPrintingPart.finalize();
+            insertPrintingFinish.finalize();
           insertPrinting.finalize();
         }
         emitStagedRecordCounter(input.observer, importedRecordCount, true);
@@ -518,6 +533,7 @@ export function createSqliteScryfallRepository(
 
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
           db.delete(cardPrintingPart).run();
+            db.delete(cardPrintingFinish).run();
           db.delete(cardPrinting).run();
         });
         timedFinalizationPhase(input.observer, "insert_from_staging", () => {
@@ -529,7 +545,6 @@ export function createSqliteScryfallRepository(
               printed_name,
               set_code,
               collector_number,
-              finishes_json,
               language,
               tcgplayer_id,
               cardmarket_id,
@@ -542,10 +557,14 @@ export function createSqliteScryfallRepository(
               printed_name,
               set_code,
               collector_number,
-              finishes_json,
               language, tcgplayer_id, cardmarket_id,
               source_page_uri
             FROM import_card_printing
+          `);
+            db.run(sql`
+            INSERT INTO card_printing_finish (card_printing_id, finish)
+            SELECT card_printing_id, finish
+            FROM import_card_printing_finish
           `);
           db.run(sql`
             INSERT INTO card_printing_part (card_printing_id,
@@ -864,7 +883,14 @@ export function createSqliteScryfallRepository(
           .select()
           .from(cardPrinting)
           .orderBy(cardPrinting.printedName, cardPrinting.setCode, cardPrinting.collectorNumber);
-        return ok(rows.map(toCardPrinting));
+          const finishRows = await db.select().from(cardPrintingFinish);
+          const finishesByPrinting = new Map<string, string[]>();
+          for (const finish of finishRows) {
+              const finishes = finishesByPrinting.get(finish.cardPrintingId) ?? [];
+              finishes.push(finish.finish);
+              finishesByPrinting.set(finish.cardPrintingId, finishes);
+          }
+          return ok(rows.map((row) => toCardPrinting(row, finishesByPrinting.get(row.id) ?? [])));
       } catch (error) {
         return err(toRepositoryError(error));
       }
@@ -1101,7 +1127,7 @@ function toCardIdentityFormatLegality(
   };
 }
 
-function toCardPrinting(row: typeof cardPrinting.$inferSelect): CardPrinting {
+function toCardPrinting(row: typeof cardPrinting.$inferSelect, finishes: readonly string[]): CardPrinting {
   return {
     id: row.id,
     cardIdentityId: row.cardIdentityId,
@@ -1109,7 +1135,7 @@ function toCardPrinting(row: typeof cardPrinting.$inferSelect): CardPrinting {
     printedName: row.printedName,
     setCode: row.setCode,
     collectorNumber: row.collectorNumber,
-    finishes: asStringArray(row.finishesJson),
+      finishes,
     language: row.language,
     tcgplayerId: row.tcgplayerId,
     cardmarketId: row.cardmarketId,

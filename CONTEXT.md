@@ -85,6 +85,11 @@ _Avoid_: Card face when referring to all multi-part layouts, separate printing
 The name shown for a specific Card Printing. It may differ from the canonical Card Identity name because of localization, alternate in-world naming, or other print-specific presentation.
 _Avoid_: Card name, Oracle name
 
+**Finish**:
+The physical treatment of an owned card or Card Printing, such as nonfoil, foil, or etched. Finish is distinct from card
+condition and from whether the card is altered or misprinted.
+_Avoid_: Foil when referring to the general category
+
 **Card Identity**:
 The canonical card-level identity used for deck-building reasoning, legality, names, rules text, and matching Deck Candidate entries across printings.
 _Avoid_: Oracle Card, card definition

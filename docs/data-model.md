@@ -50,7 +50,8 @@ Failed Collection import attempts should also be persisted as `CollectionImport`
 Relationships:
 
 - A successful `CollectionImport` provides the import timestamp used for Collection freshness checks.
-- Collection-derived records should be traceable to the successful `CollectionImport` they came from.
+- Current Collection-derived records are understood to come from the latest successful `CollectionImport`; they do not
+  need a per-row import foreign key in the full snapshot replacement model.
 
 ### CollectionLocation
 
@@ -60,7 +61,7 @@ For the MVP, `CollectionLocation` should initially support `binder` and `deck` t
 
 Relationships:
 
-- A `CollectionLocation` belongs to a successful `CollectionImport` or current Collection snapshot.
+- A `CollectionLocation` belongs to the current Collection snapshot.
 - A `CollectionCard` belongs to one `CollectionLocation`.
 - A `CollectionLocation` with type `deck` corresponds to the domain concept of an Existing Deck.
 - Collection Access Policy may allow, protect, or exclude cards by `CollectionLocation`.
@@ -69,7 +70,12 @@ Relationships:
 
 `CollectionCard` represents one imported owned-card row from the ManaBox collection CSV.
 
-It is the collection-owned record, not the canonical card definition. It should preserve source row details needed for ownership, Availability, and Collection Pull Lists, including quantity, source location, printing metadata, finish, condition, language, purchase metadata where available, and source identifiers. `CollectionCard` is row-level and should store the ManaBox row quantity; it should not expand one source row into one record per physical card copy.
+It is the collection-owned record, not the canonical card definition. It preserves source row details needed for
+ownership, Availability, and Collection Pull Lists: quantity, source location, finish, condition, purchase metadata
+where available, source identifiers, source row number, and the resolved exact `CardPrinting`. `CollectionCard` does not
+store source name, set code, collector number, or language; ManaBox values for set code, collector number, and language
+are validated against the resolved `CardPrinting`, while name mismatches produce warnings. `CollectionCard` is row-level
+and should store the ManaBox row quantity; it should not expand one source row into one record per physical card copy.
 
 Relationships:
 
@@ -85,7 +91,7 @@ Relationships:
 It is source reference data, not an owned collection row. It should include only source fields directly needed for
 resolving imported collection rows and displaying exact printings. For the MVP, that means the Scryfall card ID as `id`,
 the related Card Identity as `card_identity_id`, printing `layout`, nullable Printed Name, set code, collector number,
-finish-related data, language, marketplace product IDs where Scryfall provides them, and the source page URI for opening
+language, marketplace product IDs where Scryfall provides them, and the source page URI for opening
 the printing in the source system. Printed Name should preserve Scryfall `printed_name` when present and remain null
 when the source omits a top-level print-local name.
 
@@ -111,7 +117,21 @@ Relationships:
 - Many `CardPrinting` records may reference the same `CardIdentity`.
 - A `CardPrinting` may have many `CardPrintingPart` records when Scryfall `all_cards.card_faces` provides exact printing
   or presentation parts.
+- A `CardPrinting` may have many `CardPrintingFinish` records describing the finishes available for that exact printing.
 - A `CardPrinting` may be referenced by many `CollectionCard` records.
+
+### CardPrintingFinish
+
+`CardPrintingFinish` represents one source-backed finish available for a specific Card Printing, such as nonfoil, foil,
+or etched.
+
+It should be stored relationally because Collection import validates owned-card finishes against exact Card Printing
+finishes, and Collection queries need to distinguish owned finishes without parsing JSON.
+
+Relationships:
+
+- A `CardPrintingFinish` belongs to one `CardPrinting`.
+- A `CardPrinting` and `finish` pair should be unique.
 
 ### CardPrintingPart
 
