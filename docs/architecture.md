@@ -57,6 +57,14 @@ The MVP should not add Turborepo by default. Bun workspaces are enough for the i
 - Treat opencode as the first interface to the product, not as the product's domain model.
 - Leave room for later multi-user hosting by keeping persistence, authentication, deployment, and UI decisions outside the core until they are deliberately chosen.
 
+## Resolved Constraints
+
+- Agent-facing card retrieval should use Card Query through core Agent Tools rather than raw SQL or database MCP
+  access. See ADR 0012.
+- Card Query is CQL2-inspired but not yet a claim of CQL2 conformance.
+- The normal deck-building agent should be workflow-light but authority-bound: safe product tools only, no raw database
+  MCP, and deterministic tools for legality, persistence, and final Collection checks.
+
 ## Open Decisions
 
 The following decisions have not been resolved yet:

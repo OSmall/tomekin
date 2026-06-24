@@ -90,6 +90,11 @@ The minimum Deck Building Brief should include:
 - Assumptions to confirm.
 - Known constraints or exclusions.
 
+For the MVP, the Collection Access Policy should be captured as structured data inside the Deck Building Brief rather
+than as a separate persisted policy record. If the user changes their mind during a thread, the agent should restate the
+updated Deck Building Brief or changed policy constraints for confirmation before relying on them for further searches
+or final evaluation.
+
 Missing-card tolerance and budget should be captured separately. Missing-card tolerance describes how willing the user is to use cards outside the Collection. Budget describes the money constraint on those Missing Cards.
 
 Deck Opportunity evaluation priorities describe how the agent should rank trade-offs, such as Collection fit, power, budget, play experience, low disruption to Existing Decks, or strongest Synergy.
@@ -108,7 +113,9 @@ A Deck Opportunity should be evaluated across several dimensions:
 
 The relative importance of these dimensions is user-directed. The agent should not assume that owned-card usage, low completion cost, maximum power, or minimum disruption is always the top priority. One user may want to build strictly from available cards, while another may be happy to buy most of a new deck if the opportunity is compelling.
 
-These priorities are captured as Deck Building Preferences. The Collection Access Policy is one part of those preferences and describes which Available Cards and Committed Cards may be considered for the task.
+These priorities are captured as Deck Building Preferences. The Collection Access Policy is one part of those
+preferences and describes deterministic constraints on which Collection cards, locations, Existing Decks, or metadata
+categories may be used, protected, or excluded for the task.
 
 The Collection Access Policy should be flexible enough to cover more than Existing Deck borrowing. It may include location-based access, such as excluding a binder or protecting an Existing Deck, and metadata-based access, such as avoiding foils, altered cards, damaged cards, high-value cards, or other categories the user does not want considered. The MVP does not need a separate protected-card registry.
 
@@ -116,7 +123,11 @@ Deck Opportunity discovery should be constrained by the confirmed Collection Acc
 
 If the user is unsure about the policy, the agent may offer to compare policy variants, such as available-only versus allowing borrowable Existing Decks. The active policy should still be stated before substantial discovery work begins.
 
-The Collection Access Policy may include partial borrowing guidance, such as borrowing only a small number of cards from Existing Decks or borrowing only when a Committed Card is central to the Deck Candidate. This should be supported as conversational policy guidance rather than a hard MVP optimisation requirement. The agent can reason about whether a proposed borrowed card is worth the disruption and explain that trade-off.
+Softer borrowing preferences, such as borrowing only a small number of cards from Existing Decks or borrowing only when
+a Committed Card is central to the Deck Candidate, belong in Deck Building Preferences rather than the Collection Access
+Policy. The agent can reason about whether a proposed Committed Card is worth the disruption and explain that trade-off,
+while deterministic tools should still report whether the card is owned, committed, missing, or excluded under the
+confirmed hard constraints.
 
 ## Deck Opportunity Shortlist
 

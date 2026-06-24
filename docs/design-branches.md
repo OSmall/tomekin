@@ -14,22 +14,26 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Application Services
 
-- Define the initial application-service list and boundaries.
+- Implement the structured Card Query service described in [`plans/card-query.md`](./plans/card-query.md) and
+  [`ADR 0012`](./adr/0012-cql2-shaped-card-queries.md).
 - Separate import services, Scryfall sync services, deck-building services, query services, and render/export services.
 - Decide which service outputs are structured data, Markdown, or both.
 - Define expected business errors for `neverthrow` Result seams.
 
 ## Opencode Adapter
 
-- Define the first opencode tools.
-- Define the first opencode skills and agent instructions.
+- Replace the temporary narrow search tools with a CQL2-shaped `query_cards` Agent Tool.
+- Loosen the base MTG deck-builder agent workflow while keeping strict authority boundaries: no raw database MCP access,
+  no arbitrary file or shell access, and only explicitly allowed MTG Agent Tools.
+- Move proven deck-building workflows into skills or subagents after they are validated through real use.
 - Decide whether tools accept file paths, raw text input, or both.
 - Decide how local configuration such as `MTG_AGENT_DB_PATH` is exposed to tools.
 
 ## LLM Orchestration
 
 - Decide what deterministic code owns versus what the LLM owns.
-- Decide how the agent receives relevant card, tag, and collection context without loading excessive data into prompts.
+- Use Card Query and detail tools as the primary way the agent receives relevant card, tag, and collection
+  context without loading excessive data into prompts.
 - Define when the LLM produces durable Markdown rationale versus transient analysis.
 - Define guardrails for legality, price, and rules-sensitive claims.
 
@@ -48,7 +52,8 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Initial Implementation Sequence
 
-- Decide the first vertical slice.
-- Decide which services and tools are required before any deck-building workflow can run.
-- Sequence Scryfall sync, ManaBox import, collection queries, Deck Candidate persistence, and Portable Decklist generation.
+- Next vertical slice: implement Card Query over Card Identity, Commander legality, Card Identity Tags, and positive
+  Collection queryables.
+- After structured search, revise the base MTG deck-builder agent to be workflow-light and tool-bound, then move
+  repeatable workflows into skills or subagents.
 - Defer richer Deck Opportunity discovery until the card-data and collection-data foundations are reliable.

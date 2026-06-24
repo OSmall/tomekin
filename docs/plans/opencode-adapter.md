@@ -159,7 +159,9 @@ Agent Tools should be divided conceptually into context retrieval tools and anal
 
 Context retrieval tools give the agent raw enough local data to reason flexibly:
 
-- `search_card_identities`: search card identities by name, type line, Oracle text, color identity, mana value, legalities, tags, and Commander-playable color subset.
+- `query_cards`: run a CQL2-shaped Card Query over Card Identity, Commander legality, Card Identity Tags, and positive
+  Collection queryables. This replaces the temporary narrow `search_card_identities` shape; see
+  [`card-query.md`](./card-query.md) and ADR 0012.
 - `get_card_identity`: retrieve canonical card details, parts, legality, tags, EDHREC rank where imported, Game Changer flag, and source URI.
 - `search_card_identity_tags`: search Scryfall-backed Card Identity Tags by slug, label, aliases, and hierarchy context. Use tag UUIDs as stable identities; Scryfall warns that tag slugs and labels may change.
 - `summarize_reference_support`: summarize local reference-data availability, timestamps, stale warnings, and whether all required datasets exist.
@@ -403,12 +405,19 @@ If TypeScript tooling or tests typecheck `.opencode/tools/` files directly, make
 
 The first-slice deck-builder agent should be a primary agent.
 
+The base deck-builder agent should be workflow-light and authority-bound. It should know the product boundaries, allowed
+tools, and deterministic checks, but should not hardcode a detailed deck-building workflow once Card Query is
+available. Repeatable workflows should move into skills or subagents after they are validated through real use.
+
 Least privilege rules:
 
 - Deny edit permission.
 - Deny or tightly restrict bash permission.
 - Do not grant arbitrary file read/search for normal deck-building.
 - Use opencode custom tools for all product actions. Custom tools are controlled by opencode permission keys using their tool names, so the implementation should explicitly allow only the MTG deck-building tool names and deny broad built-in tools.
+- Do not grant dbhub or any database MCP access to the normal deck-building agent unless it is explicitly approved as a
+  product Agent Tool wrapper. Raw SQL/database MCP access is developer/admin-only and outside the deck-building
+  workflow.
 - Do not expose SQLite migrations or imports as first-slice deck-builder tools.
 
 The deck-builder agent is a product agent, not a coding agent.

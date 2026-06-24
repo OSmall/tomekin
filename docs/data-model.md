@@ -23,6 +23,10 @@ Compute outputs that answer what is true now: Availability, Available Cards, Com
 
 This keeps saved agent decisions stable while allowing current facts to change when the Collection, Collection Access Policy, Scryfall data, or format legality data changes.
 
+Card Search Queries are transient service inputs, not persisted product records for the MVP. Saved Deck Opportunities
+and Deck Candidates should store the Deck Building Brief, chosen Card Identities, and durable rationale, not every query
+or search result used during agent exploration.
+
 ## Identity
 
 Product records should use internal UUIDv7 identifiers. UUIDv7 keeps identifiers globally unique while preserving creation-time ordering as part of the identifier.
@@ -240,6 +244,10 @@ Relationships:
 All imported `CardIdentityTag` records should be stored, even when they have no direct `CardIdentityTagging` records. Broad parent-tag matches should be inferred from descendant taggings at query or reasoning time rather than materialized as additional taggings.
 
 Core services should expose deterministic tag lookup and search primitives over stored tag data without depending on an LLM. Exact tag resolution should match slug, label, and aliases. Exploratory matching for fuzzy user language belongs in the adapter or agent layer, which may turn user phrases into candidate search terms and then ask core for deterministic candidate tags with enough context to choose or clarify.
+
+Card Identity Tag lookup should be available through Card Query queryables rather than raw database joins. Query
+services may expose tag matching over slug, label, alias, hierarchy, and tagging weight as supported queryables while
+keeping the physical tag tables behind repository ports.
 
 Relationships:
 

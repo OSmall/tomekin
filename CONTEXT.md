@@ -45,7 +45,10 @@ The card, archetype, theme, or format-specific constraint that gives a Deck Oppo
 _Avoid_: Theme, commander when not Commander/EDH-specific
 
 **Collection Access Policy**:
-The part of Deck Building Preferences that defines which parts of the Collection may be used for a deck-building task, including cards, locations, Existing Decks, and metadata-based categories that are allowed, protected, or excluded.
+The part of Deck Building Preferences that defines deterministic constraints on which parts of the Collection may be
+used for a deck-building task, including cards, locations, Existing Decks, and metadata-based categories that are
+allowed, protected, or excluded. Softer preferences about when a Committed Card is worth using belong in Deck Building
+Preferences, not the Collection Access Policy.
 _Avoid_: Availability preference, ownership rule
 
 **Deck Building Brief**:
@@ -55,6 +58,11 @@ _Avoid_: Prompt, request, deck settings
 **Agent Tool**:
 A protocol-neutral callable capability intended for AI-agent use, backed by product services and wrapped by one or more adapter surfaces.
 _Avoid_: Opencode tool, MCP tool, Vercel tool when referring to the reusable capability
+
+**Card Query**:
+A structured request for finding cards by deck-building criteria such as name, rules text, type, Color Identity, format
+legality, Card Identity Tags, and Collection criteria such as ownership or Collection Location.
+_Avoid_: SQL query, database query, Scryfall query, filter blob
 
 **Existing Deck**:
 A deck the user already has assembled or tracked. Cards in an Existing Deck are part of the Collection and may be available, committed, protected, or borrowable depending on the Collection Access Policy.
@@ -116,9 +124,21 @@ _Avoid_: Converted mana cost, CMC
 A reusable descriptive tag that can apply to `CardIdentity` records for search, grouping, and Synergy analysis.
 _Avoid_: Oracle Tag, card label
 
+**Inherited Card Identity Tag**:
+A broader Card Identity Tag that applies to a Card Identity through the tag hierarchy because a more specific tag is
+directly attached. Inherited tags provide grouping and search context but are distinct from direct Card Identity
+Taggings.
+_Avoid_: Direct tag, implicit evidence
+
 **Card Identity Tagging**:
 The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific meaning such as prominence or annotation.
 _Avoid_: Card tag link, tag assignment
+
+**Card Identity Relationship**:
+A named relationship between two Card Identities, such as similarity, reference, comparison, or an effect appearing with
+or without a creature body. A Card Identity Relationship connects cards directly and is distinct from a Card Identity
+Tag.
+_Avoid_: Card Identity Tag, Synergy
 
 **Scryfall Bulk Data Import**:
 A manual import of one or more local Scryfall bulk data files into the card reference data used by the assistant. A Scryfall Bulk Data Import is distinct from a sync or refresh because it does not imply automatic downloading or hidden network access.
