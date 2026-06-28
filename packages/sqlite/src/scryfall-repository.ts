@@ -103,7 +103,7 @@ export function createSqliteScryfallRepository(
             loyalty TEXT,
             defense TEXT,
             edhrec_rank INTEGER,
-            game_changer INTEGER,
+            game_changer INTEGER NOT NULL,
             source_page_uri TEXT NOT NULL
           )
         `);
@@ -202,7 +202,7 @@ export function createSqliteScryfallRepository(
                 identity.loyalty,
                 identity.defense,
                 identity.edhrecRank,
-                identity.gameChanger === null ? null : identity.gameChanger ? 1 : 0,
+                identity.gameChanger ? 1 : 0,
               identity.sourcePageUri,
             );
             for (const part of parts) {

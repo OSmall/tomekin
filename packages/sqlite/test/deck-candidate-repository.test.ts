@@ -2,7 +2,13 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {createSqliteDeckCandidateRepository, applySqliteMigrations, openDatabase, closeDatabase, cardIdentity} from "@mtg-agent/sqlite";
+import {
+  applySqliteMigrations,
+  cardIdentity,
+  closeDatabase,
+  createSqliteDeckCandidateRepository,
+  openDatabase
+} from "@mtg-agent/sqlite";
 
 describe("SQLite Deck Candidate repository", () => {
   test("saves and reopens candidate cards with Card Identity names", async () => {
@@ -69,7 +75,7 @@ function identity(id: string, name: string, typeLine: string) {
     loyalty: null,
     defense: null,
     edhrecRank: null,
-    gameChanger: null,
+      gameChanger: false,
     sourcePageUri: "https://scryfall.com/card/example",
   };
 }

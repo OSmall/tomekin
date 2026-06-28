@@ -79,7 +79,8 @@ multi-face and reversible card data without lossy flattening.
   keywords into a child table if relational keyword queries become important.
 - Store Scryfall `tcgplayer_id` and `cardmarket_id` on `CardPrinting`, not `CardIdentity`, because they identify
   marketplace products for exact card objects/printings rather than canonical Oracle identities.
-- Store Scryfall `edhrec_rank` and `game_changer` on `CardIdentity` as nullable card-level Commander metadata.
+- Store Scryfall `edhrec_rank` on `CardIdentity` as nullable card-level Commander metadata, and store
+  `game_changer` as required card-level Commander metadata.
 - Store `power`, `toughness`, `loyalty`, and `defense` on both `CardIdentity` and `CardIdentityPart`: top-level fields
   support ordinary cards and aggregate source values, while part-level fields preserve multi-part values from
   `oracle_cards.card_faces`.

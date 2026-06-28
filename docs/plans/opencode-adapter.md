@@ -255,7 +255,7 @@ Validation should be layered:
 
 First-slice power analysis should use Commander Brackets as the default Commander/EDH power language.
 
-Use local Scryfall `game_changer` data where available:
+Use imported local Scryfall `game_changer` data:
 
 - Count Game Changers in the Deck Candidate.
 - List which cards are Game Changers.

@@ -196,6 +196,11 @@ should also use nullable WUBRG-ordered scalars. `CardIdentity.producedMana` shou
 allows `C` in addition to WUBRG, and also tolerates `T` for Un-card mana production present in Scryfall bulk data.
 `CardIdentity.keywords` remains JSON until relational keyword queries become important.
 
+`CardIdentity.edhrecRank` stores nullable source-provided Commander popularity metadata. `CardIdentity.gameChanger`
+stores Scryfall's required `game_changer` boolean and should not be nullable; imports that omit or invalidate this
+source
+boolean should fail rather than treating the value as unknown.
+
 `CardIdentity` should include the source page URI for opening the source reference page. Format legality should not live as Commander-specific columns on `CardIdentity`; it belongs in `CardIdentityFormatLegality` records.
 
 Relationships:

@@ -109,7 +109,7 @@ export type CardQueryResultItem = {
     readonly typeLine: string;
     readonly oracleText: string | null;
     readonly colorIdentity: ColorIdentity;
-    readonly gameChanger: boolean | null;
+    readonly gameChanger: boolean;
     readonly edhrecRank: number | null;
     readonly legalities?: Partial<Record<"commander", FormatLegality>> | undefined;
     readonly tags?: {

@@ -1,6 +1,7 @@
 import {mkdirSync} from "node:fs";
 import {dirname} from "node:path";
 import {fileURLToPath} from "node:url";
+import {sql} from "drizzle-orm";
 import {migrate} from "drizzle-orm/bun-sqlite/migrator";
 
 import {closeDatabase, openDatabase, resolveDatabasePath} from "./database";
@@ -19,8 +20,13 @@ export function applySqliteMigrations(
     mkdirSync(dirname(dbPath), {recursive: true});
     const db = openDatabase(dbPath);
     try {
+        db.run(sql`PRAGMA foreign_keys = OFF`);
         migrate(db, {migrationsFolder});
+        const foreignKeyViolations = db.$client.query("PRAGMA foreign_key_check").all();
+        if (foreignKeyViolations.length > 0) throw new Error(`SQLite migration left foreign key violations: ${JSON.stringify(foreignKeyViolations)}`);
+        db.run(sql`PRAGMA foreign_keys = ON`);
     } finally {
+        db.run(sql`PRAGMA foreign_keys = ON`);
         closeDatabase(db);
     }
     io?.stdout.write("SQLite migrations applied successfully.\n");

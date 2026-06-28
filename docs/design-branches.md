@@ -53,9 +53,8 @@ This document captures unresolved design branches to resume later. It should sta
 ## Initial Implementation Sequence
 
 - Next Card Query hardening slices: push supported filtering/sorting/Collection quantity work into SQL, populate
-  inherited
-  tag projections for `include.tags` as a priority completeness gap, and make `identity.gameChanger` required end to
-  end.
+  inherited tag projections for `include.tags` as a priority completeness gap, and expand strict Card Query validation
+  coverage.
 - After structured search, revise the base MTG deck-builder agent to be workflow-light and tool-bound, then move
   repeatable workflows into skills or subagents.
 - Defer richer Deck Opportunity discovery until the card-data and collection-data foundations are reliable.

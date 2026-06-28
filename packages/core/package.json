@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./scryfall-sync": "./src/scryfall-sync.ts"
   },
   "dependencies": {
     "csv-parse": "^7.0.0",

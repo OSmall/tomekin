@@ -1,15 +1,15 @@
 import {describe, expect, test} from "bun:test";
 import {
-  createScryfallLocalImportServices,
-  createScryfallSyncServices,
-  mapRawScryfallOracleCardToCardIdentityImportRecord,
-  mapRawScryfallOracleTagToCardIdentityTagImportRecord,
-  RawScryfallAllCardSchema,
-  RawScryfallOracleCardSchema,
-  RawScryfallOracleTagSchema,
-  type ScryfallBulkDataImport,
-  type ScryfallBulkDataType,
-  type ScryfallRepository,
+    createScryfallLocalImportServices,
+    createScryfallSyncServices,
+    mapRawScryfallOracleCardToCardIdentityImportRecord,
+    mapRawScryfallOracleTagToCardIdentityTagImportRecord,
+    RawScryfallAllCardSchema,
+    RawScryfallOracleCardSchema,
+    RawScryfallOracleTagSchema,
+    type ScryfallBulkDataImport,
+    type ScryfallBulkDataType,
+    type ScryfallRepository,
 } from "@mtg-agent/core";
 import {err, ok} from "neverthrow";
 
@@ -160,6 +160,7 @@ describe("Scryfall sync services", () => {
       oracle_text: "{T}: Add {C}{C}.",
       color_identity: [],
         keywords: [],
+        game_changer: false,
       legalities: {
         commander: "legal",
         future_format: "legal",
@@ -200,6 +201,7 @@ describe("Scryfall sync services", () => {
             color_identity: ["G"],
             colors: ["G"],
             keywords: [],
+            game_changer: false,
             card_faces: [
                 {
                     object: "card_face",
@@ -231,6 +233,30 @@ describe("Scryfall sync services", () => {
         expect(record.parts).toHaveLength(2);
         expect(record.parts[0]).toEqual(
             expect.objectContaining({name: "Adventurous Eater", partIndex: 0}),
+        );
+    });
+
+    test("oracle_cards requires Game Changer data", () => {
+        const result = RawScryfallOracleCardSchema.safeParse({
+            object: "card",
+            id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+            oracle_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+            name: "Sol Ring",
+            layout: "normal",
+            mana_cost: "{1}",
+            cmc: 1,
+            type_line: "Artifact",
+            oracle_text: "{T}: Add {C}{C}.",
+            color_identity: [],
+            keywords: [],
+            legalities: {commander: "legal"},
+            scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
+        });
+
+        expect(result.success).toBe(false);
+        if (result.success) throw new Error("expected missing game_changer to fail");
+        expect(result.error.issues).toContainEqual(
+            expect.objectContaining({path: ["game_changer"]}),
         );
     });
 

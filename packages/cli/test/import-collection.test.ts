@@ -247,6 +247,7 @@ function toRawOracleCardFixture(row: Record<string, string>, index: number) {
         oracle_text: "Fixture oracle text.",
         color_identity: [],
         keywords: [],
+        game_changer: false,
         legalities: {commander: "legal"},
         scryfall_uri: `https://scryfall.com/card/${row["Set code"]}/${row["Collector number"]}/fixture`,
     };
@@ -281,6 +282,7 @@ const rawOracleCards = [
         oracle_text: "{T}: Add {C}{C}.",
         color_identity: [],
         keywords: [],
+        game_changer: false,
         legalities: {commander: "legal"},
         scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
     },
@@ -296,6 +298,7 @@ const rawOracleCards = [
         oracle_text: "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
         color_identity: ["G"],
         keywords: [],
+        game_changer: false,
         legalities: {commander: "legal"},
         scryfall_uri: "https://scryfall.com/card/m11/168/cultivate",
     },

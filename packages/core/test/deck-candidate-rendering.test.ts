@@ -77,7 +77,7 @@ function card(id: string, name: string, typeLine: string, colorIdentity: "" | "G
     loyalty: null,
     defense: null,
     edhrecRank: null,
-    gameChanger: null,
+    gameChanger: false,
     sourcePageUri: "https://scryfall.com/card/example",
   };
 }

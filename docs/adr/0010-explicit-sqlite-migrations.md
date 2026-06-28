@@ -15,9 +15,17 @@ Generated migration SQL should be reviewed and edited only when needed for corre
 limitations. Future migrations must preserve existing data by default; destructive or rebuild-style migrations are
 explicit exceptions.
 
+When a SQLite table-rebuild migration touches a table referenced by foreign keys, the generated SQL may need hand
+hardening and a regression test against a populated database. The migration application wrapper may temporarily disable
+foreign-key enforcement around Drizzle's transaction, but it must run `PRAGMA foreign_key_check` before reporting
+success
+and re-enable `PRAGMA foreign_keys` afterward.
+
 The user-facing SQLite migration command should be a small TypeScript wrapper that prints the target database path,
 creates the configured database path's parent directory, and applies migrations with Drizzle's Bun SQLite runtime
 migrator. Migration generation remains a developer-facing Drizzle Kit command.
 
-SQLite foreign key enforcement remains connection configuration rather than migration behavior: `openDatabase()` should
-enable `PRAGMA foreign_keys = ON`, but it should not create, check, or migrate schema.
+SQLite foreign key enforcement is connection configuration for normal repository operations: `openDatabase()` should
+enable `PRAGMA foreign_keys = ON`, but it should not create, check, or migrate schema. The explicit migration wrapper is
+allowed to adjust foreign-key pragmas only while applying reviewed migrations and verifying referential integrity before
+returning success.

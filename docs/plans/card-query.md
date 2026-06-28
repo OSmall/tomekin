@@ -40,9 +40,8 @@ over joined card reference and Collection data without exposing raw database acc
 - Boolean queryables should not be nullable in the first slice. `identity.gameChanger` should be a required boolean, and
   Collection booleans such as `altered` and `misprint` are already required by the Collection model. Required source
   booleans should fail import when absent or invalid rather than being normalized to unknown values.
-  Make `identity.gameChanger` required end to end as a prerequisite cleanup slice and separate commit before
-  implementing
-  `query_cards`.
+  `identity.gameChanger` is now required end to end across import validation, domain type, SQLite schema, query result
+  type, and tests.
 - Do not include null-checking operators in the first slice. Omitted predicates mean unconstrained fields; comparisons
   and text predicates over nullable facts do not match absent values. Sorting should use database-native ordering for
   allowed sort properties, including the database's normal handling of absent values.
@@ -436,6 +435,4 @@ Use these scenarios as design fixtures when testing whether the query shape stay
   inherited tag context to find and explain broader functional card groups without over-querying. Hierarchy-aware
   filtering through `hasTagInHierarchy` is separate from projection and may work before inherited tags are returned in
   `tags.inherits`.
-- Required cleanup: make `identity.gameChanger` a required boolean end to end, including import validation, domain type,
-  SQLite schema, query result type, and tests.
 - Future Collection Pull List and Availability service shape after Card Query.

@@ -1,6 +1,10 @@
 import {sql} from "drizzle-orm";
 import {check, index, integer, primaryKey, real, sqliteTable, text, unique,} from "drizzle-orm/sqlite-core";
-import {cardIdentityTaggingWeightValues, colorIdentityValues, formatLegalityValues,} from "@mtg-agent/core";
+import {
+    cardIdentityTaggingWeightValues,
+    colorIdentityValues,
+    formatLegalityValues,
+} from "@mtg-agent/core/scryfall-sync";
 
 export const collectionImport = sqliteTable("collection_import", {
   id: text("id").primaryKey(),
@@ -167,13 +171,13 @@ export const cardIdentity = sqliteTable(
         loyalty: text("loyalty"),
         defense: text("defense"),
         edhrecRank: integer("edhrec_rank"),
-        gameChanger: integer("game_changer", {mode: "boolean"}),
+        gameChanger: integer("game_changer", {mode: "boolean"}).notNull(),
         sourcePageUri: text("source_page_uri").notNull(),
     },
     (table) => [
         check(
             "card_identity_color_identity_check",
-            sql`${table.colorIdentity} IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')`,
+            sql`color_identity IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')`,
         ),
         index("idx_card_identity_color_identity").on(table.colorIdentity),
     ],

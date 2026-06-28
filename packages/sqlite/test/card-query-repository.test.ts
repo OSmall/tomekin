@@ -121,7 +121,7 @@ function identity(id: string, name: string) {
         loyalty: null,
         defense: null,
         edhrecRank: null,
-        gameChanger: null,
+        gameChanger: false,
         sourcePageUri: "https://scryfall.com/card/example",
     };
 }

@@ -81,6 +81,10 @@ and data-preserving after the initial adoption.
 - Generated migration SQL should not be edited for formatting or style alone.
 - After any migration SQL edit, `schema.ts`, migration SQL, and Drizzle metadata should still describe the same final
   schema.
+- Rebuild-style SQLite migrations that touch foreign-key-referenced tables should be tested against a populated
+  database.
+  The migration wrapper may disable foreign-key enforcement around Drizzle's migration transaction only if it checks
+  `PRAGMA foreign_key_check` before reporting success and re-enables enforcement afterward.
 - The initial baseline migration should be verified with a one-time temporary parity test comparing the old
   `initializeDatabaseSchema()` schema to the migrated schema.
 - The temporary baseline parity test should be removed with `initializeDatabaseSchema()` after the migration path
@@ -105,8 +109,7 @@ and data-preserving after the initial adoption.
 - Remove database parent-directory creation from `import:scryfall`.
 - Delete `initializeDatabaseSchema()` after the migration path is in place and the temporary parity test has served its
   purpose.
-- Preserve foreign key enforcement by moving `PRAGMA foreign_keys = ON` into `openDatabase()` or an unconditional
-  connection-configuration helper.
+- Preserve foreign key enforcement for normal operations by keeping `PRAGMA foreign_keys = ON` in `openDatabase()`.
 - Update README setup and usage docs to require the migration command before app usage.
 - Add a README quickstart that shows the setup sequence before Scryfall import examples.
 

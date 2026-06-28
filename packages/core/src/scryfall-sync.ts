@@ -163,7 +163,7 @@ export const CardIdentitySchema = z.object({
     loyalty: z.string().nullable(),
     defense: z.string().nullable(),
     edhrecRank: z.number().int().nullable(),
-    gameChanger: z.boolean().nullable(),
+    gameChanger: z.boolean(),
   sourcePageUri: z.url(),
 });
 export type CardIdentity = z.infer<typeof CardIdentitySchema>;
@@ -314,7 +314,7 @@ export const RawScryfallOracleCardSchema = z
       loyalty: z.string().optional(),
       defense: z.string().optional(),
       edhrec_rank: z.number().int().optional(),
-      game_changer: z.boolean().optional(),
+      game_changer: z.boolean(),
       card_faces: z
           .array(
               z.object({
@@ -415,7 +415,7 @@ export function mapRawScryfallOracleCardToCardIdentityImportRecord(
       loyalty: card.loyalty ?? null,
       defense: card.defense ?? null,
       edhrecRank: card.edhrec_rank ?? null,
-      gameChanger: card.game_changer ?? null,
+      gameChanger: card.game_changer,
     sourcePageUri: card.scryfall_uri,
   };
 

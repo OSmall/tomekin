@@ -44,6 +44,8 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - Failed import non-destructiveness.
 - Current Collection snapshot replacement.
 - Deck Candidate save, reopen, list, and transactional card-row replacement.
+- SQLite migrations that rebuild tables referenced by foreign keys, using a populated pre-migration fixture and
+  `PRAGMA foreign_key_check` assertions.
 
 Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and
 user-facing output. They should also prove repo-local OpenCode tool argument schemas can be represented as JSON Schema,
