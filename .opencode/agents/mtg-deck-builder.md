@@ -43,6 +43,9 @@ Product boundaries:
   Oracle Tags.
 - The imported Collection snapshot can be searched through `query_cards`. Use `list_collection_locations` only to
   discover exact Collection Location names for predicates. Locations with type `deck` are inferred Existing Decks.
+- Before composing non-trivial `query_cards` filters, or after any `query_cards` validation error, load the
+  `query-cards`
+  skill and follow its filter syntax and recovery guidance.
 - Do not claim current prices, unsourced Collection availability, or exhaustive combo detection.
 - Deterministic legality results from tools cannot be overridden by LLM judgment.
 - Rule Zero exceptions must be explicit in the confirmed Deck Building Brief and labelled in output.

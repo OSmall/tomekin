@@ -144,53 +144,34 @@ export type CardQueryRepository = {
     queryCards(input: CardQueryInput): Promise<Result<CardQueryResult, CardQueryError>>;
 };
 
-const SortSchema = z.object({
-    property: z.enum(cardQuerySortablePropertyValues),
-    direction: z.enum(["asc", "desc"]),
-}).strict();
-
-const IncludeSchema = z.object({
-    legalities: z.array(z.enum(["commander"])).nonempty().optional(),
-    tags: z.boolean().optional(),
-    collectionCards: z.boolean().optional(),
-}).strict().superRefine((value, context) => {
-    if (value.legalities && new Set(value.legalities).size !== value.legalities.length) {
-        context.addIssue({
-            code: "custom",
-            path: ["legalities"],
-            message: "include.legalities must not contain duplicate formats."
-        });
-    }
-});
-
-const CardQueryEnvelopeSchema = z.object({
-    filter: z.unknown().optional(),
-    sortby: z.array(SortSchema).nonempty().optional(),
-    include: IncludeSchema.optional(),
-    limit: z.number().int().positive().max(200).optional(),
-}).strict().superRefine((value, context) => {
-    if (value.sortby && new Set(value.sortby.map((sort) => sort.property)).size !== value.sortby.length) {
-        context.addIssue({code: "custom", path: ["sortby"], message: "sortby must not contain duplicate properties."});
-    }
-});
-
 const propertyValues = new Set<string>(cardQueryPropertyValues);
+const sortablePropertyValues = new Set<string>(cardQuerySortablePropertyValues);
 const scalarOperators = new Set(["=", "!=", "<", "<=", ">", ">="]);
 const operatorValues = new Set(["and", "or", "not", "=", "!=", "<", "<=", ">", ">=", "contains", "in", "colorIdentitySubsetOf", "hasTagInHierarchy"]);
 const colorIdentitySet = new Set<string>(colorIdentityValues);
 const formatLegalitySet = new Set<string>(formatLegalityValues);
+const numericProperties = new Set<CardQueryProperty>(["identity.manaValue", "identity.edhrecRank", "collection.quantity"]);
+const booleanProperties = new Set<CardQueryProperty>(["identity.gameChanger", "collection.altered", "collection.misprint"]);
 
 export function parseCardQueryInput(input: unknown): Result<CardQueryInput, CardQueryError> {
-    const parsed = CardQueryEnvelopeSchema.safeParse(input ?? {});
-    if (!parsed.success) return err(validationError(parsed.error.issues.map((issue) => ({
-        pointer: toJsonPointer(issue.path),
-        code: issue.code,
-        message: issue.message,
-    }))));
+    if (input === undefined) return ok({});
+    if (!isRecord(input)) return err(validationError([{
+        pointer: "#",
+        code: "invalid_type",
+        message: "Card Query input must be an object."
+    }]));
 
-    const filterIssues = parsed.data.filter === undefined ? [] : validateFilter(parsed.data.filter, "#/filter");
-    if (filterIssues.length > 0) return err(validationError(filterIssues));
-    return ok(parsed.data as CardQueryInput);
+    const issues: CardQueryValidationIssue[] = [];
+    for (const key of Object.keys(input)) {
+        if (!["filter", "sortby", "include", "limit"].includes(key)) issues.push(unknownFieldIssue(`#/${escapePointer(key)}`, key));
+    }
+    if ("filter" in input) issues.push(...validateFilter(input.filter, "#/filter"));
+    if ("sortby" in input) issues.push(...validateSortby(input.sortby, "#/sortby"));
+    if ("include" in input) issues.push(...validateInclude(input.include, "#/include"));
+    if ("limit" in input) issues.push(...validateLimit(input.limit, "#/limit"));
+
+    if (issues.length > 0) return err(validationError(issues));
+    return ok(input as CardQueryInput);
 }
 
 export function filterHasCollectionPredicate(filter: CardQueryFilter | undefined): boolean {
@@ -210,14 +191,14 @@ function validateFilter(value: unknown, pointer: string): CardQueryValidationIss
     for (const key of Object.keys(value)) {
         if (key !== "op" && key !== "args") issues.push({
             pointer: `${pointer}/${escapePointer(key)}`,
-            code: "unrecognized_key",
+            code: "unknown_field",
             message: `Unknown filter key: ${key}.`
         });
     }
     if (typeof value.op !== "string" || !operatorValues.has(value.op)) {
         issues.push({
             pointer: `${pointer}/op`,
-            code: "invalid_enum_value",
+            code: "invalid_operator",
             message: "Unsupported filter operator.",
             allowedValues: [...operatorValues]
         });
@@ -241,7 +222,13 @@ function validateFilter(value: unknown, pointer: string): CardQueryValidationIss
             code: "invalid_length",
             message: "not requires exactly one filter argument."
         }];
-        return [...issues, ...validateFilter(value.args[0], `${pointer}/args/0`)];
+        const childIssues = validateFilter(value.args[0], `${pointer}/args/0`);
+        if (containsRelationshipPredicate(value.args[0])) issues.push({
+            pointer,
+            code: "invalid_collection_semantics",
+            message: "not is not supported over collection.* or tag.* predicates."
+        });
+        return [...issues, ...childIssues];
     }
     if (value.args.length !== 2) issues.push({
         pointer: `${pointer}/args`,
@@ -275,6 +262,11 @@ function validateOperatorValue(op: string, property: CardQueryProperty, value: u
         }];
     }
     if (op === "in") {
+        if (booleanProperties.has(property)) return [{
+            pointer: pointer.replace(/\/1$/, "/0/property"),
+            code: "invalid_operator",
+            message: `in is not supported for boolean property ${property}.`
+        }];
         if (!Array.isArray(value) || value.length === 0) return [{
             pointer,
             code: "invalid_type",
@@ -307,7 +299,24 @@ function validateOperatorValue(op: string, property: CardQueryProperty, value: u
             message: "hasTagInHierarchy requires a tag UUID."
         }];
     }
-    if (scalarOperators.has(op)) return validateScalarValue(op, property, value, pointer);
+    if (scalarOperators.has(op)) {
+        if (property.startsWith("tag.") && op === "!=") return [{
+            pointer: pointer.replace(/\/1$/, "/0/property"),
+            code: "invalid_operator",
+            message: "!= is not supported for tag.* predicates."
+        }];
+        if (property.startsWith("collection.") && op === "!=") return [{
+            pointer: pointer.replace(/\/1$/, "/0/property"),
+            code: "invalid_collection_semantics",
+            message: "!= is not supported for collection.* predicates."
+        }];
+        if (["<", "<=", ">", ">="].includes(op) && !numericProperties.has(property)) return [{
+            pointer: pointer.replace(/\/1$/, "/0/property"),
+            code: "invalid_operator",
+            message: `Ordering comparisons are not supported for ${property}.`
+        }];
+        return validateScalarValue(op, property, value, pointer);
+    }
     return [];
 }
 
@@ -330,21 +339,22 @@ function validateScalarValue(op: string, property: CardQueryProperty, value: unk
     }];
     if (property === "legality.commander") return typeof value === "string" && formatLegalitySet.has(value) ? [] : [{
         pointer,
-        code: "invalid_enum_value",
+        code: "invalid_value",
         message: "legality.commander requires a valid legality value.",
         allowedValues: formatLegalityValues
     }];
     if (property === "collection.quantity") {
-        if (op === "!=" || value === 0 || (typeof value === "number" && value < 0)) return [{
-            pointer,
-            code: "invalid_collection_quantity",
-            message: "collection.quantity supports positive quantity comparisons only."
-        }];
-        return typeof value === "number" && Number.isInteger(value) ? [] : [{
+        if (typeof value !== "number" || !Number.isInteger(value)) return [{
             pointer,
             code: "invalid_type",
             message: "collection.quantity requires a positive integer value."
         }];
+        if (value < 0 || (op === "=" && value === 0) || (op === ">=" && value === 0) || (op === "<" && value <= 1) || (op === "<=" && value <= 0)) return [{
+            pointer,
+            code: "invalid_collection_semantics",
+            message: "collection.quantity supports positive quantity comparisons only."
+        }];
+        return [];
     }
     if (property === "collection.locationType") return value === "binder" || value === "deck" ? [] : [{
         pointer,
@@ -365,12 +375,116 @@ function validateScalarValue(op: string, property: CardQueryProperty, value: unk
     }];
 }
 
-function validationError(issues: readonly CardQueryValidationIssue[]): CardQueryError {
-    return {type: "validation_error", code: "invalid_card_query", message: "Card Query input is invalid.", issues};
+function validateSortby(value: unknown, pointer: string): CardQueryValidationIssue[] {
+    if (!Array.isArray(value)) return [{pointer, code: "invalid_type", message: "sortby must be an array."}];
+    const issues: CardQueryValidationIssue[] = [];
+    if (value.length === 0) issues.push({pointer, code: "too_small", message: "sortby must not be empty."});
+    const seen = new Set<string>();
+    value.forEach((item, index) => {
+        const itemPointer = `${pointer}/${index}`;
+        if (!isRecord(item)) {
+            issues.push({pointer: itemPointer, code: "invalid_type", message: "sortby entries must be objects."});
+            return;
+        }
+        for (const key of Object.keys(item)) {
+            if (key !== "property" && key !== "direction") issues.push(unknownFieldIssue(`${itemPointer}/${escapePointer(key)}`, key));
+        }
+        if (typeof item.property !== "string" || !sortablePropertyValues.has(item.property)) issues.push({
+            pointer: `${itemPointer}/property`,
+            code: "invalid_value",
+            message: "Unsupported sort property.",
+            allowedValues: cardQuerySortablePropertyValues
+        });
+        else if (seen.has(item.property)) issues.push({
+            pointer: `${itemPointer}/property`,
+            code: "duplicate_value",
+            message: "sortby must not contain duplicate properties."
+        });
+        else seen.add(item.property);
+        if (item.direction !== "asc" && item.direction !== "desc") issues.push({
+            pointer: `${itemPointer}/direction`,
+            code: "invalid_value",
+            message: "Unsupported sort direction.",
+            allowedValues: ["asc", "desc"]
+        });
+    });
+    return issues;
 }
 
-function toJsonPointer(path: readonly (string | number | symbol)[]): string {
-    return `#${path.map((part) => `/${escapePointer(String(part))}`).join("")}`;
+function validateInclude(value: unknown, pointer: string): CardQueryValidationIssue[] {
+    if (!isRecord(value)) return [{pointer, code: "invalid_type", message: "include must be an object."}];
+    const issues: CardQueryValidationIssue[] = [];
+    for (const key of Object.keys(value)) {
+        if (!["legalities", "tags", "collectionCards"].includes(key)) issues.push(unknownFieldIssue(`${pointer}/${escapePointer(key)}`, key));
+    }
+    if ("legalities" in value) {
+        if (!Array.isArray(value.legalities)) issues.push({
+            pointer: `${pointer}/legalities`,
+            code: "invalid_type",
+            message: "include.legalities must be an array."
+        });
+        else {
+            if (value.legalities.length === 0) issues.push({
+                pointer: `${pointer}/legalities`,
+                code: "too_small",
+                message: "include.legalities must not be empty."
+            });
+            const seen = new Set<string>();
+            value.legalities.forEach((format, index) => {
+                const itemPointer = `${pointer}/legalities/${index}`;
+                if (format !== "commander") issues.push({
+                    pointer: itemPointer,
+                    code: "invalid_value",
+                    message: "Unsupported legality include format.",
+                    allowedValues: ["commander"]
+                });
+                else if (seen.has(format)) issues.push({
+                    pointer: itemPointer,
+                    code: "duplicate_value",
+                    message: "include.legalities must not contain duplicate formats."
+                });
+                else seen.add(format);
+            });
+        }
+    }
+    if ("tags" in value && typeof value.tags !== "boolean") issues.push({
+        pointer: `${pointer}/tags`,
+        code: "invalid_type",
+        message: "include.tags must be a boolean."
+    });
+    if ("collectionCards" in value && typeof value.collectionCards !== "boolean") issues.push({
+        pointer: `${pointer}/collectionCards`,
+        code: "invalid_type",
+        message: "include.collectionCards must be a boolean."
+    });
+    return issues;
+}
+
+function validateLimit(value: unknown, pointer: string): CardQueryValidationIssue[] {
+    if (typeof value !== "number" || !Number.isInteger(value)) return [{
+        pointer,
+        code: "invalid_type",
+        message: "limit must be a positive integer."
+    }];
+    if (value < 1) return [{pointer, code: "too_small", message: "limit must be at least 1."}];
+    if (value > 200) return [{pointer, code: "too_large", message: "limit must be at most 200."}];
+    return [];
+}
+
+function containsRelationshipPredicate(value: unknown): boolean {
+    if (!isRecord(value) || typeof value.op !== "string" || !Array.isArray(value.args)) return false;
+    if (value.op === "and" || value.op === "or") return value.args.some(containsRelationshipPredicate);
+    if (value.op === "not") return value.args.some(containsRelationshipPredicate);
+    const propertyRef = value.args[0];
+    return isRecord(propertyRef) && typeof propertyRef.property === "string" && (propertyRef.property.startsWith("collection.") || propertyRef.property.startsWith("tag."));
+}
+
+function unknownFieldIssue(pointer: string, key: string): CardQueryValidationIssue {
+    return {pointer, code: "unknown_field", message: `Unknown field: ${key}.`};
+}
+
+function validationError(issues: readonly CardQueryValidationIssue[]): CardQueryError {
+    return {type: "validation_error", code: "invalid_card_query", message: "Card Query input is invalid.", issues};
 }
 
 function escapePointer(value: string): string {

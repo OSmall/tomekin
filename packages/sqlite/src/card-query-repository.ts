@@ -40,6 +40,8 @@ type DirectTagRow = CardQueryTagResult & {
     readonly aliases: readonly string[];
 };
 
+type TagDefinition = Omit<DirectTagRow, "cardIdentityId" | "weight" | "annotation">;
+
 type LegalityRow = {
     readonly cardIdentityId: string;
     readonly format: string;
@@ -52,6 +54,8 @@ type QueryContext = {
     readonly tags: readonly DirectTagRow[];
     readonly collectionRows: readonly CollectionRow[];
     readonly descendantTagIdsByParent: ReadonlyMap<string, ReadonlySet<string>>;
+    readonly ancestorTagIdsByChild: ReadonlyMap<string, readonly string[]>;
+    readonly tagDefinitionsById: ReadonlyMap<string, TagDefinition>;
 };
 
 type FilterResult = {
@@ -99,6 +103,12 @@ function loadContexts(db: MtgAgentDatabase): readonly QueryContext[] {
     const aliasRows = db.select().from(cardIdentityTagAlias).all();
     const aliasesByTag = new Map<string, string[]>();
     for (const row of aliasRows) aliasesByTag.set(row.tagId, [...(aliasesByTag.get(row.tagId) ?? []), row.alias]);
+    const tagDefinitionsById = new Map(db.select().from(cardIdentityTag).all().map((row) => [row.id, {
+        tagId: row.id,
+        slug: row.slug,
+        label: row.label,
+        aliases: aliasesByTag.get(row.id) ?? [],
+    } satisfies TagDefinition]));
     const directTags = db
         .select({
             cardIdentityId: cardIdentityTagging.cardIdentityId,
@@ -135,7 +145,9 @@ function loadContexts(db: MtgAgentDatabase): readonly QueryContext[] {
         .innerJoin(cardPrinting, eq(collectionCard.cardPrintingId, cardPrinting.id))
         .innerJoin(cardIdentity, eq(cardPrinting.cardIdentityId, cardIdentity.id))
         .all() as readonly CollectionRow[];
-    const descendantTagIdsByParent = buildDescendantTagMap(db.select().from(cardIdentityTagHierarchy).all());
+    const hierarchyRows = db.select().from(cardIdentityTagHierarchy).all();
+    const descendantTagIdsByParent = buildDescendantTagMap(hierarchyRows);
+    const ancestorTagIdsByChild = buildAncestorTagMap(hierarchyRows);
 
     return identities.map((identity) => ({
         identity,
@@ -143,6 +155,8 @@ function loadContexts(db: MtgAgentDatabase): readonly QueryContext[] {
         tags: directTags.filter((row) => row.cardIdentityId === identity.id),
         collectionRows: collectionRows.filter((row) => row.cardIdentityId === identity.id),
         descendantTagIdsByParent,
+        ancestorTagIdsByChild,
+        tagDefinitionsById,
     }));
 }
 
@@ -165,7 +179,7 @@ function evaluateFilter(filter: CardQueryFilter, context: QueryContext, collecti
         const results = filter.args.map((child) => evaluateFilter(child, context, collectionScope)).filter((result) => result.matches);
         if (results.length === 0) return {matches: false};
         const scopes = results.map((result) => result.collectionRows).filter((scope): scope is readonly CollectionRow[] => scope !== undefined);
-        return {matches: true, collectionRows: scopes.length > 0 ? uniqueRows(scopes.flat()) : []};
+        return {matches: true, collectionRows: scopes.length > 0 ? uniqueRows(scopes.flat()) : collectionScope};
     }
     if (filter.op === "not") return {matches: !evaluateFilter(filter.args[0], context, collectionScope).matches};
 
@@ -211,7 +225,12 @@ function toResultItem(context: QueryContext, input: CardQueryInput, hasCollectio
         gameChanger: context.identity.gameChanger,
         edhrecRank: context.identity.edhrecRank,
         ...(include.legalities ? {legalities: Object.fromEntries(context.legalities.filter((row) => include.legalities?.includes(row.format as "commander")).map((row) => [row.format, row.legality])) as Partial<Record<"commander", FormatLegality>>} : {}),
-        ...(include.tags ? {tags: {direct: context.tags.map(toTagResult), inherits: []}} : {}),
+        ...(include.tags ? {
+            tags: {
+                direct: sortTags(context.tags.map(toTagResult)),
+                inherits: inheritedTags(context)
+            }
+        } : {}),
         ...(include.collectionCards ? {collectionCards: (hasCollectionPredicate ? matchedCollectionRows ?? [] : context.collectionRows).map(toCollectionResult)} : {}),
     };
 }
@@ -223,8 +242,8 @@ function sortMatched(entries: readonly {
     const sortby = input.sortby ?? [{property: "identity.id" as const, direction: "asc" as const}];
     return [...entries].sort((left, right) => {
         for (const sort of sortby) {
-            const comparison = compareSortValue(sortValue(left, sort.property), sortValue(right, sort.property));
-            if (comparison !== 0) return sort.direction === "asc" ? comparison : -comparison;
+            const comparison = compareSortValue(sortValue(left, sort.property, input), sortValue(right, sort.property, input), sort.direction);
+            if (comparison !== 0) return comparison;
         }
         return left.context.identity.id.localeCompare(right.context.identity.id);
     });
@@ -233,8 +252,11 @@ function sortMatched(entries: readonly {
 function sortValue(entry: {
     readonly context: QueryContext;
     readonly result: FilterResult
-}, property: string): string | number | boolean | null {
-    if (property === "collection.quantity") return (entry.result.collectionRows ?? entry.context.collectionRows).reduce((sum, row) => sum + row.quantity, 0);
+}, property: string, input: CardQueryInput): string | number | boolean | null {
+    if (property === "collection.quantity") {
+        const rows = filterHasCollectionPredicate(input.filter) ? entry.result.collectionRows ?? [] : entry.context.collectionRows;
+        return rows.reduce((sum, row) => sum + row.quantity, 0);
+    }
     return referenceValue(entry.context, property as CardQueryProperty);
 }
 
@@ -293,12 +315,12 @@ function compareValues(left: string | number | boolean | null, op: string, right
     return false;
 }
 
-function compareSortValue(left: string | number | boolean | null, right: string | number | boolean | null): number {
+function compareSortValue(left: string | number | boolean | null, right: string | number | boolean | null, direction: "asc" | "desc"): number {
     if (left === null && right === null) return 0;
     if (left === null) return 1;
     if (right === null) return -1;
-    if (typeof left === "number" && typeof right === "number") return left - right;
-    return String(left).localeCompare(String(right));
+    const comparison = typeof left === "number" && typeof right === "number" ? left - right : String(left).localeCompare(String(right));
+    return direction === "asc" ? comparison : -comparison;
 }
 
 function isCollectionQuantityFilter(filter: CardQueryFilter): boolean {
@@ -322,6 +344,48 @@ function uniqueRows(rows: readonly CollectionRow[]): readonly CollectionRow[] {
 
 function toTagResult(row: DirectTagRow): CardQueryTagResult {
     return {tagId: row.tagId, slug: row.slug, label: row.label, weight: row.weight, annotation: row.annotation};
+}
+
+function inheritedTags(context: QueryContext): readonly CardQueryTagResult[] {
+    const directTagIds = new Set(context.tags.map((tag) => tag.tagId));
+    const inheritedByTagId = new Map<string, CardQueryTagResult>();
+    for (const directTag of context.tags) {
+        const pending = [...(context.ancestorTagIdsByChild.get(directTag.tagId) ?? [])];
+        const visited = new Set<string>();
+        while (pending.length > 0) {
+            const tagId = pending.pop()!;
+            if (visited.has(tagId)) continue;
+            visited.add(tagId);
+            pending.push(...(context.ancestorTagIdsByChild.get(tagId) ?? []));
+            if (directTagIds.has(tagId)) continue;
+            const definition = context.tagDefinitionsById.get(tagId);
+            if (!definition) continue;
+            const existing = inheritedByTagId.get(tagId);
+            if (!existing || compareWeight(directTag.weight, existing.weight) < 0) inheritedByTagId.set(tagId, {
+                tagId: definition.tagId,
+                slug: definition.slug,
+                label: definition.label,
+                weight: directTag.weight,
+                annotation: null,
+            });
+        }
+    }
+    return sortTags([...inheritedByTagId.values()]);
+}
+
+function sortTags(tags: readonly CardQueryTagResult[]): readonly CardQueryTagResult[] {
+    return [...tags].sort((left, right) => compareWeight(left.weight, right.weight) || left.label.localeCompare(right.label) || left.slug.localeCompare(right.slug) || left.tagId.localeCompare(right.tagId));
+}
+
+function compareWeight(left: CardIdentityTaggingWeight, right: CardIdentityTaggingWeight): number {
+    return weightRank(left) - weightRank(right);
+}
+
+function weightRank(weight: CardIdentityTaggingWeight): number {
+    if (weight === "very_strong") return 0;
+    if (weight === "strong") return 1;
+    if (weight === "median") return 2;
+    return 3;
 }
 
 function toCollectionResult(row: CollectionRow): CardQueryCollectionCardResult {
@@ -371,4 +435,13 @@ function buildDescendantTagMap(rows: readonly {
         result.set(parent, descendants);
     }
     return result;
+}
+
+function buildAncestorTagMap(rows: readonly {
+    readonly parentTagId: string;
+    readonly childTagId: string
+}[]): ReadonlyMap<string, readonly string[]> {
+    const parentsByChild = new Map<string, string[]>();
+    for (const row of rows) parentsByChild.set(row.childTagId, [...(parentsByChild.get(row.childTagId) ?? []), row.parentTagId]);
+    return parentsByChild;
 }

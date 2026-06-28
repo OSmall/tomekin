@@ -62,7 +62,7 @@ export const draft_deck_building_brief = tool({
 });
 
 export const query_cards = tool({
-  description: "Run a structured Card Query over local Card Identities, Commander legality, Card Identity Tags, and imported Collection card rows. Accepts CQL2-inspired JSON filter expressions plus explicit include projections.",
+  description: "Run a structured Card Query over local Card Identities, Commander legality, Card Identity Tags, and imported Collection card rows. For filter syntax and examples, load the query-cards skill before composing non-trivial filters or after validation errors.",
   args: {
     filter: z.unknown().optional(),
     sortby: z.array(z.object({
