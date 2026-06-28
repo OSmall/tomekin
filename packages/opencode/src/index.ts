@@ -1,11 +1,21 @@
 import {createAgentToolHandlers, createImportFoundationServices} from "@mtg-agent/core";
 import {
-  closeDatabase,
-  createSqliteCardReferenceRepository,
-  createSqliteDeckCandidateRepository,
-  openDatabase,
-  resolveDatabasePath,
+    closeDatabase,
+    createSqliteCardQueryRepository,
+    createSqliteCardReferenceRepository,
+    createSqliteCollectionRepository,
+    createSqliteDeckCandidateRepository,
+    openDatabase,
+    resolveDatabasePath,
 } from "@mtg-agent/sqlite";
+
+export type LocalAgentToolHandlers = ReturnType<typeof createAgentToolHandlers>;
+
+export type LocalAgentToolRuntime = {
+    readonly databasePath: string;
+    readonly handlers: LocalAgentToolHandlers;
+    readonly close: () => void;
+};
 
 export function createLocalImportFoundation() {
   return {
@@ -16,15 +26,18 @@ export function createLocalImportFoundation() {
   };
 }
 
-export function createLocalAgentToolHandlers(dbPath = resolveDatabasePath()) {
+export function createLocalAgentToolHandlers(dbPath = resolveDatabasePath()): LocalAgentToolRuntime {
   const db = openDatabase(dbPath);
   const clock = {now: () => new Date()};
-  return {
-    databasePath: dbPath,
-    handlers: createAgentToolHandlers({
-      cardReference: createSqliteCardReferenceRepository(db),
-      deckCandidates: createSqliteDeckCandidateRepository(db, clock),
-    }) as Record<string, (...args: never[]) => unknown>,
+    const handlers = createAgentToolHandlers({
+        cardReference: createSqliteCardReferenceRepository(db),
+        cardQuery: createSqliteCardQueryRepository(db),
+        collection: createSqliteCollectionRepository(db, clock),
+        deckCandidates: createSqliteDeckCandidateRepository(db, clock),
+    });
+    return {
+        databasePath: dbPath,
+        handlers,
     close: () => closeDatabase(db),
   };
 }

@@ -22,7 +22,7 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Opencode Adapter
 
-- Replace the temporary narrow search tools with a CQL2-shaped `query_cards` Agent Tool.
+- Continue hardening the CQL2-shaped `query_cards` Agent Tool as the primary card retrieval surface.
 - Loosen the base MTG deck-builder agent workflow while keeping strict authority boundaries: no raw database MCP access,
   no arbitrary file or shell access, and only explicitly allowed MTG Agent Tools.
 - Move proven deck-building workflows into skills or subagents after they are validated through real use.
@@ -52,8 +52,10 @@ This document captures unresolved design branches to resume later. It should sta
 
 ## Initial Implementation Sequence
 
-- Next vertical slice: implement Card Query over Card Identity, Commander legality, Card Identity Tags, and positive
-  Collection queryables.
+- Next Card Query hardening slices: push supported filtering/sorting/Collection quantity work into SQL, populate
+  inherited
+  tag projections for `include.tags` as a priority completeness gap, and make `identity.gameChanger` required end to
+  end.
 - After structured search, revise the base MTG deck-builder agent to be workflow-light and tool-bound, then move
   repeatable workflows into skills or subagents.
 - Defer richer Deck Opportunity discovery until the card-data and collection-data foundations are reliable.

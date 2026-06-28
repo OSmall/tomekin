@@ -16,6 +16,7 @@
       "dependencies": {
         "@mtg-agent/opencode": "workspace:*",
         "@opencode-ai/plugin": "1.17.8",
+        "zod": "^4.1.13",
       },
     },
     "packages/cli": {

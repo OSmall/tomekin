@@ -45,7 +45,10 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - Current Collection snapshot replacement.
 - Deck Candidate save, reopen, list, and transactional card-row replacement.
 
-Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and user-facing output. Live opencode execution and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is added.
+Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and
+user-facing output. They should also prove repo-local OpenCode tool argument schemas can be represented as JSON Schema,
+because OpenCode performs that conversion during session startup. Live opencode execution and LLM quality evaluation
+should stay out of the default `bun test` suite unless a separate explicit smoke harness is added.
 
 ## Test Layout
 

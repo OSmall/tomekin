@@ -1,14 +1,20 @@
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {draftDeckBuildingBrief, DraftDeckBuildingBriefInputSchema} from "./deck-building-brief";
-import {getFormatConstraints, type CardReferenceRepository} from "./card-reference-queries";
-import {normalizeDeckCandidateForSave, SaveDeckCandidateInputSchema, type DeckCandidateRepository} from "./deck-candidate";
+import {type CardQueryRepository, parseCardQueryInput} from "./card-query";
+import {type CardReferenceRepository, getFormatConstraints} from "./card-reference-queries";
+import type {CollectionQueryRepository} from "./collection-import";
+import {
+  type DeckCandidateRepository,
+  normalizeDeckCandidateForSave,
+  SaveDeckCandidateInputSchema
+} from "./deck-candidate";
 import {renderDeckCandidateMarkdown, renderPortableDecklist} from "./deck-candidate-rendering";
-import {validateCommanderDeck, type CommanderDeckCard} from "./commander-legality";
+import {type CommanderDeckCard, validateCommanderDeck} from "./commander-legality";
 
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
-  "search_card_identities",
+  "query_cards",
   "get_card_identity",
   "search_card_identity_tags",
   "summarize_reference_support",
@@ -20,19 +26,10 @@ export const AgentToolNameSchema = z.enum([
   "save_deck_candidate",
   "get_deck_candidate",
   "list_deck_candidates",
+  "list_collection_locations",
 ]);
 export type AgentToolName = z.infer<typeof AgentToolNameSchema>;
 
-export const SearchCardIdentitiesArgsSchema = z.object({
-  query: z.string().optional(),
-  colorIdentity: z.string().optional(),
-  commanderColorIdentitySubset: z.string().optional(),
-  typeLine: z.string().optional(),
-  oracleText: z.string().optional(),
-  tag: z.string().optional(),
-  commanderLegalOnly: z.boolean().optional(),
-  limit: z.number().int().positive().max(100).optional(),
-});
 export const GetCardIdentityArgsSchema = z.object({idOrName: z.string().min(1)});
 export const SearchCardIdentityTagsArgsSchema = z.object({query: z.string().optional(), limit: z.number().int().positive().max(100).optional()});
 export const ResolveDecklistCardsArgsSchema = z.object({names: z.array(z.string().min(1)).min(1)});
@@ -40,21 +37,24 @@ export const ValidateDeckCandidateArgsSchema = z.object({cards: z.array(z.object
 export const RenderDeckCandidateArgsSchema = z.object({label: z.string().min(1), cards: z.array(z.object({cardIdentityId: z.uuid(), cardName: z.string().min(1), quantity: z.number().int().positive(), section: z.enum(["commander", "deck"]), sortOrder: z.number().int().nonnegative().default(0), note: z.string().nullable().default(null)})).min(1), sections: z.record(z.string(), z.string()).optional()});
 export const SaveDeckCandidateArgsSchema = SaveDeckCandidateInputSchema;
 export const GetDeckCandidateArgsSchema = z.object({id: z.uuid()});
-
 export type AgentToolRepositories = {
   readonly cardReference: CardReferenceRepository;
+  readonly cardQuery: CardQueryRepository;
   readonly deckCandidates: DeckCandidateRepository;
+  readonly collection: CollectionQueryRepository;
 };
 
 export type AgentToolError = {readonly type: "validation_error" | "tool_error"; readonly message: string};
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories) {
   return {
+    queryCards(input: unknown) {
+      const parsed = parseCardQueryInput(input);
+      if (parsed.isErr()) return Promise.resolve(parsed);
+      return repositories.cardQuery.queryCards(parsed.value);
+    },
     draftDeckBuildingBrief(input: unknown) {
       return safeSync(() => draftDeckBuildingBrief(DraftDeckBuildingBriefInputSchema.parse(input)));
-    },
-    searchCardIdentities(input: unknown) {
-      return repositories.cardReference.searchCardIdentities(SearchCardIdentitiesArgsSchema.parse(input));
     },
     getCardIdentity(input: unknown) {
       const args = GetCardIdentityArgsSchema.parse(input);
@@ -98,7 +98,12 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories) {
         if (row.section === "deck" && !/\bLand\b/i.test(row.card.typeLine)) curve[String(row.card.manaValue)] = (curve[String(row.card.manaValue)] ?? 0) + row.quantity;
         return curve;
       }, {});
-      return ok({legality, powerAndExperience: {gameChangerCount: gameChangers.length, gameChangers}, manaAndCurve: {landCount, manaCurve}, collectionStatus: "Collection is empty; every card is a Missing Card."});
+      return ok({
+        legality,
+        powerAndExperience: {gameChangerCount: gameChangers.length, gameChangers},
+        manaAndCurve: {landCount, manaCurve},
+        collectionStatus: "Collection availability is not evaluated by this tool. Use search_collection_cards for owned-copy evidence."
+      });
     },
     renderDeckCandidate(input: unknown) {
       const args = RenderDeckCandidateArgsSchema.parse(input);
@@ -113,6 +118,9 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories) {
     },
     listDeckCandidates() {
       return repositories.deckCandidates.listDeckCandidates();
+    },
+    listCollectionLocations() {
+      return repositories.collection.listCollectionLocations();
     },
   };
 }

@@ -7,6 +7,7 @@ import type {
     CollectionImportAttempt,
     CollectionImportRepository,
     CollectionLocationImportRecord,
+    CollectionQueryRepository,
     CollectionRepositoryError,
     ResolvedCollectionCardPrinting,
 } from "@mtg-agent/core";
@@ -21,7 +22,7 @@ import {
     scryfallBulkDataImport,
 } from "./schema";
 
-export type SqliteCollectionRepository = CollectionImportRepository & {
+export type SqliteCollectionRepository = CollectionImportRepository & CollectionQueryRepository & {
     listCollectionLocations(): Promise<Result<readonly CollectionLocationImportRecord[], CollectionRepositoryError>>;
     listCollectionCards(): Promise<Result<readonly CollectionCardImportRecord[], CollectionRepositoryError>>;
     listCollectionImports(): Promise<Result<readonly CollectionImportAttempt[], CollectionRepositoryError>>;

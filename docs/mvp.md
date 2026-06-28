@@ -46,13 +46,15 @@ The standard happy-path workflow is:
 
 This workflow is product behaviour, not an implementation architecture.
 
-## Empty Collection
+## Collection-Aware MVP
 
 The product should not distinguish between a user who has not imported a Collection and a user who has imported an empty Collection. In both cases, the Collection is empty.
 
 The agent may build a Deck Candidate against an empty Collection. There are no Available Cards, Committed Cards, Existing Decks, binders, or owned card copies. Every card in the Deck Candidate should be treated as a Missing Card.
 
-The first local opencode slice implements this empty-Collection path for Commander/EDH over local Scryfall reference data. It can save Deck Candidates before ManaBox Collection import exists, but those saved candidates have unknown Collection freshness and no real Collection Pull List.
+The local opencode slice can search the current imported Collection snapshot, including binder locations and deck-type
+locations inferred as Existing Decks. It can also save Deck Candidates before a Collection exists, but those saved
+candidates have unknown Collection freshness and no real Collection Pull List until checked against an import.
 
 The agent should still provide the usual deck-building explanation and Portable Decklist. It should not provide a Collection Pull List except to state that no owned copies are available because the Collection is empty.
 

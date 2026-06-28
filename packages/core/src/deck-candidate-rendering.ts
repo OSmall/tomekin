@@ -55,7 +55,7 @@ function renderDecklistSection(label: string, cards: readonly DeckCandidateCard[
 }
 
 function defaultSectionContent(section: DeckCandidateMarkdownSection): string {
-  if (section === "Collection Status") return "No Collection has been imported in this first slice. Every card in this Deck Candidate is treated as a Missing Card.";
+    if (section === "Collection Status") return "Collection availability was not recorded for this Deck Candidate. Check the current imported Collection before treating cards as Missing Cards.";
   if (section === "Cuts And Exclusions") return "No meaningful cuts or exclusions were recorded.";
   return "Not recorded.";
 }

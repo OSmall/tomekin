@@ -10,7 +10,7 @@ export const DeckBuildingBriefSchema = z.object({
   playExperience: z.string().min(1).default("Synergistic, varied, expressive, and fair-feeling."),
   commanderBracket: z.string().min(1).nullable().default(null),
   budget: z.string().min(1).nullable().default(null),
-  missingCardTolerance: z.string().min(1).default("Moderate; collection is empty in the first slice, so every card is a Missing Card."),
+    missingCardTolerance: z.string().min(1).default("Moderate; check the imported Collection before treating cards as Missing Cards."),
   comboTolerance: z.string().min(1).default("Avoid deterministic combo wins unless explicitly requested."),
   constraints: z.array(z.string().min(1)).default([]),
   exclusions: z.array(z.string().min(1)).default([]),
@@ -39,7 +39,7 @@ export function draftDeckBuildingBrief(input: DraftDeckBuildingBriefInput): Draf
     ...(brief.commanderBracket === null
       ? ["Commander Bracket was not specified; confirm the intended table experience before deck-building."]
       : []),
-    "Collection is treated as empty in this first slice, so every candidate card is a Missing Card.",
+      "Collection availability must be checked against the imported Collection snapshot before candidate cards are treated as Missing Cards.",
   ];
 
   return {

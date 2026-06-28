@@ -1,0 +1,10 @@
+{
+  "name": "@mtg-agent/opencode-config",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mtg-agent/opencode": "workspace:*",
+    "@opencode-ai/plugin": "1.17.8",
+    "zod": "^4.1.13"
+  }
+}

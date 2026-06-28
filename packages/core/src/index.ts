@@ -1,5 +1,6 @@
 export * from "./agent-tools";
 export * from "./card-reference-queries";
+export * from "./card-query";
 export * from "./commander-legality";
 export * from "./collection-import";
 export * from "./deck-building-brief";

@@ -428,6 +428,14 @@ Use these scenarios as design fixtures when testing whether the query shape stay
 
 ## Follow-Up Decisions
 
-- Prerequisite implementation work: make `identity.gameChanger` a required boolean end to end, including import
-  validation, domain type, SQLite schema, and tests, in its own commit before `query_cards`.
+- Current implementation gap: Card Query currently evaluates much of the query in TypeScript after loading local rows.
+  A later hardening pass should push supported predicates, sorting, and Collection quantity aggregation into SQL so the
+  database does the filtering work and the agent receives only bounded result sets.
+- Priority implementation gap: `include.tags` projects direct tags and keeps the documented `tags.inherits` field, but
+  inherited tag projection is not populated yet. This is a meaningful Card Query completeness gap because agents need
+  inherited tag context to find and explain broader functional card groups without over-querying. Hierarchy-aware
+  filtering through `hasTagInHierarchy` is separate from projection and may work before inherited tags are returned in
+  `tags.inherits`.
+- Required cleanup: make `identity.gameChanger` a required boolean end to end, including import validation, domain type,
+  SQLite schema, query result type, and tests.
 - Future Collection Pull List and Availability service shape after Card Query.

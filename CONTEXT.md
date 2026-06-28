@@ -61,7 +61,8 @@ _Avoid_: Opencode tool, MCP tool, Vercel tool when referring to the reusable cap
 
 **Card Query**:
 A structured request for finding cards by deck-building criteria such as name, rules text, type, Color Identity, format
-legality, Card Identity Tags, and Collection criteria such as ownership or Collection Location.
+legality, Card Identity Tags, and Collection criteria such as ownership or Collection Location. A Card Query is for
+card-shaped retrieval; Collection import history and other administrative status are outside its meaning.
 _Avoid_: SQL query, database query, Scryfall query, filter blob
 
 **Existing Deck**:

@@ -1,5 +1,10 @@
 import {describe, expect, test} from "bun:test";
-import {renderDeckCandidateMarkdown, renderPortableDecklist, validateCommanderDeck, type CommanderDeckCard} from "@mtg-agent/core";
+import {
+  type CommanderDeckCard,
+  renderDeckCandidateMarkdown,
+  renderPortableDecklist,
+  validateCommanderDeck
+} from "@mtg-agent/core";
 
 describe("Deck Candidate rendering", () => {
   test("renders strict Commander portable decklist", () => {
@@ -24,7 +29,7 @@ Deck
     expect(markdown).toContain("## Game Plan");
     expect(markdown).toContain("## Portable Decklist");
     expect(markdown).toContain("## Collection Status");
-    expect(markdown).toContain("Every card in this Deck Candidate is treated as a Missing Card.");
+      expect(markdown).toContain("Collection availability was not recorded for this Deck Candidate.");
   });
 });
 

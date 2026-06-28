@@ -92,6 +92,11 @@ export type CollectionImportRepository = {
     }): Promise<Result<CollectionImportAttempt, CollectionRepositoryError>>;
 };
 
+export type CollectionQueryRepository = {
+    listCollectionLocations(): Promise<Result<readonly CollectionLocationImportRecord[], CollectionRepositoryError>>;
+    listCollectionImports(): Promise<Result<readonly CollectionImportAttempt[], CollectionRepositoryError>>;
+};
+
 export type CollectionImportServices = {
     importManaBoxCollectionCsv(input: {
         readonly sourcePath: string;
