@@ -10,3 +10,5 @@ Authored and edited only by osmall, not agents.
 - use T3.env for environment variables
 - explore defined roles on DeckCandidateCard e.g. "payoff" or "enabler"
 - refine agent and skills to follow better deck building practices
+- make query_cards tool search with SQL
+- scryfall import from remote

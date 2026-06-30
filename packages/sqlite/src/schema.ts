@@ -42,6 +42,7 @@ export const collectionLocation = sqliteTable(
         unique("collection_location_type_name_unique").on(table.type, table.name),
         check("collection_location_name_check", sql`length(${table.name}) > 0`),
         check("collection_location_type_check", sql`${table.type} IN ('binder', 'deck')`),
+        index("idx_collection_location_name").on(table.name),
     ],
 );
 
@@ -71,6 +72,9 @@ export const collectionCard = sqliteTable(
         check("collection_card_finish_check", sql`${table.finish} IN ('nonfoil', 'foil', 'etched')`),
         index("idx_collection_card_location_id").on(table.collectionLocationId),
         index("idx_collection_card_card_printing_id").on(table.cardPrintingId),
+        index("idx_collection_card_finish").on(table.finish),
+        index("idx_collection_card_altered").on(table.altered),
+        index("idx_collection_card_misprint").on(table.misprint),
     ],
 );
 
@@ -180,6 +184,12 @@ export const cardIdentity = sqliteTable(
             sql`color_identity IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')`,
         ),
         index("idx_card_identity_color_identity").on(table.colorIdentity),
+        index("idx_card_identity_name").on(table.name),
+        index("idx_card_identity_type_line").on(table.typeLine),
+        index("idx_card_identity_mana_value").on(table.manaValue),
+        index("idx_card_identity_colors").on(table.colors),
+        index("idx_card_identity_game_changer").on(table.gameChanger),
+        index("idx_card_identity_edhrec_rank").on(table.edhrecRank),
     ],
 );
 
