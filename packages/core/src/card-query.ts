@@ -50,6 +50,7 @@ export type CardQueryValue = CardQueryScalar | readonly CardQueryScalar[];
 export type CardQueryFilter =
     | { readonly op: "and" | "or"; readonly args: readonly CardQueryFilter[] }
     | { readonly op: "not"; readonly args: readonly [CardQueryFilter] }
+    | { readonly op: "withTagging" | "withCollectionCard"; readonly args: readonly [CardQueryFilter] }
     | {
     readonly op: "=" | "!=" | "<" | "<=" | ">" | ">=" | "contains" | "in" | "colorIdentitySubsetOf" | "hasTagInHierarchy";
     readonly args: readonly [CardQueryPropertyRef, CardQueryValue]
@@ -147,11 +148,13 @@ export type CardQueryRepository = {
 const propertyValues = new Set<string>(cardQueryPropertyValues);
 const sortablePropertyValues = new Set<string>(cardQuerySortablePropertyValues);
 const scalarOperators = new Set(["=", "!=", "<", "<=", ">", ">="]);
-const operatorValues = new Set(["and", "or", "not", "=", "!=", "<", "<=", ">", ">=", "contains", "in", "colorIdentitySubsetOf", "hasTagInHierarchy"]);
+const operatorValues = new Set(["and", "or", "not", "=", "!=", "<", "<=", ">", ">=", "contains", "in", "colorIdentitySubsetOf", "hasTagInHierarchy", "withTagging", "withCollectionCard"]);
 const colorIdentitySet = new Set<string>(colorIdentityValues);
 const formatLegalitySet = new Set<string>(formatLegalityValues);
 const numericProperties = new Set<CardQueryProperty>(["identity.manaValue", "identity.edhrecRank", "collection.quantity"]);
 const booleanProperties = new Set<CardQueryProperty>(["identity.gameChanger", "collection.altered", "collection.misprint"]);
+const taggingScopeProperties = new Set<CardQueryProperty>(["tag.id", "tag.slug", "tag.label", "tag.alias", "tag.weight"]);
+const collectionCardScopeProperties = new Set<CardQueryProperty>(["collection.quantity", "collection.locationName", "collection.locationType", "collection.finish", "collection.altered", "collection.misprint"]);
 
 export function parseCardQueryInput(input: unknown): Result<CardQueryInput, CardQueryError> {
     if (input === undefined) return ok({});
@@ -178,11 +181,12 @@ export function filterHasCollectionPredicate(filter: CardQueryFilter | undefined
     if (!filter) return false;
     if (filter.op === "and" || filter.op === "or") return filter.args.some(filterHasCollectionPredicate);
     if (filter.op === "not") return filterHasCollectionPredicate(filter.args[0]);
+    if (filter.op === "withTagging" || filter.op === "withCollectionCard") return filterHasCollectionPredicate(filter.args[0]);
     return isAtomicFilter(filter) && filter.args[0].property.startsWith("collection.");
 }
 
 function isAtomicFilter(filter: CardQueryFilter): filter is AtomicCardQueryFilter {
-    return filter.op !== "and" && filter.op !== "or" && filter.op !== "not";
+    return filter.op !== "and" && filter.op !== "or" && filter.op !== "not" && filter.op !== "withTagging" && filter.op !== "withCollectionCard";
 }
 
 function validateFilter(value: unknown, pointer: string): CardQueryValidationIssue[] {
@@ -230,6 +234,18 @@ function validateFilter(value: unknown, pointer: string): CardQueryValidationIss
         });
         return [...issues, ...childIssues];
     }
+    if (value.op === "withTagging" || value.op === "withCollectionCard") {
+        if (value.args.length !== 1) return [...issues, {
+            pointer: `${pointer}/args`,
+            code: "invalid_length",
+            message: `${value.op} requires exactly one filter argument.`
+        }];
+        const childIssues = validateFilter(value.args[0], `${pointer}/args/0`);
+        const scopeIssues = value.op === "withTagging"
+            ? validateRelationshipScope(value.args[0], `${pointer}/args/0`, "withTagging")
+            : validateRelationshipScope(value.args[0], `${pointer}/args/0`, "withCollectionCard");
+        return [...issues, ...scopeIssues, ...childIssues];
+    }
     if (value.args.length !== 2) issues.push({
         pointer: `${pointer}/args`,
         code: "invalid_length",
@@ -246,6 +262,40 @@ function validateFilter(value: unknown, pointer: string): CardQueryValidationIss
         return issues;
     }
     return [...issues, ...validateOperatorValue(value.op, propertyRef.property as CardQueryProperty, value.args[1], `${pointer}/args/1`)];
+}
+
+function validateRelationshipScope(value: unknown, pointer: string, scope: "withTagging" | "withCollectionCard"): CardQueryValidationIssue[] {
+    if (!isRecord(value) || typeof value.op !== "string" || !Array.isArray(value.args)) return [];
+    if (value.op === "and" || value.op === "or") return value.args.flatMap((arg, index) => validateRelationshipScope(arg, `${pointer}/args/${index}`, scope));
+    if (value.op === "not") return [{
+        pointer,
+        code: "invalid_relationship_scope",
+        message: `not is not supported inside ${scope}.`
+    }];
+    if (value.op === "withTagging" || value.op === "withCollectionCard") return [{
+        pointer,
+        code: "invalid_relationship_scope",
+        message: `Nested relationship-scope operators are not supported inside ${scope}.`
+    }];
+
+    const propertyRef = value.args[0];
+    if (!isRecord(propertyRef) || typeof propertyRef.property !== "string" || !propertyValues.has(propertyRef.property)) return [];
+    const property = propertyRef.property as CardQueryProperty;
+    if (scope === "withTagging") {
+        if (value.op === "hasTagInHierarchy" && property === "tag.id") return [];
+        if (taggingScopeProperties.has(property)) return [];
+        return [{
+            pointer: `${pointer}/args/0/property`,
+            code: "invalid_relationship_scope",
+            message: "withTagging child filters may contain only tag.* predicates, hasTagInHierarchy over tag.id, and and/or groups."
+        }];
+    }
+    if (collectionCardScopeProperties.has(property) && value.op !== "hasTagInHierarchy") return [];
+    return [{
+        pointer: value.op === "hasTagInHierarchy" ? pointer : `${pointer}/args/0/property`,
+        code: "invalid_relationship_scope",
+        message: "withCollectionCard child filters may contain only collection.* predicates and and/or groups."
+    }];
 }
 
 function validateOperatorValue(op: string, property: CardQueryProperty, value: unknown, pointer: string): CardQueryValidationIssue[] {
@@ -475,6 +525,7 @@ function containsRelationshipPredicate(value: unknown): boolean {
     if (!isRecord(value) || typeof value.op !== "string" || !Array.isArray(value.args)) return false;
     if (value.op === "and" || value.op === "or") return value.args.some(containsRelationshipPredicate);
     if (value.op === "not") return value.args.some(containsRelationshipPredicate);
+    if (value.op === "withTagging" || value.op === "withCollectionCard") return true;
     const propertyRef = value.args[0];
     return isRecord(propertyRef) && typeof propertyRef.property === "string" && (propertyRef.property.startsWith("collection.") || propertyRef.property.startsWith("tag."));
 }

@@ -182,6 +182,8 @@ function evaluateFilter(filter: CardQueryFilter, context: QueryContext, collecti
         return {matches: true, collectionRows: scopes.length > 0 ? uniqueRows(scopes.flat()) : collectionScope};
     }
     if (filter.op === "not") return {matches: !evaluateFilter(filter.args[0], context, collectionScope).matches};
+    if (filter.op === "withTagging") return {matches: context.tags.some((tag) => evaluateTaggingScope(filter.args[0], tag, context))};
+    if (filter.op === "withCollectionCard") return evaluateFilter(filter.args[0], context, collectionScope);
 
     if (!isAtomicFilter(filter)) return {matches: false};
     const property = filter.args[0].property;
@@ -190,7 +192,7 @@ function evaluateFilter(filter: CardQueryFilter, context: QueryContext, collecti
     return {matches: evaluateReferenceFilter(filter.op, property, value, context)};
 }
 
-function evaluateReferenceFilter(op: Exclude<CardQueryFilter["op"], "and" | "or" | "not">, property: CardQueryProperty, value: CardQueryScalar | readonly CardQueryScalar[], context: QueryContext): boolean {
+function evaluateReferenceFilter(op: Exclude<CardQueryFilter["op"], "and" | "or" | "not" | "withTagging" | "withCollectionCard">, property: CardQueryProperty, value: CardQueryScalar | readonly CardQueryScalar[], context: QueryContext): boolean {
     if (op === "contains") return typeof value === "string" && textValue(context, property).toLowerCase().includes(value.toLowerCase());
     if (op === "in") return Array.isArray(value) && value.some((candidate) => evaluateReferenceFilter("=", property, candidate, context));
     if (op === "colorIdentitySubsetOf") return typeof value === "string" && isColorSubset(context.identity.colorIdentity, value);
@@ -199,7 +201,7 @@ function evaluateReferenceFilter(op: Exclude<CardQueryFilter["op"], "and" | "or"
     return compareValues(referenceValue(context, property), op, value as CardQueryScalar);
 }
 
-function evaluateCollectionFilter(op: Exclude<CardQueryFilter["op"], "and" | "or" | "not">, property: CardQueryProperty, value: CardQueryScalar | readonly CardQueryScalar[], context: QueryContext, collectionScope: readonly CollectionRow[] | undefined): FilterResult {
+function evaluateCollectionFilter(op: Exclude<CardQueryFilter["op"], "and" | "or" | "not" | "withTagging" | "withCollectionCard">, property: CardQueryProperty, value: CardQueryScalar | readonly CardQueryScalar[], context: QueryContext, collectionScope: readonly CollectionRow[] | undefined): FilterResult {
     const inputRows = collectionScope ?? context.collectionRows;
     if (property === "collection.quantity") {
         const quantity = inputRows.reduce((sum, row) => sum + row.quantity, 0);
@@ -210,6 +212,19 @@ function evaluateCollectionFilter(op: Exclude<CardQueryFilter["op"], "and" | "or
         return compareValues(collectionValue(row, property), op, value as CardQueryScalar);
     });
     return {matches: rows.length > 0, collectionRows: rows};
+}
+
+function evaluateTaggingScope(filter: CardQueryFilter, tag: DirectTagRow, context: QueryContext): boolean {
+    if (filter.op === "and") return filter.args.every((child) => evaluateTaggingScope(child, tag, context));
+    if (filter.op === "or") return filter.args.some((child) => evaluateTaggingScope(child, tag, context));
+    if (!isAtomicFilter(filter)) return false;
+
+    const property = filter.args[0].property;
+    const value = filter.args[1];
+    if (filter.op === "hasTagInHierarchy") return typeof value === "string" && (tag.tagId === value || context.descendantTagIdsByParent.get(value)?.has(tag.tagId) === true);
+    if (!property.startsWith("tag.")) return false;
+    if (filter.op === "in") return Array.isArray(value) && value.some((candidate) => tagValues(tag, property).some((tagValue) => compareValues(tagValue, "=", candidate)));
+    return tagValues(tag, property).some((candidate) => compareValues(candidate, filter.op, value as CardQueryScalar));
 }
 
 function toResultItem(context: QueryContext, input: CardQueryInput, hasCollectionPredicate: boolean, matchedCollectionRows: readonly CollectionRow[] | undefined): CardQueryResultItem {
@@ -328,7 +343,7 @@ function isCollectionQuantityFilter(filter: CardQueryFilter): boolean {
 }
 
 function isAtomicFilter(filter: CardQueryFilter): filter is AtomicCardQueryFilter {
-    return filter.op !== "and" && filter.op !== "or" && filter.op !== "not";
+    return filter.op !== "and" && filter.op !== "or" && filter.op !== "not" && filter.op !== "withTagging" && filter.op !== "withCollectionCard";
 }
 
 function intersectScopes(left: readonly CollectionRow[] | undefined, right: readonly CollectionRow[] | undefined): readonly CollectionRow[] | undefined {

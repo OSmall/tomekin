@@ -13,6 +13,34 @@ describe("Card Query validation", () => {
         }).isOk()).toBe(true);
     });
 
+    test("accepts explicit relationship-scope operators with valid child subtrees", () => {
+        expect(parseCardQueryInput({
+            filter: {
+                op: "withTagging",
+                args: [{
+                    op: "and",
+                    args: [
+                        {op: "hasTagInHierarchy", args: [{property: "tag.id"}, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"]},
+                        {op: "=", args: [{property: "tag.weight"}, "strong"]},
+                    ],
+                }],
+            },
+        }).isOk()).toBe(true);
+
+        expect(parseCardQueryInput({
+            filter: {
+                op: "withCollectionCard",
+                args: [{
+                    op: "or",
+                    args: [
+                        {op: "=", args: [{property: "collection.locationType"}, "binder"]},
+                        {op: ">", args: [{property: "collection.quantity"}, 0]},
+                    ],
+                }],
+            },
+        }).isOk()).toBe(true);
+    });
+
     test("rejects unsupported queryable properties with structured issues", () => {
         const result = parseCardQueryInput({
             filter: {op: "=", args: [{property: "collection.sourceRowNumber"}, 2]},
@@ -96,6 +124,84 @@ describe("Card Query validation", () => {
                 args: [{op: "=", args: [{property: "collection.locationType"}, "binder"]}]
             }
         }, "#/filter", "invalid_collection_semantics"],
+        ["not over withTagging", {
+            filter: {
+                op: "not",
+                args: [{op: "withTagging", args: [{op: "=", args: [{property: "tag.slug"}, "draw"]}]}]
+            }
+        }, "#/filter", "invalid_collection_semantics"],
+        ["withTagging multiple children", {
+            filter: {
+                op: "withTagging",
+                args: [
+                    {op: "=", args: [{property: "tag.slug"}, "draw"]},
+                    {op: "=", args: [{property: "tag.weight"}, "strong"]},
+                ]
+            }
+        }, "#/filter/args", "invalid_length"],
+        ["withCollectionCard multiple children", {
+            filter: {
+                op: "withCollectionCard",
+                args: [
+                    {op: "=", args: [{property: "collection.locationName"}, "Main Binder"]},
+                    {op: "=", args: [{property: "collection.finish"}, "foil"]},
+                ]
+            }
+        }, "#/filter/args", "invalid_length"],
+        ["identity inside withTagging", {
+            filter: {
+                op: "withTagging",
+                args: [{op: "=", args: [{property: "identity.name"}, "Rhystic Study"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["legality inside withTagging", {
+            filter: {
+                op: "withTagging",
+                args: [{op: "=", args: [{property: "legality.commander"}, "legal"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["collection inside withTagging", {
+            filter: {
+                op: "withTagging",
+                args: [{op: "=", args: [{property: "collection.locationType"}, "binder"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["not inside withTagging", {
+            filter: {
+                op: "withTagging",
+                args: [{op: "not", args: [{op: "=", args: [{property: "tag.slug"}, "draw"]}]}]
+            }
+        }, "#/filter/args/0", "invalid_relationship_scope"],
+        ["identity inside withCollectionCard", {
+            filter: {
+                op: "withCollectionCard",
+                args: [{op: "=", args: [{property: "identity.name"}, "Sol Ring"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["legality inside withCollectionCard", {
+            filter: {
+                op: "withCollectionCard",
+                args: [{op: "=", args: [{property: "legality.commander"}, "legal"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["tag inside withCollectionCard", {
+            filter: {
+                op: "withCollectionCard",
+                args: [{op: "=", args: [{property: "tag.slug"}, "draw"]}]
+            }
+        }, "#/filter/args/0/args/0/property", "invalid_relationship_scope"],
+        ["hasTagInHierarchy inside withCollectionCard", {
+            filter: {
+                op: "withCollectionCard",
+                args: [{op: "hasTagInHierarchy", args: [{property: "tag.id"}, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"]}]
+            }
+        }, "#/filter/args/0", "invalid_relationship_scope"],
+        ["not inside withCollectionCard", {
+            filter: {
+                op: "withCollectionCard",
+                args: [{op: "not", args: [{op: "=", args: [{property: "collection.locationType"}, "binder"]}]}]
+            }
+        }, "#/filter/args/0", "invalid_relationship_scope"],
     ])("rejects invalid input: %s", (_name, input, pointer, code) => {
         const issue = firstIssue(parseCardQueryInput(input));
 

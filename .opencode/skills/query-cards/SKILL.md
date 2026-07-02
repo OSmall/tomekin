@@ -39,6 +39,11 @@ Boolean operators:
 
 - `and`, `or`: `args` is a non-empty array of filter nodes.
 - `not`: `args` is exactly one filter node; do not use over `collection.*` or `tag.*` predicates.
+- `withTagging`: `args` is exactly one tag-only child filter. Use when tag metadata must apply to the same Card Identity
+  Tagging row.
+- `withCollectionCard`: `args` is exactly one Collection-only child filter. Use for explicit Collection row-scope
+  grouping
+  in complex cases.
 
 Atomic operators:
 
@@ -90,9 +95,32 @@ Sortable properties:
 - `colorIdentitySubsetOf` works only with `identity.colorIdentity`. It means legal within the given Commander Color
   Identity.
 - `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `search_card_identity_tags` first.
+- For deck-building concepts such as draw, ramp, removal, recursion, protection, sacrifice, or tokens, call
+  `search_card_identity_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
+- For multi-tag concept searches such as draw plus ramp, use independent `hasTagInHierarchy` predicates in an outer
+  `and`. Do not put both concept predicates in one `withTagging` unless one direct tagging row must satisfy both.
+- Use `withTagging` when a tag concept and tag metadata must be true of the same tagging row, such as strong draw.
 - `!=` is rejected for `collection.*` and `tag.*` predicates.
 - `legality.commander` values include `legal`, `not_legal`, `banned`, and `restricted`.
 - Color Identity values are exact WUBRG strings such as `""`, `"G"`, `"UG"`, or `"WUBRG"`.
+
+Inside `withTagging`, only these are allowed:
+
+- `tag.id`, `tag.slug`, `tag.label`, `tag.alias`, `tag.weight`.
+- `hasTagInHierarchy` over `tag.id`.
+- `and` / `or` groups over those tag predicates.
+
+Do not use `identity.*`, `legality.*`, `collection.*`, nested relationship-scope operators, or `not` inside
+`withTagging`.
+
+Inside `withCollectionCard`, only these are allowed:
+
+- `collection.quantity`, `collection.locationName`, `collection.locationType`, `collection.finish`,
+  `collection.altered`, `collection.misprint`.
+- `and` / `or` groups over those Collection predicates.
+
+Do not use `identity.*`, `legality.*`, `tag.*`, `hasTagInHierarchy`, nested relationship-scope operators, or `not`inside
+`withCollectionCard`.
 
 ## Collection Rules
 
@@ -105,6 +133,10 @@ this location.”
 - `collection.locationType` is `"binder"` or `"deck"`.
 - `collection.locationName` comparisons are exact and case-sensitive.
 - Multiple Collection predicates in the same `and` branch scope the same owned rows before quantity is summed.
+- Use simple Collection predicates for normal owned-row searches.
+- Use `withCollectionCard` when a complex query needs explicit Collection row-scope grouping.
+- `sortby: [{"property":"collection.quantity","direction":"desc"}]` sorts by matching scoped quantity where applicable.
+  It does not filter to owned cards unless the filter explicitly includes ownership, such as `collection.quantity > 0`.
 
 ## Includes
 
@@ -114,6 +146,8 @@ this location.”
 - `tags: true` includes direct and inherited Card Identity Tag summaries.
 - `collectionCards: true` includes compact owned Collection Card rows. If Collection predicates are present, these are
   the rows that matched the Collection branch.
+- In mixed `or` queries, `include.collectionCards` is match evidence. It is not automatically all owned copies for cards
+  that matched only through a non-Collection branch.
 
 ## Examples
 
@@ -196,6 +230,127 @@ Tag workflow:
     "args": [{"property": "tag.id"}, "00000000-0000-0000-0000-000000000000"]
   },
   "include": {"tags": true},
+  "limit": 50
+}
+```
+
+Draw plus ramp as independent concepts:
+
+```json
+{
+  "filter": {
+    "op": "and",
+    "args": [
+      {
+        "op": "hasTagInHierarchy",
+        "args": [
+          {
+            "property": "tag.id"
+          },
+          "00000000-0000-0000-0000-000000000001"
+        ]
+      },
+      {
+        "op": "hasTagInHierarchy",
+        "args": [
+          {
+            "property": "tag.id"
+          },
+          "00000000-0000-0000-0000-000000000002"
+        ]
+      }
+    ]
+  },
+  "include": {
+    "tags": true
+  },
+  "limit": 50
+}
+```
+
+Strong draw, where the draw tagging itself must be strong:
+
+```json
+{
+  "filter": {
+    "op": "withTagging",
+    "args": [
+      {
+        "op": "and",
+        "args": [
+          {
+            "op": "hasTagInHierarchy",
+            "args": [
+              {
+                "property": "tag.id"
+              },
+              "00000000-0000-0000-0000-000000000001"
+            ]
+          },
+          {
+            "op": "=",
+            "args": [
+              {
+                "property": "tag.weight"
+              },
+              "strong"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "include": {
+    "tags": true
+  },
+  "limit": 50
+}
+```
+
+Explicit Collection row-scope grouping:
+
+```json
+{
+  "filter": {
+    "op": "withCollectionCard",
+    "args": [
+      {
+        "op": "and",
+        "args": [
+          {
+            "op": "=",
+            "args": [
+              {
+                "property": "collection.locationName"
+              },
+              "Simic Ramp Control"
+            ]
+          },
+          {
+            "op": "=",
+            "args": [
+              {
+                "property": "collection.finish"
+              },
+              "foil"
+            ]
+          },
+          {
+            "op": ">",
+            "args": [
+              {
+                "property": "collection.quantity"
+              },
+              0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "include": {
+    "collectionCards": true
+  },
   "limit": 50
 }
 ```
