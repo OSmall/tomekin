@@ -86,6 +86,7 @@ describe("SQLite Card Query repository", () => {
                 expect.objectContaining({
                     id: "11111111-1111-4111-8111-111111111111",
                     name: "Sol Ring",
+                    totalQuantity: 1,
                     legalities: {commander: "legal"},
                     collectionCards: [
                         expect.objectContaining({
@@ -395,6 +396,31 @@ describe("SQLite Card Query repository", () => {
         });
     });
 
+    test("projects totalQuantity over the matching collection row scope", async () => {
+        await withTempCardQueryRepository(async ({db, repository}) => {
+            insertIdentityWithCollectionRows(db, {
+                identityId: "10000000-0000-4000-8000-000000000055",
+                name: "Multi Printing Deck Card",
+                rows: [
+                    {locationName: "Simic Ramp Control", locationType: "deck", quantity: 1},
+                    {locationName: "Simic Ramp Control", locationType: "deck", quantity: 2},
+                    {locationName: "Main Box", locationType: "binder", quantity: 5},
+                ],
+            });
+
+            const result = await repository.queryCards({
+                filter: {op: "=", args: [{property: "collection.locationName"}, "Simic Ramp Control"]},
+                include: {collectionCards: true},
+            });
+
+            expectOkNames(result, ["Multi Printing Deck Card"]);
+            if (result.isOk()) {
+                expect(result.value.items[0]?.totalQuantity).toBe(3);
+                expect(result.value.items[0]?.collectionCards?.map((row) => row.quantity)).toEqual([1, 2]);
+            }
+        });
+    });
+
     test("keeps collection quantity branch-local under or", async () => {
         await withTempCardQueryRepository(async ({db, repository}) => {
             insertIdentityWithCollectionRows(db, {
@@ -498,10 +524,13 @@ describe("SQLite Card Query repository", () => {
             });
 
             expectOkNames(result, ["Deck Match", "Tagged Elsewhere"]);
-            if (result.isOk()) expect(result.value.items.map((item) => item.collectionCards?.map((row) => row.locationName))).toEqual([
-                ["Simic Ramp Control"],
-                [],
-            ]);
+            if (result.isOk()) {
+                expect(result.value.items.map((item) => item.collectionCards?.map((row) => row.locationName))).toEqual([
+                    ["Simic Ramp Control"],
+                    [],
+                ]);
+                expect(result.value.items.map((item) => item.totalQuantity)).toEqual([1, 0]);
+            }
         });
     });
 
@@ -555,6 +584,7 @@ describe("SQLite Card Query repository", () => {
             });
 
             expectOkNames(result, ["Three Copies", "One Copy", "No Copies"]);
+            if (result.isOk()) expect(result.value.items.map((item) => item.totalQuantity)).toEqual([3, 1, 0]);
         });
     });
 

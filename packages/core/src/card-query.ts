@@ -112,6 +112,7 @@ export type CardQueryResultItem = {
     readonly colorIdentity: ColorIdentity;
     readonly gameChanger: boolean;
     readonly edhrecRank: number | null;
+    readonly totalQuantity: number;
     readonly legalities?: Partial<Record<"commander", FormatLegality>> | undefined;
     readonly tags?: {
         readonly direct: readonly CardQueryTagResult[];

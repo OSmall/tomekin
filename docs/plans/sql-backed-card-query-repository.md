@@ -503,6 +503,9 @@ bounded follow-up queries for only those final IDs.
   rows that contributed to matching Collection branches. If no Collection predicates are present, return all owned rows
   for
   each returned Card Identity.
+- `totalQuantity`: always project a scalar aggregate for final IDs using the same Collection row scope as
+  `collection.quantity`. With no Collection predicates, sum all owned rows. In mixed `or` queries, identities that match
+  only through non-Collection branches report `0` for the scoped total.
 - `include.legalities`: hydrate requested format legalities for final IDs only.
 - `include.tags`: hydrate direct taggings, tag definitions, aliases, and hierarchy data needed to produce deterministic
   `tags.direct` and `tags.inherits` for final IDs only.
@@ -599,17 +602,21 @@ Required test cases:
 7. Owned cards with a tag do not inflate `collection.quantity` because of tag row multiplication.
 8. Collection same-row shorthand: location + finish must match the same Collection row scope.
 9. Collection quantity aggregates only the rows surviving Collection predicates.
-10. Branch-local Collection quantity under `or` does not combine quantities across separate branches.
-11. Quantity after an `or` union scope does combine the unioned rows when the quantity predicate is outside the `or`.
-12. Mixed `or` include evidence: tag-only branch match returns empty `collectionCards` when the Collection branch did
+10. `totalQuantity` projects the same scoped aggregate, including multiple printings, and excludes rows outside the
+    matching Collection scope.
+11. Branch-local Collection quantity under `or` does not combine quantities across separate branches.
+12. Quantity after an `or` union scope does combine the unioned rows when the quantity predicate is outside the `or`.
+13. Mixed `or` include evidence: tag-only branch match returns empty `collectionCards` and `totalQuantity: 0` when the
+    Collection branch did
     not
     match.
-13. Mixed `or` quantity sorting uses `0` for identities with no retained Collection branch evidence.
-14. No Collection predicate plus `sortby: collection.quantity` sorts by total owned quantity.
-15. `include.legalities`, `include.tags`, and `include.collectionCards` hydrate only requested includes and preserve
+14. Mixed `or` quantity sorting uses `0` for identities with no retained Collection branch evidence.
+15. No Collection predicate plus `sortby: collection.quantity` sorts by total owned quantity and `totalQuantity` reports
+    that same all-owned aggregate.
+16. `include.legalities`, `include.tags`, and `include.collectionCards` hydrate only requested includes and preserve
     primary
     result order.
-16. Null-last sorting for nullable reference properties still holds.
+17. Null-last sorting for nullable reference properties still holds.
 
 ## Implementation Slices
 

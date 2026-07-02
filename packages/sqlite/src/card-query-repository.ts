@@ -55,6 +55,11 @@ type CollectionRow = CardQueryCollectionCardResult & {
     readonly cardIdentityId: string;
 };
 
+type CollectionTotalRow = {
+    readonly cardIdentityId: string;
+    readonly totalQuantity: number | null;
+};
+
 type DirectTagRow = CardQueryTagResult & {
     readonly cardIdentityId: string;
 };
@@ -121,7 +126,9 @@ export function createSqliteCardQueryRepository(db: MtgAgentDatabase): CardQuery
                     direct: readonly CardQueryTagResult[];
                     inherits: readonly CardQueryTagResult[]
                 }>();
-                const collectionRowsByIdentity = input.include?.collectionCards ? hydrateCollectionRows(db, ids, hasCollectionPredicate ? compiled?.scope : undefined) : new Map<string, CollectionRow[]>();
+                const collectionScope = hasCollectionPredicate ? compiled?.scope : undefined;
+                const collectionTotalsByIdentity = hydrateCollectionTotals(db, ids, collectionScope);
+                const collectionRowsByIdentity = input.include?.collectionCards ? hydrateCollectionRows(db, ids, collectionScope) : new Map<string, CollectionRow[]>();
 
                 return ok({
                     limit,
@@ -131,6 +138,7 @@ export function createSqliteCardQueryRepository(db: MtgAgentDatabase): CardQuery
                         legalitiesByIdentity.get(row.id) ?? [],
                         tagsByIdentity.get(row.id) ?? {direct: [], inherits: []},
                         collectionRowsByIdentity.get(row.id) ?? [],
+                        collectionTotalsByIdentity.get(row.id) ?? 0,
                     )),
                 } satisfies CardQueryResult);
             } catch (error) {
@@ -508,10 +516,27 @@ where ci.id in (${placeholders(ids.length)})`, [...ids]),
     return groupBy(rows, (row) => row.cardIdentityId);
 }
 
+function hydrateCollectionTotals(db: MtgAgentDatabase, ids: readonly string[], scope: CollectionScope | undefined): Map<string, number> {
+    if (ids.length === 0) return new Map();
+    const scopedPredicate = scope ? joinFragments([fragment(" and cc.id in ("), scope.sql, fragment(")")]) : fragment("");
+    const query = joinFragments([
+        fragment(`select ci.id                         as cardIdentityId,
+                         coalesce(sum(cc.quantity), 0) as totalQuantity
+                  from card_identity ci
+                           left join card_printing cp on cp.card_identity_id = ci.id
+                           left join collection_card cc on cc.card_printing_id = cp.id
+                  where ci.id in (${placeholders(ids.length)})`, [...ids]),
+        scopedPredicate,
+        fragment(" group by ci.id"),
+    ]);
+    const rows = db.$client.prepare(query.text).all(...query.params) as CollectionTotalRow[];
+    return new Map(rows.map((row) => [row.cardIdentityId, row.totalQuantity ?? 0]));
+}
+
 function toResultItem(row: PrimaryRow, input: CardQueryInput, legalities: readonly LegalityRow[], tags: {
     readonly direct: readonly CardQueryTagResult[];
     readonly inherits: readonly CardQueryTagResult[]
-}, collectionRows: readonly CollectionRow[]): CardQueryResultItem {
+}, collectionRows: readonly CollectionRow[], totalQuantity: number): CardQueryResultItem {
     const include = input.include ?? {};
     return {
         id: row.id,
@@ -523,6 +548,7 @@ function toResultItem(row: PrimaryRow, input: CardQueryInput, legalities: readon
         colorIdentity: row.colorIdentity,
         gameChanger: Boolean(row.gameChanger),
         edhrecRank: row.edhrecRank,
+        totalQuantity,
         ...(include.legalities ? {legalities: Object.fromEntries(legalities.filter((legality) => include.legalities?.includes(legality.format as "commander")).map((legality) => [legality.format, legality.legality])) as Partial<Record<"commander", FormatLegality>>} : {}),
         ...(include.tags ? {tags} : {}),
         ...(include.collectionCards ? {collectionCards: collectionRows.map(toCollectionResult)} : {}),

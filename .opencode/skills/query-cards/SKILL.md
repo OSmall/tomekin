@@ -137,6 +137,9 @@ this location.”
 - Use `withCollectionCard` when a complex query needs explicit Collection row-scope grouping.
 - `sortby: [{"property":"collection.quantity","direction":"desc"}]` sorts by matching scoped quantity where applicable.
   It does not filter to owned cards unless the filter explicitly includes ownership, such as `collection.quantity > 0`.
+- Every result item includes `totalQuantity`, the summed `collection.quantity` for the same active Collection row scope.
+  Location, finish, altered, and misprint filters constrain this total. With no Collection predicates, it is total owned
+  quantity across the whole Collection.
 
 ## Includes
 
@@ -148,6 +151,8 @@ this location.”
   the rows that matched the Collection branch.
 - In mixed `or` queries, `include.collectionCards` is match evidence. It is not automatically all owned copies for cards
   that matched only through a non-Collection branch.
+- In mixed `or` queries, `totalQuantity` follows the same evidence scope; a card that matched only through a
+  non-Collection branch reports `0` even if owned elsewhere.
 
 ## Examples
 

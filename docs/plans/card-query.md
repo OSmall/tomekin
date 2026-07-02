@@ -441,6 +441,7 @@ Each compact result item should include enough data for the agent to choose whet
   attached to the card plus an `inherits` section of broader tags derived from the hierarchy. This supports agents
   finding related cards without dumping full descendant subtrees. The result shape should group tags as `tags.direct`
   and `tags.inherits` so agents do not confuse direct taggings with inherited context.
+- `totalQuantity`, the owned Collection quantity for the returned Card Identity under the active Collection row scope.
 - Optional included Collection Card rows that matched the query when `include.collectionCards` is true.
 
 When `include.tags` is true, `tags.direct` should include all direct Card Identity Taggings for the result card, and
@@ -469,6 +470,11 @@ the query's Collection predicates. If no Collection predicates are present, incl
 each returned Card Identity. Omitted or `false` means Collection Card rows are not projected. `include.collectionCards`
 should be boolean-only in the first slice; reject structured Collection include options until a future dedicated
 copy-matching service needs them.
+Every result item should include `totalQuantity` regardless of `include.collectionCards`. It uses the same active
+Collection row scope as `collection.quantity`, so a location-filtered query reports the quantity in that location, not
+the Card Identity's total owned quantity elsewhere. If no Collection predicate is present, `totalQuantity` is the total
+owned quantity across the whole Collection. Unowned identities and identities that only matched a reference-only branch
+in a mixed `OR` query report `0` for the scoped total.
 `include.collectionCards` is projection-only and must never constrain matching. A reference-only query with
 `include.collectionCards: true` remains unowned-capable; owned matching identities include their owned rows, and unowned
 matching identities include an empty `collectionCards` array.
@@ -511,7 +517,8 @@ Do not include purchase price, purchase currency, source row number, or added da
 Collection browsing workflow needs them.
 Preserve one projected row per imported `CollectionCard` row. Do not merge rows in the first slice; `quantity` carries
 the source row quantity, and row granularity preserves condition, location, finish, and printing distinctions.
-Aggregation is used for filtering through `collection.quantity`, not for projection.
+Aggregation is used for filtering through `collection.quantity` and for the scalar `totalQuantity` projection. It is not
+used to merge `collectionCards` rows.
 
 Use detail tools for full Card Identity records, parts, broader legality data, tags, and longer text. Add optional
 bounded match reasons later only if real agent traces show they improve deck-building quality.
