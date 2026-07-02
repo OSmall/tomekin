@@ -367,6 +367,17 @@ example,
 `tag.slug != "ramp"` could otherwise be confused between "has at least one attached tag that is not ramp" and "has no
 ramp tag."
 
+Independent tag identity predicates in an outer `and` should remain independent relationship searches so Card Query can
+express common multi-tag searches such as "draw and ramp." To require a tag concept and tag metadata on the same Card
+Identity Tagging row, use the explicit `withTagging` relationship-scope operator. For example, "strong draw" should be
+expressed by placing both the draw hierarchy predicate and `tag.weight = "strong"` inside one `withTagging` child
+filter,
+so a weak draw tag plus an unrelated strong ramp tag does not match. The companion `withCollectionCard` operator
+provides
+the same explicit scoping pattern for Collection rows; simple Collection predicates remain available as ergonomic
+owned-row shorthand. Detailed operator semantics are recorded in
+[`sql-backed-card-query-repository.md`](./sql-backed-card-query-repository.md).
+
 ## First Operators
 
 Start with a bounded operator set:
@@ -376,6 +387,7 @@ Start with a bounded operator set:
 - Text operators: `contains`.
 - Set/list operator: `in`.
 - MTG-specific operators and expressions: `colorIdentitySubsetOf`, `hasTagInHierarchy`.
+- Relationship-scope operators: `withTagging`, `withCollectionCard`.
 
 Avoid regex, arbitrary functions, property-property comparisons, and raw SQL escape hatches in the first implementation.
 
@@ -504,6 +516,131 @@ Aggregation is used for filtering through `collection.quantity`, not for project
 Use detail tools for full Card Identity records, parts, broader legality data, tags, and longer text. Add optional
 bounded match reasons later only if real agent traces show they improve deck-building quality.
 
+## SQL-Backed Implementation Shape
+
+Detailed implementation handoff for the SQL-backed repository replacement lives in
+[`sql-backed-card-query-repository.md`](./sql-backed-card-query-repository.md). That plan records the explicit
+relationship-scope operators, SQL compiler shape, rollout slices, and required semantic tests.
+
+The SQLite Card Query implementation should keep the core `CardQueryRepository` port and `CardQueryInput`/
+`CardQueryResult` contract unchanged. SQL pushdown is an internal SQLite adapter concern, not an agent-facing API
+change.
+Supported predicates, sorting, limiting, and Collection quantity aggregation should be executed by SQLite rather than by
+loading all Card Identities, tags, legalities, and Collection rows into TypeScript. TypeScript may still assemble the
+already-constrained SQL rows into the nested `CardQueryResultItem` shape.
+
+This should be a replacement of the current in-memory SQLite Card Query repository, not a production fallback or
+parallel
+implementation. The public Card Query tool shape and documented feature set should remain stable: existing envelope
+fields, queryables, operators, includes, sorting, and limits should stay available. During development, the old
+evaluator
+may be useful as a temporary test oracle, but the final SQLite adapter should have one SQL-backed implementation for
+supported Card Queries. The old evaluator's accidental behaviour should not define the new implementation; where
+behaviour
+needs clarification, use this plan's documented SQL-backed semantics as the source of truth.
+
+The primary query should be identity-first: it should return at most one row per Card Identity, apply identity-level
+ordering and `limit`, and use bounded follow-up queries to hydrate requested includes for the final Card Identity IDs.
+This avoids multiplying rows when a Card Identity has many Collection Card rows, legalities, and Card Identity Taggings.
+
+Collection predicates should compile into joined `collection_card` / `collection_location` row restrictions, grouped
+back
+to Card Identity. `collection.quantity` is an aggregate over the matching Collection row scope and should be expressed
+in
+`HAVING`, not as a scalar `WHERE` predicate. For example, a query for owned foil cards in a specific Collection Location
+with more than one matching copy has this shape:
+
+```sql
+select
+  ci.id,
+  ci.name,
+  sum(cc.quantity) as collection_quantity
+from card_identity ci
+join card_printing cp
+  on cp.card_identity_id = ci.id
+join collection_card cc
+  on cc.card_printing_id = cp.id
+join collection_location cl
+  on cl.id = cc.collection_location_id
+where cl.id = ?
+  and cc.finish = 'foil'
+group by ci.id
+having sum(cc.quantity) > 1
+order by ci.name asc
+limit ?;
+```
+
+Tag and legality predicates should normally be compiled as identity-level `exists` subqueries rather than joined into
+the
+same Collection aggregate query. Joining multiple one-to-many relationships into the same aggregate query can multiply
+Collection rows and inflate `sum(cc.quantity)`. A query for owned cards with a direct `draw` tag should therefore keep
+Collection ownership in the grouped join and use `exists` for the tag predicate:
+
+```sql
+select
+  ci.id,
+  ci.name,
+  sum(cc.quantity) as collection_quantity
+from card_identity ci
+join card_printing cp
+  on cp.card_identity_id = ci.id
+join collection_card cc
+  on cc.card_printing_id = cp.id
+where exists (
+  select 1
+  from card_identity_tagging cit
+  join card_identity_tag tag
+    on tag.id = cit.tag_id
+  where cit.card_identity_id = ci.id
+    and tag.slug = 'draw'
+)
+group by ci.id
+having sum(cc.quantity) > 0
+order by ci.name asc
+limit ?;
+```
+
+Deck-building concept searches should usually resolve the intended Card Identity Tag first and use
+`hasTagInHierarchy(tag.id, <resolved tag id>)` rather than direct slug matching. Hierarchy-aware tag matching should use
+a
+recursive CTE to include the resolved tag and all descendant tags:
+
+```sql
+with recursive tag_scope(tag_id) as (
+  select ?
+  union
+  select h.child_tag_id
+  from card_identity_tag_hierarchy h
+  join tag_scope scope
+    on h.parent_tag_id = scope.tag_id
+)
+select
+  ci.id,
+  ci.name,
+  sum(cc.quantity) as collection_quantity
+from card_identity ci
+join card_printing cp
+  on cp.card_identity_id = ci.id
+join collection_card cc
+  on cc.card_printing_id = cp.id
+where exists (
+  select 1
+  from card_identity_tagging cit
+  where cit.card_identity_id = ci.id
+    and cit.tag_id in (select tag_id from tag_scope)
+)
+group by ci.id
+having sum(cc.quantity) > 0
+order by ci.name asc
+limit ?;
+```
+
+When `include.collectionCards` is true, hydrate Collection Card rows in a bounded follow-up query for the final Card
+Identity IDs. If the filter contains Collection predicates, return only the Collection rows that contributed to matching
+Collection branches. If the filter contains no Collection predicates, return all owned Collection rows for each returned
+Card Identity. Likewise, `include.legalities` and `include.tags` should be hydrated by bounded follow-up queries for the
+final IDs rather than by expanding the primary aggregate query.
+
 ## Natural-Language Scenarios
 
 Use these scenarios as design fixtures when testing whether the query shape stays useful:
@@ -518,6 +655,12 @@ Use these scenarios as design fixtures when testing whether the query shape stay
 
 ## Follow-Up Decisions
 
+- SQL-backed repository rollout should follow the slices in
+  [`sql-backed-card-query-repository.md`](./sql-backed-card-query-repository.md): first add the explicit
+  relationship-scope
+  operators and agent guidance, then add semantic repository tests that lock the intended SQL-backed behaviour, then
+  replace the in-memory SQLite Card Query evaluator with the SQL-backed implementation. This keeps the rewrite safer and
+  avoids accidentally preserving undocumented behaviour from the old evaluator.
 - Priority implementation gap: strict Card Query validation coverage is still thin. Add core parser tests for every
   documented invalid input class, then fix `parseCardQueryInput` until those tests pass before relying on repository
   behaviour.
