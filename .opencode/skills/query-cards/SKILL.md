@@ -97,9 +97,13 @@ Sortable properties:
 - `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `search_card_identity_tags` first.
 - For deck-building concepts such as draw, ramp, removal, recursion, protection, sacrifice, or tokens, call
   `search_card_identity_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
+- `hasTagInHierarchy` matches the chosen tag and descendant taggings. Use it for normal concept search, especially broad
+  functional concepts represented by Inherited Card Identity Tags.
 - For multi-tag concept searches such as draw plus ramp, use independent `hasTagInHierarchy` predicates in an outer
   `and`. Do not put both concept predicates in one `withTagging` unless one direct tagging row must satisfy both.
 - Use `withTagging` when a tag concept and tag metadata must be true of the same tagging row, such as strong draw.
+- Tag weights are exact enum values: `very_strong`, `strong`, `median`, and `weak`. Use `=` or `in`; ranked comparisons
+  such as `tag.weight >= "strong"` are not supported.
 - `!=` is rejected for `collection.*` and `tag.*` predicates.
 - `legality.commander` values include `legal`, `not_legal`, `banned`, and `restricted`.
 - Color Identity values are exact WUBRG strings such as `""`, `"G"`, `"UG"`, or `"WUBRG"`.
@@ -119,7 +123,8 @@ Inside `withCollectionCard`, only these are allowed:
   `collection.altered`, `collection.misprint`.
 - `and` / `or` groups over those Collection predicates.
 
-Do not use `identity.*`, `legality.*`, `tag.*`, `hasTagInHierarchy`, nested relationship-scope operators, or `not`inside
+Do not use `identity.*`, `legality.*`, `tag.*`, `hasTagInHierarchy`, nested relationship-scope operators, or `not`
+inside
 `withCollectionCard`.
 
 ## Collection Rules
@@ -153,6 +158,16 @@ this location.”
   that matched only through a non-Collection branch.
 - In mixed `or` queries, `totalQuantity` follows the same evidence scope; a card that matched only through a
   non-Collection branch reports `0` even if owned elsewhere.
+
+Tag projection rules:
+
+- `tags.direct` contains the card's direct Card Identity Taggings.
+- `tags.inherits` contains Inherited Card Identity Tags derived from direct taggings through the tag hierarchy.
+- Inherited Card Identity Tags are useful discovery evidence, not weaker evidence by default.
+- `tags.inherits.weight` uses the weight from the direct tagging that caused the inherited tag to apply. If multiple
+  direct taggings inherit the same Inherited Card Identity Tag with different weights, the strongest weight is kept.
+- Direct and inherited tags are sorted strongest first: `very_strong`, `strong`, `median`, `weak`, then by stable tag
+  fields.
 
 ## Examples
 

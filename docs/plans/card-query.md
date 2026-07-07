@@ -438,27 +438,27 @@ Each compact result item should include enough data for the agent to choose whet
 - Game Changer flag.
 - EDHREC rank.
 - Optional compact tag summaries through `include.tags`, following the Scryfall Tagger-style pattern of direct tags
-  attached to the card plus an `inherits` section of broader tags derived from the hierarchy. This supports agents
-  finding related cards without dumping full descendant subtrees. The result shape should group tags as `tags.direct`
-  and `tags.inherits` so agents do not confuse direct taggings with inherited context.
+  attached to the card plus an `inherits` section of Inherited Card Identity Tags derived from the hierarchy. This
+  supports agents finding related cards without dumping full descendant subtrees. The result shape should group tags as
+  `tags.direct` and `tags.inherits` so agents do not confuse direct taggings with inherited context.
 - `totalQuantity`, the owned Collection quantity for the returned Card Identity under the active Collection row scope.
 - Optional included Collection Card rows that matched the query when `include.collectionCards` is true.
 
 When `include.tags` is true, `tags.direct` should include all direct Card Identity Taggings for the result card, and
-`tags.inherits` should include broader ancestor Inherited Card Identity Tags derived from those direct taggings.
-Inherited projection should not include descendant tags, and an ancestor tag that is already directly tagged should
-remain
-only in `tags.direct`, not duplicated in `tags.inherits`.
+`tags.inherits` should include Inherited Card Identity Tags derived from those direct taggings.
+Inherited projection should not include descendant tags, and an Inherited Card Identity Tag that is already directly
+tagged should remain only in `tags.direct`, not duplicated in `tags.inherits`.
 `tags.inherits.weight` should use the weight from the direct tagging that caused the inherited tag to apply; if multiple
-direct taggings inherit the same broader tag with different weights, keep the strongest weight. Do not include
-path/provenance by default. Inherited tag annotations should be `null` in the first slice because direct-tag annotations
-may not describe the broader inherited tag accurately.
+direct taggings inherit the same Inherited Card Identity Tag with different weights, keep the strongest weight. Do not
+include path/provenance by default. Inherited tag annotations should be `null` in the first slice because direct-tag
+annotations may not describe the Inherited Card Identity Tag accurately.
 
 `include.tags` should be boolean-only in the first slice. `true` includes both `tags.direct` and `tags.inherits` in the
 compact documented shape. Omitted or `false` means tags are not projected. Reject structured tag include options until a
 real workflow needs them. `include.tags` is projection-only; untagged matching Card Identities should still appear with
 empty `tags.direct` and `tags.inherits` arrays when tags are included.
-Inherited tag projection should traverse broader ancestor tags defensively and de-duplicate visited hierarchy nodes so a
+Inherited tag projection should traverse parent-tag relationships defensively and de-duplicate visited hierarchy nodes
+so a
 malformed hierarchy cycle cannot hang Card Query. The Scryfall tag import path should own hierarchy validation; Card
 Query should return best-effort tag projections and emit a non-failing warning/diagnostic through the available logging
 mechanism when traversal detects a cycle.

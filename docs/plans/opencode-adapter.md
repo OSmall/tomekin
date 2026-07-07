@@ -383,7 +383,10 @@ Use opencode's plural project-local directories from the current docs. Singular 
 Planned files:
 
 - `.opencode/agents/mtg-deck-builder.md`: primary product agent instructions.
-- `.opencode/skills/mtg-deck-building/SKILL.md`: reusable deck-building workflow instructions if useful separately from the primary agent.
+- `.opencode/skills/mtg-deck-building/SKILL.md`: reusable deck-building tool orchestration instructions if useful
+  separately from the primary agent.
+- `.opencode/skills/commander-deck-architecture/SKILL.md`: Commander/EDH construction methodology for synergy discovery,
+  role-density targets, mana-base heuristics, and supported static win-path checks.
 - `.opencode/tools/mtg-agent.ts`: custom tool definitions that delegate to `packages/opencode`.
 - `.opencode/plugins/mtg-agent.ts`: optional plugin hooks only if lifecycle behavior is needed beyond custom tool definitions.
 - `opencode.json`: only if required for project-local config such as `default_agent` or explicit permission overrides.
@@ -397,7 +400,8 @@ The agent Markdown file should include valid opencode frontmatter:
 - `permission`: denies broad built-in capabilities by default and allows only required product custom tools.
 - `steps`: optional native opencode iteration cap; use this for a coarse safety limit in addition to the agent's own three-pass workflow instruction.
 
-If the skill file is added, its `SKILL.md` frontmatter must include `name: mtg-deck-building` and a specific `description`, and the `name` must match the containing directory.
+If skill files are added, each `SKILL.md` frontmatter must include a specific `name` and `description`, and the `name`
+must match the containing directory.
 
 Custom tool definitions should use opencode's `tool()` helper from `@opencode-ai/plugin`, Zod-backed `args`, and `execute(args, context)` handlers. If multiple tools are exported from one file, opencode names them with the `<filename>_<exportname>` convention; the implementation should choose filenames/export names that produce clear tool names.
 
@@ -406,8 +410,17 @@ If TypeScript tooling or tests typecheck `.opencode/tools/` files directly, make
 The first-slice deck-builder agent should be a primary agent.
 
 The base deck-builder agent should be workflow-light and authority-bound. It should know the product boundaries, allowed
-tools, and deterministic checks, but should not hardcode a detailed deck-building workflow once Card Query is
-available. Repeatable workflows should move into skills or subagents after they are validated through real use.
+tools, and deterministic checks, but should not hardcode detailed format construction methodology once Card Query is
+available. Repeatable format methodology should move into skills or subagents after it is validated through real use.
+
+The first split is:
+
+- `mtg-deck-building`: canonical orchestration skill for Deck Building Brief confirmation, format-methodology skill
+  loading, Agent Tool sequencing, validation, rendering, and persistence.
+- `commander-deck-architecture`: canonical Commander/EDH methodology skill for commander analysis, tag snowballing,
+  role-density targets, mana-base heuristics, final cuts, and static win-path checks.
+- `query-cards`: canonical Card Query syntax skill, including tag hierarchy matching, `withTagging`, and tag projection
+  semantics.
 
 Least privilege rules:
 
@@ -522,7 +535,8 @@ Live deck-building quality evaluation may be added later as an explicit opt-in s
 - Add `.opencode/tools/mtg-agent.ts` to expose custom tools.
 - Add `.opencode/plugins/mtg-agent.ts` only if lifecycle hooks are needed.
 - Add `.opencode/agents/mtg-deck-builder.md` as primary least-privilege product agent.
-- Add `.opencode/skills/mtg-deck-building/SKILL.md` only if it reduces prompt duplication.
+- Add `.opencode/skills/mtg-deck-building/SKILL.md` for deck-building tool orchestration.
+- Add `.opencode/skills/commander-deck-architecture/SKILL.md` for Commander/EDH construction methodology.
 - Add minimal root `opencode.json` only if required.
 - Add adapter smoke tests.
 

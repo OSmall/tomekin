@@ -12,3 +12,4 @@ Authored and edited only by osmall, not agents.
 - refine agent and skills to follow better deck building practices
 - scryfall import from remote
 - add timeout to card query
+- make `mtg-agent_save_deck_candidate` quicker

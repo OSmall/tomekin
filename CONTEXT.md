@@ -126,10 +126,11 @@ A reusable descriptive tag that can apply to `CardIdentity` records for search, 
 _Avoid_: Oracle Tag, card label
 
 **Inherited Card Identity Tag**:
-A broader Card Identity Tag that applies to a Card Identity through the tag hierarchy because a more specific tag is
-directly attached. Inherited tags provide grouping and search context but are distinct from direct Card Identity
-Taggings.
-_Avoid_: Direct tag, implicit evidence
+A broader Card Identity Tag that applies to a Card Identity through the tag hierarchy because a more specific Card
+Identity Tagging supports it. Inherited tags provide grouping and search context and carry the strength of the
+supporting
+specific tagging.
+_Avoid_: Umbrella tag, ancestor tag, broader tag, direct tag, implicit evidence
 
 **Card Identity Tagging**:
 The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific meaning such as prominence or annotation.
