@@ -299,3 +299,47 @@ install contracts.
 - Exact logging environment variable names.
 - Exact Scryfall sync script name, though `sync:scryfall` is the current plan.
 - Whether to manually smoke-test real Scryfall bulk sync before the public release tag.
+
+```aiignore
+# Prompt to continue with implementation
+
+Continue the alpha public release prep plan for this repo.
+
+First, read:
+- AGENTS.md
+- docs/plans/alpha-public-release-prep.md
+- docs/adr/0014-structured-local-logging.md
+- docs/adr/0015-explicit-scryfall-bulk-sync-command.md
+- docs/adr/0016-clone-based-alpha-distribution.md
+- docs/testing.md
+- docs/architecture.md
+
+Then inspect git status and recent commits. Determine the first incomplete slice in `docs/plans/alpha-public-release-prep.md` by checking the worktree, package files, tests, and recent commit history.
+
+Execute exactly one incomplete slice at a time, in order:
+1. Pin dependency versions.
+2. Add structured local logging.
+3. Add one-command Scryfall sync.
+4. Refresh public alpha README.
+5. Rename project, but only after asking me for the final name.
+6. Final public-ready check.
+
+Rules:
+- Do not skip ahead.
+- Do not implement multiple slices in one commit unless I explicitly approve it.
+- Before committing, inspect `git status`, `git diff`, and recent commits.
+- Stage only files intentionally changed for the current slice.
+- Do not touch, revert, or stage unrelated dirty files.
+- Use Bun commands, not npm/node/npx.
+- Run the verification listed for the slice.
+- If verification fails, fix the slice before committing.
+- If the current slice requires a decision not answered by the plan, ask me one focused question.
+- Do not add SECURITY.md, CONTRIBUTING.md, or a license.
+- Keep the project rename as the final feature slice and ask before doing it.
+
+When the slice is complete, commit it with the commit message specified in the plan, then stop and report:
+- which slice was completed
+- verification commands run
+- commit hash
+- any remaining risks or follow-up decisions
+```
