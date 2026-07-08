@@ -15,9 +15,9 @@
     "typecheck": "tsc -b"
   },
   "devDependencies": {
-    "@opencode-ai/plugin": "^1.17.8",
-    "@types/bun": "latest",
-    "drizzle-kit": "latest",
-    "typescript": "latest"
+    "@opencode-ai/plugin": "1.17.8",
+    "@types/bun": "1.3.14",
+    "drizzle-kit": "0.31.10",
+    "typescript": "6.0.3"
   }
 }
