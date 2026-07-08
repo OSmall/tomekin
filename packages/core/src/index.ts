@@ -7,5 +7,6 @@ export * from "./deck-building-brief";
 export * from "./deck-candidate";
 export * from "./deck-candidate-rendering";
 export * from "./import-foundation";
+export * from "./logging";
 export * from "./scryfall-json-source";
 export * from "./scryfall-sync";

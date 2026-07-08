@@ -1,6 +1,14 @@
 import {stat} from "node:fs/promises";
 import {resolve} from "node:path";
-import {type Clock, createCollectionImportServices} from "@mtg-agent/core";
+import {
+    type Clock,
+    createCollectionImportServices,
+    createRootLogger,
+    type LogComponent,
+    type Logger,
+    resolveLogConfigFromEnv,
+    serializeError
+} from "@mtg-agent/core";
 import {closeDatabase, createSqliteCollectionRepository, openDatabase, resolveDatabasePath} from "@mtg-agent/sqlite";
 
 export type ImportCollectionCommandIo = {
@@ -12,36 +20,48 @@ export type ImportCollectionCommandEnv = {
     readonly MTG_AGENT_DB_PATH?: string | undefined;
 };
 
+export type ImportCollectionCommandRuntime = {
+    readonly log: Logger;
+};
+
 export async function runImportCollectionCommand(
     args: readonly string[],
     env: ImportCollectionCommandEnv,
     io: ImportCollectionCommandIo,
     clock: Clock = {now: () => new Date()},
+    runtime: ImportCollectionCommandRuntime,
 ): Promise<number> {
+    const startedAtMs = performance.now();
+    const logger = runtime.log.child({component: "cli" satisfies LogComponent, command: "import:collection"});
     const parsed = parseArgs(args);
     if (parsed.type === "error") {
+        logger.warn({operation: "parse_args", status: "failed", message: parsed.message}, "Collection import command argument parsing failed");
         io.stderr.write(`${parsed.message}\n${usage()}\n`);
         return 1;
     }
 
     const dbPath = parsed.dbPath ?? resolveDatabasePath(env);
     const sourcePath = resolve(parsed.sourcePath);
+    const context = {operation: "import_collection", source: parsed.source, sourcePath, databasePath: dbPath};
+    logger.info({...context, status: "started"}, "Collection import command started");
     try {
         const sourceStat = await stat(sourcePath);
         if (!sourceStat.isFile()) throw new Error("not a file");
-    } catch {
+    } catch (error) {
+        logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Collection import source file was missing");
         io.stderr.write(`Missing Collection source file: ${sourcePath}\n`);
         io.stderr.write(`Target database: ${dbPath}\n`);
         return 1;
     }
 
     const csvText = await Bun.file(sourcePath).text();
-    const db = openDatabase(dbPath);
+    const db = openDatabase(dbPath, {log: runtime.log});
     try {
         const repository = createSqliteCollectionRepository(db, clock);
         const services = createCollectionImportServices(repository, clock);
         const result = await services.importManaBoxCollectionCsv({sourcePath, csvText});
         if (result.isErr()) {
+            logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: result.error}, "Collection import command failed");
             if (result.error.type === "import_failed") {
                 for (const warning of result.error.importAttempt.warnings) io.stderr.write(`Warning: ${warning}\n`);
                 for (const error of result.error.importAttempt.errors) io.stderr.write(`Error: ${error}\n`);
@@ -54,6 +74,7 @@ export async function runImportCollectionCommand(
 
         for (const warning of result.value.warnings) io.stderr.write(`Warning: ${warning}\n`);
         renderSuccess(io, result.value);
+        logger.info({...context, status: "succeeded", durationMs: elapsedMs(startedAtMs), importedRowCount: result.value.importedRowCount, totalQuantity: result.value.totalQuantity, warningCount: result.value.warningCount}, "Collection import command succeeded");
         return 0;
     } finally {
         closeDatabase(db);
@@ -110,10 +131,17 @@ function usage(): string {
     return "Usage: bun run import:collection -- [--db <sqlite-path>] manabox <collection.csv>";
 }
 
+function elapsedMs(startedAtMs: number): number {
+    return Math.round(performance.now() - startedAtMs);
+}
+
 if (import.meta.main) {
-    const exitCode = await runImportCollectionCommand(Bun.argv.slice(2), {MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH}, {
+    const log = createRootLogger(resolveLogConfigFromEnv(process.env));
+    const exitCode = await runImportCollectionCommand(Bun.argv.slice(2), {
+        MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH,
+    }, {
         stdout: {write: (message) => process.stdout.write(message)},
         stderr: {write: (message) => process.stderr.write(message)},
-    });
+    }, {now: () => new Date()}, {log});
     process.exit(exitCode);
 }

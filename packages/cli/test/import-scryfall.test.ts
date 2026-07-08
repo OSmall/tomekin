@@ -3,11 +3,13 @@ import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {runImportScryfallCommand} from "@mtg-agent/cli";
+import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
 import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
 
 const clock = {
   now: () => new Date("2025-01-01T00:00:00.000Z"),
 };
+const testLog = createTestRootLoggerFromEnv();
 
 describe("import:scryfall command", () => {
   test("imports oracle_cards, oracle_tags, and all_cards fixtures into the configured SQLite database", async () => {
@@ -255,20 +257,25 @@ describe("import:scryfall command", () => {
   });
 });
 
+type TestCommandEnv = {
+    readonly MTG_AGENT_DB_PATH?: string;
+};
+
 async function runCommand(
   args: readonly string[],
-  env: { readonly MTG_AGENT_DB_PATH?: string },
+  env: TestCommandEnv,
 ): Promise<{ readonly exitCode: number; readonly stdout: string; readonly stderr: string }> {
   let stdout = "";
   let stderr = "";
   const exitCode = await runImportScryfallCommand(
     args,
-    env,
+      env,
     {
       stdout: { write: (message) => (stdout += message) },
       stderr: { write: (message) => (stderr += message) },
     },
     clock,
+      {log: testLog},
   );
   return { exitCode, stdout, stderr };
 }
@@ -288,12 +295,12 @@ async function createFixtureFiles(): Promise<{
   await Bun.write(oraclePath, JSON.stringify(rawOracleCards));
   await Bun.write(allCardsPath, JSON.stringify(rawAllCards));
   await Bun.write(oracleTagsPath, JSON.stringify(rawOracleTags));
-  applySqliteMigrations(dbPath);
+  applySqliteMigrations(dbPath, {log: testLog});
   return { dir, dbPath, oraclePath, allCardsPath, oracleTagsPath };
 }
 
 async function readRepositorySnapshot(dbPath: string) {
-  const db = openDatabase(dbPath);
+  const db = openDatabase(dbPath, {log: testLog});
   try {
     const repository = createSqliteScryfallRepository(db, clock);
     const identities = await repository.listCardIdentities();

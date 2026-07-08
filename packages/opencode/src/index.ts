@@ -1,4 +1,4 @@
-import {createAgentToolHandlers, createImportFoundationServices} from "@mtg-agent/core";
+import {createAgentToolHandlers, createImportFoundationServices, type LogComponent, type Logger} from "@mtg-agent/core";
 import {
     closeDatabase,
     createSqliteCardQueryRepository,
@@ -17,7 +17,14 @@ export type LocalAgentToolRuntime = {
     readonly close: () => void;
 };
 
-export function createLocalImportFoundation() {
+export type LocalRuntimeOptions = {
+    readonly databasePath?: string | undefined;
+    readonly log: Logger;
+};
+
+export function createLocalImportFoundation(options: { readonly log: Logger }) {
+    const logger = options.log.child({component: "opencode" satisfies LogComponent});
+  logger.info({operation: "create_import_foundation"}, "OpenCode import foundation services created");
   return {
     databasePath: resolveDatabasePath(),
     services: createImportFoundationServices({
@@ -26,8 +33,11 @@ export function createLocalImportFoundation() {
   };
 }
 
-export function createLocalAgentToolHandlers(dbPath = resolveDatabasePath()): LocalAgentToolRuntime {
-  const db = openDatabase(dbPath);
+export function createLocalAgentToolHandlers(options: LocalRuntimeOptions): LocalAgentToolRuntime {
+    const dbPath = options.databasePath ?? resolveDatabasePath();
+    const logger = options.log.child({component: "opencode" satisfies LogComponent, databasePath: dbPath});
+  logger.info({operation: "create_agent_tool_handlers", status: "started"}, "OpenCode agent tool handlers starting");
+    const db = openDatabase(dbPath, {log: options.log});
   const clock = {now: () => new Date()};
     const handlers = createAgentToolHandlers({
         cardReference: createSqliteCardReferenceRepository(db),
@@ -38,7 +48,10 @@ export function createLocalAgentToolHandlers(dbPath = resolveDatabasePath()): Lo
     return {
         databasePath: dbPath,
         handlers,
-    close: () => closeDatabase(db),
+    close: () => {
+      logger.info({operation: "close_agent_tool_handlers", status: "succeeded"}, "OpenCode agent tool handlers closed");
+      closeDatabase(db);
+    },
   };
 }
 

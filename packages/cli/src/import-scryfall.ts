@@ -4,12 +4,17 @@ import {pathToFileURL} from "node:url";
 import {heapStats} from "bun:jsc";
 import {
   type Clock,
+  createRootLogger,
   createScryfallLocalImportServices,
+  type LogComponent,
+  type Logger,
+  resolveLogConfigFromEnv,
   type ScryfallBulkDataType,
   ScryfallBulkDataTypeSchema,
   type ScryfallFinalizationPhase,
   type ScryfallImportEvent,
   type ScryfallImportObserver,
+  serializeError,
 } from "@mtg-agent/core";
 import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath,} from "@mtg-agent/sqlite";
 
@@ -25,14 +30,22 @@ export type ImportScryfallCommandEnv = {
   readonly MTG_AGENT_DB_PATH?: string | undefined;
 };
 
+export type ImportScryfallCommandRuntime = {
+  readonly log: Logger;
+};
+
 export async function runImportScryfallCommand(
   args: readonly string[],
   env: ImportScryfallCommandEnv,
   io: ImportScryfallCommandIo,
   clock: Clock = { now: () => new Date() },
+  runtime: ImportScryfallCommandRuntime,
 ): Promise<number> {
+  const startedAtMs = performance.now();
+  const logger = runtime.log.child({component: "cli" satisfies LogComponent, command: "import:scryfall"});
   const parsed = parseArgs(args);
   if (parsed.type === "error") {
+    logger.warn({operation: "parse_args", status: "failed", message: parsed.message}, "Scryfall import command argument parsing failed");
     io.stderr.write(`${parsed.message}\n${usage()}\n`);
     return 1;
   }
@@ -40,6 +53,8 @@ export async function runImportScryfallCommand(
   const dbPath = parsed.dbPath ?? resolveDatabasePath(env);
   const sourcePath = resolve(parsed.sourcePath);
   const timingObserver = parsed.timing ? createCliTimingObserver(io.stderr) : undefined;
+  const context = {operation: "import_scryfall", bulkDataType: parsed.bulkDataType, sourcePath, databasePath: dbPath};
+  logger.info({...context, status: "started"}, "Scryfall import command started");
   let sourceStat: Awaited<ReturnType<typeof stat>>;
 
   try {
@@ -49,13 +64,14 @@ export async function runImportScryfallCommand(
       io.stderr.write(`Target database: ${dbPath}\n`);
       return 1;
     }
-  } catch {
+  } catch (error) {
+    logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Scryfall import source file was missing");
     io.stderr.write(`Missing Scryfall source file: ${sourcePath}\n`);
     io.stderr.write(`Target database: ${dbPath}\n`);
     return 1;
   }
 
-  const db = openDatabase(dbPath);
+  const db = openDatabase(dbPath, {log: runtime.log});
 
   try {
     const repository = createSqliteScryfallRepository(db, clock);
@@ -101,9 +117,11 @@ export async function runImportScryfallCommand(
         sourcePath,
         importedRecordCount: result.value.importedRecordCount,
       });
+      logger.info({...context, status: "succeeded", durationMs: elapsedMs(startedAtMs), importedRecordCount: result.value.importedRecordCount}, "Scryfall import command succeeded");
       return 0;
     }
 
+    logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: result.error}, "Scryfall import command failed");
     renderFailure(io, {
       dbPath,
       bulkDataType: parsed.bulkDataType,
@@ -464,6 +482,10 @@ function formatDuration(durationMs: number): string {
   return `${(durationMs / 1_000).toFixed(1)} s`;
 }
 
+function elapsedMs(startedAtMs: number): number {
+  return Math.round(performance.now() - startedAtMs);
+}
+
 function renderFailure(
   io: ImportScryfallCommandIo,
   summary: {
@@ -488,13 +510,18 @@ function usage(): string {
 }
 
 if (import.meta.main) {
+  const log = createRootLogger(resolveLogConfigFromEnv(process.env));
   const exitCode = await runImportScryfallCommand(
     process.argv.slice(2),
-    { MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH },
+      {
+          MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH,
+      },
     {
       stdout: { write: (message) => process.stdout.write(message) },
       stderr: { write: (message) => process.stderr.write(message) },
     },
+      {now: () => new Date()},
+      {log},
   );
   process.exit(exitCode);
 }

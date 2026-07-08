@@ -82,12 +82,14 @@ Relevant external references:
 - Use Pino as the first logging implementation because it is efficient, structured-JSON-first, TypeScript-friendly,
   modern, well supported, and maps cleanly to later cloud logging.
 - Put Pino behind a small project logging boundary so application code does not depend on Pino directly.
-- Local logging is always enabled at a basic level by default.
+- Local logging is always enabled at debug level by default during the alpha.
 - Default logs write under `.data/`, which is already gitignored.
 - Expose logging configuration through environment variables rather than adding config files for the alpha.
+- Default logs are human-readable; structured JSON logs remain available through an environment override.
 - Log tool inputs and outputs, SQL query text and parameters, CLI command lifecycle events, import progress summaries,
   sync/download lifecycle events, and errors.
-- Treat potentially large or sensitive payloads as debug/trace detail rather than always-on info logs.
+- Treat potentially large or sensitive payloads as debug/trace detail rather than always-on info logs. Because the alpha
+  default is debug, users should lower `MTG_AGENT_LOG_LEVEL` to `info` for quieter local logs.
 - Add Drizzle SQL logging at the SQLite adapter boundary.
 - Add one explicit Scryfall download/import command for the default reference-data setup path.
 - Preserve the existing local-file Scryfall import command for repair, debugging, and fixture-backed workflows.
@@ -143,8 +145,8 @@ Planned work:
 
 - Add Pino as the logging dependency.
 - Add a small logging module owned by the appropriate shared package or adapter boundary.
-- Default to writing structured JSON logs to a local file under `.data/`.
-- Support environment overrides such as log path and log level.
+- Default to writing human-readable logs to a local file under `.data/`.
+- Support environment overrides such as log path, log level, and log format.
 - Add child loggers or equivalent bindings for `cli`, `sqlite`, `opencode`, `scryfall_import`, `scryfall_sync`, and
   `agent_tool` contexts.
 - Wire Drizzle's custom logger option so SQL query text and parameters are recorded.
@@ -215,7 +217,7 @@ Planned work:
     - sync/import Scryfall reference data
     - import ManaBox Collection CSV
     - open opencode and select/use the deck-building agent
-- Document logging defaults and environment overrides.
+- Document logging defaults and environment overrides, including pretty/JSON format selection.
 - Document existing local-file Scryfall import for repair/debug use.
 - Document current features and known limitations.
 - Document future direction without overpromising hosted or npm packaging.

@@ -2,6 +2,7 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
+import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
 import {
   applySqliteMigrations,
   cardIdentity,
@@ -10,11 +11,13 @@ import {
   openDatabase
 } from "@mtg-agent/sqlite";
 
+const testLog = createTestRootLoggerFromEnv();
+
 describe("SQLite Deck Candidate repository", () => {
   test("saves and reopens candidate cards with Card Identity names", async () => {
     const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-candidate-")), "test.sqlite");
-    applySqliteMigrations(dbPath);
-    const db = openDatabase(dbPath);
+    applySqliteMigrations(dbPath, {log: testLog});
+    const db = openDatabase(dbPath, {log: testLog});
     try {
       db.insert(cardIdentity).values([
         identity("33333333-3333-4333-8333-333333333333", "Example Commander", "Legendary Creature — Elf"),

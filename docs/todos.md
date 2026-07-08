@@ -5,6 +5,8 @@ Authored and edited only by osmall, not agents.
 ## List
 
 - Improve logging. Add a logging framework and make it robust.
+  - It is not yet robust. It's a bit spaghetti. Especially with the logging within tests that use env variables to print
+    them to the right place. More thought needs to go into this.
 - Pin versions of dependencies.
 - figure out schema.ts ```.default(sql`'[]'`)```
 - use T3.env for environment variables

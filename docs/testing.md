@@ -6,6 +6,10 @@ This document describes the project's testing posture and expected test behaviou
 
 Use `bun test` as the default test runner for unit tests, integration tests, and Exact Output Tests.
 
+Bun sets `NODE_ENV=test` for `bun test`, which routes project logs to human-readable `stderr` output at `info` level so
+test diagnostics stay in the terminal and do not append to `.data/mtg-agent.log`. Set `MTG_AGENT_LOG_LEVEL=debug` for
+verbose SQL and tool payload logs, or `MTG_AGENT_LOG_ENABLED=false` to suppress project logs during a test run.
+
 An Exact Output Test checks generated output against an expected string or file exactly. Use this term instead of testing jargon such as `golden-output test` or `approved-output test`.
 
 Do not add another test runner unless a concrete Bun test limitation blocks a needed test.

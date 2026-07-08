@@ -33,6 +33,24 @@ bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
 Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
 SQLite database path and applies migrations from `packages/sqlite/drizzle/`.
 
+## Local Logging
+
+Logs use `NODE_ENV` profile defaults. Development is the default profile and writes human-readable debug logs to
+`.data/mtg-agent.log`; production writes JSON info logs to `stdout`; tests write human-readable info logs to `stderr`.
+
+Override the destination, file, level, format, or enabled flag with environment variables:
+
+```sh
+NODE_ENV=production bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
+MTG_AGENT_LOG_DESTINATION=stdout MTG_AGENT_LOG_LEVEL=info bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
+MTG_AGENT_LOG_FORMAT=json MTG_AGENT_LOG_FILE=.data/mtg-agent.jsonl opencode
+```
+
+`NODE_ENV=production` selects production defaults, `NODE_ENV=test` selects test defaults, and any other value selects
+development defaults. Supported logging overrides are `MTG_AGENT_LOG_ENABLED=true|false`,
+`MTG_AGENT_LOG_DESTINATION=file|stdout|stderr`, `MTG_AGENT_LOG_LEVEL=trace|debug|info|warn|error`, and
+`MTG_AGENT_LOG_FORMAT=pretty|json`. `MTG_AGENT_LOG_FILE` is used when the destination is `file`.
+
 ## Local Scryfall Import
 
 Import local Scryfall bulk data JSON files into SQLite:

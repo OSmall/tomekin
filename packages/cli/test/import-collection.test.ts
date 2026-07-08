@@ -3,9 +3,11 @@ import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {runImportCollectionCommand, runImportScryfallCommand} from "@mtg-agent/cli";
+import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
 import {applySqliteMigrations, closeDatabase, createSqliteCollectionRepository, openDatabase} from "@mtg-agent/sqlite";
 
 const clock = {now: () => new Date("2025-01-01T00:00:00.000Z")};
+const testLog = createTestRootLoggerFromEnv();
 
 describe("import:collection command", () => {
     test("imports a ManaBox CSV into the Collection snapshot", async () => {
@@ -96,7 +98,11 @@ describe("import:collection command", () => {
     });
 });
 
-async function runCommand(args: readonly string[], env: { readonly MTG_AGENT_DB_PATH?: string }) {
+type TestCommandEnv = {
+    readonly MTG_AGENT_DB_PATH?: string;
+};
+
+async function runCommand(args: readonly string[], env: TestCommandEnv) {
     let stdout = "";
     let stderr = "";
     const exitCode = await runImportCollectionCommand(
@@ -104,6 +110,7 @@ async function runCommand(args: readonly string[], env: { readonly MTG_AGENT_DB_
         env,
         {stdout: {write: (message) => (stdout += message)}, stderr: {write: (message) => (stderr += message)}},
         clock,
+        {log: testLog},
     );
     return {exitCode, stdout, stderr};
 }
@@ -121,7 +128,7 @@ async function importReferenceData(paths: Awaited<ReturnType<typeof createFixtur
                 write() {
                 }
             }
-        }, clock);
+        }, clock, {log: testLog});
         expect(exitCode).toBe(0);
     }
 }
@@ -135,7 +142,7 @@ async function createFixtureFiles() {
     await Bun.write(oraclePath, JSON.stringify(rawOracleCards));
     await Bun.write(allCardsPath, JSON.stringify(rawAllCards));
     await Bun.write(collectionPath, manaBoxCsv(collectionRows));
-    applySqliteMigrations(dbPath);
+    applySqliteMigrations(dbPath, {log: testLog});
     return {dir, dbPath, oraclePath, allCardsPath, collectionPath};
 }
 
@@ -150,12 +157,12 @@ async function createRealSliceFixtureFiles() {
     await Bun.write(collectionPath, csvText);
     await Bun.write(oraclePath, JSON.stringify(rows.map(toRawOracleCardFixture)));
     await Bun.write(allCardsPath, JSON.stringify(rows.map(toRawAllCardFixture)));
-    applySqliteMigrations(dbPath);
+    applySqliteMigrations(dbPath, {log: testLog});
     return {dir, dbPath, oraclePath, allCardsPath, collectionPath};
 }
 
 async function readCollectionSnapshot(dbPath: string) {
-    const db = openDatabase(dbPath);
+    const db = openDatabase(dbPath, {log: testLog});
     try {
         const repository = createSqliteCollectionRepository(db, clock);
         const locations = await repository.listCollectionLocations();

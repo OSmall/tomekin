@@ -2,7 +2,7 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import type {CardQueryError, CardQueryResult} from "@mtg-agent/core";
+import {type CardQueryError, type CardQueryResult, createTestRootLoggerFromEnv} from "@mtg-agent/core";
 import {
     applySqliteMigrations,
     cardIdentity,
@@ -19,11 +19,13 @@ import {
 } from "@mtg-agent/sqlite";
 import type {Result} from "neverthrow";
 
+const testLog = createTestRootLoggerFromEnv();
+
 describe("SQLite Card Query repository", () => {
     test("queries Card Identities with Collection predicates and included owned rows", async () => {
         const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-")), "test.sqlite");
-        applySqliteMigrations(dbPath);
-        const db = openDatabase(dbPath);
+        applySqliteMigrations(dbPath, {log: testLog});
+        const db = openDatabase(dbPath, {log: testLog});
         try {
             db.insert(cardIdentity).values([
                 identity("11111111-1111-4111-8111-111111111111", "Sol Ring"),
@@ -109,8 +111,8 @@ describe("SQLite Card Query repository", () => {
 
     test("keeps outer Collection row scope for reference-only nested branches", async () => {
         const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-scope-")), "test.sqlite");
-        applySqliteMigrations(dbPath);
-        const db = openDatabase(dbPath);
+        applySqliteMigrations(dbPath, {log: testLog});
+        const db = openDatabase(dbPath, {log: testLog});
         try {
             insertIdentityWithCollection(db, {
                 identityId: "11111111-1111-4111-8111-111111111111",
@@ -149,8 +151,8 @@ describe("SQLite Card Query repository", () => {
 
     test("sorts nullable reference values null-last in both directions", async () => {
         const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-sort-")), "test.sqlite");
-        applySqliteMigrations(dbPath);
-        const db = openDatabase(dbPath);
+        applySqliteMigrations(dbPath, {log: testLog});
+        const db = openDatabase(dbPath, {log: testLog});
         try {
             db.insert(cardIdentity).values([
                 {...identity("11111111-1111-4111-8111-111111111111", "Ranked Low"), edhrecRank: 10},
@@ -176,8 +178,8 @@ describe("SQLite Card Query repository", () => {
 
     test("projects inherited tags from broader ancestors deterministically", async () => {
         const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-tags-")), "test.sqlite");
-        applySqliteMigrations(dbPath);
-        const db = openDatabase(dbPath);
+        applySqliteMigrations(dbPath, {log: testLog});
+        const db = openDatabase(dbPath, {log: testLog});
         try {
             db.insert(cardIdentity).values(identity("11111111-1111-4111-8111-111111111111", "Reassembling Skeleton")).run();
             db.insert(cardIdentityTag).values([
@@ -644,8 +646,8 @@ async function withTempCardQueryRepository(run: (context: {
     repository: ReturnType<typeof createSqliteCardQueryRepository>;
 }) => Promise<void>) {
     const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-contract-")), "test.sqlite");
-    applySqliteMigrations(dbPath);
-    const db = openDatabase(dbPath);
+    applySqliteMigrations(dbPath, {log: testLog});
+    const db = openDatabase(dbPath, {log: testLog});
     try {
         await run({db, repository: createSqliteCardQueryRepository(db)});
     } finally {

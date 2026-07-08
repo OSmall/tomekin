@@ -11,12 +11,13 @@ import {
   type CardPrintingImportRecord,
   CardPrintingImportRecordSchema,
   createScryfallSyncServices,
+  createTestRootLoggerFromEnv,
   mapRawScryfallAllCardToCardPrintingImportRecord,
   mapRawScryfallOracleCardToCardIdentityImportRecord,
   mapRawScryfallOracleTagToCardIdentityTagImportRecord,
   RawScryfallAllCardSchema,
   RawScryfallOracleCardSchema,
-  RawScryfallOracleTagSchema,
+  RawScryfallOracleTagSchema
 } from "@mtg-agent/core";
 import {applySqliteMigrations, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
 
@@ -439,12 +440,13 @@ describe("SQLite Scryfall repository", () => {
 
 const uuidV7Pattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const testLog = createTestRootLoggerFromEnv();
 
 function createTestRepository() {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
   const dbPath = join(dir, "test.sqlite");
-  applySqliteMigrations(dbPath);
-  const db = openDatabase(dbPath);
+  applySqliteMigrations(dbPath, {log: testLog});
+  const db = openDatabase(dbPath, {log: testLog});
   return createSqliteScryfallRepository(db, {
     now: () => new Date("2025-01-01T00:00:01.000Z"),
   });

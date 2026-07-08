@@ -3,6 +3,7 @@ import {dirname} from "node:path";
 import {fileURLToPath} from "node:url";
 import {sql} from "drizzle-orm";
 import {migrate} from "drizzle-orm/bun-sqlite/migrator";
+import type {Logger} from "@mtg-agent/core";
 
 import {closeDatabase, openDatabase, resolveDatabasePath} from "./database";
 
@@ -14,11 +15,12 @@ export type SqliteMigrationIo = {
 
 export function applySqliteMigrations(
     dbPath = resolveDatabasePath(),
+    options: { readonly log: Logger },
     io?: SqliteMigrationIo,
 ): void {
     io?.stdout.write(`Target database: ${dbPath}\n`);
     mkdirSync(dirname(dbPath), {recursive: true});
-    const db = openDatabase(dbPath);
+    const db = openDatabase(dbPath, {log: options.log});
     try {
         db.run(sql`PRAGMA foreign_keys = OFF`);
         migrate(db, {migrationsFolder});
