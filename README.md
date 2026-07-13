@@ -24,9 +24,9 @@ Install tool and package dependencies, then prepare the local SQLite database be
 mise install
 bun install
 bun run db:sqlite:migration:apply
-bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
-bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
-bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.json
+bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.jsonl.gz
+bun run import:scryfall -- all_cards /path/to/local/file/all-cards.jsonl.gz
+bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.jsonl.gz
 bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
 ```
 
@@ -53,12 +53,14 @@ development defaults. Supported logging overrides are `MTG_AGENT_LOG_ENABLED=tru
 
 ## Local Scryfall Import
 
-Import local Scryfall bulk data JSON files into SQLite:
+Import local Scryfall bulk data files into SQLite. The importer accepts current Scryfall `jsonl.gz` bulk files and
+legacy
+top-level JSON-array `.json` files:
 
 ```sh
-bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.json
-bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.json
-bun run import:scryfall -- all_cards /path/to/local/file/all-cards.json
+bun run import:scryfall -- oracle_cards /path/to/local/file/oracle-cards.jsonl.gz
+bun run import:scryfall -- all_cards /path/to/local/file/all-cards.jsonl.gz
+bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.jsonl.gz
 ```
 
 Run `oracle_cards` before `oracle_tags` or `all_cards`. The command only reads local files, reports timestamped source-read progress while it runs, and does not download from Scryfall.
@@ -69,7 +71,7 @@ The import command does not create or migrate the database. Apply SQLite migrati
 By default, imports write to `.data/mtg-agent.sqlite`. Override the database for one run with `--db`:
 
 ```sh
-bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
+bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.jsonl.gz
 ```
 
 When using a non-default database path, set `MTG_AGENT_DB_PATH` for the migration command or apply migrations to the
@@ -77,13 +79,13 @@ same path before importing:
 
 ```sh
 MTG_AGENT_DB_PATH=./tmp/test.sqlite bun run db:sqlite:migration:apply
-bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.json
+bun run import:scryfall -- --db ./tmp/test.sqlite oracle_cards ./data/oracle-cards.jsonl.gz
 ```
 
 Add `--timing` to print diagnostic import timing, record counters, finalization timings, and lightweight JavaScript heap snapshots for large-file smoke testing:
 
 ```sh
-bun run import:scryfall -- --timing all_cards ./data/all-cards.json
+bun run import:scryfall -- --timing all_cards ./data/all-cards.jsonl.gz
 ```
 
 ## ManaBox Collection Import
@@ -122,9 +124,9 @@ Before using it, apply migrations and import all three local Scryfall reference 
 
 ```sh
 bun run db:sqlite:migration:apply
-bun run import:scryfall -- oracle_cards /path/to/oracle-cards.json
-bun run import:scryfall -- all_cards /path/to/all-cards.json
-bun run import:scryfall -- oracle_tags /path/to/oracle-tags.json
+bun run import:scryfall -- oracle_cards /path/to/oracle-cards.jsonl.gz
+bun run import:scryfall -- all_cards /path/to/all-cards.jsonl.gz
+bun run import:scryfall -- oracle_tags /path/to/oracle-tags.jsonl.gz
 ```
 
 The first deck-building slice is Commander/EDH only. Saved Deck Candidates are persisted in SQLite with `DeckCandidate`

@@ -3,23 +3,30 @@ import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {
-  type CardIdentity,
-  type CardIdentityImportRecord,
-  CardIdentityImportRecordSchema,
-  type CardIdentityTagImportRecord,
-  CardIdentityTagImportRecordSchema,
-  type CardPrintingImportRecord,
-  CardPrintingImportRecordSchema,
-  createScryfallSyncServices,
-  createTestRootLoggerFromEnv,
-  mapRawScryfallAllCardToCardPrintingImportRecord,
-  mapRawScryfallOracleCardToCardIdentityImportRecord,
-  mapRawScryfallOracleTagToCardIdentityTagImportRecord,
-  RawScryfallAllCardSchema,
-  RawScryfallOracleCardSchema,
-  RawScryfallOracleTagSchema
+    type CardIdentity,
+    type CardIdentityImportRecord,
+    CardIdentityImportRecordSchema,
+    type CardIdentityTagImportRecord,
+    CardIdentityTagImportRecordSchema,
+    type CardPrintingImportRecord,
+    CardPrintingImportRecordSchema,
+    createScryfallSyncServices,
+    createTestRootLoggerFromEnv,
+    mapRawScryfallAllCardToCardPrintingImportRecord,
+    mapRawScryfallOracleCardToCardIdentityImportRecord,
+    mapRawScryfallOracleTagToCardIdentityTagImportRecord,
+    RawScryfallAllCardSchema,
+    RawScryfallOracleCardSchema,
+    RawScryfallOracleTagSchema
 } from "@mtg-agent/core";
-import {applySqliteMigrations, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
+import {
+    applySqliteMigrations,
+    closeDatabase,
+    collectionCard,
+    collectionLocation,
+    createSqliteScryfallRepository,
+    openDatabase,
+} from "@mtg-agent/sqlite";
 
 describe("SQLite Scryfall repository", () => {
   test("successful oracle_cards import records success and exposes Card Identities", async () => {
@@ -278,6 +285,113 @@ describe("SQLite Scryfall repository", () => {
     expect(imported.value).toHaveLength(6);
   });
 
+    test("all_cards refresh preserves collection rows for printings still present in Scryfall", async () => {
+        const fixture = createTestRepositoryFixture();
+        try {
+            const {repository, db} = fixture;
+            const records = await readOracleCardIdentityRecordsFixture();
+            const identities = records.map((record) => record.identity);
+            const printings = filterPrintingsWithKnownIdentities(
+                await readAllCardPrintingsFixture(),
+                identities,
+            );
+            expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+            expect((await repository.importCardPrintings(importInput(printings))).isOk()).toBe(true);
+            db.insert(collectionLocation)
+                .values({id: "11111111-1111-4111-8111-111111111111", name: "Main Box", type: "binder"})
+                .run();
+            db.insert(collectionCard)
+                .values({
+                    id: "22222222-2222-4222-8222-222222222222",
+                    quantity: 1,
+                    collectionLocationId: "11111111-1111-4111-8111-111111111111",
+                    finish: "foil",
+                    manaBoxId: null,
+                    cardPrintingId: "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+                    misprint: false,
+                    altered: false,
+                    condition: "near_mint",
+                    purchasePriceCurrency: null,
+                    purchasePrice: null,
+                    addedAt: null,
+                    sourceRowNumber: 1,
+                })
+                .run();
+
+            const result = await repository.importCardPrintings(importInput(printings));
+
+            expect(result.isOk()).toBe(true);
+            if (result.isErr()) throw new Error(result.error.message);
+            const collectionRows = await db.select().from(collectionCard);
+            expect(collectionRows).toHaveLength(1);
+            expect(collectionRows[0]?.cardPrintingId).toBe("073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a");
+            const imported = await repository.listCardPrintings();
+            if (imported.isErr()) throw new Error(imported.error.message);
+            expect(imported.value).toHaveLength(6);
+        } finally {
+            closeDatabase(fixture.db);
+        }
+    });
+
+    test("all_cards refresh fails before orphaning collection rows for printings missing from Scryfall", async () => {
+        const fixture = createTestRepositoryFixture();
+        try {
+            const {repository, db} = fixture;
+            const records = await readOracleCardIdentityRecordsFixture();
+            const identities = records.map((record) => record.identity);
+            const printings = filterPrintingsWithKnownIdentities(
+                await readAllCardPrintingsFixture(),
+                identities,
+            );
+            expect((await repository.importCardIdentities(importInput(records))).isOk()).toBe(true);
+            expect((await repository.importCardPrintings(importInput(printings))).isOk()).toBe(true);
+            db.insert(collectionLocation)
+                .values({id: "11111111-1111-4111-8111-111111111111", name: "Main Box", type: "binder"})
+                .run();
+            db.insert(collectionCard)
+                .values({
+                    id: "22222222-2222-4222-8222-222222222222",
+                    quantity: 1,
+                    collectionLocationId: "11111111-1111-4111-8111-111111111111",
+                    finish: "foil",
+                    manaBoxId: null,
+                    cardPrintingId: "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+                    misprint: false,
+                    altered: false,
+                    condition: "near_mint",
+                    purchasePriceCurrency: null,
+                    purchasePrice: null,
+                    addedAt: null,
+                    sourceRowNumber: 1,
+                })
+                .run();
+
+            const result = await repository.importCardPrintings(
+                importInput(
+                    printings.filter(
+                        (record) => record.printing.id !== "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+                    ),
+                ),
+            );
+
+            expect(result.isErr()).toBe(true);
+            if (result.isOk()) throw new Error("expected failed import");
+            expect(result.error.message).toContain("orphan existing Collection Card references");
+            expect(result.error.message).toContain("073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a");
+            const collectionRows = await db.select().from(collectionCard);
+            expect(collectionRows).toHaveLength(1);
+            expect(collectionRows[0]?.cardPrintingId).toBe("073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a");
+            const imported = await repository.listCardPrintings();
+            if (imported.isErr()) throw new Error(imported.error.message);
+            expect(imported.value).toHaveLength(6);
+            expect(imported.value.map((printing) => printing.id)).toContain(
+                "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+            );
+        } finally {
+            closeDatabase(fixture.db);
+        }
+    });
+
   test("successful oracle_tags import records success and exposes tags, aliases, taggings, and hierarchy", async () => {
     const repository = createTestRepository();
     const records = await readOracleCardIdentityRecordsFixture();
@@ -443,13 +557,18 @@ const uuidV7Pattern =
 const testLog = createTestRootLoggerFromEnv();
 
 function createTestRepository() {
+    return createTestRepositoryFixture().repository;
+}
+
+function createTestRepositoryFixture() {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
   const dbPath = join(dir, "test.sqlite");
   applySqliteMigrations(dbPath, {log: testLog});
   const db = openDatabase(dbPath, {log: testLog});
-  return createSqliteScryfallRepository(db, {
+    const repository = createSqliteScryfallRepository(db, {
     now: () => new Date("2025-01-01T00:00:01.000Z"),
   });
+    return {db, repository};
 }
 
 async function readFixture<T>(

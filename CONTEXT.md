@@ -146,6 +146,10 @@ _Avoid_: Card Identity Tag, Synergy
 A manual import of one or more local Scryfall bulk data files into the card reference data used by the assistant. A Scryfall Bulk Data Import is distinct from a sync or refresh because it does not imply automatic downloading or hidden network access.
 _Avoid_: Sync, refresh, card data load
 
+**Scryfall Bulk Data Sync**:
+A user-invoked update of local card reference data from Scryfall's current bulk data sources. A Scryfall Bulk Data Sync is distinct from a Scryfall Bulk Data Import because it includes explicit network fetching before local data is updated.
+_Avoid_: Import, refresh, background sync
+
 **Deck Opportunity**:
 A promising deck-building direction identified from the Collection, usually combining a Format Anchor, theme, available support cards, expected play pattern, and likely Missing Cards.
 _Avoid_: Theme, idea, suggestion

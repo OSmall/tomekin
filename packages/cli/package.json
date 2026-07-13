@@ -8,7 +8,8 @@
   },
   "scripts": {
     "import:collection": "bun src/import-collection.ts",
-    "import:scryfall": "bun src/import-scryfall.ts"
+    "import:scryfall": "bun src/import-scryfall.ts",
+    "sync:scryfall": "bun src/sync-scryfall.ts"
   },
   "dependencies": {
     "@mtg-agent/core": "workspace:*",

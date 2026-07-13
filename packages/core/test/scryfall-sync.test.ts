@@ -8,7 +8,9 @@ import {
     RawScryfallOracleCardSchema,
     RawScryfallOracleTagSchema,
     type ScryfallBulkDataImport,
+    type ScryfallBulkDataMetadata,
     type ScryfallBulkDataType,
+    type ScryfallDownloadedBulkDataSource,
     type ScryfallRepository,
 } from "@mtg-agent/core";
 import {err, ok} from "neverthrow";
@@ -32,6 +34,139 @@ describe("Scryfall sync services", () => {
       throw new Error("expected validation failure");
     }
     expect(result.error.issues.length).toBeGreaterThan(0);
+  });
+
+  test("sync downloads every default dataset before importing in dependency order", async () => {
+    const repository = fakeRepository([]);
+    const events: string[] = [];
+    const services = createScryfallSyncServices(repository, clock, {
+      async listBulkDataMetadata() {
+        return ok(defaultMetadata());
+      },
+      async downloadBulkData(metadata) {
+        events.push(`download:${metadata.bulkDataType}`);
+        return ok(downloadedSource(metadata));
+      },
+    });
+
+    const result = await services.syncScryfallData(
+      {bulkDataTypes: ["oracle_tags", "all_cards", "oracle_cards"]},
+      {
+        observer: {
+          onEvent(event) {
+            if (event.type === "import_started") {
+              events.push(`import:${event.bulkDataType}`);
+            }
+          },
+        },
+      },
+    );
+
+    expect(result.isOk()).toBe(true);
+    if (result.isErr()) throw new Error(result.error.message);
+    expect(events).toEqual([
+      "download:oracle_cards",
+      "download:all_cards",
+      "download:oracle_tags",
+      "import:oracle_cards",
+      "import:all_cards",
+      "import:oracle_tags",
+    ]);
+    expect(result.value.bulkDataTypes).toEqual([
+      "oracle_cards",
+      "all_cards",
+      "oracle_tags",
+    ]);
+    expect(result.value.datasets.map((dataset) => dataset.status)).toEqual([
+      "succeeded",
+      "succeeded",
+      "succeeded",
+    ]);
+  });
+
+  test("sync fails before downloading when required metadata is missing", async () => {
+    let downloaded = false;
+    const services = createScryfallSyncServices(fakeRepository([]), clock, {
+      async listBulkDataMetadata() {
+        return ok(defaultMetadata().filter((metadata) => metadata.bulkDataType !== "all_cards"));
+      },
+      async downloadBulkData(metadata) {
+        downloaded = true;
+        return ok(downloadedSource(metadata));
+      },
+    });
+
+    const result = await services.syncScryfallData({
+      bulkDataTypes: ["oracle_cards", "all_cards", "oracle_tags"],
+    });
+
+    expect(result.isErr()).toBe(true);
+    expect(downloaded).toBe(false);
+    if (result.isOk()) throw new Error("expected missing metadata failure");
+    expect(result.error.type).toBe("missing_required_scryfall_datasets");
+  });
+
+  test("sync fails before importing when any download fails", async () => {
+    const repository = fakeRepository([]);
+    let imported = false;
+    const services = createScryfallSyncServices(repository, clock, {
+      async listBulkDataMetadata() {
+        return ok(defaultMetadata());
+      },
+      async downloadBulkData(metadata) {
+        if (metadata.bulkDataType === "all_cards") {
+          return err({message: "download unavailable"});
+        }
+        return ok(downloadedSource(metadata));
+      },
+    });
+
+    const result = await services.syncScryfallData(
+      {bulkDataTypes: ["oracle_cards", "all_cards", "oracle_tags"]},
+      {
+        observer: {
+          onEvent(event) {
+            if (event.type === "import_started") imported = true;
+          },
+        },
+      },
+    );
+
+    expect(result.isErr()).toBe(true);
+    expect(imported).toBe(false);
+    if (result.isOk()) throw new Error("expected download failure");
+    expect(result.error.type).toBe("download_failed");
+  });
+
+  test("sync stops at first import failure and preserves prior successful datasets", async () => {
+    const repository = fakeRepository([], {failOn: "all_cards"});
+    const imported: ScryfallBulkDataType[] = [];
+    const services = createScryfallSyncServices(repository, clock, {
+      async listBulkDataMetadata() {
+        return ok(defaultMetadata());
+      },
+      async downloadBulkData(metadata) {
+        return ok(downloadedSource(metadata));
+      },
+    });
+
+    const result = await services.syncScryfallData(
+      {bulkDataTypes: ["oracle_cards", "all_cards", "oracle_tags"]},
+      {
+        observer: {
+          onEvent(event) {
+            if (event.type === "import_started") imported.push(event.bulkDataType);
+          },
+        },
+      },
+    );
+
+    expect(result.isErr()).toBe(true);
+    if (result.isOk()) throw new Error("expected import failure");
+    expect(result.error.type).toBe("import_failed");
+    expect(imported).toEqual(["oracle_cards", "all_cards"]);
+    expect((await repository.getLatestSuccessfulBulkDataImport("oracle_cards"))._unsafeUnwrap()).not.toBeNull();
+    expect((await repository.getLatestSuccessfulBulkDataImport("all_cards"))._unsafeUnwrap()).toBeNull();
   });
 
   test("returns structured failures for missing required card reference datasets", async () => {
@@ -318,10 +453,12 @@ describe("Scryfall sync services", () => {
 
 function fakeRepository(
   availableBulkDataTypes: readonly ScryfallBulkDataType[],
+  options: {readonly failOn?: ScryfallBulkDataType} = {},
 ): ScryfallRepository {
+  const successful = new Set(availableBulkDataTypes);
   return {
     async getLatestSuccessfulBulkDataImport(bulkDataType) {
-      if (!availableBulkDataTypes.includes(bulkDataType)) {
+      if (!successful.has(bulkDataType)) {
         return ok(null);
       }
 
@@ -340,21 +477,30 @@ function fakeRepository(
     },
     async importCardIdentities(input) {
       try {
-        return ok(importAttempt("oracle_cards", await countRecords(input.records), "succeeded"));
+        if (options.failOn === "oracle_cards") throw new Error("forced import failure");
+        const attempt = importAttempt("oracle_cards", await countRecords(input.records), "succeeded");
+        successful.add("oracle_cards");
+        return ok(attempt);
       } catch (error) {
         return err(toRepositoryError(error));
       }
     },
     async importCardPrintings(input) {
       try {
-        return ok(importAttempt("all_cards", await countRecords(input.records), "succeeded"));
+        if (options.failOn === "all_cards") throw new Error("forced import failure");
+        const attempt = importAttempt("all_cards", await countRecords(input.records), "succeeded");
+        successful.add("all_cards");
+        return ok(attempt);
       } catch (error) {
         return err(toRepositoryError(error));
       }
     },
     async importCardIdentityTags(input) {
       try {
-        return ok(importAttempt("oracle_tags", await countRecords(input.records), "succeeded"));
+        if (options.failOn === "oracle_tags") throw new Error("forced import failure");
+        const attempt = importAttempt("oracle_tags", await countRecords(input.records), "succeeded");
+        successful.add("oracle_tags");
+        return ok(attempt);
       } catch (error) {
         return err(toRepositoryError(error));
       }
@@ -368,6 +514,67 @@ function fakeRepository(
         warnings: input.warnings ?? [],
       });
     },
+  };
+}
+
+function defaultMetadata(): readonly ScryfallBulkDataMetadata[] {
+  return ["oracle_cards", "all_cards", "oracle_tags"].map((bulkDataType) => ({
+    bulkDataType: bulkDataType as ScryfallBulkDataType,
+    sourceUri: `https://api.scryfall.com/bulk-data/${bulkDataType}`,
+    downloadUri: `https://data.scryfall.io/${bulkDataType}.jsonl.gz`,
+    sourceUpdatedAt: clock.now(),
+  }));
+}
+
+function downloadedSource(
+  metadata: ScryfallBulkDataMetadata,
+): ScryfallDownloadedBulkDataSource {
+  return {
+    bulkDataType: metadata.bulkDataType,
+    sourceUri: metadata.downloadUri,
+    sourceUpdatedAt: metadata.sourceUpdatedAt,
+    stream: () => jsonlGzipStream(recordsFor(metadata.bulkDataType)),
+  };
+}
+
+function recordsFor(bulkDataType: ScryfallBulkDataType): readonly unknown[] {
+  if (bulkDataType === "oracle_cards") return [rawOracleCard()];
+  if (bulkDataType === "all_cards") return [rawAllCard()];
+  return [rawOracleTag()];
+}
+
+function jsonlGzipStream(records: readonly unknown[]): ReadableStream<Uint8Array> {
+  return new Response(records.map((record) => JSON.stringify(record)).join("\n"))
+    .body!.pipeThrough(new CompressionStream("gzip"));
+}
+
+function rawOracleCard() {
+  return {
+    object: "card",
+    id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    oracle_id: "22222222-2222-4222-8222-222222222222",
+    name: "Sol Ring",
+    layout: "normal",
+    mana_cost: "{1}",
+    cmc: 1,
+    type_line: "Artifact",
+    oracle_text: "{T}: Add {C}{C}.",
+    color_identity: [],
+    keywords: [],
+    game_changer: false,
+    legalities: {commander: "legal"},
+    scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
+  };
+}
+
+function rawAllCard() {
+  return {
+    ...rawOracleCard(),
+    id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    set: "v10",
+    collector_number: "12",
+    finishes: ["foil"],
+    lang: "en",
   };
 }
 

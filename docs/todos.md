@@ -19,3 +19,4 @@ Authored and edited only by osmall, not agents.
 - add a way to save user context about how to handle the collection
   - e.g. Don't use the collection-stored basic lands when building decks. Pretend there is an infinite supply of basic
     lands.
+- Make better use of .jsonl Scryfall files i.e. stream them to save memory

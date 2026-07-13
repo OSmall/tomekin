@@ -531,12 +531,31 @@ export function createSqliteScryfallRepository(
           ]);
         }
 
+          const orphanedCollectionPrintings = timedFinalizationPhase(
+              input.observer,
+              "orphaned_collection_printing_check",
+              () =>
+                  db.all<{ id: string }>(sql`
+                      SELECT DISTINCT card_printing_id AS id
+                      FROM collection_card
+                      WHERE card_printing_id NOT IN (SELECT id FROM import_card_printing)
+                  `),
+          );
+          if (orphanedCollectionPrintings.length > 0) {
+              throw importRejection([
+                  `all_cards import would orphan existing Collection Card references for Card Printing IDs: ${orphanedCollectionPrintings.map((row) => row.id).join(", ")}.`,
+              ]);
+          }
+
         timedFinalizationPhase(input.observer, "delete_existing_records", () => {
           db.delete(cardPrintingPart).run();
             db.delete(cardPrintingFinish).run();
-          db.delete(cardPrinting).run();
+            db.run(sql`
+            DELETE FROM card_printing
+            WHERE id NOT IN (SELECT id FROM import_card_printing)
+          `);
         });
-        timedFinalizationPhase(input.observer, "insert_from_staging", () => {
+          timedFinalizationPhase(input.observer, "upsert_from_staging", () => {
           db.run(sql`
             INSERT INTO card_printing (
               id,
@@ -560,6 +579,17 @@ export function createSqliteScryfallRepository(
               language, tcgplayer_id, cardmarket_id,
               source_page_uri
             FROM import_card_printing
+            WHERE true
+            ON CONFLICT(id) DO UPDATE SET
+              card_identity_id = excluded.card_identity_id,
+              layout = excluded.layout,
+              printed_name = excluded.printed_name,
+              set_code = excluded.set_code,
+              collector_number = excluded.collector_number,
+              language = excluded.language,
+              tcgplayer_id = excluded.tcgplayer_id,
+              cardmarket_id = excluded.cardmarket_id,
+              source_page_uri = excluded.source_page_uri
           `);
             db.run(sql`
             INSERT INTO card_printing_finish (card_printing_id, finish)

@@ -462,9 +462,9 @@ The deck-builder agent should report missing setup with commands such as:
 
 ```sh
 bun run db:sqlite:migration:apply
-bun run import:scryfall -- oracle_cards /path/to/oracle-cards.json
-bun run import:scryfall -- all_cards /path/to/all-cards.json
-bun run import:scryfall -- oracle_tags /path/to/oracle-tags.json
+bun run import:scryfall -- oracle_cards /path/to/oracle-cards.jsonl.gz
+bun run import:scryfall -- all_cards /path/to/all-cards.jsonl.gz
+bun run import:scryfall -- oracle_tags /path/to/oracle-tags.jsonl.gz
 ```
 
 First-slice opencode tools should not run these commands automatically.

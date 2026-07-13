@@ -18,10 +18,9 @@ reproducibility, and user-facing documentation without expanding the product bey
 - The project is a Bun workspace with `packages/core`, `packages/sqlite`, `packages/cli`, `packages/opencode`, and
   project-local `.opencode` artifacts.
 - Local SQLite persistence is explicit: users run `bun run db:sqlite:migration:apply` before normal app commands.
-- Scryfall reference data can be imported from local JSON files with `bun run import:scryfall -- <bulk-type> <path>`.
-- The current Scryfall importer parses a top-level JSON array from local files.
-- Current Scryfall bulk data docs describe bulk downloads as gzipped JSONL files, so a live download/sync command must
-  support `jsonl.gz` rather than assuming the legacy local JSON-array shape.
+- Scryfall reference data can be imported from local bulk files with `bun run import:scryfall -- <bulk-type> <path>`.
+- Scryfall bulk sources are observed in both gzipped JSONL and legacy top-level JSON-array shapes, so local import and
+  live sync must share source-shape support rather than assuming one container format.
 - ManaBox Collection CSV import exists through `bun run import:collection -- manabox <path>`.
 - The local opencode agent uses project-local custom tools and should not make hidden live Scryfall calls during normal
   deck-building.
@@ -175,9 +174,9 @@ Planned work:
   `all_cards`, then `oracle_tags`.
 - Fetch Scryfall bulk metadata from the Bulk Data API.
 - Resolve each required dataset by Scryfall bulk data `type`.
-- Download `jsonl.gz` sources and stream/decompress them without loading complete bulk files into memory.
-- Add parser/source support for JSONL records while keeping the existing local JSON-array path for current fixtures and
-  repair workflows.
+- Prefer Scryfall `jsonl_download_uri` sources when available and stream/decompress them without loading complete bulk
+  files into memory, while falling back to `download_uri` JSON-array sources.
+- Add shared parser/source support for gzipped JSONL and top-level JSON-array records across live sync and local import.
 - Reuse existing mapping, validation, staging, and transactional replacement services as much as practical.
 - Record source URI and source updated timestamp from Scryfall metadata.
 - Preserve failed-import non-destructiveness for each dataset.
@@ -190,7 +189,7 @@ Expected tests:
 - CLI tests with fake fetch or injected bulk-data client; no live Scryfall calls.
 - Tests for default ordering and early failure behaviour.
 - Tests that failed sync preserves previous usable datasets.
-- Tests that current local JSON-array import still works.
+- Tests that local JSON-array and gzipped JSONL imports both work.
 
 Expected verification:
 

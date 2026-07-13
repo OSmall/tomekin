@@ -58,6 +58,38 @@ describe("import:scryfall command", () => {
     ]);
   });
 
+    test("imports gzipped JSONL Scryfall bulk files into the configured SQLite database", async () => {
+        const paths = await createFixtureFiles({sourceFormat: "jsonl.gz"});
+
+        const oracleResult = await runCommand(
+            ["--db", paths.dbPath, "oracle_cards", paths.oraclePath],
+            {},
+        );
+        const allCardsResult = await runCommand(
+            ["--db", paths.dbPath, "all_cards", paths.allCardsPath],
+            {},
+        );
+        const oracleTagsResult = await runCommand(
+            ["--db", paths.dbPath, "oracle_tags", paths.oracleTagsPath],
+            {},
+        );
+
+        expect(oracleResult.exitCode).toBe(0);
+        expect(allCardsResult.exitCode).toBe(0);
+        expect(oracleTagsResult.exitCode).toBe(0);
+
+        const snapshot = await readRepositorySnapshot(paths.dbPath);
+        expect(snapshot.identities.map((card) => card.name).sort()).toEqual([
+            "Cultivate",
+            "Sol Ring",
+        ]);
+        expect(snapshot.printings.map((card) => card.id).sort()).toEqual([
+            "11111111-1111-4111-8111-111111111111",
+            "22222222-2222-4222-8222-222222222222",
+        ]);
+        expect(snapshot.tags.map((tag) => tag.slug)).toEqual(["mana-rock"]);
+    });
+
   test("imports exactly the requested bulk data type", async () => {
     const paths = await createFixtureFiles();
 
@@ -280,7 +312,9 @@ async function runCommand(
   return { exitCode, stdout, stderr };
 }
 
-async function createFixtureFiles(): Promise<{
+async function createFixtureFiles(
+    options: { readonly sourceFormat?: "json-array" | "jsonl.gz" } = {},
+): Promise<{
   readonly dir: string;
   readonly dbPath: string;
   readonly oraclePath: string;
@@ -289,14 +323,31 @@ async function createFixtureFiles(): Promise<{
 }> {
   const dir = mkdtempSync(join(tmpdir(), "mtg-agent-cli-"));
   const dbPath = join(dir, "reference.sqlite");
-  const oraclePath = join(dir, "oracle-cards.json");
-  const allCardsPath = join(dir, "all-cards.json");
-  const oracleTagsPath = join(dir, "oracle-tags.json");
-  await Bun.write(oraclePath, JSON.stringify(rawOracleCards));
-  await Bun.write(allCardsPath, JSON.stringify(rawAllCards));
-  await Bun.write(oracleTagsPath, JSON.stringify(rawOracleTags));
+    const sourceFormat = options.sourceFormat ?? "json-array";
+    const extension = sourceFormat === "jsonl.gz" ? "jsonl.gz" : "json";
+    const oraclePath = join(dir, `oracle-cards.${extension}`);
+    const allCardsPath = join(dir, `all-cards.${extension}`);
+    const oracleTagsPath = join(dir, `oracle-tags.${extension}`);
+    await writeScryfallFixture(oraclePath, rawOracleCards, sourceFormat);
+    await writeScryfallFixture(allCardsPath, rawAllCards, sourceFormat);
+    await writeScryfallFixture(oracleTagsPath, rawOracleTags, sourceFormat);
   applySqliteMigrations(dbPath, {log: testLog});
   return { dir, dbPath, oraclePath, allCardsPath, oracleTagsPath };
+}
+
+async function writeScryfallFixture(
+    path: string,
+    records: readonly unknown[],
+    sourceFormat: "json-array" | "jsonl.gz",
+): Promise<void> {
+    if (sourceFormat === "json-array") {
+        await Bun.write(path, JSON.stringify(records));
+        return;
+    }
+
+    const jsonl = `${records.map((record) => JSON.stringify(record)).join("\n")}\n`;
+    const gzipStream = new Response(jsonl).body!.pipeThrough(new CompressionStream("gzip"));
+    await Bun.write(path, await new Response(gzipStream).arrayBuffer());
 }
 
 async function readRepositorySnapshot(dbPath: string) {
