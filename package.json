@@ -1,11 +1,24 @@
 {
-  "name": "mtg-agent",
+  "name": "tomekin",
   "private": true,
   "type": "module",
-  "dependencies": {
-    "@opencode-ai/sdk": "^1.14.18"
-  },
+  "workspaces": [
+    "packages/*",
+    ".opencode"
+  ],
   "scripts": {
-    "generate-themes": "$env:COLLECTION_CSV=\"X:\\code\\mtg-agent\\data\\ManaBox_Collection.csv\"; $env:OUTPUT_JSON=\"X:\\code\\mtg-agent\\data\\collection_theme_dataset.json\"; $env:CHECKPOINT_DIR=\"X:\\code\\mtg-agent\\data\\collection-theme-checkpoints\"; bun run .\\scripts\\generate-pilot-theme-json.ts"
+    "db:sqlite:migration:apply": "bun packages/sqlite/src/apply-migrations.ts",
+    "db:sqlite:migration:generate": "bun run --cwd packages/sqlite drizzle-kit generate",
+    "import:collection": "bun packages/cli/src/import-collection.ts",
+    "import:scryfall": "bun packages/cli/src/import-scryfall.ts",
+    "sync:scryfall": "bun packages/cli/src/sync-scryfall.ts",
+    "test": "bun test",
+    "typecheck": "tsc -b"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "1.17.20",
+    "@types/bun": "1.3.14",
+    "drizzle-kit": "0.31.10",
+    "typescript": "6.0.3"
   }
 }

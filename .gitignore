@@ -1,1 +1,6 @@
-node_modules
+node_modules/
+.data/
+dist/
+*.tsbuildinfo
+.idea/
+.DS_Store

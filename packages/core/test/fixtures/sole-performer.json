@@ -1,0 +1,28 @@
+{
+  "object": "card",
+  "id": "e65e8d13-10b1-4d0b-813f-c45058560e5c",
+  "oracle_id": "fa5e1347-9bee-4103-8b74-5d0df35dd8ff",
+  "name": "Sole Performer",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "cmc": 3,
+  "type_line": "Creature — Human Performer",
+  "oracle_text": "{T}: Add {T}{T}. Activate only once each turn. (While activating an ability, use {T} rather than tapping the permanent to pay for {T}.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "T"
+  ],
+  "game_changer": false,
+  "legalities": {
+    "commander": "not_legal"
+  },
+  "scryfall_uri": "https://scryfall.com/card/unf/26/sole-performer"
+}

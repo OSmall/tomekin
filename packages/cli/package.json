@@ -1,0 +1,23 @@
+{
+  "name": "@tomekin/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "import:collection": "bun src/import-collection.ts",
+    "import:scryfall": "bun src/import-scryfall.ts",
+    "sync:scryfall": "bun src/sync-scryfall.ts"
+  },
+  "dependencies": {
+    "@tomekin/core": "workspace:*",
+    "@tomekin/sqlite": "workspace:*",
+    "neverthrow": "8.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14",
+    "typescript": "6.0.3"
+  }
+}

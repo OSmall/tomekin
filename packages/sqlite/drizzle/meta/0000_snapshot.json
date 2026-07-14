@@ -1,0 +1,1081 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "1378e3f6-d6c5-4dbc-99f0-90872b6b8f1f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "card_identity": {
+      "name": "card_identity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "layout": {
+          "name": "layout",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'normal'"
+        },
+        "mana_cost": {
+          "name": "mana_cost",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "mana_value": {
+          "name": "mana_value",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type_line": {
+          "name": "type_line",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "oracle_text": {
+          "name": "oracle_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "color_identity": {
+          "name": "color_identity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "colors": {
+          "name": "colors",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "color_indicator": {
+          "name": "color_indicator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "produced_mana": {
+          "name": "produced_mana",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "keywords_json": {
+          "name": "keywords_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "power": {
+          "name": "power",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "toughness": {
+          "name": "toughness",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "loyalty": {
+          "name": "loyalty",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "defense": {
+          "name": "defense",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "edhrec_rank": {
+          "name": "edhrec_rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "game_changer": {
+          "name": "game_changer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_page_uri": {
+          "name": "source_page_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_color_identity": {
+          "name": "idx_card_identity_color_identity",
+          "columns": [
+            "color_identity"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "card_identity_color_identity_check": {
+          "name": "card_identity_color_identity_check",
+          "value": "\"card_identity\".\"color_identity\" IN ('', 'W', 'U', 'B', 'R', 'G', 'WU', 'WB', 'WR', 'WG', 'UB', 'UR', 'UG', 'BR', 'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG', 'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG')"
+        }
+      }
+    },
+    "card_identity_format_legality": {
+      "name": "card_identity_format_legality",
+      "columns": {
+        "card_identity_id": {
+          "name": "card_identity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "format": {
+          "name": "format",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "legality": {
+          "name": "legality",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_format_legality_card_identity_id": {
+          "name": "idx_card_identity_format_legality_card_identity_id",
+          "columns": [
+            "card_identity_id"
+          ],
+          "isUnique": false
+        },
+        "idx_card_identity_format_legality_format_legality": {
+          "name": "idx_card_identity_format_legality_format_legality",
+          "columns": [
+            "format",
+            "legality"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_identity_format_legality_card_identity_id_card_identity_id_fk": {
+          "name": "card_identity_format_legality_card_identity_id_card_identity_id_fk",
+          "tableFrom": "card_identity_format_legality",
+          "tableTo": "card_identity",
+          "columnsFrom": [
+            "card_identity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_identity_format_legality_card_identity_id_format_pk": {
+          "columns": [
+            "card_identity_id",
+            "format"
+          ],
+          "name": "card_identity_format_legality_card_identity_id_format_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "card_identity_format_legality_format_check": {
+          "name": "card_identity_format_legality_format_check",
+          "value": "length(\"card_identity_format_legality\".\"format\") > 0"
+        },
+        "card_identity_format_legality_legality_check": {
+          "name": "card_identity_format_legality_legality_check",
+          "value": "\"card_identity_format_legality\".\"legality\" IN ('legal', 'not_legal', 'banned', 'restricted')"
+        }
+      }
+    },
+    "card_identity_part": {
+      "name": "card_identity_part",
+      "columns": {
+        "card_identity_id": {
+          "name": "card_identity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "part_index": {
+          "name": "part_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mana_cost": {
+          "name": "mana_cost",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "type_line": {
+          "name": "type_line",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "oracle_text": {
+          "name": "oracle_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "colors": {
+          "name": "colors",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "color_indicator": {
+          "name": "color_indicator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "power": {
+          "name": "power",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "toughness": {
+          "name": "toughness",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "loyalty": {
+          "name": "loyalty",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "defense": {
+          "name": "defense",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_part_card_identity_id": {
+          "name": "idx_card_identity_part_card_identity_id",
+          "columns": [
+            "card_identity_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_identity_part_card_identity_id_card_identity_id_fk": {
+          "name": "card_identity_part_card_identity_id_card_identity_id_fk",
+          "tableFrom": "card_identity_part",
+          "tableTo": "card_identity",
+          "columnsFrom": [
+            "card_identity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_identity_part_card_identity_id_part_index_pk": {
+          "columns": [
+            "card_identity_id",
+            "part_index"
+          ],
+          "name": "card_identity_part_card_identity_id_part_index_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "card_identity_tag": {
+      "name": "card_identity_tag",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_page_uri": {
+          "name": "source_page_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "card_identity_tag_slug_unique": {
+          "name": "card_identity_tag_slug_unique",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "card_identity_tag_slug_check": {
+          "name": "card_identity_tag_slug_check",
+          "value": "length(\"card_identity_tag\".\"slug\") > 0"
+        },
+        "card_identity_tag_label_check": {
+          "name": "card_identity_tag_label_check",
+          "value": "length(\"card_identity_tag\".\"label\") > 0"
+        }
+      }
+    },
+    "card_identity_tag_alias": {
+      "name": "card_identity_tag_alias",
+      "columns": {
+        "tag_id": {
+          "name": "tag_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "alias": {
+          "name": "alias",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_tag_alias_tag_id": {
+          "name": "idx_card_identity_tag_alias_tag_id",
+          "columns": [
+            "tag_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_identity_tag_alias_tag_id_card_identity_tag_id_fk": {
+          "name": "card_identity_tag_alias_tag_id_card_identity_tag_id_fk",
+          "tableFrom": "card_identity_tag_alias",
+          "tableTo": "card_identity_tag",
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_identity_tag_alias_tag_id_alias_pk": {
+          "columns": [
+            "tag_id",
+            "alias"
+          ],
+          "name": "card_identity_tag_alias_tag_id_alias_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "card_identity_tag_alias_alias_check": {
+          "name": "card_identity_tag_alias_alias_check",
+          "value": "length(\"card_identity_tag_alias\".\"alias\") > 0"
+        }
+      }
+    },
+    "card_identity_tag_hierarchy": {
+      "name": "card_identity_tag_hierarchy",
+      "columns": {
+        "parent_tag_id": {
+          "name": "parent_tag_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "child_tag_id": {
+          "name": "child_tag_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_tag_hierarchy_child_tag_id": {
+          "name": "idx_card_identity_tag_hierarchy_child_tag_id",
+          "columns": [
+            "child_tag_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_identity_tag_hierarchy_parent_tag_id_card_identity_tag_id_fk": {
+          "name": "card_identity_tag_hierarchy_parent_tag_id_card_identity_tag_id_fk",
+          "tableFrom": "card_identity_tag_hierarchy",
+          "tableTo": "card_identity_tag",
+          "columnsFrom": [
+            "parent_tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "card_identity_tag_hierarchy_child_tag_id_card_identity_tag_id_fk": {
+          "name": "card_identity_tag_hierarchy_child_tag_id_card_identity_tag_id_fk",
+          "tableFrom": "card_identity_tag_hierarchy",
+          "tableTo": "card_identity_tag",
+          "columnsFrom": [
+            "child_tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_identity_tag_hierarchy_parent_tag_id_child_tag_id_pk": {
+          "columns": [
+            "parent_tag_id",
+            "child_tag_id"
+          ],
+          "name": "card_identity_tag_hierarchy_parent_tag_id_child_tag_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "card_identity_tagging": {
+      "name": "card_identity_tagging",
+      "columns": {
+        "tag_id": {
+          "name": "tag_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "card_identity_id": {
+          "name": "card_identity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "weight": {
+          "name": "weight",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "annotation": {
+          "name": "annotation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_identity_tagging_card_identity_id": {
+          "name": "idx_card_identity_tagging_card_identity_id",
+          "columns": [
+            "card_identity_id"
+          ],
+          "isUnique": false
+        },
+        "idx_card_identity_tagging_tag_id": {
+          "name": "idx_card_identity_tagging_tag_id",
+          "columns": [
+            "tag_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_identity_tagging_tag_id_card_identity_tag_id_fk": {
+          "name": "card_identity_tagging_tag_id_card_identity_tag_id_fk",
+          "tableFrom": "card_identity_tagging",
+          "tableTo": "card_identity_tag",
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "card_identity_tagging_card_identity_id_card_identity_id_fk": {
+          "name": "card_identity_tagging_card_identity_id_card_identity_id_fk",
+          "tableFrom": "card_identity_tagging",
+          "tableTo": "card_identity",
+          "columnsFrom": [
+            "card_identity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_identity_tagging_tag_id_card_identity_id_pk": {
+          "columns": [
+            "tag_id",
+            "card_identity_id"
+          ],
+          "name": "card_identity_tagging_tag_id_card_identity_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "card_identity_tagging_weight_check": {
+          "name": "card_identity_tagging_weight_check",
+          "value": "\"card_identity_tagging\".\"weight\" IN ('very_strong', 'strong', 'median', 'weak')"
+        }
+      }
+    },
+    "card_printing": {
+      "name": "card_printing",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "card_identity_id": {
+          "name": "card_identity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "layout": {
+          "name": "layout",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'standard'"
+        },
+        "printed_name": {
+          "name": "printed_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "set_code": {
+          "name": "set_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "collector_number": {
+          "name": "collector_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "finishes_json": {
+          "name": "finishes_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "language": {
+          "name": "language",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tcgplayer_id": {
+          "name": "tcgplayer_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cardmarket_id": {
+          "name": "cardmarket_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_page_uri": {
+          "name": "source_page_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_printing_card_identity_id": {
+          "name": "idx_card_printing_card_identity_id",
+          "columns": [
+            "card_identity_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_printing_card_identity_id_card_identity_id_fk": {
+          "name": "card_printing_card_identity_id_card_identity_id_fk",
+          "tableFrom": "card_printing",
+          "tableTo": "card_identity",
+          "columnsFrom": [
+            "card_identity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "card_printing_part": {
+      "name": "card_printing_part",
+      "columns": {
+        "card_printing_id": {
+          "name": "card_printing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "part_index": {
+          "name": "part_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "printed_name": {
+          "name": "printed_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "flavor_name": {
+          "name": "flavor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "printed_type_line": {
+          "name": "printed_type_line",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "printed_text": {
+          "name": "printed_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "flavor_text": {
+          "name": "flavor_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "artist": {
+          "name": "artist",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "artist_id": {
+          "name": "artist_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "illustration_id": {
+          "name": "illustration_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "image_uris_json": {
+          "name": "image_uris_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_card_printing_part_card_printing_id": {
+          "name": "idx_card_printing_part_card_printing_id",
+          "columns": [
+            "card_printing_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "card_printing_part_card_printing_id_card_printing_id_fk": {
+          "name": "card_printing_part_card_printing_id_card_printing_id_fk",
+          "tableFrom": "card_printing_part",
+          "tableTo": "card_printing",
+          "columnsFrom": [
+            "card_printing_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "card_printing_part_card_printing_id_part_index_pk": {
+          "columns": [
+            "card_printing_id",
+            "part_index"
+          ],
+          "name": "card_printing_part_card_printing_id_part_index_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "collection_import": {
+      "name": "collection_import",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "imported_at": {
+          "name": "imported_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_format": {
+          "name": "source_format",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_label": {
+          "name": "source_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "imported_owned_card_rows": {
+          "name": "imported_owned_card_rows",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "total_owned_card_quantity": {
+          "name": "total_owned_card_quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "imported_binder_count": {
+          "name": "imported_binder_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "inferred_existing_deck_count": {
+          "name": "inferred_existing_deck_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "skipped_manabox_lists_json": {
+          "name": "skipped_manabox_lists_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "validation_errors_json": {
+          "name": "validation_errors_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "warnings_json": {
+          "name": "warnings_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "scryfall_bulk_data_import": {
+      "name": "scryfall_bulk_data_import",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bulk_data_type": {
+          "name": "bulk_data_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_updated_at": {
+          "name": "source_updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_uri": {
+          "name": "source_uri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "imported_record_count": {
+          "name": "imported_record_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "warnings_json": {
+          "name": "warnings_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "blocking_errors_json": {
+          "name": "blocking_errors_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "scryfall_bulk_data_import_bulk_data_type_check": {
+          "name": "scryfall_bulk_data_import_bulk_data_type_check",
+          "value": "\"scryfall_bulk_data_import\".\"bulk_data_type\" IN ('oracle_cards', 'all_cards', 'oracle_tags')"
+        },
+        "scryfall_bulk_data_import_status_check": {
+          "name": "scryfall_bulk_data_import_status_check",
+          "value": "\"scryfall_bulk_data_import\".\"status\" IN ('succeeded', 'failed')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

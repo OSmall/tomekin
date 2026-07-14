@@ -1,0 +1,22 @@
+{
+  "name": "@tomekin/sqlite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "db:sqlite:migration:apply": "bun src/apply-migrations.ts",
+    "db:sqlite:migration:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@tomekin/core": "workspace:*",
+    "drizzle-orm": "0.45.2",
+    "neverthrow": "8.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14",
+    "typescript": "6.0.3"
+  }
+}
