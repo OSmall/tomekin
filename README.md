@@ -16,8 +16,7 @@ services yet.
 
 ## Prerequisites
 
-- Bun, installed directly or through `mise install`.
-- opencode for the local agent workflow.
+- Bun and opencode, installed through `mise install` or installed directly.
 - Local disk space for Scryfall bulk data and the SQLite database under `.data/`.
 - A ManaBox Collection CSV export for Collection-aware deck-building.
 

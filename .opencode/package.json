@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@opencode-ai/plugin": "1.17.20",
     "@tomekin/core": "workspace:*",
     "@tomekin/opencode": "workspace:*",
-    "@opencode-ai/plugin": "1.17.8",
     "zod": "4.4.3"
   }
 }
