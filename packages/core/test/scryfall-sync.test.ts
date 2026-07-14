@@ -12,7 +12,7 @@ import {
     type ScryfallBulkDataType,
     type ScryfallDownloadedBulkDataSource,
     type ScryfallRepository,
-} from "@mtg-agent/core";
+} from "@tomekin/core";
 import {err, ok} from "neverthrow";
 
 const clock = {

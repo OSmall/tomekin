@@ -2,9 +2,9 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
-import {applySqliteMigrations} from "@mtg-agent/sqlite";
-import {createLocalAgentToolHandlers, resultToOpencodeOutput} from "@mtg-agent/opencode";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
+import {applySqliteMigrations} from "@tomekin/sqlite";
+import {createLocalAgentToolHandlers, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const testLog = createTestRootLoggerFromEnv();
 
@@ -20,7 +20,7 @@ describe("opencode adapter tools", () => {
     });
 
     test("exposes missing reference setup through local handlers", async () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-opencode-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-opencode-")), "test.sqlite");
         applySqliteMigrations(dbPath, {log: testLog});
         const local = createLocalAgentToolHandlers({databasePath: dbPath, log: testLog});
         try {

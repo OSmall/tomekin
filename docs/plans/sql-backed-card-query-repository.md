@@ -24,7 +24,7 @@ fallback or a parallel runtime path.
   available.
 - Do not treat accidental behavior from the old in-memory evaluator as authoritative. Where behavior is ambiguous, this
   plan and `docs/plans/card-query.md` are the source of truth.
-- Do not rely on the developer's local `.data/mtg-agent.sqlite` for tests. Tests must build their own temporary migrated
+- Do not rely on the developer's local `.data/tomekin.sqlite` for tests. Tests must build their own temporary migrated
   databases and insert fixture data.
 
 ## Current State
@@ -583,7 +583,7 @@ The skill should teach:
 
 ## Test Strategy
 
-Use temp migrated SQLite databases and explicit fixtures. Do not test against `.data/mtg-agent.sqlite`.
+Use temp migrated SQLite databases and explicit fixtures. Do not test against `.data/tomekin.sqlite`.
 
 Prefer observable repository behavior tests over full SQL string snapshots. Small SQL compiler unit tests are acceptable
 for parameter binding or fragment composition, but the main contract is Card Query behavior.

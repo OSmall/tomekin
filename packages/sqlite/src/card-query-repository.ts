@@ -15,9 +15,9 @@ import type {
     CardQueryValue,
     ColorIdentity,
     FormatLegality,
-} from "@mtg-agent/core";
-import {colorIdentityValues, filterHasCollectionPredicate} from "@mtg-agent/core";
-import type {MtgAgentDatabase} from "./database";
+} from "@tomekin/core";
+import {colorIdentityValues, filterHasCollectionPredicate} from "@tomekin/core";
+import type {TomekinDatabase} from "./database";
 
 type SqlParam = string | number | boolean | null;
 
@@ -110,7 +110,7 @@ const sqlOperators = {
     ">=": ">=",
 } as const;
 
-export function createSqliteCardQueryRepository(db: MtgAgentDatabase): CardQueryRepository {
+export function createSqliteCardQueryRepository(db: TomekinDatabase): CardQueryRepository {
     return {
         async queryCards(input) {
             try {
@@ -419,7 +419,7 @@ function compileOrderBy(input: CardQueryInput, collectionScope: CollectionScope 
     return joinFragments([fragment("order by "), joinSqlTerms(fragments, ", ", "ci.id asc")]);
 }
 
-function hydrateLegalities(db: MtgAgentDatabase, ids: readonly string[], formats: readonly string[]): Map<string, LegalityRow[]> {
+function hydrateLegalities(db: TomekinDatabase, ids: readonly string[], formats: readonly string[]): Map<string, LegalityRow[]> {
     if (ids.length === 0) return new Map();
     const query = fragment(
         `select card_identity_id as cardIdentityId, format, legality from card_identity_format_legality where card_identity_id in (${placeholders(ids.length)}) and format in (${placeholders(formats.length)})`,
@@ -429,7 +429,7 @@ function hydrateLegalities(db: MtgAgentDatabase, ids: readonly string[], formats
     return groupBy(rows, (row) => row.cardIdentityId);
 }
 
-function hydrateTags(db: MtgAgentDatabase, ids: readonly string[]): Map<string, {
+function hydrateTags(db: TomekinDatabase, ids: readonly string[]): Map<string, {
     direct: readonly CardQueryTagResult[];
     inherits: readonly CardQueryTagResult[]
 }> {
@@ -462,7 +462,7 @@ where cit.card_identity_id in (${placeholders(ids.length)})`, [...ids]);
     return result;
 }
 
-function hydrateAncestorTags(db: MtgAgentDatabase, directTagIds: readonly string[]): ReadonlyMap<string, readonly InheritedTagRow[]> {
+function hydrateAncestorTags(db: TomekinDatabase, directTagIds: readonly string[]): ReadonlyMap<string, readonly InheritedTagRow[]> {
     if (directTagIds.length === 0) return new Map();
     const query = fragment(`with recursive ancestors(child_tag_id, ancestor_tag_id) as (
   select h.child_tag_id, h.parent_tag_id
@@ -480,7 +480,7 @@ join card_identity_tag tag on tag.id = ancestors.ancestor_tag_id`, [...directTag
     return groupBy(rows, (row) => row.childTagId);
 }
 
-function hydrateCollectionRows(db: MtgAgentDatabase, ids: readonly string[], scope: CollectionScope | undefined): Map<string, CollectionRow[]> {
+function hydrateCollectionRows(db: TomekinDatabase, ids: readonly string[], scope: CollectionScope | undefined): Map<string, CollectionRow[]> {
     if (ids.length === 0) return new Map();
     const scopedPredicate = scope ? joinFragments([fragment(" and cc.id in ("), scope.sql, fragment(")")]) : fragment("");
     const query = joinFragments([
@@ -516,7 +516,7 @@ where ci.id in (${placeholders(ids.length)})`, [...ids]),
     return groupBy(rows, (row) => row.cardIdentityId);
 }
 
-function hydrateCollectionTotals(db: MtgAgentDatabase, ids: readonly string[], scope: CollectionScope | undefined): Map<string, number> {
+function hydrateCollectionTotals(db: TomekinDatabase, ids: readonly string[], scope: CollectionScope | undefined): Map<string, number> {
     if (ids.length === 0) return new Map();
     const scopedPredicate = scope ? joinFragments([fragment(" and cc.id in ("), scope.sql, fragment(")")]) : fragment("");
     const query = joinFragments([

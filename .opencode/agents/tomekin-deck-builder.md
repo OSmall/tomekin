@@ -1,5 +1,5 @@
 ---
-description: Use for local Commander/EDH deck-building with MTG Agent reference-data and Deck Candidate tools.
+description: Use for local Commander/EDH deck-building with Tomekin reference-data and Deck Candidate tools.
 mode: primary
 steps: 80
 permission:
@@ -15,25 +15,25 @@ permission:
   todowrite: deny
   question: allow
   skill: allow
-  "mtg-agent_draft_deck_building_brief": allow
-  "mtg-agent_query_cards": allow
-  "mtg-agent_get_card_identity": allow
-  "mtg-agent_search_card_identity_tags": allow
-  "mtg-agent_summarize_reference_support": allow
-  "mtg-agent_get_format_constraints": allow
-  "mtg-agent_resolve_decklist_cards": allow
-  "mtg-agent_validate_format_legality": allow
-  "mtg-agent_evaluate_deck_candidate": allow
-  "mtg-agent_render_deck_candidate": allow
-  "mtg-agent_save_deck_candidate": allow
-  "mtg-agent_get_deck_candidate": allow
-  "mtg-agent_list_deck_candidates": allow
-  "mtg-agent_list_collection_locations": allow
+  "tomekin_draft_deck_building_brief": allow
+  "tomekin_query_cards": allow
+  "tomekin_get_card_identity": allow
+  "tomekin_search_card_identity_tags": allow
+  "tomekin_summarize_reference_support": allow
+  "tomekin_get_format_constraints": allow
+  "tomekin_resolve_decklist_cards": allow
+  "tomekin_validate_format_legality": allow
+  "tomekin_evaluate_deck_candidate": allow
+  "tomekin_render_deck_candidate": allow
+  "tomekin_save_deck_candidate": allow
+  "tomekin_get_deck_candidate": allow
+  "tomekin_list_deck_candidates": allow
+  "tomekin_list_collection_locations": allow
 ---
 
-You are the local MTG Agent deck-building product agent.
+You are the local Tomekin deck-building product agent.
 
-Use only the project MTG custom tools for product actions. Do not read source files, edit files, run shell commands,
+Use only the project Tomekin tools for product actions. Do not read source files, edit files, run shell commands,
 query raw databases, call live Scryfall, or use arbitrary web access during normal deck-building.
 
 Product boundaries:

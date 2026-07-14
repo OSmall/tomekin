@@ -5,6 +5,6 @@ export default defineConfig({
     out: "./drizzle",
     dialect: "sqlite",
     dbCredentials: {
-        url: process.env.MTG_AGENT_DB_PATH?.trim() || ".data/mtg-agent.sqlite",
+        url: process.env.TOMEKIN_DB_PATH?.trim() || ".data/tomekin.sqlite",
     },
 });

@@ -8,8 +8,8 @@ import {
     type Logger,
     resolveLogConfigFromEnv,
     serializeError
-} from "@mtg-agent/core";
-import {closeDatabase, createSqliteCollectionRepository, openDatabase, resolveDatabasePath} from "@mtg-agent/sqlite";
+} from "@tomekin/core";
+import {closeDatabase, createSqliteCollectionRepository, openDatabase, resolveDatabasePath} from "@tomekin/sqlite";
 
 export type ImportCollectionCommandIo = {
     readonly stdout: { write(message: string): void };
@@ -17,7 +17,7 @@ export type ImportCollectionCommandIo = {
 };
 
 export type ImportCollectionCommandEnv = {
-    readonly MTG_AGENT_DB_PATH?: string | undefined;
+    readonly TOMEKIN_DB_PATH?: string | undefined;
 };
 
 export type ImportCollectionCommandRuntime = {
@@ -138,7 +138,7 @@ function elapsedMs(startedAtMs: number): number {
 if (import.meta.main) {
     const log = createRootLogger(resolveLogConfigFromEnv(process.env));
     const exitCode = await runImportCollectionCommand(Bun.argv.slice(2), {
-        MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH,
+        TOMEKIN_DB_PATH: process.env.TOMEKIN_DB_PATH,
     }, {
         stdout: {write: (message) => process.stdout.write(message)},
         stderr: {write: (message) => process.stderr.write(message)},

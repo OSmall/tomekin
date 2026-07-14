@@ -1,4 +1,4 @@
-# MTG Collection Deck Builder
+# Tomekin
 
 Local, collection-first Commander deck-building through opencode.
 
@@ -28,7 +28,7 @@ then open opencode from the repository root.
 
 ```sh
 git clone <repository-url>
-cd mtg-agent
+cd tomekin
 mise install
 bun install
 bun run db:sqlite:migration:apply
@@ -37,13 +37,13 @@ bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
 opencode
 ```
 
-In opencode, select or invoke the local deck-building agent from `.opencode/agents/mtg-deck-builder.md` and ask for a
+In opencode, select or invoke the local deck-building agent from `.opencode/agents/tomekin-deck-builder.md` and ask for a
 Commander deck. The agent uses project-local tools and does not make hidden live Scryfall calls during normal deck-building.
 
 Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
 SQLite database path and applies migrations from `packages/sqlite/drizzle/`.
 
-By default, commands use `.data/mtg-agent.sqlite`. Override the database path with `MTG_AGENT_DB_PATH` or command-specific
+By default, commands use `.data/tomekin.sqlite`. Override the database path with `TOMEKIN_DB_PATH` or command-specific
 `--db` flags where supported.
 
 ## Scryfall Sync
@@ -110,22 +110,22 @@ bun run import:scryfall -- --timing all_cards ./data/all-cards.jsonl.gz
 ## Local Logging
 
 Logs use `NODE_ENV` profile defaults. Development is the default profile and writes human-readable debug logs to
-`.data/mtg-agent.log`; production writes JSON info logs to `stdout`; tests write human-readable info logs to `stderr`.
+`.data/tomekin.log`; production writes JSON info logs to `stdout`; tests write human-readable info logs to `stderr`.
 
 Supported logging overrides are:
 
-- `MTG_AGENT_LOG_ENABLED=true|false`
-- `MTG_AGENT_LOG_DESTINATION=file|stdout|stderr`
-- `MTG_AGENT_LOG_FILE=.data/mtg-agent.log`
-- `MTG_AGENT_LOG_LEVEL=trace|debug|info|warn|error`
-- `MTG_AGENT_LOG_FORMAT=pretty|json`
+- `TOMEKIN_LOG_ENABLED=true|false`
+- `TOMEKIN_LOG_DESTINATION=file|stdout|stderr`
+- `TOMEKIN_LOG_FILE=.data/tomekin.log`
+- `TOMEKIN_LOG_LEVEL=trace|debug|info|warn|error`
+- `TOMEKIN_LOG_FORMAT=pretty|json`
 
 Examples:
 
 ```sh
 NODE_ENV=production bun run import:collection -- manabox /path/to/ManaBox_Collection.csv
-MTG_AGENT_LOG_DESTINATION=stdout MTG_AGENT_LOG_LEVEL=info bun run sync:scryfall
-MTG_AGENT_LOG_FORMAT=json MTG_AGENT_LOG_FILE=.data/mtg-agent.jsonl opencode
+TOMEKIN_LOG_DESTINATION=stdout TOMEKIN_LOG_LEVEL=info bun run sync:scryfall
+TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 ```
 
 ## Current Features

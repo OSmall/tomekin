@@ -18,7 +18,7 @@ Persistence should be accessed through repository interfaces rather than directl
 
 The SQLite repository implementation should use Drizzle ORM. Drizzle schema, migration, and query code should remain inside the persistence adapter and should not leak into service contracts.
 
-For the local MVP, the default SQLite database path should be `.data/mtg-agent.sqlite`. The path should be configurable with `MTG_AGENT_DB_PATH`. Local database files should not be committed, and migrations should run against the configured database path.
+For the local MVP, the default SQLite database path should be `.data/tomekin.sqlite`. The path should be configurable with `TOMEKIN_DB_PATH`. Local database files should not be committed, and migrations should run against the configured database path.
 
 Persisted records and relationships are documented in [`data-model.md`](./data-model.md).
 

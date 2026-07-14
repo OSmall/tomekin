@@ -22,10 +22,10 @@ import type {
   ScryfallImportObserver,
   ScryfallRepository,
   ScryfallRepositoryError,
-} from "@mtg-agent/core";
-import {CardIdentityLayoutSchema} from "@mtg-agent/core";
+} from "@tomekin/core";
+import {CardIdentityLayoutSchema} from "@tomekin/core";
 
-import type {MtgAgentDatabase} from "./database";
+import type {TomekinDatabase} from "./database";
 import {
   cardIdentity,
   cardIdentityFormatLegality,
@@ -75,7 +75,7 @@ export type SqliteScryfallRepository = ScryfallRepository & {
 };
 
 export function createSqliteScryfallRepository(
-  db: MtgAgentDatabase,
+  db: TomekinDatabase,
   clock: Clock,
 ): SqliteScryfallRepository {
   return {
@@ -996,7 +996,7 @@ type ScryfallImportRecordInput = {
 };
 
 async function recordFailedImport(
-  db: MtgAgentDatabase,
+  db: TomekinDatabase,
   bulkDataType: ScryfallBulkDataType,
   input: ScryfallImportRecordInput,
   blockingErrors: readonly string[],
@@ -1017,7 +1017,7 @@ async function recordFailedImport(
 }
 
 function insertImportRecord<TRecord>(
-  db: Pick<MtgAgentDatabase, "insert">,
+  db: Pick<TomekinDatabase, "insert">,
   bulkDataType: ScryfallBulkDataType,
   status: "succeeded" | "failed",
   input: ScryfallImportRecordInput,
@@ -1055,15 +1055,15 @@ function insertImportRecord<TRecord>(
   return imported;
 }
 
-function beginTransaction(db: MtgAgentDatabase): void {
+function beginTransaction(db: TomekinDatabase): void {
   db.run(sql`BEGIN IMMEDIATE`);
 }
 
-function commitTransaction(db: MtgAgentDatabase): void {
+function commitTransaction(db: TomekinDatabase): void {
   db.run(sql`COMMIT`);
 }
 
-function rollbackTransaction(db: MtgAgentDatabase): void {
+function rollbackTransaction(db: TomekinDatabase): void {
   try {
     db.run(sql`ROLLBACK`);
   } catch {

@@ -1,4 +1,4 @@
-# MTG Collection Deck Builder
+# Tomekin
 
 This context describes the language of a collection-first MTG deck-building assistant. It exists to keep product, domain, and agent instructions consistent as the project grows.
 

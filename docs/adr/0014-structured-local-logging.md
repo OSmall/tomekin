@@ -22,19 +22,19 @@ the SQLite adapter boundary, including Drizzle queries and direct prepared state
 
 Logging is configured through environment variables resolved once at application and test boundaries. `NODE_ENV=test`
 selects test defaults, `NODE_ENV=production` selects production defaults, and any other value selects development
-defaults. Logging-specific overrides are `MTG_AGENT_LOG_ENABLED=true|false`,
-`MTG_AGENT_LOG_DESTINATION=file|stdout|stderr`, `MTG_AGENT_LOG_FILE`,
-`MTG_AGENT_LOG_LEVEL=trace|debug|info|warn|error`, and `MTG_AGENT_LOG_FORMAT=pretty|json`. Invalid values fail fast
-during config resolution. `MTG_AGENT_LOG_ENABLED=false` wins over every other log setting and uses Pino's silent logging
+defaults. Logging-specific overrides are `TOMEKIN_LOG_ENABLED=true|false`,
+`TOMEKIN_LOG_DESTINATION=file|stdout|stderr`, `TOMEKIN_LOG_FILE`,
+`TOMEKIN_LOG_LEVEL=trace|debug|info|warn|error`, and `TOMEKIN_LOG_FORMAT=pretty|json`. Invalid values fail fast
+during config resolution. `TOMEKIN_LOG_ENABLED=false` wins over every other log setting and uses Pino's silent logging
 level.
 
 The profile defaults are:
 
 | Profile       | Enabled | Destination | File                  | Level   | Format   |
 |---------------|---------|-------------|-----------------------|---------|----------|
-| `development` | `true`  | `file`      | `.data/mtg-agent.log` | `debug` | `pretty` |
-| `production`  | `true`  | `stdout`    | `.data/mtg-agent.log` | `info`  | `json`   |
-| `test`        | `true`  | `stderr`    | `.data/mtg-agent.log` | `info`  | `pretty` |
+| `development` | `true`  | `file`      | `.data/tomekin.log` | `debug` | `pretty` |
+| `production`  | `true`  | `stdout`    | `.data/tomekin.log` | `info`  | `json`   |
+| `test`        | `true`  | `stderr`    | `.data/tomekin.log` | `info`  | `pretty` |
 
 Log records should expose project-level concepts such as component, operation, status, duration, database path, source
 URI, bulk data type, tool name, and error details as structured fields.

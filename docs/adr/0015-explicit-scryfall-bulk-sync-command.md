@@ -33,7 +33,7 @@ count for each dataset.
 
 The alpha sync should make one metadata request and one download request per dataset, without automatic retries or
 backoff. Clear fail-fast errors and safe re-run behaviour are preferred over retry logic for this clone-based alpha. The
-HTTP adapter should send a simple project User-Agent such as `mtg-agent-alpha/0.0.0`. Metadata should come from one
+HTTP adapter should send a simple project User-Agent such as `tomekin-alpha/0.0.0`. Metadata should come from one
 `GET /bulk-data` response, not three `GET /bulk-data/:type` calls, so all selected download links come from the same
 Scryfall metadata snapshot.
 

@@ -1,5 +1,5 @@
 {
-  "name": "@mtg-agent/opencode",
+  "name": "@tomekin/opencode",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,8 +7,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@mtg-agent/core": "workspace:*",
-    "@mtg-agent/sqlite": "workspace:*"
+    "@tomekin/core": "workspace:*",
+    "@tomekin/sqlite": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "1.3.14",

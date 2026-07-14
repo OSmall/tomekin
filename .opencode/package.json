@@ -1,10 +1,10 @@
 {
-  "name": "@mtg-agent/opencode-config",
+  "name": "@tomekin/opencode-config",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@mtg-agent/core": "workspace:*",
-    "@mtg-agent/opencode": "workspace:*",
+    "@tomekin/core": "workspace:*",
+    "@tomekin/opencode": "workspace:*",
     "@opencode-ai/plugin": "1.17.8",
     "zod": "4.4.3"
   }

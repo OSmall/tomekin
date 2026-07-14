@@ -6,8 +6,8 @@ import {
   type Logger,
   resolveLogConfigFromEnv,
   serializeError
-} from "@mtg-agent/core";
-import {createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@mtg-agent/opencode";
+} from "@tomekin/core";
+import {createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const cardQuerySortablePropertyValues = ["identity.id", "identity.name", "identity.manaValue", "identity.colorIdentity", "identity.edhrecRank", "collection.quantity"] as const;
 

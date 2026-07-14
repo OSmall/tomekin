@@ -2,9 +2,9 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {runImportScryfallCommand} from "@mtg-agent/cli";
-import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
-import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase,} from "@mtg-agent/sqlite";
+import {runImportScryfallCommand} from "@tomekin/cli";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
+import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase,} from "@tomekin/sqlite";
 
 const clock = {
   now: () => new Date("2025-01-01T00:00:00.000Z"),
@@ -95,7 +95,7 @@ describe("import:scryfall command", () => {
 
     const result = await runCommand(
       ["oracle_cards", paths.oraclePath],
-      { MTG_AGENT_DB_PATH: paths.dbPath },
+      { TOMEKIN_DB_PATH: paths.dbPath },
     );
 
     expect(result.exitCode).toBe(0);
@@ -290,7 +290,7 @@ describe("import:scryfall command", () => {
 });
 
 type TestCommandEnv = {
-    readonly MTG_AGENT_DB_PATH?: string;
+    readonly TOMEKIN_DB_PATH?: string;
 };
 
 async function runCommand(
@@ -321,7 +321,7 @@ async function createFixtureFiles(
   readonly allCardsPath: string;
   readonly oracleTagsPath: string;
 }> {
-  const dir = mkdtempSync(join(tmpdir(), "mtg-agent-cli-"));
+  const dir = mkdtempSync(join(tmpdir(), "tomekin-cli-"));
   const dbPath = join(dir, "reference.sqlite");
     const sourceFormat = options.sourceFormat ?? "json-array";
     const extension = sourceFormat === "jsonl.gz" ? "jsonl.gz" : "json";

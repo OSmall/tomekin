@@ -1,11 +1,11 @@
 import {and, eq, inArray, like, or, sql} from "drizzle-orm";
 import {err, ok, type Result} from "neverthrow";
-import type {CardIdentity, CardReferenceRepository, CardReferenceRepositoryError, CardIdentityDetail, SearchCardIdentitiesInput, SearchCardIdentityTagsInput} from "@mtg-agent/core";
-import {CardIdentitySchema, ScryfallBulkDataImportSchema, summarizeReferenceImports} from "@mtg-agent/core";
-import type {MtgAgentDatabase} from "./database";
+import type {CardIdentity, CardReferenceRepository, CardReferenceRepositoryError, CardIdentityDetail, SearchCardIdentitiesInput, SearchCardIdentityTagsInput} from "@tomekin/core";
+import {CardIdentitySchema, ScryfallBulkDataImportSchema, summarizeReferenceImports} from "@tomekin/core";
+import type {TomekinDatabase} from "./database";
 import {cardIdentity, cardIdentityFormatLegality, cardIdentityPart, cardIdentityTag, cardIdentityTagAlias, cardIdentityTagging, scryfallBulkDataImport} from "./schema";
 
-export function createSqliteCardReferenceRepository(db: MtgAgentDatabase): CardReferenceRepository {
+export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardReferenceRepository {
   return {
     async searchCardIdentities(input) {
       return wrap(() => {
@@ -60,7 +60,7 @@ function buildCardFilters(input: SearchCardIdentitiesInput) {
   return filters;
 }
 
-function getDetail(db: MtgAgentDatabase, id: string): CardIdentityDetail {
+function getDetail(db: TomekinDatabase, id: string): CardIdentityDetail {
   const identity = db.select().from(cardIdentity).where(eq(cardIdentity.id, id)).get();
   if (!identity) throw notFound(`Card Identity not found: ${id}.`);
   const tags = db.select({tagId: cardIdentityTagging.tagId, cardIdentityId: cardIdentityTagging.cardIdentityId, weight: cardIdentityTagging.weight, annotation: cardIdentityTagging.annotation, slug: cardIdentityTag.slug, label: cardIdentityTag.label}).from(cardIdentityTagging).innerJoin(cardIdentityTag, eq(cardIdentityTagging.tagId, cardIdentityTag.id)).where(eq(cardIdentityTagging.cardIdentityId, id)).all();

@@ -1,11 +1,11 @@
 ---
-name: mtg-deck-building
-description: Use when building or revising an MTG Deck Candidate with MTG Agent tools, Deck Building Brief confirmation, format-methodology skill loading, validation, rendering, persistence, and imported-Collection awareness.
+name: tomekin-deck-building
+description: Use when building or revising an MTG Deck Candidate with Tomekin tools, Deck Building Brief confirmation, format-methodology skill loading, validation, rendering, persistence, and imported-Collection awareness.
 ---
 
-# MTG Deck Building
+# Tomekin Deck Building
 
-Use this workflow to coordinate local deck-building through MTG Agent tools. This skill is the canonical source for the
+Use this workflow to coordinate local deck-building through Tomekin tools. This skill is the canonical source for the
 tool lifecycle. Format-specific deck construction methodology belongs in format skills such as
 `commander-deck-architecture`.
 

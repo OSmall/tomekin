@@ -2,9 +2,9 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {runImportCollectionCommand, runImportScryfallCommand} from "@mtg-agent/cli";
-import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
-import {applySqliteMigrations, closeDatabase, createSqliteCollectionRepository, openDatabase} from "@mtg-agent/sqlite";
+import {runImportCollectionCommand, runImportScryfallCommand} from "@tomekin/cli";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
+import {applySqliteMigrations, closeDatabase, createSqliteCollectionRepository, openDatabase} from "@tomekin/sqlite";
 
 const clock = {now: () => new Date("2025-01-01T00:00:00.000Z")};
 const testLog = createTestRootLoggerFromEnv();
@@ -99,7 +99,7 @@ describe("import:collection command", () => {
 });
 
 type TestCommandEnv = {
-    readonly MTG_AGENT_DB_PATH?: string;
+    readonly TOMEKIN_DB_PATH?: string;
 };
 
 async function runCommand(args: readonly string[], env: TestCommandEnv) {
@@ -134,7 +134,7 @@ async function importReferenceData(paths: Awaited<ReturnType<typeof createFixtur
 }
 
 async function createFixtureFiles() {
-    const dir = mkdtempSync(join(tmpdir(), "mtg-agent-collection-cli-"));
+    const dir = mkdtempSync(join(tmpdir(), "tomekin-collection-cli-"));
     const dbPath = join(dir, "collection.sqlite");
     const oraclePath = join(dir, "oracle-cards.json");
     const allCardsPath = join(dir, "all-cards.json");
@@ -147,7 +147,7 @@ async function createFixtureFiles() {
 }
 
 async function createRealSliceFixtureFiles() {
-    const dir = mkdtempSync(join(tmpdir(), "mtg-agent-collection-real-slice-cli-"));
+    const dir = mkdtempSync(join(tmpdir(), "tomekin-collection-real-slice-cli-"));
     const dbPath = join(dir, "collection.sqlite");
     const oraclePath = join(dir, "oracle-cards.json");
     const allCardsPath = join(dir, "all-cards.json");

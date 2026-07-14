@@ -1,14 +1,14 @@
 import {Database} from "bun:sqlite";
 import {drizzle} from "drizzle-orm/bun-sqlite";
 import {sql} from "drizzle-orm";
-import type {LogComponent, Logger} from "@mtg-agent/core";
+import type {LogComponent, Logger} from "@tomekin/core";
 
 import * as schema from "./schema";
 
-export const defaultDatabasePath = ".data/mtg-agent.sqlite";
+export const defaultDatabasePath = ".data/tomekin.sqlite";
 
 export function resolveDatabasePath(env = process.env): string {
-  return env.MTG_AGENT_DB_PATH?.trim() || defaultDatabasePath;
+  return env.TOMEKIN_DB_PATH?.trim() || defaultDatabasePath;
 }
 
 export function openDatabase(path: string, options: { readonly log: Logger }) {
@@ -29,9 +29,9 @@ export function openDatabase(path: string, options: { readonly log: Logger }) {
   return db;
 }
 
-export type MtgAgentDatabase = ReturnType<typeof openDatabase>;
+export type TomekinDatabase = ReturnType<typeof openDatabase>;
 
-export function closeDatabase(db: MtgAgentDatabase): void {
+export function closeDatabase(db: TomekinDatabase): void {
   db.$client.close();
 }
 

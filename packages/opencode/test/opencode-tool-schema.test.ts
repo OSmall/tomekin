@@ -2,11 +2,11 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync, readFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {createRootLogger, resolveLogConfigFromEnv} from "@mtg-agent/core";
-import {createLocalAgentToolHandlers} from "@mtg-agent/opencode";
-import {applySqliteMigrations} from "@mtg-agent/sqlite";
+import {createRootLogger, resolveLogConfigFromEnv} from "@tomekin/core";
+import {createLocalAgentToolHandlers} from "@tomekin/opencode";
+import {applySqliteMigrations} from "@tomekin/sqlite";
 import {tool, type ToolDefinition} from "@opencode-ai/plugin";
-import * as mtgAgentTools from "../../../.opencode/tools/mtg-agent";
+import * as tomekinTools from "../../../.opencode/tools/tomekin";
 
 function isToolDefinition(value: unknown): value is ToolDefinition {
     return typeof value === "object" && value !== null && "description" in value && "args" in value && "execute" in value;
@@ -14,7 +14,7 @@ function isToolDefinition(value: unknown): value is ToolDefinition {
 
 describe("opencode tool schemas", () => {
     test("are representable as JSON Schema", () => {
-        const tools = Object.entries(mtgAgentTools).filter((entry): entry is [string, ToolDefinition] => isToolDefinition(entry[1]));
+        const tools = Object.entries(tomekinTools).filter((entry): entry is [string, ToolDefinition] => isToolDefinition(entry[1]));
 
         expect(tools.length).toBeGreaterThan(0);
         for (const [name, definition] of tools) {
@@ -23,28 +23,28 @@ describe("opencode tool schemas", () => {
     });
 
     test("exposes query_cards and not the retired narrow Collection search", () => {
-        expect(isToolDefinition(mtgAgentTools.query_cards)).toBe(true);
-        expect("search_collection_cards" in mtgAgentTools).toBe(false);
-        expect("list_collection_imports" in mtgAgentTools).toBe(false);
+        expect(isToolDefinition(tomekinTools.query_cards)).toBe(true);
+        expect("search_collection_cards" in tomekinTools).toBe(false);
+        expect("list_collection_imports" in tomekinTools).toBe(false);
     });
 
     test("logs opencode tool invocation metadata", async () => {
-        const dir = mkdtempSync(join(tmpdir(), "mtg-agent-opencode-log-"));
+        const dir = mkdtempSync(join(tmpdir(), "tomekin-opencode-log-"));
         const dbPath = join(dir, "test.sqlite");
         const logPath = join(dir, "agent.log");
         const log = createRootLogger(resolveLogConfigFromEnv({
-            MTG_AGENT_LOG_DESTINATION: "file",
-            MTG_AGENT_LOG_FILE: logPath,
-            MTG_AGENT_LOG_LEVEL: "debug",
-            MTG_AGENT_LOG_FORMAT: "json"
+            TOMEKIN_LOG_DESTINATION: "file",
+            TOMEKIN_LOG_FILE: logPath,
+            TOMEKIN_LOG_LEVEL: "debug",
+            TOMEKIN_LOG_FORMAT: "json"
         }));
         applySqliteMigrations(dbPath, {log});
-        const restoreRuntime = mtgAgentTools.configureAgentToolRuntimeForTests({
+        const restoreRuntime = tomekinTools.configureAgentToolRuntimeForTests({
             log,
             createHandlers: (options) => createLocalAgentToolHandlers({...options, databasePath: dbPath}),
         });
         try {
-            await mtgAgentTools.summarize_reference_support.execute({});
+            await tomekinTools.summarize_reference_support.execute({});
         } finally {
             restoreRuntime();
         }

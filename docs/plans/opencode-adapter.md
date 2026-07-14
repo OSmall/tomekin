@@ -59,7 +59,7 @@ Relevant external specs and references:
 - Stale reference data should warn by default, not block, unless a later operation explicitly requires current volatile external facts.
 - No MCP server is included in the roadmap for now. Future web app code should call core services and Agent Tools directly rather than depending on MCP internally.
 - Agent Tool is the canonical term for protocol-neutral callable capabilities intended for AI-agent use, backed by product services and wrapped by adapter surfaces.
-- Reusable Agent Tool contracts and handlers live in `@mtg-agent/core`.
+- Reusable Agent Tool contracts and handlers live in `@tomekin/core`.
 - Opencode-specific custom tool registration, optional plugin hooks, agent files, skill files, permissions, and formatting live in `packages/opencode` and project-local `.opencode/` artifacts.
 - `packages/opencode` keeps its current package name and remains opencode-specific.
 - Use deep modules at `packages/core/src/*.ts` for the first slice rather than nested folders.
@@ -382,13 +382,13 @@ Use opencode's plural project-local directories from the current docs. Singular 
 
 Planned files:
 
-- `.opencode/agents/mtg-deck-builder.md`: primary product agent instructions.
-- `.opencode/skills/mtg-deck-building/SKILL.md`: reusable deck-building tool orchestration instructions if useful
+- `.opencode/agents/tomekin-deck-builder.md`: primary product agent instructions.
+- `.opencode/skills/tomekin-deck-building/SKILL.md`: reusable deck-building tool orchestration instructions if useful
   separately from the primary agent.
 - `.opencode/skills/commander-deck-architecture/SKILL.md`: Commander/EDH construction methodology for synergy discovery,
   role-density targets, mana-base heuristics, and supported static win-path checks.
-- `.opencode/tools/mtg-agent.ts`: custom tool definitions that delegate to `packages/opencode`.
-- `.opencode/plugins/mtg-agent.ts`: optional plugin hooks only if lifecycle behavior is needed beyond custom tool definitions.
+- `.opencode/tools/tomekin.ts`: custom tool definitions that delegate to `packages/opencode`.
+- `.opencode/plugins/tomekin.ts`: optional plugin hooks only if lifecycle behavior is needed beyond custom tool definitions.
 - `opencode.json`: only if required for project-local config such as `default_agent` or explicit permission overrides.
 
 Project-local agents, skills, tools, and plugins are auto-discovered from `.opencode/` by opencode. A project-local root `opencode.json` is not required just to load those files; add it only for project configuration such as `default_agent` or explicit permission overrides.
@@ -415,7 +415,7 @@ available. Repeatable format methodology should move into skills or subagents af
 
 The first split is:
 
-- `mtg-deck-building`: canonical orchestration skill for Deck Building Brief confirmation, format-methodology skill
+- `tomekin-deck-building`: canonical orchestration skill for Deck Building Brief confirmation, format-methodology skill
   loading, Agent Tool sequencing, validation, rendering, and persistence.
 - `commander-deck-architecture`: canonical Commander/EDH methodology skill for commander analysis, tag snowballing,
   role-density targets, mana-base heuristics, final cuts, and static win-path checks.
@@ -532,10 +532,10 @@ Live deck-building quality evaluation may be added later as an explicit opt-in s
 ### Slice 1E: Opencode Adapter
 
 - Implement opencode wrapper handlers in `packages/opencode`.
-- Add `.opencode/tools/mtg-agent.ts` to expose custom tools.
-- Add `.opencode/plugins/mtg-agent.ts` only if lifecycle hooks are needed.
-- Add `.opencode/agents/mtg-deck-builder.md` as primary least-privilege product agent.
-- Add `.opencode/skills/mtg-deck-building/SKILL.md` for deck-building tool orchestration.
+- Add `.opencode/tools/tomekin.ts` to expose custom tools.
+- Add `.opencode/plugins/tomekin.ts` only if lifecycle hooks are needed.
+- Add `.opencode/agents/tomekin-deck-builder.md` as primary least-privilege product agent.
+- Add `.opencode/skills/tomekin-deck-building/SKILL.md` for deck-building tool orchestration.
 - Add `.opencode/skills/commander-deck-architecture/SKILL.md` for Commander/EDH construction methodology.
 - Add minimal root `opencode.json` only if required.
 - Add adapter smoke tests.

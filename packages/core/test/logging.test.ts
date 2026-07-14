@@ -2,7 +2,7 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync, readFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {createRootLogger, resolveLogConfigFromEnv, resolveTestLogConfigFromEnv} from "@mtg-agent/core";
+import {createRootLogger, resolveLogConfigFromEnv, resolveTestLogConfigFromEnv} from "@tomekin/core";
 
 describe("project logging", () => {
   test("resolves profile defaults and environment overrides", () => {
@@ -10,7 +10,7 @@ describe("project logging", () => {
       profile: "development",
       enabled: true,
       destination: "file",
-      file: ".data/mtg-agent.log",
+      file: ".data/tomekin.log",
       level: "debug",
       format: "pretty",
     });
@@ -23,20 +23,20 @@ describe("project logging", () => {
     expect(resolveLogConfigFromEnv({NODE_ENV: "test"})).toMatchObject({
       profile: "test",
       destination: "stderr",
-      file: ".data/mtg-agent.log",
+      file: ".data/tomekin.log",
       level: "info",
     });
     expect(resolveLogConfigFromEnv({
       NODE_ENV: "test",
-      MTG_AGENT_LOG_DESTINATION: " file ",
-      MTG_AGENT_LOG_FILE: " /tmp/mtg-agent-test.log ",
-      MTG_AGENT_LOG_LEVEL: " debug ",
-      MTG_AGENT_LOG_FORMAT: " json ",
+      TOMEKIN_LOG_DESTINATION: " file ",
+      TOMEKIN_LOG_FILE: " /tmp/tomekin-test.log ",
+      TOMEKIN_LOG_LEVEL: " debug ",
+      TOMEKIN_LOG_FORMAT: " json ",
     })).toEqual({
       profile: "test",
       enabled: true,
       destination: "file",
-      file: "/tmp/mtg-agent-test.log",
+      file: "/tmp/tomekin-test.log",
       level: "debug",
       format: "json",
     });
@@ -49,26 +49,26 @@ describe("project logging", () => {
       level: "info",
       format: "pretty",
     });
-    expect(resolveTestLogConfigFromEnv({MTG_AGENT_LOG_ENABLED: "false"}).enabled).toBe(false);
+    expect(resolveTestLogConfigFromEnv({TOMEKIN_LOG_ENABLED: "false"}).enabled).toBe(false);
     expect(resolveTestLogConfigFromEnv({NODE_ENV: "production"}).profile).toBe("production");
   });
 
   test("fails fast on invalid logging environment values", () => {
     expect(resolveLogConfigFromEnv({NODE_ENV: "staging"}).profile).toBe("development");
-    expect(() => resolveLogConfigFromEnv({MTG_AGENT_LOG_ENABLED: "yes"})).toThrow("Invalid MTG_AGENT_LOG_ENABLED");
-    expect(() => resolveLogConfigFromEnv({MTG_AGENT_LOG_DESTINATION: "console"})).toThrow("Invalid MTG_AGENT_LOG_DESTINATION");
-    expect(() => resolveLogConfigFromEnv({MTG_AGENT_LOG_LEVEL: "verbose"})).toThrow("Invalid MTG_AGENT_LOG_LEVEL");
-    expect(() => resolveLogConfigFromEnv({MTG_AGENT_LOG_FORMAT: "text"})).toThrow("Invalid MTG_AGENT_LOG_FORMAT");
+    expect(() => resolveLogConfigFromEnv({TOMEKIN_LOG_ENABLED: "yes"})).toThrow("Invalid TOMEKIN_LOG_ENABLED");
+    expect(() => resolveLogConfigFromEnv({TOMEKIN_LOG_DESTINATION: "console"})).toThrow("Invalid TOMEKIN_LOG_DESTINATION");
+    expect(() => resolveLogConfigFromEnv({TOMEKIN_LOG_LEVEL: "verbose"})).toThrow("Invalid TOMEKIN_LOG_LEVEL");
+    expect(() => resolveLogConfigFromEnv({TOMEKIN_LOG_FORMAT: "text"})).toThrow("Invalid TOMEKIN_LOG_FORMAT");
   });
 
   test("writes component-bound structured JSON records when JSON format is selected", () => {
-    const logPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-log-")), "agent.log");
+    const logPath = join(mkdtempSync(join(tmpdir(), "tomekin-log-")), "agent.log");
     const logger = createRootLogger(
         resolveLogConfigFromEnv({
-          MTG_AGENT_LOG_DESTINATION: "file",
-          MTG_AGENT_LOG_FILE: logPath,
-          MTG_AGENT_LOG_LEVEL: "debug",
-          MTG_AGENT_LOG_FORMAT: "json"
+          TOMEKIN_LOG_DESTINATION: "file",
+          TOMEKIN_LOG_FILE: logPath,
+          TOMEKIN_LOG_LEVEL: "debug",
+          TOMEKIN_LOG_FORMAT: "json"
         }),
       {timestamp: false},
     ).child({component: "cli"});
@@ -87,12 +87,12 @@ describe("project logging", () => {
   });
 
   test("writes human-readable pretty records by default", () => {
-    const logPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-log-")), "agent.log");
+    const logPath = join(mkdtempSync(join(tmpdir(), "tomekin-log-")), "agent.log");
     const logger = createRootLogger(
         resolveLogConfigFromEnv({
-          MTG_AGENT_LOG_DESTINATION: "file",
-          MTG_AGENT_LOG_FILE: logPath,
-          MTG_AGENT_LOG_LEVEL: "debug"
+          TOMEKIN_LOG_DESTINATION: "file",
+          TOMEKIN_LOG_FILE: logPath,
+          TOMEKIN_LOG_LEVEL: "debug"
         }),
         {timestamp: false},
     ).child({component: "cli"});
@@ -106,12 +106,12 @@ describe("project logging", () => {
   });
 
   test("writes multiline pretty query fields in triple-quoted blocks", () => {
-    const logPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-log-")), "agent.log");
+    const logPath = join(mkdtempSync(join(tmpdir(), "tomekin-log-")), "agent.log");
     const logger = createRootLogger(
         resolveLogConfigFromEnv({
-          MTG_AGENT_LOG_DESTINATION: "file",
-          MTG_AGENT_LOG_FILE: logPath,
-          MTG_AGENT_LOG_LEVEL: "debug"
+          TOMEKIN_LOG_DESTINATION: "file",
+          TOMEKIN_LOG_FILE: logPath,
+          TOMEKIN_LOG_LEVEL: "debug"
         }),
         {timestamp: false},
     ).child({component: "sqlite"});
@@ -132,12 +132,12 @@ describe("project logging", () => {
   });
 
   test("logging disabled produces a no-op logger", async () => {
-    const logPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-log-")), "agent.log");
+    const logPath = join(mkdtempSync(join(tmpdir(), "tomekin-log-")), "agent.log");
     const logger = createRootLogger(
         resolveLogConfigFromEnv({
-          MTG_AGENT_LOG_ENABLED: "false",
-          MTG_AGENT_LOG_DESTINATION: "file",
-          MTG_AGENT_LOG_FILE: logPath
+          TOMEKIN_LOG_ENABLED: "false",
+          TOMEKIN_LOG_DESTINATION: "file",
+          TOMEKIN_LOG_FILE: logPath
         }),
         {timestamp: false},
     ).child({component: "cli"});

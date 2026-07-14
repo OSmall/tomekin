@@ -18,7 +18,7 @@ import {
     RawScryfallAllCardSchema,
     RawScryfallOracleCardSchema,
     RawScryfallOracleTagSchema
-} from "@mtg-agent/core";
+} from "@tomekin/core";
 import {
     applySqliteMigrations,
     closeDatabase,
@@ -26,7 +26,7 @@ import {
     collectionLocation,
     createSqliteScryfallRepository,
     openDatabase,
-} from "@mtg-agent/sqlite";
+} from "@tomekin/sqlite";
 
 describe("SQLite Scryfall repository", () => {
   test("successful oracle_cards import records success and exposes Card Identities", async () => {
@@ -561,7 +561,7 @@ function createTestRepository() {
 }
 
 function createTestRepositoryFixture() {
-  const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sqlite-"));
+  const dir = mkdtempSync(join(tmpdir(), "tomekin-sqlite-"));
   const dbPath = join(dir, "test.sqlite");
   applySqliteMigrations(dbPath, {log: testLog});
   const db = openDatabase(dbPath, {log: testLog});

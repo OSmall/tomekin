@@ -24,10 +24,10 @@ This document captures unresolved design branches to resume later. It should sta
 
 - Continue hardening the CQL2-shaped `query_cards` Agent Tool as the primary card retrieval surface.
 - Loosen the base MTG deck-builder agent workflow while keeping strict authority boundaries: no raw database MCP access,
-  no arbitrary file or shell access, and only explicitly allowed MTG Agent Tools.
+  no arbitrary file or shell access, and only explicitly allowed Tomekin Tools.
 - Move proven deck-building workflows into skills or subagents after they are validated through real use.
 - Decide whether tools accept file paths, raw text input, or both.
-- Decide how local configuration such as `MTG_AGENT_DB_PATH` is exposed to tools.
+- Decide how local configuration such as `TOMEKIN_DB_PATH` is exposed to tools.
 
 ## LLM Orchestration
 

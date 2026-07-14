@@ -15,8 +15,8 @@ import {
   type ScryfallImportEvent,
   type ScryfallImportObserver,
   serializeError,
-} from "@mtg-agent/core";
-import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath,} from "@mtg-agent/sqlite";
+} from "@tomekin/core";
+import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath,} from "@tomekin/sqlite";
 
 const SOURCE_PROGRESS_STEP_PERCENT = 5;
 const TIMING_RENDER_INTERVAL_MS = 5_000;
@@ -27,7 +27,7 @@ export type ImportScryfallCommandIo = {
 };
 
 export type ImportScryfallCommandEnv = {
-  readonly MTG_AGENT_DB_PATH?: string | undefined;
+  readonly TOMEKIN_DB_PATH?: string | undefined;
 };
 
 export type ImportScryfallCommandRuntime = {
@@ -514,7 +514,7 @@ if (import.meta.main) {
   const exitCode = await runImportScryfallCommand(
     process.argv.slice(2),
       {
-          MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH,
+          TOMEKIN_DB_PATH: process.env.TOMEKIN_DB_PATH,
       },
     {
       stdout: { write: (message) => process.stdout.write(message) },

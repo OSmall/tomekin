@@ -1,4 +1,4 @@
-import {createAgentToolHandlers, createImportFoundationServices, type LogComponent, type Logger} from "@mtg-agent/core";
+import {createAgentToolHandlers, createImportFoundationServices, type LogComponent, type Logger} from "@tomekin/core";
 import {
     closeDatabase,
     createSqliteCardQueryRepository,
@@ -7,7 +7,7 @@ import {
     createSqliteDeckCandidateRepository,
     openDatabase,
     resolveDatabasePath,
-} from "@mtg-agent/sqlite";
+} from "@tomekin/sqlite";
 
 export type LocalAgentToolHandlers = ReturnType<typeof createAgentToolHandlers>;
 

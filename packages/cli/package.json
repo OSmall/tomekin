@@ -1,5 +1,5 @@
 {
-  "name": "@mtg-agent/cli",
+  "name": "@tomekin/cli",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,8 +12,8 @@
     "sync:scryfall": "bun src/sync-scryfall.ts"
   },
   "dependencies": {
-    "@mtg-agent/core": "workspace:*",
-    "@mtg-agent/sqlite": "workspace:*",
+    "@tomekin/core": "workspace:*",
+    "@tomekin/sqlite": "workspace:*",
     "neverthrow": "8.2.0"
   },
   "devDependencies": {

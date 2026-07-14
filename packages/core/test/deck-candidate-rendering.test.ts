@@ -4,7 +4,7 @@ import {
   renderDeckCandidateMarkdown,
   renderPortableDecklist,
   validateCommanderDeck
-} from "@mtg-agent/core";
+} from "@tomekin/core";
 
 describe("Deck Candidate rendering", () => {
   test("renders strict Commander portable decklist", () => {

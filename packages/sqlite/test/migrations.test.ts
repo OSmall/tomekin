@@ -3,14 +3,14 @@ import {mkdtempSync, readFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {sql} from "drizzle-orm";
-import {createTestRootLoggerFromEnv} from "@mtg-agent/core";
-import {closeDatabase, openDatabase} from "@mtg-agent/sqlite";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
+import {closeDatabase, openDatabase} from "@tomekin/sqlite";
 
 const testLog = createTestRootLoggerFromEnv();
 
 describe("SQLite migrations", () => {
     test("0003 preserves dependent rows while making game_changer required", () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-migration-0003-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-migration-0003-")), "test.sqlite");
         const db = openDatabase(dbPath, {log: testLog});
         try {
             createPre0003CardReferenceSchema(db);

@@ -7,8 +7,8 @@ This document describes the project's testing posture and expected test behaviou
 Use `bun test` as the default test runner for unit tests, integration tests, and Exact Output Tests.
 
 Bun sets `NODE_ENV=test` for `bun test`, which routes project logs to human-readable `stderr` output at `info` level so
-test diagnostics stay in the terminal and do not append to `.data/mtg-agent.log`. Set `MTG_AGENT_LOG_LEVEL=debug` for
-verbose SQL and tool payload logs, or `MTG_AGENT_LOG_ENABLED=false` to suppress project logs during a test run.
+test diagnostics stay in the terminal and do not append to `.data/tomekin.log`. Set `TOMEKIN_LOG_LEVEL=debug` for
+verbose SQL and tool payload logs, or `TOMEKIN_LOG_ENABLED=false` to suppress project logs during a test run.
 
 An Exact Output Test checks generated output against an expected string or file exactly. Use this term instead of testing jargon such as `golden-output test` or `approved-output test`.
 
@@ -66,7 +66,7 @@ Fixtures should live under the relevant package's `test/fixtures/` directory.
 
 Fixtures should stay package-local by default. Promote fixtures to a shared location only when multiple packages genuinely need the same fixture and duplication starts causing drift.
 
-Behaviour and service tests should import through the package public API, such as `@mtg-agent/core` or `@mtg-agent/sqlite`.
+Behaviour and service tests should import through the package public API, such as `@tomekin/core` or `@tomekin/sqlite`.
 
 Narrow unit tests for internal parsing, rendering, or validation helpers may import from `../src/...`. If many tests need internal imports, treat that as a sign that the behaviour boundary may be unclear.
 
@@ -101,7 +101,7 @@ Anonymised real-export regression fixtures may be added later when they protect 
 
 SQLite integration tests should use real temporary on-disk database files by default.
 
-Tests must not use the real `.data/mtg-agent.sqlite` database. Each integration test should get an isolated temporary database path and clean up temporary files after success where practical.
+Tests must not use the real `.data/tomekin.sqlite` database. Each integration test should get an isolated temporary database path and clean up temporary files after success where practical.
 
 In-memory SQLite may be used only for narrow query tests where file-backed database behaviour is irrelevant.
 

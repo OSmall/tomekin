@@ -4,7 +4,7 @@ import {
     cardIdentityTaggingWeightValues,
     colorIdentityValues,
     formatLegalityValues,
-} from "@mtg-agent/core/scryfall-sync";
+} from "@tomekin/core/scryfall-sync";
 
 export const collectionImport = sqliteTable("collection_import", {
   id: text("id").primaryKey(),

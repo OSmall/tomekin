@@ -1,6 +1,6 @@
 ---
 name: query-cards
-description: Use when composing, fixing, or explaining filters for the `query_cards` MTG Agent tool.
+description: Use when composing, fixing, or explaining filters for the `query_cards` Tomekin tool.
 ---
 
 # Query Cards

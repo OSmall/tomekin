@@ -2,14 +2,14 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {runSyncScryfallCommand} from "@mtg-agent/cli";
+import {runSyncScryfallCommand} from "@tomekin/cli";
 import {
     createTestRootLoggerFromEnv,
     type ScryfallBulkDataMetadata,
     type ScryfallBulkDataSyncPorts,
     type ScryfallBulkDataType
-} from "@mtg-agent/core";
-import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase} from "@mtg-agent/sqlite";
+} from "@tomekin/core";
+import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase} from "@tomekin/sqlite";
 import {ok} from "neverthrow";
 
 const clock = {
@@ -128,7 +128,7 @@ async function runCommand(
 }
 
 function createDatabase(): {readonly dbPath: string} {
-  const dir = mkdtempSync(join(tmpdir(), "mtg-agent-sync-cli-"));
+  const dir = mkdtempSync(join(tmpdir(), "tomekin-sync-cli-"));
   const dbPath = join(dir, "reference.sqlite");
   applySqliteMigrations(dbPath, {log: testLog});
   return {dbPath};

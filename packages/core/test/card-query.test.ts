@@ -1,5 +1,5 @@
 import {describe, expect, test} from "bun:test";
-import {parseCardQueryInput} from "@mtg-agent/core";
+import {parseCardQueryInput} from "@tomekin/core";
 
 describe("Card Query validation", () => {
     test("accepts omitted envelope fields and empty include objects", () => {

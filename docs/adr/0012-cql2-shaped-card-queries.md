@@ -1,7 +1,7 @@
 # CQL2-shaped Card Queries
 
 Card Queries will use a CQL2-JSON-inspired expression shape with composable `op` and `args` nodes and an explicit
-allowlist of MTG Agent queryables, instead of giving deck-building agents raw SQL or cloning Scryfall's public search
+allowlist of Tomekin queryables, instead of giving deck-building agents raw SQL or cloning Scryfall's public search
 syntax. The first tool should be `query_cards`, querying a SQL-like joined card-search resource over Card Identity,
 Card Printing, Collection Card, Collection Location, Commander legality, and Card Identity Tags where needed. Results
 are

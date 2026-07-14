@@ -7,7 +7,7 @@ import {
   parseJsonArrayItems,
   parseJsonlItems,
   parseScryfallBulkDataItems
-} from "@mtg-agent/core";
+} from "@tomekin/core";
 
 describe("Scryfall JSON source parser", () => {
   test("parses one top-level array item per value from a Bun file stream", async () => {
@@ -102,7 +102,7 @@ async function writeTempJson(value: unknown): Promise<string> {
 }
 
 async function writeTempText(text: string): Promise<string> {
-  const dir = mkdtempSync(join(tmpdir(), "mtg-agent-json-source-"));
+  const dir = mkdtempSync(join(tmpdir(), "tomekin-json-source-"));
   const path = join(dir, "source.json");
   await Bun.write(path, text);
   return path;

@@ -1,13 +1,13 @@
 ---
 name: commander-deck-architecture
-description: Use after a Commander/EDH Deck Building Brief is confirmed to architect a synergistic Commander Deck Candidate with MTG Agent tools, tag-aware package discovery, role-density targets, and supported validation passes.
+description: Use after a Commander/EDH Deck Building Brief is confirmed to architect a synergistic Commander Deck Candidate with Tomekin tools, tag-aware package discovery, role-density targets, and supported validation passes.
 ---
 
 # Commander Deck Architecture
 
-Use this methodology after the `mtg-deck-building` skill has confirmed a Commander/EDH Deck Building Brief. This skill
+Use this methodology after the `tomekin-deck-building` skill has confirmed a Commander/EDH Deck Building Brief. This skill
 is
-the canonical Commander construction method. It does not replace `mtg-deck-building` for tool orchestration, legality
+the canonical Commander construction method. It does not replace `tomekin-deck-building` for tool orchestration, legality
 validation, rendering, or persistence.
 
 ## Core Principle
@@ -150,7 +150,7 @@ Instead, run a static win-path check:
 
 ## 9. Evaluation Pass
 
-Before final output, hand the candidate back to the `mtg-deck-building` orchestration workflow.
+Before final output, hand the candidate back to the `tomekin-deck-building` orchestration workflow.
 
 Required checks outside this methodology skill:
 

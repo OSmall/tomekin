@@ -71,7 +71,7 @@ and data-preserving after the initial adoption.
   success message afterward.
 - SQLite migration generation should call Drizzle Kit directly through the developer-facing
   `bun run db:sqlite:migration:generate` command.
-- `packages/sqlite/drizzle.config.ts` should read `MTG_AGENT_DB_PATH` with fallback to `.data/mtg-agent.sqlite`.
+- `packages/sqlite/drizzle.config.ts` should read `TOMEKIN_DB_PATH` with fallback to `.data/tomekin.sqlite`.
 - SQLite migration names should not be required by project convention; developers may pass Drizzle Kit's optional
   `--name` parameter when useful.
 - SQLite integration tests should create temporary databases by running migrations rather than using a separate schema

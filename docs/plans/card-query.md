@@ -121,7 +121,7 @@ over joined card reference and Collection data without exposing raw database acc
 ## CQL2 Shape
 
 Card Query should use a CQL2-JSON-inspired expression shape with composable `op` and `args` nodes and an explicit
-allowlist of MTG Agent queryables. See ADR 0012 and the OGC Common Query Language (CQL2) 1.0
+allowlist of Tomekin queryables. See ADR 0012 and the OGC Common Query Language (CQL2) 1.0
 specification: https://docs.ogc.org/is/21-065r2/21-065r2.html
 
 The implementation is CQL2-inspired, not conformant, until supported requirements classes and deviations are documented

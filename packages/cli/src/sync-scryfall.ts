@@ -19,11 +19,11 @@ import {
     type ScryfallSyncEvent,
     type ScryfallSyncObserver,
     serializeError,
-} from "@mtg-agent/core";
-import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath} from "@mtg-agent/sqlite";
+} from "@tomekin/core";
+import {closeDatabase, createSqliteScryfallRepository, openDatabase, resolveDatabasePath} from "@tomekin/sqlite";
 
 const SCRYFALL_BULK_DATA_URL = "https://api.scryfall.com/bulk-data";
-const USER_AGENT = "mtg-agent-alpha/0.0.0";
+const USER_AGENT = "tomekin-alpha/0.0.0";
 
 export type SyncScryfallCommandIo = {
   readonly stdout: { write(message: string): void };
@@ -31,7 +31,7 @@ export type SyncScryfallCommandIo = {
 };
 
 export type SyncScryfallCommandEnv = {
-  readonly MTG_AGENT_DB_PATH?: string | undefined;
+  readonly TOMEKIN_DB_PATH?: string | undefined;
 };
 
 export type SyncScryfallCommandRuntime = {
@@ -251,7 +251,7 @@ async function createBunScryfallSyncPorts(): Promise<{
   readonly ports: ScryfallBulkDataSyncPorts;
   cleanup(): Promise<void>;
 }> {
-  const tempDir = await mkdtemp(join(tmpdir(), "mtg-agent-scryfall-sync-"));
+  const tempDir = await mkdtemp(join(tmpdir(), "tomekin-scryfall-sync-"));
   const ports: ScryfallBulkDataSyncPorts = {
     async listBulkDataMetadata() {
       try {
@@ -358,7 +358,7 @@ if (import.meta.main) {
   const log = createRootLogger(resolveLogConfigFromEnv(process.env));
   const exitCode = await runSyncScryfallCommand(
     process.argv.slice(2),
-    {MTG_AGENT_DB_PATH: process.env.MTG_AGENT_DB_PATH},
+    {TOMEKIN_DB_PATH: process.env.TOMEKIN_DB_PATH},
     {
       stdout: {write: (message) => process.stdout.write(message)},
       stderr: {write: (message) => process.stderr.write(message)},

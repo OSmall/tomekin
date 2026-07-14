@@ -2,7 +2,7 @@ import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {type CardQueryError, type CardQueryResult, createTestRootLoggerFromEnv} from "@mtg-agent/core";
+import {type CardQueryError, type CardQueryResult, createTestRootLoggerFromEnv} from "@tomekin/core";
 import {
     applySqliteMigrations,
     cardIdentity,
@@ -16,14 +16,14 @@ import {
     collectionLocation,
     createSqliteCardQueryRepository,
     openDatabase,
-} from "@mtg-agent/sqlite";
+} from "@tomekin/sqlite";
 import type {Result} from "neverthrow";
 
 const testLog = createTestRootLoggerFromEnv();
 
 describe("SQLite Card Query repository", () => {
     test("queries Card Identities with Collection predicates and included owned rows", async () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-card-query-")), "test.sqlite");
         applySqliteMigrations(dbPath, {log: testLog});
         const db = openDatabase(dbPath, {log: testLog});
         try {
@@ -110,7 +110,7 @@ describe("SQLite Card Query repository", () => {
     });
 
     test("keeps outer Collection row scope for reference-only nested branches", async () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-scope-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-card-query-scope-")), "test.sqlite");
         applySqliteMigrations(dbPath, {log: testLog});
         const db = openDatabase(dbPath, {log: testLog});
         try {
@@ -150,7 +150,7 @@ describe("SQLite Card Query repository", () => {
     });
 
     test("sorts nullable reference values null-last in both directions", async () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-sort-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-card-query-sort-")), "test.sqlite");
         applySqliteMigrations(dbPath, {log: testLog});
         const db = openDatabase(dbPath, {log: testLog});
         try {
@@ -177,7 +177,7 @@ describe("SQLite Card Query repository", () => {
     });
 
     test("projects inherited tags from broader ancestors deterministically", async () => {
-        const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-tags-")), "test.sqlite");
+        const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-card-query-tags-")), "test.sqlite");
         applySqliteMigrations(dbPath, {log: testLog});
         const db = openDatabase(dbPath, {log: testLog});
         try {
@@ -645,7 +645,7 @@ async function withTempCardQueryRepository(run: (context: {
     db: ReturnType<typeof openDatabase>;
     repository: ReturnType<typeof createSqliteCardQueryRepository>;
 }) => Promise<void>) {
-    const dbPath = join(mkdtempSync(join(tmpdir(), "mtg-agent-card-query-contract-")), "test.sqlite");
+    const dbPath = join(mkdtempSync(join(tmpdir(), "tomekin-card-query-contract-")), "test.sqlite");
     applySqliteMigrations(dbPath, {log: testLog});
     const db = openDatabase(dbPath, {log: testLog});
     try {

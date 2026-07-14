@@ -1,5 +1,5 @@
 {
-  "name": "@mtg-agent/sqlite",
+  "name": "@tomekin/sqlite",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "db:sqlite:migration:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@mtg-agent/core": "workspace:*",
+    "@tomekin/core": "workspace:*",
     "drizzle-orm": "0.45.2",
     "neverthrow": "8.2.0"
   },

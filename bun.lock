@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "mtg-agent",
+      "name": "tomekin",
       "devDependencies": {
         "@opencode-ai/plugin": "1.17.8",
         "@types/bun": "1.3.14",
@@ -12,20 +12,20 @@
       },
     },
     ".opencode": {
-      "name": "@mtg-agent/opencode-config",
+      "name": "@tomekin/opencode-config",
       "dependencies": {
-        "@mtg-agent/core": "workspace:*",
-        "@mtg-agent/opencode": "workspace:*",
         "@opencode-ai/plugin": "1.17.8",
+        "@tomekin/core": "workspace:*",
+        "@tomekin/opencode": "workspace:*",
         "zod": "4.4.3",
       },
     },
     "packages/cli": {
-      "name": "@mtg-agent/cli",
+      "name": "@tomekin/cli",
       "version": "0.0.0",
       "dependencies": {
-        "@mtg-agent/core": "workspace:*",
-        "@mtg-agent/sqlite": "workspace:*",
+        "@tomekin/core": "workspace:*",
+        "@tomekin/sqlite": "workspace:*",
         "neverthrow": "8.2.0",
       },
       "devDependencies": {
@@ -34,7 +34,7 @@
       },
     },
     "packages/core": {
-      "name": "@mtg-agent/core",
+      "name": "@tomekin/core",
       "version": "0.0.0",
       "dependencies": {
         "csv-parse": "7.0.0",
@@ -49,11 +49,11 @@
       },
     },
     "packages/opencode": {
-      "name": "@mtg-agent/opencode",
+      "name": "@tomekin/opencode",
       "version": "0.0.0",
       "dependencies": {
-        "@mtg-agent/core": "workspace:*",
-        "@mtg-agent/sqlite": "workspace:*",
+        "@tomekin/core": "workspace:*",
+        "@tomekin/sqlite": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "1.3.14",
@@ -61,10 +61,10 @@
       },
     },
     "packages/sqlite": {
-      "name": "@mtg-agent/sqlite",
+      "name": "@tomekin/sqlite",
       "version": "0.0.0",
       "dependencies": {
-        "@mtg-agent/core": "workspace:*",
+        "@tomekin/core": "workspace:*",
         "drizzle-orm": "0.45.2",
         "neverthrow": "8.2.0",
       },
@@ -145,16 +145,6 @@
 
     "@msgpackr-extract/msgpackr-extract-win32-x64": ["@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4", "", { "os": "win32", "cpu": "x64" }, "sha512-CmCXPQrkbwExx3j946/PtHWHbYJiCRBRDl4BlkRQcJB/YOwQxJRTpoo7aTsortjgoJ1x7opzTSxn7C+ASSLVjQ=="],
 
-    "@mtg-agent/cli": ["@mtg-agent/cli@workspace:packages/cli"],
-
-    "@mtg-agent/core": ["@mtg-agent/core@workspace:packages/core"],
-
-    "@mtg-agent/opencode": ["@mtg-agent/opencode@workspace:packages/opencode"],
-
-    "@mtg-agent/opencode-config": ["@mtg-agent/opencode-config@workspace:.opencode"],
-
-    "@mtg-agent/sqlite": ["@mtg-agent/sqlite@workspace:packages/sqlite"],
-
     "@opencode-ai/plugin": ["@opencode-ai/plugin@1.17.8", "", { "dependencies": { "@opencode-ai/sdk": "1.17.8", "effect": "4.0.0-beta.74", "zod": "4.1.8" }, "peerDependencies": { "@opentui/core": ">=0.3.4", "@opentui/keymap": ">=0.3.4", "@opentui/solid": ">=0.3.4" }, "optionalPeers": ["@opentui/core", "@opentui/keymap", "@opentui/solid"] }, "sha512-pkmnYQz5d+xf0h6fAjgplSSJKLqgYKOXr+x6y40GRPdW+/IfndFkMGq7CDsG2SieGD84qv4zYDMyolGo06IMpw=="],
 
     "@opencode-ai/sdk": ["@opencode-ai/sdk@1.17.8", "", { "dependencies": { "cross-spawn": "7.0.6" } }, "sha512-6MKmsj2ujZyL44jy+12dpwWYDYKPS9fUr+0wVQxaIlPYQ/eAt8T8T3QrybplJ5ZtHfZUX+esXZ02x2UYYm7oEw=="],
@@ -164,6 +154,16 @@
     "@rollup/rollup-linux-x64-gnu": ["@rollup/rollup-linux-x64-gnu@4.61.1", "", { "os": "linux", "cpu": "x64" }, "sha512-bVWIOIk6pV01p4CdUbPP7CJ/434z+OooYjDuFcR+44N35YvKUC66G8MGnvcWx5mWKW3g61J+t74l3Kj15Kwn2Q=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@tomekin/cli": ["@tomekin/cli@workspace:packages/cli"],
+
+    "@tomekin/core": ["@tomekin/core@workspace:packages/core"],
+
+    "@tomekin/opencode": ["@tomekin/opencode@workspace:packages/opencode"],
+
+    "@tomekin/opencode-config": ["@tomekin/opencode-config@workspace:.opencode"],
+
+    "@tomekin/sqlite": ["@tomekin/sqlite@workspace:packages/sqlite"],
 
     "@types/bun": ["@types/bun@1.3.14", "", { "dependencies": { "bun-types": "1.3.14" } }, "sha512-h1hFqFVcvAvD9j9K7ZW7vd82aSA+rTdznZa+5bwvCwqSB1jmmfLcbIWhOLx1/+boy/xmjgCs/OMUL8hRJSmnPw=="],
 

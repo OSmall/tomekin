@@ -1,4 +1,4 @@
-import {createRootLogger, resolveLogConfigFromEnv} from "@mtg-agent/core";
+import {createRootLogger, resolveLogConfigFromEnv} from "@tomekin/core";
 
 import {applySqliteMigrations} from "./migrations";
 

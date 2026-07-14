@@ -65,15 +65,15 @@ Observed current-export facts:
   `bun run import:collection -- manabox /path/to/collection.csv`. ManaBox is the only accepted source for this slice.
 - Support `--db` like `import:scryfall`:
   `bun run import:collection -- --db ./tmp/test.sqlite manabox /path/to/collection.csv`. Default database path remains
-  `.data/mtg-agent.sqlite`.
+  `.data/tomekin.sqlite`.
 - Print a compact successful Import Summary to stdout: source path, imported row count, total quantity, location count
   with binder/deck split, and warning count.
 - Print row warnings and row errors to stderr.
 - Keep ManaBox parsing, normalization, row validation, snapshot construction, warning/error decisions, and summary
-  construction in `@mtg-agent/core`.
+  construction in `@tomekin/core`.
 - Keep card-printing lookups, finish validation data access, transactional Collection snapshot replacement, and
-  `CollectionImport` persistence in `@mtg-agent/sqlite`.
-- Keep `@mtg-agent/cli` as file-reading, service-wiring, and output glue.
+  `CollectionImport` persistence in `@tomekin/sqlite`.
+- Keep `@tomekin/cli` as file-reading, service-wiring, and output glue.
 - Require successful local `oracle_cards` and `all_cards` imports before Collection import. Do not require `oracle_tags`
   for raw Collection import.
 - Record failed `CollectionImport` attempts once the import service receives readable source data, including

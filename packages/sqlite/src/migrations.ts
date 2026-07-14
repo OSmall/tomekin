@@ -3,7 +3,7 @@ import {dirname} from "node:path";
 import {fileURLToPath} from "node:url";
 import {sql} from "drizzle-orm";
 import {migrate} from "drizzle-orm/bun-sqlite/migrator";
-import type {Logger} from "@mtg-agent/core";
+import type {Logger} from "@tomekin/core";
 
 import {closeDatabase, openDatabase, resolveDatabasePath} from "./database";
 

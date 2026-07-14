@@ -5,7 +5,7 @@ import pretty from "pino-pretty";
 
 export type {Logger} from "pino";
 
-export const defaultLogFile = ".data/mtg-agent.log";
+export const defaultLogFile = ".data/tomekin.log";
 export const defaultLogLevel = "debug";
 export const defaultLogFormat = "pretty";
 export type LogProfile = "development" | "production" | "test";
@@ -24,11 +24,11 @@ export type LogComponent =
 export type LoggingEnv = {
   readonly [key: string]: string | undefined;
     readonly NODE_ENV?: string | undefined;
-    readonly MTG_AGENT_LOG_ENABLED?: string | undefined;
-    readonly MTG_AGENT_LOG_DESTINATION?: string | undefined;
-    readonly MTG_AGENT_LOG_FILE?: string | undefined;
-  readonly MTG_AGENT_LOG_LEVEL?: string | undefined;
-    readonly MTG_AGENT_LOG_FORMAT?: string | undefined;
+    readonly TOMEKIN_LOG_ENABLED?: string | undefined;
+    readonly TOMEKIN_LOG_DESTINATION?: string | undefined;
+    readonly TOMEKIN_LOG_FILE?: string | undefined;
+  readonly TOMEKIN_LOG_LEVEL?: string | undefined;
+    readonly TOMEKIN_LOG_FORMAT?: string | undefined;
 };
 
 export type ResolvedLogConfig = {
@@ -70,14 +70,14 @@ const profileDefaults: Record<LogProfile, ResolvedLogConfig> = {
 export function resolveLogConfigFromEnv(env: LoggingEnv = process.env): ResolvedLogConfig {
     const profile = resolveProfile(env.NODE_ENV);
     const defaults = profileDefaults[profile];
-    const enabled = resolveBoolean("MTG_AGENT_LOG_ENABLED", env.MTG_AGENT_LOG_ENABLED, defaults.enabled);
+    const enabled = resolveBoolean("TOMEKIN_LOG_ENABLED", env.TOMEKIN_LOG_ENABLED, defaults.enabled);
   return {
       profile,
       enabled,
-      destination: resolveEnum("MTG_AGENT_LOG_DESTINATION", env.MTG_AGENT_LOG_DESTINATION, ["file", "stdout", "stderr"], defaults.destination),
-      file: env.MTG_AGENT_LOG_FILE?.trim() || defaults.file,
-      level: resolveEnum("MTG_AGENT_LOG_LEVEL", env.MTG_AGENT_LOG_LEVEL, ["trace", "debug", "info", "warn", "error"], defaults.level),
-      format: resolveEnum("MTG_AGENT_LOG_FORMAT", env.MTG_AGENT_LOG_FORMAT, ["pretty", "json"], defaults.format),
+      destination: resolveEnum("TOMEKIN_LOG_DESTINATION", env.TOMEKIN_LOG_DESTINATION, ["file", "stdout", "stderr"], defaults.destination),
+      file: env.TOMEKIN_LOG_FILE?.trim() || defaults.file,
+      level: resolveEnum("TOMEKIN_LOG_LEVEL", env.TOMEKIN_LOG_LEVEL, ["trace", "debug", "info", "warn", "error"], defaults.level),
+      format: resolveEnum("TOMEKIN_LOG_FORMAT", env.TOMEKIN_LOG_FORMAT, ["pretty", "json"], defaults.format),
   };
 }
 

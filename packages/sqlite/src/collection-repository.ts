@@ -10,8 +10,8 @@ import type {
     CollectionQueryRepository,
     CollectionRepositoryError,
     ResolvedCollectionCardPrinting,
-} from "@mtg-agent/core";
-import type {MtgAgentDatabase} from "./database";
+} from "@tomekin/core";
+import type {TomekinDatabase} from "./database";
 import {
     cardIdentity,
     cardPrinting,
@@ -29,7 +29,7 @@ export type SqliteCollectionRepository = CollectionImportRepository & Collection
 };
 
 export function createSqliteCollectionRepository(
-    db: MtgAgentDatabase,
+    db: TomekinDatabase,
     _clock: Clock,
 ): SqliteCollectionRepository {
     return {
@@ -163,7 +163,7 @@ export function createSqliteCollectionRepository(
 }
 
 function insertCollectionImport(
-    db: Pick<MtgAgentDatabase, "insert">,
+    db: Pick<TomekinDatabase, "insert">,
     input: {
         readonly status: "succeeded" | "failed";
         readonly sourcePath: string;
@@ -233,15 +233,15 @@ function toCollectionImportAttempt(row: typeof collectionImport.$inferSelect): C
     };
 }
 
-function beginTransaction(db: MtgAgentDatabase): void {
+function beginTransaction(db: TomekinDatabase): void {
     db.run(sql`BEGIN IMMEDIATE`);
 }
 
-function commitTransaction(db: MtgAgentDatabase): void {
+function commitTransaction(db: TomekinDatabase): void {
     db.run(sql`COMMIT`);
 }
 
-function rollbackTransaction(db: MtgAgentDatabase): void {
+function rollbackTransaction(db: TomekinDatabase): void {
     try {
         db.run(sql`ROLLBACK`);
     } catch {

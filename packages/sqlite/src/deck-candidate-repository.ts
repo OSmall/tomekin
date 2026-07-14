@@ -1,11 +1,11 @@
 import {randomUUIDv7} from "bun";
 import {asc, eq, sql} from "drizzle-orm";
 import {err, ok, type Result} from "neverthrow";
-import {DeckBuildingBriefSchema, DeckCandidateSchema, type DeckCandidate, type DeckCandidateRepository, type DeckCandidateRepositoryError, type DeckCandidateSummary, type NormalizedSaveDeckCandidateInput} from "@mtg-agent/core";
-import type {MtgAgentDatabase} from "./database";
+import {DeckBuildingBriefSchema, DeckCandidateSchema, type DeckCandidate, type DeckCandidateRepository, type DeckCandidateRepositoryError, type DeckCandidateSummary, type NormalizedSaveDeckCandidateInput} from "@tomekin/core";
+import type {TomekinDatabase} from "./database";
 import {cardIdentity, deckCandidate, deckCandidateCard} from "./schema";
 
-export function createSqliteDeckCandidateRepository(db: MtgAgentDatabase, clock: {now(): Date}): DeckCandidateRepository {
+export function createSqliteDeckCandidateRepository(db: TomekinDatabase, clock: {now(): Date}): DeckCandidateRepository {
   return {
     async saveDeckCandidate(input) {
       return wrap(() => {
@@ -33,7 +33,7 @@ export function createSqliteDeckCandidateRepository(db: MtgAgentDatabase, clock:
   };
 }
 
-function readCandidate(db: MtgAgentDatabase, id: string): DeckCandidate {
+function readCandidate(db: TomekinDatabase, id: string): DeckCandidate {
   const row = db.select().from(deckCandidate).where(eq(deckCandidate.id, id)).get();
   if (!row) throw {type: "not_found", message: `Deck Candidate not found: ${id}.`} satisfies DeckCandidateRepositoryError;
   const cards = db.select({cardIdentityId: deckCandidateCard.cardIdentityId, quantity: deckCandidateCard.quantity, section: deckCandidateCard.section, sortOrder: deckCandidateCard.sortOrder, note: deckCandidateCard.note, cardName: cardIdentity.name}).from(deckCandidateCard).innerJoin(cardIdentity, eq(deckCandidateCard.cardIdentityId, cardIdentity.id)).where(eq(deckCandidateCard.deckCandidateId, id)).orderBy(asc(deckCandidateCard.sortOrder), asc(cardIdentity.name)).all();

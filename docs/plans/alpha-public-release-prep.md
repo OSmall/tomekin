@@ -88,7 +88,7 @@ Relevant external references:
 - Log tool inputs and outputs, SQL query text and parameters, CLI command lifecycle events, import progress summaries,
   sync/download lifecycle events, and errors.
 - Treat potentially large or sensitive payloads as debug/trace detail rather than always-on info logs. Because the alpha
-  default is debug, users should lower `MTG_AGENT_LOG_LEVEL` to `info` for quieter local logs.
+  default is debug, users should lower `TOMEKIN_LOG_LEVEL` to `info` for quieter local logs.
 - Add Drizzle SQL logging at the SQLite adapter boundary.
 - Add one explicit Scryfall download/import command for the default reference-data setup path.
 - Preserve the existing local-file Scryfall import command for repair, debugging, and fixture-backed workflows.
@@ -97,6 +97,8 @@ Relevant external references:
   calls.
 - Pin dependency versions before feature work so later diffs are easier to review.
 - Rename the project last, after the owner chooses a personal name and availability is rechecked.
+- The project name is Tomekin. Package scopes use `@tomekin/*`, local data defaults use `.data/tomekin.*`, logging and
+  database environment variables use the `TOMEKIN_` prefix, and opencode tool permission names use the `tomekin_` prefix.
 - Do not add `SECURITY.md`, `CONTRIBUTING.md`, or a license in this release-prep branch unless explicitly requested
   later.
 
@@ -150,7 +152,7 @@ Planned work:
   `agent_tool` contexts.
 - Wire Drizzle's custom logger option so SQL query text and parameters are recorded.
 - Log direct Bun SQLite prepared-statement queries where Drizzle logging does not observe the query.
-- Log opencode custom tool invocation and result metadata in `.opencode/tools/mtg-agent.ts` or the opencode adapter
+- Log opencode custom tool invocation and result metadata in `.opencode/tools/tomekin.ts` or the opencode adapter
   boundary.
 - Log full tool arguments/results at debug or trace level; keep info-level logs concise.
 - Log CLI command start/end, target database path, source path or source URI, status, duration, and blocking errors.
@@ -232,7 +234,7 @@ Expected verification:
 
 ### Slice 5: Rename Project
 
-Commit message: `chore: rename project to <new-name>`
+Commit message: `chore: rename project to Tomekin`
 
 Planned work:
 
@@ -240,10 +242,8 @@ Planned work:
 - Recheck npm registry availability and obvious GitHub/package-name collisions immediately before renaming.
 - Rename root package and workspace package scopes if appropriate.
 - Rename code imports from the old package scope.
-- Decide whether to rename environment variables and default database path in this same slice or keep them stable for
-  local alpha data continuity.
-- Rename opencode tool file and permission keys only if the new name should appear in tool names; otherwise keep
-  functional tool names stable to avoid unnecessary agent churn.
+- Rename environment variables and default database path in this same slice.
+- Rename opencode tool file and permission keys so the new name appears in tool names.
 - Update docs and README references.
 - Do not rewrite historical ADR filenames.
 
@@ -292,11 +292,6 @@ install contracts.
 
 ## Open Decisions
 
-- Final project name.
-- Whether the project rename should also rename `MTG_AGENT_DB_PATH`, `.data/mtg-agent.sqlite`, and opencode tool
-  permission names in the alpha release.
-- Exact logging environment variable names.
-- Exact Scryfall sync script name, though `sync:scryfall` is the current plan.
 - Whether to manually smoke-test real Scryfall bulk sync before the public release tag.
 
 ```aiignore
