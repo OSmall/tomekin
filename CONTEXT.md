@@ -83,6 +83,16 @@ _Avoid_: Prompt, request, deck settings
 A protocol-neutral callable capability intended for AI-agent use, backed by product services and wrapped by one or more adapter surfaces.
 _Avoid_: Opencode tool, MCP tool, Vercel tool when referring to the reusable capability
 
+**Agent Harness Adapter**:
+A local interface that presents approved Agent Tools and Product Methodology through a specific agent harness while
+keeping harness-specific session and presentation concerns outside portable product services. _Avoid_: Agent runtime,
+agent backend, harness when referring to Tomekin's integration boundary
+
+**Product Methodology**:
+Committed, harness-neutral instructions that guide Tomekin's agent through product workflows and may be loaded
+progressively by known name. Product Methodology excludes repository-development instructions. _Avoid_: System prompt,
+developer skill, harness skill
+
 **Card Query**:
 A structured request for finding cards by deck-building criteria such as name, rules text, type, Color Identity, format
 legality, Card Identity Tags, and Collection criteria such as ownership or Collection Location. A Card Query is for
