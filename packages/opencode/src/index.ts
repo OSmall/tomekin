@@ -1,21 +1,8 @@
-import {createAgentToolHandlers, createImportFoundationServices, type LogComponent, type Logger} from "@tomekin/core";
-import {
-    closeDatabase,
-    createSqliteCardQueryRepository,
-    createSqliteCardReferenceRepository,
-    createSqliteCollectionRepository,
-    createSqliteDeckCandidateRepository,
-    openDatabase,
-    resolveDatabasePath,
-} from "@tomekin/sqlite";
+import {createImportFoundationServices, type LogComponent, type Logger} from "@tomekin/core";
+import {createLocalAgentToolRuntime, type LocalAgentToolHandlers, type LocalAgentToolRuntime} from "@tomekin/agent";
+import {resolveDatabasePath} from "@tomekin/sqlite";
 
-export type LocalAgentToolHandlers = ReturnType<typeof createAgentToolHandlers>;
-
-export type LocalAgentToolRuntime = {
-    readonly databasePath: string;
-    readonly handlers: LocalAgentToolHandlers;
-    readonly close: () => void;
-};
+export type {LocalAgentToolHandlers, LocalAgentToolRuntime};
 
 export type LocalRuntimeOptions = {
     readonly databasePath?: string | undefined;
@@ -37,22 +24,14 @@ export function createLocalAgentToolHandlers(options: LocalRuntimeOptions): Loca
     const dbPath = options.databasePath ?? resolveDatabasePath();
     const logger = options.log.child({component: "opencode" satisfies LogComponent, databasePath: dbPath});
   logger.info({operation: "create_agent_tool_handlers", status: "started"}, "OpenCode agent tool handlers starting");
-    const db = openDatabase(dbPath, {log: options.log});
-  const clock = {now: () => new Date()};
-    const handlers = createAgentToolHandlers({
-        cardReference: createSqliteCardReferenceRepository(db),
-        cardQuery: createSqliteCardQueryRepository(db),
-        collection: createSqliteCollectionRepository(db, clock),
-        deckCandidates: createSqliteDeckCandidateRepository(db, clock),
-    });
+    const runtime = createLocalAgentToolRuntime({databasePath: dbPath, log: options.log});
     return {
-        databasePath: dbPath,
-        handlers,
-    close: () => {
+        ...runtime,
+        close: () => {
       logger.info({operation: "close_agent_tool_handlers", status: "succeeded"}, "OpenCode agent tool handlers closed");
-      closeDatabase(db);
-    },
-  };
+            runtime.close();
+        },
+    };
 }
 
 export function resultToOpencodeOutput<T>(result: {

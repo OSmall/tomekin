@@ -46,9 +46,12 @@ Collection import read user-supplied local files.
 
 ### Agent harness adapter
 
-`packages/opencode` and `.opencode/` expose the approved Agent Tools, the primary deck-building agent, and focused
-discovery, construction, tuning, and Card Query methodology. The adapter translates tool input and output but does not
-receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
+`packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness and owns the fixed reviewed
+Product Methodology catalog. Callers pass an explicit database path and logger, invoke handlers, then close the runtime.
+`product-session/` contains shared product instructions and `product-methodology/` contains the seven canonical
+methodology entries. `packages/opencode` and `.opencode/` remain a thin OpenCode adapter: it translates tool input and
+output, uses the shared runtime per call, and reaches canonical methodology through repository-local shims. The adapter
+does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
 
 Some contextual deck-building behavior remains in skills while its stable service shape is being proven. Deterministic
 facts and invariants—reference readiness, Card Query, identity resolution, legality, rendering, Collection evidence,
@@ -57,9 +60,9 @@ and persistence—remain behind product tools. The current authority and confirm
 
 ## Package and Dependency Shape
 
-The repository is a small Bun workspace with `core`, `sqlite`, `cli`, and `opencode` packages. `core` defines portable
-contracts. `sqlite` depends on those contracts to provide persistence. `cli` and `opencode` are sibling adapters that
-compose core services with SQLite repositories.
+The repository is a small Bun workspace with `core`, `sqlite`, `cli`, `agent`, and `opencode` packages. `core` defines
+portable contracts. `sqlite` depends on those contracts to provide persistence. `cli` and Agent Harness Adapters use
+the shared `agent` composition module to compose core services with SQLite repositories.
 
 This separation permits another interface or persistence implementation without changing the domain vocabulary or
 agent-facing product contract. It does not imply distributed services or a large monorepo, and the project does not use
