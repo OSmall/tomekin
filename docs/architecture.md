@@ -55,9 +55,11 @@ does not receive raw database, shell, source-tree, or arbitrary network authorit
 
 `packages/pi` is a sibling interactive adapter. Its launcher verifies the pinned Pi standalone binary before execution,
 uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
-It sets Pi's persistent clone-local profile to `.data/pi`. A Bun-bundled extension calls the shared runtime for
-`summarize_reference_support`, translates its `Result`, and closes the runtime per call. The launch allow-list and
-extension registry admit that one capability only.
+It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
+point and no package skills, prompts, or themes. A Bun-bundled extension translates all 15 shared Agent Tools plus the
+committed Product Methodology loader, closes the SQLite runtime per call, bounds model results, and re-audits the
+17-name model-visible registry (including Pi's `ask_user`) at session start. The allow-list excludes generic authority;
+Pi's own credentials and TUI interaction stay Pi-owned.
 
 Some contextual deck-building behavior remains in skills while its stable service shape is being proven. Deterministic
 facts and invariants—reference readiness, Card Query, identity resolution, legality, rendering, Collection evidence,
@@ -116,4 +118,4 @@ the same public services and repository boundaries with isolated temporary datab
 - `neverthrow` `Result` types for expected application-service failures.
 - SQLite with Drizzle behind repository ports.
 - Bun's test runner for deterministic unit and integration coverage.
-- OpenCode and the restricted Pi reference-status session as local agent harness adapters.
+- OpenCode and the restricted interactive Pi session as local agent harness adapters.

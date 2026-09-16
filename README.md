@@ -43,19 +43,21 @@ does not make hidden live Scryfall or metagame calls during normal deck-building
 Run `bun run db:sqlite:migration:apply` before normal app commands. It creates the parent directory for the configured
 SQLite database path and applies migrations from `packages/sqlite/drizzle/`.
 
-### Pi reference-status session
+### Pi interactive deck-building session
 
 On macOS arm64, `bun run tomekin` launches Pi v0.85.1 through your terminal using a persistent clone-local Pi profile
 at `.data/pi`. The launcher downloads only the pinned, SHA-256-verified standalone artifact into Tomekin's own
 `.data/tomekin-pi-runtime/` cache and keeps the normal Tomekin database (or `TOMEKIN_DB_PATH`) unchanged.
 
-This initial bridge exposes only `summarize_reference_support`; it deliberately does not give the model coding, shell,
-filesystem, network, raw-database, or other deck-building tools. Pi retains ownership of its own login, settings, and
-conversation data. Other platforms fail clearly until a reviewed artifact is added.
+The session exposes the 15 Tomekin Agent Tools plus `load_methodology` and Pi's interactive `ask_user` tool. It does
+not give the model coding, shell, filesystem, network, raw-database, MCP, task, discovery, or todo tools. The
+clone-local profile selects only the reviewed `pi-ask-user@0.15.0` extension entry point, not its bundled skills,
+prompts, or themes. Pi retains ownership of login, settings, and conversation data. Other platforms fail clearly until
+a reviewed artifact is added.
 
-For the manual, unauthenticated acceptance check: run the command in an ordinary terminal, confirm Pi renders and no
-coding tools are available, exit normally and then with Ctrl-C, and confirm the terminal recovers with no orphaned Pi
-process. The profile and database should remain intact after each run.
+The separate account-holder-consented manual acceptance check covers authentication, one harmless request, a successful
+and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout, and clean shutdown without exposing
+tokens. OpenCode remains supported. The profile and database remain intact after each run.
 
 ### Upgrading an existing pre-Card-Set database
 

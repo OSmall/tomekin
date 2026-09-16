@@ -83,4 +83,16 @@ describe("Product Methodology catalog", () => {
             });
         }
     });
+
+    test("fails closed when an approved mapping cannot resolve inside a reviewed methodology root", () => {
+        const isolatedRoot = mkdtempSync(join(tmpdir(), "tomekin-unapproved-methodology-"));
+        try {
+            expect(loadProductMethodology("tomekin-deck-building", isolatedRoot)).toEqual({
+                ok: false,
+                error: {type: "unapproved_product_methodology", name: "tomekin-deck-building"},
+            });
+        } finally {
+            rmSync(isolatedRoot, {recursive: true, force: true});
+        }
+    });
 });
