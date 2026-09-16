@@ -9,6 +9,18 @@ verification policy belongs in [`testing.md`](./testing.md).
 
 Tomekin supports three distinct ways to reach or revise a Deck Candidate.
 
+### Restricted Pi reference-status session
+
+On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using a persistent clone-local profile at
+`.data/pi`. Tomekin verifies the pinned Pi v0.85.1 standalone artifact's checksum and reported version before it runs;
+its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
+`.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
+
+The session exposes exactly one model-callable capability, `summarize_reference_support`. It reports local reference
+data readiness through the same SQLite-backed composition used by other adapters and returns expected failures as
+actionable results. Pi login, settings, conversations, and recovery remain Pi-owned. Unsupported platforms and failed
+artifact verification fail before the session begins.
+
 ### Collection Opportunity discovery through construction
 
 For an open request such as “what can I build?” or a broad seed that still needs comparison, Tomekin:

@@ -53,6 +53,12 @@ methodology entries. `packages/opencode` and `.opencode/` remain a thin OpenCode
 output, uses the shared runtime per call, and reaches canonical methodology through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
 
+`packages/pi` is a sibling interactive adapter. Its launcher verifies the pinned Pi standalone binary before execution,
+uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
+It sets Pi's persistent clone-local profile to `.data/pi`. A Bun-bundled extension calls the shared runtime for
+`summarize_reference_support`, translates its `Result`, and closes the runtime per call. The launch allow-list and
+extension registry admit that one capability only.
+
 Some contextual deck-building behavior remains in skills while its stable service shape is being proven. Deterministic
 facts and invariants—reference readiness, Card Query, identity resolution, legality, rendering, Collection evidence,
 and persistence—remain behind product tools. The current authority and confirmation boundaries are part of
@@ -60,7 +66,7 @@ and persistence—remain behind product tools. The current authority and confirm
 
 ## Package and Dependency Shape
 
-The repository is a small Bun workspace with `core`, `sqlite`, `cli`, `agent`, and `opencode` packages. `core` defines
+The repository is a small Bun workspace with `core`, `sqlite`, `cli`, `agent`, `opencode`, and `pi` packages. `core` defines
 portable contracts. `sqlite` depends on those contracts to provide persistence. `cli` and Agent Harness Adapters use
 the shared `agent` composition module to compose core services with SQLite repositories.
 
@@ -110,4 +116,4 @@ the same public services and repository boundaries with isolated temporary datab
 - `neverthrow` `Result` types for expected application-service failures.
 - SQLite with Drizzle behind repository ports.
 - Bun's test runner for deterministic unit and integration coverage.
-- OpenCode as the current local agent harness.
+- OpenCode and the restricted Pi reference-status session as local agent harness adapters.

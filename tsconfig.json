@@ -5,6 +5,7 @@
     { "path": "./packages/sqlite" },
     { "path": "./packages/cli" },
     { "path": "./packages/agent" },
-    { "path": "./packages/opencode" }
+    { "path": "./packages/opencode" },
+    { "path": "./packages/pi" }
   ]
 }
