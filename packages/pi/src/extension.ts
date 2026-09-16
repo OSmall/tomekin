@@ -1,8 +1,9 @@
-import {Type} from "@sinclair/typebox";
-import {createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {Type, type TSchema} from "@sinclair/typebox";
+import {agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 import {createLocalAgentToolRuntime, loadProductMethodology, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {expectedPiToolNames} from "./launcher";
+import {appendTomekinPiBootstrap} from "./bootstrap";
 
 const MAX_RESULT_CHARACTERS = 12_000;
 const coreToolNames = expectedPiToolNames.filter((name) => name !== "load_methodology" && name !== "ask_user");
@@ -13,11 +14,15 @@ type PiTool = {
     readonly name: string;
     readonly label: string;
     readonly description: string;
-    readonly parameters: ReturnType<typeof Type.Object>;
+    readonly parameters: TSchema;
     readonly executionMode: "sequential";
     execute(toolCallId: string, params: Record<string, unknown>, signal: AbortSignal): Promise<unknown>;
 };
-type PiApi = {registerTool: (tool: PiTool) => void; on(event: "session_start", listener: () => void): void; getActiveTools(): string[]};
+type PiApi = {
+    registerTool: (tool: PiTool) => void;
+    on(event: string, listener: (...args: any[]) => unknown): void;
+    getActiveTools(): string[];
+};
 
 export function auditPiToolRegistry(toolNames: readonly string[]): void {
     const seen = new Set<string>();
@@ -31,11 +36,12 @@ export function auditPiToolRegistry(toolNames: readonly string[]): void {
 
 /** Pi gets TypeBox-compatible JSON transport schemas; the portable core owns validation. */
 export function createCoreTool(name: string, options: {readonly createRuntime: () => LocalAgentToolRuntime; readonly log: Logger}): PiTool {
+    const contract = agentToolContracts[name as keyof typeof agentToolContracts];
     return {
         name,
         label: `Tomekin: ${name.replaceAll("_", " ")}`,
-        description: "Run an approved local Tomekin deck-building capability.",
-        parameters: Type.Object({}, {additionalProperties: true}),
+        description: contract.description,
+        parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
             if (signal.aborted) return cancelledOutput("Cancelled before dispatch.");
@@ -118,4 +124,5 @@ export default function registerTomekinExtension(pi: PiApi) {
         auditPiToolRegistry(pi.getActiveTools());
     };
     pi.on("session_start", () => auditPiToolRegistry(pi.getActiveTools()));
+    pi.on("before_agent_start", (event) => ({systemPrompt: appendTomekinPiBootstrap(event.systemPrompt)}));
 }

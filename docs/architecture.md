@@ -58,7 +58,10 @@ uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and i
 It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
 point and no package skills, prompts, or themes. A Bun-bundled extension translates all 15 shared Agent Tools plus the
 committed Product Methodology loader, closes the SQLite runtime per call, bounds model results, and re-audits the
-17-name model-visible registry (including Pi's `ask_user`) at session start. The allow-list excludes generic authority;
+17-name model-visible registry (including Pi's `ask_user`) at session start. Before each agent turn, the extension
+appends its controlled Tomekin bootstrap to Pi's existing system prompt; it does not enable ambient Pi skills or context
+files. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
+schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.
 
 Some contextual deck-building behavior remains in skills while its stable service shape is being proven. Deterministic

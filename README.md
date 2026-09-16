@@ -52,12 +52,18 @@ at `.data/pi`. The launcher downloads only the pinned, SHA-256-verified standalo
 The session exposes the 15 Tomekin Agent Tools plus `load_methodology` and Pi's interactive `ask_user` tool. It does
 not give the model coding, shell, filesystem, network, raw-database, MCP, task, discovery, or todo tools. The
 clone-local profile selects only the reviewed `pi-ask-user@0.15.0` extension entry point, not its bundled skills,
-prompts, or themes. Pi retains ownership of login, settings, and conversation data. Other platforms fail clearly until
+prompts, or themes. Tomekin adds a controlled per-turn orientation that directs the assistant to load its deck-building
+methodology before product-tool use; it is not an ambient Pi skill or context file. Pi retains ownership of login,
+settings, and conversation data within this clone-local profile. Other platforms fail clearly until
 a reviewed artifact is added.
 
 The separate account-holder-consented manual acceptance check covers authentication, one harmless request, a successful
 and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout, and clean shutdown without exposing
 tokens. OpenCode remains supported. The profile and database remain intact after each run.
+
+For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
+`tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `query_cards` call after
+loading `query-cards` when a non-trivial filter is needed.
 
 ### Upgrading an existing pre-Card-Set database
 

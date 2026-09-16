@@ -17,10 +17,14 @@ its separate clone-local runtime cache contains only Tomekin-owned artifacts. Th
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
 The session exposes exactly the 15 Tomekin Agent Tools, `load_methodology`, and Pi's interactive `ask_user` tool.
-Core Zod validation remains authoritative; expected failures are actionable results, unexpected errors are sanitized,
-and model-visible output is bounded. `load_methodology` accepts only reviewed committed Tomekin entries. The profile
+Before every agent turn, Tomekin appends its checked-in product bootstrap to Pi's normal system prompt. The bootstrap
+identifies Tomekin's collection-first deck-building role, states its restricted authority, and instructs the agent to
+load `tomekin-deck-building` before product-tool use. Core-owned Zod input contracts supply tool argument affordance;
+Card Query preserves its structured validation diagnostics for nuanced semantic rules. Expected failures are actionable
+results, unexpected errors are sanitized, and model-visible output is bounded. `load_methodology` accepts only reviewed
+committed Tomekin entries. The profile
 loads only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled skills, prompts, or themes. Pi
-login, settings, conversations, and recovery remain Pi-owned. Unsupported platforms and failed artifact verification
+login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. Unsupported platforms and failed artifact verification
 fail before the session begins.
 
 ### Collection Opportunity discovery through construction

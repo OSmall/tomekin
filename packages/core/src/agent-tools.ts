@@ -1,7 +1,7 @@
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {DeckBuildingBriefSchema, DeckFormatSchema, draftDeckBuildingBrief} from "./deck-building-brief";
-import {type CardQueryRepository, parseCardQueryInput} from "./card-query";
+import {CardQueryInputSchema, type CardQueryRepository, parseCardQueryInput} from "./card-query";
 import {type CardReferenceRepository, getFormatConstraints, type ReferenceDataStatus} from "./card-reference-queries";
 import type {CollectionQueryRepository} from "./collection-import";
 import {
@@ -59,7 +59,35 @@ export const RenderDeckCandidateArgsSchema = z.strictObject({
     sections: z.record(z.string(), z.string()).optional()
 });
 export const SaveDeckCandidateArgsSchema = SaveDeckCandidateInputSchema;
+/** JSON transport preserves the public ISO timestamp form accepted by the save normalizer. */
+export const SaveDeckCandidateTransportArgsSchema = SaveDeckCandidateInputSchema.extend({
+    collectionImportTimestamp: z.string().datetime({offset: true}).nullable().default(null),
+});
 export const GetDeckCandidateArgsSchema = z.object({id: z.uuid()});
+export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema}).strict();
+export const EmptyAgentToolArgsSchema = z.strictObject({});
+
+export const agentToolContracts = {
+    draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
+    query_cards: {description: "Run a structured local Card Query. Load query-cards methodology before non-trivial filters.", inputSchema: CardQueryInputSchema},
+    get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
+    search_card_identity_tags: {description: "Search local Card Identity Tags by slug, label, or alias.", inputSchema: SearchCardIdentityTagsArgsSchema},
+    search_card_sets: {description: "Search local Card Sets by code or name.", inputSchema: SearchCardSetsArgsSchema},
+    summarize_reference_support: {description: "Report local reference-data readiness.", inputSchema: EmptyAgentToolArgsSchema},
+    get_format_constraints: {description: "Return deterministic construction constraints for a Deck Format.", inputSchema: GetFormatConstraintsArgsSchema},
+    resolve_decklist_cards: {description: "Resolve proposed card names to local Card Identities.", inputSchema: ResolveDecklistCardsArgsSchema},
+    validate_format_legality: {description: "Validate deterministic Format construction and legality.", inputSchema: ValidateDeckCandidateArgsSchema},
+    evaluate_deck_candidate: {description: "Evaluate a candidate's legality, power context, mana curve, and land count.", inputSchema: ValidateDeckCandidateArgsSchema},
+    render_deck_candidate: {description: "Render stable Deck Candidate Markdown and a Portable Decklist.", inputSchema: RenderDeckCandidateArgsSchema},
+    save_deck_candidate: {description: "Persist a final Deck Candidate.", inputSchema: SaveDeckCandidateTransportArgsSchema},
+    get_deck_candidate: {description: "Retrieve a saved Deck Candidate.", inputSchema: GetDeckCandidateArgsSchema},
+    list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
+    list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
+} as const;
+
+export function agentToolInputJsonSchema(name: AgentToolName): Record<string, unknown> {
+    return z.toJSONSchema(agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
+}
 export type AgentToolRepositories = {
   readonly cardReference: CardReferenceRepository;
   readonly cardQuery: CardQueryRepository;
@@ -110,7 +138,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories) {
       return repositories.cardReference.summarizeReferenceSupport();
     },
     getFormatConstraints(input: unknown) {
-        const format = z.object({format: DeckFormatSchema}).parse(input ?? {}).format;
+        const format = GetFormatConstraintsArgsSchema.parse(input ?? {}).format;
       return Promise.resolve(getFormatConstraints(format));
     },
     async resolveDecklistCards(input: unknown) {

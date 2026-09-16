@@ -158,7 +158,9 @@ version rejection, cache decisions, inherited terminal spawn configuration, rest
 transport, and runtime closure without a live Pi process or network request. The developer-run terminal checklist in
 the README separately covers TUI rendering, normal exit, Ctrl-C, terminal recovery, and orphan-process inspection.
 
-Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
+Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
+live Pi process or LLM. The developer-run terminal checklist in the README covers initial, reload, and resume orientation
+and a correctly shaped Card Query after methodology loading. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
 
 ## Exact Output Tests
 

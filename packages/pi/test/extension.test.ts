@@ -1,5 +1,5 @@
 import {describe, expect, test} from "bun:test";
-import {auditPiToolRegistry, createCoreTool, createReferenceSupportTool, expectedPiToolNames, registerTomekinExtension} from "@tomekin/pi";
+import {appendTomekinPiBootstrap, auditPiToolRegistry, createCoreTool, createReferenceSupportTool, expectedPiToolNames, registerTomekinExtension} from "@tomekin/pi";
 import type {Logger} from "@tomekin/core";
 
 describe("Pi reference-status transport", () => {
@@ -87,7 +87,7 @@ describe("Pi reference-status transport", () => {
         const registered: string[] = [];
         registerTomekinExtension({
             registerTool: (tool) => { registered.push(tool.name); },
-            on: (_event, registered) => { listener = registered; },
+            on: (event, registered) => { if (event === "session_start") listener = registered as () => void; },
             getActiveTools: () => ["bash", ...expectedPiToolNames],
         });
         expect(registered).toEqual(expectedPiToolNames.filter((name) => name !== "ask_user"));
@@ -95,8 +95,24 @@ describe("Pi reference-status transport", () => {
         expect(listener!).toThrow("unexpected tool bash");
     });
 
+    test("registers a controlled bootstrap for every agent turn without replacing Pi's prompt", () => {
+        let beforeAgentStart: ((event: {systemPrompt: string}) => {systemPrompt: string}) | undefined;
+        registerTomekinExtension({
+            registerTool: () => {},
+            on: (event, listener) => { if (event === "before_agent_start") beforeAgentStart = listener as typeof beforeAgentStart; },
+            getActiveTools: () => [...expectedPiToolNames],
+        });
+        expect(beforeAgentStart).toBeDefined();
+        const prompt = beforeAgentStart!({systemPrompt: "Pi base prompt"}).systemPrompt;
+        expect(prompt).toStartWith("Pi base prompt");
+        expect(prompt).toContain("collection-first Magic: The Gathering deck-building assistant");
+        expect(prompt).toContain("load the approved Product Methodology entry named tomekin-deck-building");
+        expect(prompt).toContain("no filesystem, shell, network, raw database, or generic coding authority");
+        expect(prompt).toBe(appendTomekinPiBootstrap("Pi base prompt"));
+    });
+
     test("fails closed when a capability is registered after Tomekin's extension", () => {
-        const active = [...expectedPiToolNames];
+        const active: string[] = [...expectedPiToolNames];
         const api = {
             registerTool: (tool: {name: string}) => { active.push(tool.name); },
             on: () => {}, getActiveTools: () => active,
