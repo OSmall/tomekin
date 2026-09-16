@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {"composite": true, "noEmit": true},
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "references": [
+    {"path": "../agent"},
+    {"path": "../core"},
+    {"path": "../sqlite"}
+  ]
+}
