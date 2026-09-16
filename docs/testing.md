@@ -55,10 +55,12 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - SQLite migrations that rebuild tables referenced by foreign keys, using a populated pre-migration fixture and
   `PRAGMA foreign_key_check` assertions.
 
-Opencode adapter tests should remain thin smoke tests that prove tool inputs are translated into service calls and
-user-facing output. They should also prove repo-local OpenCode tool argument schemas can be represented as JSON Schema,
-because OpenCode performs that conversion during session startup. Live opencode execution and LLM quality evaluation
-should stay out of the default `bun test` suite unless a separate explicit smoke harness is added.
+Shared Agent Tool runtime tests use isolated SQLite data to cover handler construction, successful and failed core-backed
+calls, and explicit runtime closure. Agent Harness Adapter tests should remain thin smoke tests that prove tool inputs
+are translated into service calls and user-facing output. OpenCode tests also prove repo-local tool argument schemas can
+be represented as JSON Schema, because OpenCode performs that conversion during session startup. Live OpenCode execution
+and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is
+added.
 
 ## Test Layout
 

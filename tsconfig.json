@@ -4,6 +4,7 @@
     { "path": "./packages/core" },
     { "path": "./packages/sqlite" },
     { "path": "./packages/cli" },
+    { "path": "./packages/agent" },
     { "path": "./packages/opencode" }
   ]
 }

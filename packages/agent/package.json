@@ -1,5 +1,5 @@
 {
-  "name": "@tomekin/opencode",
+  "name": "@tomekin/agent",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@tomekin/agent": "workspace:*",
     "@tomekin/core": "workspace:*",
     "@tomekin/sqlite": "workspace:*"
   },

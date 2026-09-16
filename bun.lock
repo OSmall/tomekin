@@ -20,6 +20,18 @@
         "zod": "4.4.3",
       },
     },
+    "packages/agent": {
+      "name": "@tomekin/agent",
+      "version": "0.0.0",
+      "dependencies": {
+        "@tomekin/core": "workspace:*",
+        "@tomekin/sqlite": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/bun": "1.3.14",
+        "typescript": "7.0.2",
+      },
+    },
     "packages/cli": {
       "name": "@tomekin/cli",
       "version": "0.0.0",
@@ -52,6 +64,7 @@
       "name": "@tomekin/opencode",
       "version": "0.0.0",
       "dependencies": {
+        "@tomekin/agent": "workspace:*",
         "@tomekin/core": "workspace:*",
         "@tomekin/sqlite": "workspace:*",
       },
@@ -156,6 +169,8 @@
     "@rollup/rollup-linux-x64-gnu": ["@rollup/rollup-linux-x64-gnu@4.61.1", "", { "os": "linux", "cpu": "x64" }, "sha512-bVWIOIk6pV01p4CdUbPP7CJ/434z+OooYjDuFcR+44N35YvKUC66G8MGnvcWx5mWKW3g61J+t74l3Kj15Kwn2Q=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@tomekin/agent": ["@tomekin/agent@workspace:packages/agent"],
 
     "@tomekin/cli": ["@tomekin/cli@workspace:packages/cli"],
 
