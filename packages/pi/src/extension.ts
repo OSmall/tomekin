@@ -6,6 +6,7 @@ import {readFileSync, realpathSync, statSync} from "node:fs";
 import {relative, resolve, sep} from "node:path";
 import {expectedPiToolNames} from "./launcher";
 import {appendTomekinPiBootstrap} from "./bootstrap";
+import {createPiWorkerTransport, type PiWorkerTransport} from "./worker-transport";
 
 const MAX_CORE_RESULT_CHARACTERS = 16_000;
 const MAX_READ_LINES = 2_000;
@@ -39,7 +40,7 @@ export function auditPiToolRegistry(toolNames: readonly string[]): void {
 }
 
 /** Pi gets TypeBox-compatible JSON transport schemas; the portable core owns validation. */
-export function createCoreTool(name: string, options: {readonly createRuntime: () => LocalAgentToolRuntime; readonly log: Logger}): PiTool {
+export function createCoreTool(name: string, options: {readonly createRuntime?: () => LocalAgentToolRuntime; readonly log: Logger; readonly transport?: PiWorkerTransport; readonly databasePath?: string}): PiTool {
     const contract = agentToolContracts[name as keyof typeof agentToolContracts];
     return {
         name,
@@ -49,7 +50,11 @@ export function createCoreTool(name: string, options: {readonly createRuntime: (
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
             if (signal.aborted) return cancelledOutput("Cancelled before dispatch.");
-            const runtime = options.createRuntime();
+            if (options.transport && options.databasePath) {
+                return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: name !== "save_deck_candidate"}, signal);
+            }
+            const runtime = options.createRuntime?.();
+            if (!runtime) return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
@@ -164,8 +169,9 @@ function failureOutput(error: string, message: string) { return projectOutput({e
 
 export default function registerTomekinExtension(pi: PiApi) {
     const log = createRootLogger(resolveLogConfigFromEnv(process.env));
-    const createRuntime = () => createLocalAgentToolRuntime({databasePath: resolveDatabasePath(), log});
-    for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {createRuntime, log}));
+    const databasePath = resolveDatabasePath();
+    const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href});
+    for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {transport, databasePath, log}));
     pi.registerTool(createMethodologyReadTool({workspacePath: process.cwd()}));
     const registerLaterTool = pi.registerTool.bind(pi);
     pi.registerTool = (tool) => {
@@ -174,5 +180,6 @@ export default function registerTomekinExtension(pi: PiApi) {
         auditPiToolRegistry(pi.getActiveTools());
     };
     pi.on("session_start", () => auditPiToolRegistry(pi.getActiveTools()));
+    pi.on("session_shutdown", async () => { await transport.close(); });
     pi.on("before_agent_start", (event) => ({systemPrompt: appendTomekinPiBootstrap(event.systemPrompt)}));
 }

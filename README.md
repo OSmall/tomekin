@@ -64,7 +64,8 @@ tokens. OpenCode remains supported. The profile and database remain intact after
 
 For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
 `tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `query_cards` call after
-loading `query-cards` when a non-trivial filter is needed.
+loading `query-cards` when a non-trivial filter is needed. During a deliberately slow product-tool call, confirm that
+the spinner and terminal input remain responsive, Escape cancels a read, and a dispatched save is not reported cancelled.
 
 ### Upgrading an existing pre-Card-Set database
 

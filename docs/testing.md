@@ -154,8 +154,9 @@ Tests must not call live Scryfall network services as part of `bun test`.
 ## Pi Launcher Done Bar
 
 Pi launcher tests use injected or pure process and download seams. They verify platform/artifact selection, checksum and
-version rejection, cache decisions, inherited terminal spawn configuration, restricted tool registry auditing, Result
-transport, and runtime closure without a live Pi process or network request. The developer-run terminal checklist in
+version rejection, cache decisions, inherited terminal spawn configuration, restricted tool registry auditing, staged
+Worker entries, Result transport, and runtime closure without a live Pi process or network request. Worker tests prove
+that a slow delegated task leaves an independent Pi-side event responsive. The developer-run terminal checklist in
 the README separately covers TUI rendering, normal exit, Ctrl-C, terminal recovery, and orphan-process inspection.
 
 Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
