@@ -4,6 +4,22 @@ import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {appendTomekinPiBootstrap, auditPiToolRegistry, createCoreTool, createMethodologyReadTool, createReferenceSupportTool, expectedPiToolNames, registerTomekinExtension} from "@tomekin/pi";
 import type {Logger} from "@tomekin/core";
+import {createPiWorkerTransport} from "@tomekin/pi";
+
+describe("Pi Worker transport", () => {
+    test("leaves Pi's event loop responsive while a delegated task runs", async () => {
+        const transport = createPiWorkerTransport({workerUrl: new URL("./fixtures/worker-transport-fixture.ts", import.meta.url).href});
+        try {
+            const result = transport.invoke({toolCallId: "slow-call", waitMilliseconds: 100}, new AbortController().signal);
+            let ticked = false;
+            await new Promise<void>((resolve) => setTimeout(() => { ticked = true; resolve(); }, 10));
+            expect(ticked).toBe(true);
+            await expect(result).resolves.toEqual({content: [{type: "text", text: "done"}], details: {done: true}});
+        } finally {
+            await transport.close();
+        }
+    });
+});
 
 describe("Pi reference-status transport", () => {
     const log = {info: () => {}, warn: () => {}} as unknown as Logger;

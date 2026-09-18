@@ -16,7 +16,8 @@ On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using
 its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes exactly the 15 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. `read` is
+The session exposes exactly the 15 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
+in one lazy Bun Worker lane; `read` is Pi-local and
 limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
 `offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
 while ambient skill and context-file discovery remain disabled. Before every agent turn, Tomekin appends its product
@@ -26,7 +27,9 @@ use. That skill routes to the further skills required by the request.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
 Core Agent Tool output has a temporary 16,000-character prefix safety cap; this is not a recovery mechanism and does
-not apply to scoped `read`. Compact, recoverable product-tool output remains separate planned work. The profile loads
+not apply to scoped `read`. Compact, recoverable product-tool output remains separate planned work. Aborting a read
+terminates its Worker and discards late output. A dispatched save is not terminated or reported as cancelled; an
+unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
 only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled resources. Pi
 login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. Unsupported platforms and failed artifact verification
 fail before the session begins.

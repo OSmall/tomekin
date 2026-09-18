@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {chmod, mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
 import {existsSync} from "node:fs";
-import {basename, join} from "node:path";
+import {join} from "node:path";
 
 export const expectedPiToolNames = [
     "draft_deck_building_brief", "query_cards", "get_card_identity", "search_card_identity_tags",
@@ -150,14 +150,16 @@ export async function buildTomekinExtension(workspacePath: string): Promise<stri
     const runtimeRoot = join(workspacePath, ".data", "tomekin-pi-runtime", macOsArm64Artifact.version);
     await mkdir(runtimeRoot, {recursive: true});
     const extension = join(runtimeRoot, "tomekin-extension.mjs");
+    const worker = join(runtimeRoot, "tomekin-tomekin-worker.mjs");
     const built = await Bun.build({
-        entrypoints: [join(workspacePath, "packages", "pi", "src", "extension.ts")],
+        entrypoints: [join(workspacePath, "packages", "pi", "src", "extension.ts"), join(workspacePath, "packages", "pi", "src", "tomekin-worker.ts")],
         outdir: runtimeRoot,
-        naming: basename(extension),
+        naming: "tomekin-[name].mjs",
         target: "bun",
         format: "esm",
     });
     if (!built.success) throw new Error(`Could not build Tomekin's Pi extension: ${built.logs.map(String).join("\n")}`);
+    if (!existsSync(extension) || !existsSync(worker)) throw new Error("Could not stage Tomekin's Pi Worker entry point.");
     return extension;
 }
 
