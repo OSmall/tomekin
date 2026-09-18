@@ -9,17 +9,27 @@ verification policy belongs in [`testing.md`](./testing.md).
 
 Tomekin supports three distinct ways to reach or revise a Deck Candidate.
 
-### Restricted Pi reference-status session
+### Restricted interactive Pi session
 
 On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using a persistent clone-local profile at
 `.data/pi`. Tomekin verifies the pinned Pi v0.85.1 standalone artifact's checksum and reported version before it runs;
 its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes exactly one model-callable capability, `summarize_reference_support`. It reports local reference
-data readiness through the same SQLite-backed composition used by other adapters and returns expected failures as
-actionable results. Pi login, settings, conversations, and recovery remain Pi-owned. Unsupported platforms and failed
-artifact verification fail before the session begins.
+The session exposes exactly the 15 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. `read` is
+limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
+`offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
+while ambient skill and context-file discovery remain disabled. Before every agent turn, Tomekin appends its product
+bootstrap to Pi's normal system prompt. The bootstrap identifies Tomekin's collection-first deck-building role, states
+its restricted authority, and directs the agent to read the root `tomekin-deck-building/SKILL.md` before product-tool
+use. That skill routes to the further skills required by the request.
+Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
+diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
+Core Agent Tool output has a temporary 16,000-character prefix safety cap; this is not a recovery mechanism and does
+not apply to scoped `read`. Compact, recoverable product-tool output remains separate planned work. The profile loads
+only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled resources. Pi
+login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. Unsupported platforms and failed artifact verification
+fail before the session begins.
 
 ### Collection Opportunity discovery through construction
 
@@ -150,7 +160,7 @@ Before rendering a final Deck Candidate, Tomekin:
    caveats.
 
 The evaluator is not a deterministic deck-quality oracle. Strategy, roles, packages, Synergy, and tuning judgments are
-agent reasoning backed by local facts and methodology.
+agent reasoning backed by local facts and skills.
 
 Every rendered Deck Candidate uses these stable Markdown sections in order:
 

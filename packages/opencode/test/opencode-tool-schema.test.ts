@@ -56,11 +56,9 @@ describe("opencode tool schemas", () => {
         });
         try {
             const output = await tomekinTools.draft_deck_building_brief.execute({
-                brief: {
-                    goal: "Build Modern control.",
-                    format: "modern",
-                    powerLevel: "Competitive at the local store.",
-                },
+                goal: "Build Modern control.",
+                format: "modern",
+                powerLevel: "Competitive at the local store.",
             });
 
             expect(JSON.parse(output)).toMatchObject({

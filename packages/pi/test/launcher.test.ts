@@ -1,5 +1,6 @@
 import {describe, expect, test} from "bun:test";
 import {
+    createPiProfileSettings, reviewedAskUserPackage,
     createPiSpawnConfiguration,
     expectedPiToolNames,
     launchTomekinPi,
@@ -39,7 +40,7 @@ describe("Pi launcher", () => {
         })).rejects.toThrow("did not report version 0.85.1");
     });
 
-    test("inherits terminal I/O and allows only the reference-status tool", () => {
+    test("inherits terminal I/O and allows only the approved interactive registry", () => {
         const configuration = createPiSpawnConfiguration({
             workspacePath: "/clone",
             executablePath: "/cache/pi",
@@ -51,17 +52,29 @@ describe("Pi launcher", () => {
         expect(configuration.stdout).toBe("inherit");
         expect(configuration.stderr).toBe("inherit");
         expect(configuration.env.PI_CODING_AGENT_DIR).toBe("/clone/.data/pi");
-        expect(configuration.args).toEqual(expect.arrayContaining([
-            "--no-extensions", "--no-skills", "--no-context-files", "--no-builtin-tools",
-            "--tools", "summarize_reference_support", "--extension", "/cache/tomekin-extension.mjs",
+        expect(configuration.args).toEqual(expect.arrayContaining<string>([
+            "--no-skills", "--no-context-files", "--no-builtin-tools",
+            "--skill", "/clone/skills",
+            "--tools", expectedPiToolNames.join(","), "--extension", "/cache/tomekin-extension.mjs",
         ]));
-        expect(expectedPiToolNames).toEqual(["summarize_reference_support"]);
+        expect(expectedPiToolNames).toContain("ask_user");
+    });
+
+    test("loads only the reviewed ask-user extension package and no bundled resources", () => {
+        expect(createPiProfileSettings()).toEqual({
+            packages: [{
+                source: "npm:pi-ask-user@0.15.0",
+                extensions: ["index.ts"], skills: [], prompts: [], themes: [],
+            }],
+        });
+        expect(reviewedAskUserPackage.integrity).toBe("sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==");
     });
 
     test("propagates the spawned Pi exit status and retains the profile and database", async () => {
         const exitCode = await launchTomekinPi("/clone", {
             ensureArtifact: async () => "/cache/pi",
             buildExtension: async () => "/cache/extension.mjs",
+            configureProfile: async () => {},
             spawn: (command, options) => {
                 expect(command).toEqual(expect.arrayContaining(["/cache/pi", "--extension", "/cache/extension.mjs"]));
                 expect(options.stdin).toBe("inherit");

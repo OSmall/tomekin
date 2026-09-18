@@ -5,7 +5,7 @@ description: Use for Standard, Pioneer, Modern, Legacy, Vintage, Pauper, or Casu
 
 # 60-card Constructed Deck Tuning
 
-Use this methodology for an Existing Deck or Deck Candidate in Standard, Pioneer, Modern, Legacy, Vintage, Pauper, or
+Use this skill for an Existing Deck or Deck Candidate in Standard, Pioneer, Modern, Legacy, Vintage, Pauper, or
 Casual 60. Compose `tomekin-deck-building` for validation, rendering, and persistence. Load `query-cards` before
 non-trivial card, tag, or Collection searches.
 

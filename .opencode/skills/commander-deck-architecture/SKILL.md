@@ -1,1 +1,1 @@
-../../../product-methodology/commander-deck-architecture/SKILL.md
+../../../skills/commander-deck-architecture/SKILL.md

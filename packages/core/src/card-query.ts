@@ -90,6 +90,29 @@ export type CardQueryInput = {
     readonly limit?: number | undefined;
 };
 
+const cardQueryPropertySchema = z.enum(cardQueryPropertyValues);
+const cardQueryValueSchema = z.union([z.string(), z.number(), z.boolean(), z.array(z.union([z.string(), z.number(), z.boolean()]))]);
+const cardQueryPropertyRefSchema = z.object({property: cardQueryPropertySchema}).strict();
+/** The transport grammar owns envelope, operator, and operand shape; semantic scope rules remain below. */
+export const CardQueryFilterSchema: z.ZodType<CardQueryFilter> = z.lazy(() => {
+    const filter = CardQueryFilterSchema;
+    const booleanNode = z.object({op: z.enum(["and", "or"]), args: z.array(filter).min(1)}).strict();
+    const unaryNode = z.object({op: z.enum(["not", "withTagging", "withCollectionCard", "withPrinting", "withoutPrinting"]), args: z.tuple([filter])}).strict();
+    const atomicNode = z.object({op: z.enum(["=", "!=", "<", "<=", ">", ">=", "contains", "in", "colorIdentitySubsetOf", "hasTagInHierarchy"]), args: z.tuple([cardQueryPropertyRefSchema, cardQueryValueSchema])}).strict();
+    return z.union([booleanNode, unaryNode, atomicNode]);
+}) as z.ZodType<CardQueryFilter>;
+
+export const CardQueryInputSchema = z.object({
+    filter: CardQueryFilterSchema.optional(),
+    sortby: z.array(z.object({property: z.enum(cardQuerySortablePropertyValues), direction: z.enum(["asc", "desc"])}).strict()).min(1).optional(),
+    include: z.object({
+        legalities: z.array(z.enum(supportedScryfallFormatValues)).min(1).optional(),
+        tags: z.boolean().optional(),
+        collectionCards: z.boolean().optional(),
+    }).strict().optional(),
+    limit: z.number().int().min(1).max(200).optional(),
+}).strict();
+
 export type CardQueryCollectionCardResult = {
     readonly collectionCardId: string;
     readonly quantity: number;
@@ -190,6 +213,12 @@ export function parseCardQueryInput(input: unknown): Result<CardQueryInput, Card
     if ("limit" in input) issues.push(...validateLimit(input.limit, "#/limit"));
 
     if (issues.length > 0) return err(validationError(issues));
+    const structural = CardQueryInputSchema.safeParse(input);
+    if (!structural.success) return err(validationError(structural.error.issues.map((issue) => ({
+        pointer: `#/${issue.path.map((part) => escapePointer(String(part))).join("/")}`.replace(/#\/$/, "#"),
+        code: issue.code === "unrecognized_keys" ? "unknown_field" : "invalid_type",
+        message: issue.message,
+    }))));
     return ok(normalizePrintingSetCodes(input as CardQueryInput));
 }
 

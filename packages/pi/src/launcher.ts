@@ -1,9 +1,30 @@
 import {createHash} from "node:crypto";
-import {chmod, mkdir, readFile, rename, rm} from "node:fs/promises";
+import {chmod, mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
 import {existsSync} from "node:fs";
 import {basename, join} from "node:path";
 
-export const expectedPiToolNames = ["summarize_reference_support"] as const;
+export const expectedPiToolNames = [
+    "draft_deck_building_brief", "query_cards", "get_card_identity", "search_card_identity_tags",
+    "search_card_sets", "summarize_reference_support", "get_format_constraints", "resolve_decklist_cards",
+    "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "save_deck_candidate",
+    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
+] as const;
+
+/** Review anchor; Bun's lockfile records the matching package integrity. */
+export const reviewedAskUserPackage = {
+    source: "npm:pi-ask-user@0.15.0",
+    integrity: "sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==",
+} as const;
+
+export function createPiProfileSettings() {
+    return {packages: [{source: reviewedAskUserPackage.source, extensions: ["index.ts"], skills: [], prompts: [], themes: []}]};
+}
+
+export async function configurePiProfile(workspacePath: string): Promise<void> {
+    const profilePath = join(workspacePath, ".data", "pi");
+    await mkdir(profilePath, {recursive: true});
+    await writeFile(join(profilePath, "settings.json"), `${JSON.stringify(createPiProfileSettings(), null, 2)}\n`);
+}
 
 export type PiArtifact = {
     readonly version: "0.85.1";
@@ -49,7 +70,8 @@ export function createPiSpawnConfiguration(options: {
     return {
         executable: options.executablePath,
         args: [
-            "--no-extensions", "--no-skills", "--no-context-files", "--no-builtin-tools",
+            "--no-skills", "--no-context-files", "--no-builtin-tools",
+            "--skill", join(options.workspacePath, "skills"),
             "--tools", expectedPiToolNames.join(","), "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,
@@ -142,9 +164,11 @@ export async function buildTomekinExtension(workspacePath: string): Promise<stri
 export async function launchTomekinPi(workspacePath: string, ports = {
     ensureArtifact: (path: string) => ensureVerifiedPiArtifact({workspacePath: path}),
     buildExtension: buildTomekinExtension,
+    configureProfile: configurePiProfile,
     spawn: (command: string[], options: ReturnType<typeof createPiSpawnConfiguration>) => Bun.spawn(command, options),
 }): Promise<number> {
     const executablePath = await ports.ensureArtifact(workspacePath);
+    await ports.configureProfile(workspacePath);
     const extensionPath = await ports.buildExtension(workspacePath);
     const configuration = createPiSpawnConfiguration({workspacePath, executablePath, extensionPath});
     const child = ports.spawn([configuration.executable, ...configuration.args], configuration);

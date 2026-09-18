@@ -1,1 +1,1 @@
-../../../product-methodology/tomekin-deck-building/SKILL.md
+../../../skills/tomekin-deck-building/SKILL.md

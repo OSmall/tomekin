@@ -1,58 +1,8 @@
 import {tool} from "@opencode-ai/plugin";
-import {z} from "zod";
-import {createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
-const cardQuerySortablePropertyValues = ["identity.id", "identity.name", "identity.manaValue", "identity.colorIdentity", "identity.edhrecRank", "collection.quantity"] as const;
-const deckFormatValues = ["commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper", "casual_60"] as const;
-const sixtyCardConstructedFormatValues = ["standard", "pioneer", "modern", "legacy", "vintage", "pauper", "casual_60"] as const;
-const supportedScryfallFormatValues = ["commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper"] as const;
-
-const cardRowSchema = z.object({
-  cardIdentityId: z.uuid(),
-  quantity: z.number().int().positive(),
-    section: z.enum(["commander", "mainboard", "sideboard"]),
-});
-
-const renderCardRowSchema = cardRowSchema.extend({
-  cardName: z.string().min(1),
-  sortOrder: z.number().int().nonnegative().default(0),
-  note: z.string().nullable().default(null),
-});
-
-const sharedBriefShape = {
-  goal: z.string().min(1),
-  formatAnchor: z.string().min(1).nullable().default(null),
-  playExperience: z.string().min(1).default("Synergistic, varied, expressive, and fair-feeling."),
-  budget: z.string().min(1).nullable().default(null),
-  missingCardTolerance: z.string().min(1).default("Moderate; check the imported Collection before treating cards as Missing Cards."),
-  comboTolerance: z.string().min(1).default("Avoid deterministic combo wins unless explicitly requested."),
-  constraints: z.array(z.string().min(1)).default([]),
-  exclusions: z.array(z.string().min(1)).default([]),
-  assumptions: z.array(z.string().min(1)).default([]),
-};
-
-const commanderBriefSchema = z.object({
-    ...sharedBriefShape,
-    format: z.literal("commander"),
-    commanderBracket: z.string().min(1).nullable(),
-    ruleZeroExceptions: z.array(z.string().min(1)),
-}).strict();
-
-const sixtyCardConstructedBriefSchema = z.object({
-    ...sharedBriefShape,
-    format: z.enum(sixtyCardConstructedFormatValues),
-    powerLevel: z.string().min(1).nullable(),
-}).strict();
-
-const briefSchema = z.discriminatedUnion("format", [commanderBriefSchema, sixtyCardConstructedBriefSchema]);
-
-const saveCardRowSchema = cardRowSchema.extend({
-  sortOrder: z.number().int().nonnegative().default(0),
-  note: z.string().min(1).nullable().default(null),
-});
-
-const jsonDateTimeSchema = z.string().datetime({offset: true});
+const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
 
 type AgentToolRuntime = {
   readonly log: Logger;
@@ -109,28 +59,16 @@ function elapsedMs(startedAtMs: number): number {
 }
 
 export const draft_deck_building_brief = tool({
-    description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions that require user confirmation.",
-    args: {brief: briefSchema},
+    description: agentToolContracts.draft_deck_building_brief.description,
+    args: argsOf("draft_deck_building_brief"),
   async execute(args) {
-    return runTool("draft_deck_building_brief", args, (handlers) => handlers.draftDeckBuildingBrief(args.brief));
+    return runTool("draft_deck_building_brief", args, (handlers) => handlers.draftDeckBuildingBrief(args));
   },
 });
 
 export const query_cards = tool({
-    description: "Run a structured Card Query over local Card Identities, including explicit Printing constraints, sanctioned Format legality, Card Identity Tags, and imported Collection rows. Load the query-cards skill for Printing scope semantics and non-trivial filters.",
-  args: {
-    filter: z.unknown().optional(),
-    sortby: z.array(z.object({
-      property: z.enum(cardQuerySortablePropertyValues),
-      direction: z.enum(["asc", "desc"])
-    }).strict()).optional(),
-    include: z.object({
-        legalities: z.array(z.enum(supportedScryfallFormatValues)).optional(),
-      tags: z.boolean().optional(),
-      collectionCards: z.boolean().optional(),
-    }).strict().optional(),
-    limit: z.number().int().positive().max(200).optional(),
-  },
+    description: agentToolContracts.query_cards.description,
+  args: argsOf("query_cards"),
   async execute(args) {
     return runTool("query_cards", args, (handlers) => handlers.queryCards(args));
   },
@@ -138,7 +76,7 @@ export const query_cards = tool({
 
 export const get_card_identity = tool({
     description: "Get one local Card Identity with parts, Format legality rows, tags, EDHREC rank, Game Changer flag, and source URI.",
-  args: {idOrName: z.string().min(1)},
+  args: argsOf("get_card_identity"),
   async execute(args) {
     return runTool("get_card_identity", args, (handlers) => handlers.getCardIdentity(args));
   },
@@ -146,7 +84,7 @@ export const get_card_identity = tool({
 
 export const search_card_identity_tags = tool({
   description: "Search local Scryfall Oracle Tags by slug, label, or alias.",
-  args: {query: z.string().optional(), limit: z.number().int().positive().max(100).optional()},
+  args: argsOf("search_card_identity_tags"),
   async execute(args) {
     return runTool("search_card_identity_tags", args, (handlers) => handlers.searchCardIdentityTags(args));
   },
@@ -154,7 +92,7 @@ export const search_card_identity_tags = tool({
 
 export const search_card_sets = tool({
   description: "Search local Scryfall Card Sets by code or name and return complete Set metadata.",
-  args: {query: z.string().optional(), limit: z.number().int().positive().max(100).optional()},
+  args: argsOf("search_card_sets"),
   async execute(args) {
     return runTool("search_card_sets", args, (handlers) => handlers.searchCardSets(args));
   },
@@ -162,7 +100,7 @@ export const search_card_sets = tool({
 
 export const summarize_reference_support = tool({
   description: "Report local Scryfall reference-data readiness for oracle_cards, all_cards, and oracle_tags.",
-  args: {},
+  args: argsOf("summarize_reference_support"),
   async execute() {
     return runTool("summarize_reference_support", {}, (handlers) => handlers.summarizeReferenceSupport());
   },
@@ -170,7 +108,7 @@ export const summarize_reference_support = tool({
 
 export const get_format_constraints = tool({
     description: "Return deterministic construction constraints and supported local validation mechanics for a Deck Format.",
-    args: {format: z.enum(deckFormatValues)},
+    args: argsOf("get_format_constraints"),
   async execute(args) {
     return runTool("get_format_constraints", args, (handlers) => handlers.getFormatConstraints(args));
   },
@@ -178,7 +116,7 @@ export const get_format_constraints = tool({
 
 export const resolve_decklist_cards = tool({
   description: "Resolve proposed card names to exact local Card Identity records before validation or persistence.",
-  args: {names: z.array(z.string().min(1)).min(1)},
+  args: argsOf("resolve_decklist_cards"),
   async execute(args) {
     return runTool("resolve_decklist_cards", args, (handlers) => handlers.resolveDecklistCards(args));
   },
@@ -186,7 +124,7 @@ export const resolve_decklist_cards = tool({
 
 export const validate_format_legality = tool({
     description: "Validate deterministic Format deck construction checks over resolved Card Identity IDs using the authoritative Deck Building Brief Format.",
-    args: {cards: z.array(cardRowSchema).min(1), brief: briefSchema},
+    args: argsOf("validate_format_legality"),
   async execute(args) {
     return runTool("validate_format_legality", args, (handlers) => handlers.validateFormatLegality(args));
   },
@@ -194,7 +132,7 @@ export const validate_format_legality = tool({
 
 export const evaluate_deck_candidate = tool({
     description: "Return a Format-aware aggregate review with legality, power/play-experience context, mana curve, and land count. Use Card Query separately for owned-card evidence.",
-    args: {cards: z.array(cardRowSchema).min(1), brief: briefSchema},
+    args: argsOf("evaluate_deck_candidate"),
   async execute(args) {
     return runTool("evaluate_deck_candidate", args, (handlers) => handlers.evaluateDeckCandidate(args));
   },
@@ -202,12 +140,7 @@ export const evaluate_deck_candidate = tool({
 
 export const render_deck_candidate = tool({
     description: "Render stable Deck Candidate Markdown and a strict Format-aware Portable Decklist from resolved cards.",
-  args: {
-    label: z.string().min(1),
-      format: z.enum(deckFormatValues),
-    cards: z.array(renderCardRowSchema).min(1),
-    sections: z.record(z.string(), z.string()).optional(),
-  },
+  args: argsOf("render_deck_candidate"),
   async execute(args) {
     return runTool("render_deck_candidate", args, (handlers) => handlers.renderDeckCandidate(args));
   },
@@ -215,15 +148,7 @@ export const render_deck_candidate = tool({
 
 export const save_deck_candidate = tool({
     description: "Persist a final Deck Candidate and its resolved Card Identity rows, deriving Format from its authoritative Brief. Pass an existing Deck Candidate ID to update it in place; omit the ID only to create a new candidate.",
-  args: {
-    id: z.uuid().optional().describe("Existing Deck Candidate ID to update in place. Omit only when creating a new candidate."),
-    label: z.string().min(1),
-    formatAnchor: z.string().min(1).nullable().default(null),
-    brief: briefSchema,
-    collectionImportTimestamp: jsonDateTimeSchema.nullable().default(null),
-    markdown: z.string().min(1),
-    cards: z.array(saveCardRowSchema).min(1),
-  },
+  args: argsOf("save_deck_candidate"),
   async execute(args) {
     return runTool("save_deck_candidate", args, (handlers) => handlers.saveDeckCandidate(args));
   },
@@ -231,7 +156,7 @@ export const save_deck_candidate = tool({
 
 export const get_deck_candidate = tool({
   description: "Retrieve a saved Deck Candidate as structured data.",
-  args: {id: z.uuid()},
+  args: argsOf("get_deck_candidate"),
   async execute(args) {
     return runTool("get_deck_candidate", args, (handlers) => handlers.getDeckCandidate(args));
   },
@@ -239,7 +164,7 @@ export const get_deck_candidate = tool({
 
 export const list_deck_candidates = tool({
   description: "List saved Deck Candidates with scalar metadata and card counts.",
-  args: {},
+  args: argsOf("list_deck_candidates"),
   async execute() {
     return runTool("list_deck_candidates", {}, (handlers) => handlers.listDeckCandidates());
   },
@@ -247,7 +172,7 @@ export const list_deck_candidates = tool({
 
 export const list_collection_locations = tool({
   description: "List current imported Collection locations. Locations with type deck are inferred Existing Decks from the collection import.",
-  args: {},
+  args: argsOf("list_collection_locations"),
   async execute() {
     return runTool("list_collection_locations", {}, (handlers) => handlers.listCollectionLocations());
   },

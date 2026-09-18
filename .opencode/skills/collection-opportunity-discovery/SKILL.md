@@ -1,1 +1,1 @@
-../../../product-methodology/collection-opportunity-discovery/SKILL.md
+../../../skills/collection-opportunity-discovery/SKILL.md

@@ -1,7 +1,11 @@
 import {describe, expect, test} from "bun:test";
-import {parseCardQueryInput} from "@tomekin/core";
+import {CardQueryInputSchema, parseCardQueryInput} from "@tomekin/core";
 
 describe("Card Query validation", () => {
+    test("publishes a structural schema that rejects invented root arguments", () => {
+        expect(CardQueryInputSchema.safeParse({filter: {op: ">", args: [{property: "collection.quantity"}, 0]}}).success).toBe(true);
+        expect(CardQueryInputSchema.safeParse({collection_location_id: "invented"}).success).toBe(false);
+    });
     test("accepts every supported Scryfall-backed legality and rejects Casual 60", () => {
         expect(parseCardQueryInput({
             filter: {op: "=", args: [{property: "legality.modern"}, "legal"]},
