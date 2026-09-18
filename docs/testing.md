@@ -160,7 +160,7 @@ the README separately covers TUI rendering, normal exit, Ctrl-C, terminal recove
 
 Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
 live Pi process or LLM. The developer-run terminal checklist in the README covers initial, reload, and resume orientation
-and a correctly shaped Card Query after methodology loading. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
+and a correctly shaped Card Query after loading the query-cards skill. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
 
 ## Exact Output Tests
 
@@ -186,7 +186,7 @@ quantities and rows. Failed deterministic validation produces structured failure
 60-card Constructed coverage remains deterministic: strict Brief and candidate schemas, the supported Format matrix,
 Mainboard and Sideboard shape, cross-section copy limits and exceptions, sanctioned legality and Casual 60, Vintage
 restriction precedence, reference readiness, Card Query, exact Portable Decklists, persistence, public tool wrappers,
-and agent-routing configuration. The source-backed methodology is exercised manually before release; live-agent quality
+and agent-routing configuration. The source-backed skills are exercised manually before release; live-agent quality
 evaluation remains outside the default suite.
 
 ## Deck-Building Workflow Scenario Evaluation

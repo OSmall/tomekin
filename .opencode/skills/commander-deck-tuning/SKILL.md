@@ -1,1 +1,1 @@
-../../../product-methodology/commander-deck-tuning/SKILL.md
+../../../skills/commander-deck-tuning/SKILL.md

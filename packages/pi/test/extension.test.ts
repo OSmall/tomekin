@@ -1,5 +1,8 @@
 import {describe, expect, test} from "bun:test";
-import {appendTomekinPiBootstrap, auditPiToolRegistry, createCoreTool, createReferenceSupportTool, expectedPiToolNames, registerTomekinExtension} from "@tomekin/pi";
+import {mkdirSync, mkdtempSync, rmSync, writeFileSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
+import {appendTomekinPiBootstrap, auditPiToolRegistry, createCoreTool, createMethodologyReadTool, createReferenceSupportTool, expectedPiToolNames, registerTomekinExtension} from "@tomekin/pi";
 import type {Logger} from "@tomekin/core";
 
 describe("Pi reference-status transport", () => {
@@ -35,7 +38,7 @@ describe("Pi reference-status transport", () => {
             "draft_deck_building_brief", "query_cards", "get_card_identity", "search_card_identity_tags",
             "search_card_sets", "summarize_reference_support", "get_format_constraints", "resolve_decklist_cards",
             "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "save_deck_candidate",
-            "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "load_methodology", "ask_user",
+            "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
         ]);
         expect(() => auditPiToolRegistry(expectedPiToolNames)).not.toThrow();
     });
@@ -47,7 +50,7 @@ describe("Pi reference-status transport", () => {
             createRuntime: () => ({
                 handlers: {draftDeckBuildingBrief: async (input: unknown) => {
                     received = input;
-                    return {isOk: () => true, isErr: () => false, value: {text: "x".repeat(12_100)}};
+                    return {isOk: () => true, isErr: () => false, value: {text: "x".repeat(16_100)}};
                 }},
                 close: () => { closed += 1; },
             }) as never,
@@ -56,8 +59,61 @@ describe("Pi reference-status transport", () => {
         const output = await tool.execute("call", {goal: "Build Modern control."}, new AbortController().signal) as {content: readonly {text: string}[]; details: Record<string, unknown>};
         expect(received).toEqual({goal: "Build Modern control."});
         expect(output.details).toMatchObject({truncated: true, originalCharacters: expect.any(Number)});
-        expect(output.content[0]!.text.length).toBeLessThanOrEqual(12_000);
+        expect(output.content[0]!.text.length).toBeLessThanOrEqual(16_000);
         expect(closed).toBe(1);
+    });
+
+    test("reads working-tree skills in line ranges without the core tool cap", async () => {
+        const workspacePath = mkdtempSync(join(tmpdir(), "tomekin-pi-methodology-"));
+        const methodologyPath = join(workspacePath, "skills", "example");
+        mkdirSync(methodologyPath, {recursive: true});
+        writeFileSync(join(methodologyPath, "SKILL.md"), ["first", "second", "third"].join("\n"));
+        try {
+            const read = createMethodologyReadTool({workspacePath});
+            await expect(read.execute("call", {path: "skills/example/SKILL.md", offset: 2, limit: 1}, new AbortController().signal)).resolves.toEqual({
+                content: [{type: "text", text: "second"}],
+                details: {path: "skills/example/SKILL.md", offset: 2, limit: 1, totalLines: 3, nextOffset: 3},
+            });
+            await expect(read.execute("call", {path: "README.md"}, new AbortController().signal)).resolves.toMatchObject({
+                details: {error: "access_denied"},
+            });
+        } finally {
+            rmSync(workspacePath, {recursive: true, force: true});
+        }
+    });
+
+    test("does not apply the 16k core-tool cap to Tomekin skills", async () => {
+        const workspacePath = mkdtempSync(join(tmpdir(), "tomekin-pi-methodology-"));
+        const methodologyPath = join(workspacePath, "skills", "long");
+        const content = "x".repeat(16_100);
+        mkdirSync(methodologyPath, {recursive: true});
+        writeFileSync(join(methodologyPath, "SKILL.md"), content);
+        try {
+            const read = createMethodologyReadTool({workspacePath});
+            const output = await read.execute("call", {path: "skills/long/SKILL.md"}, new AbortController().signal) as {content: readonly {text: string}[]};
+            expect(output.content[0]!.text).toBe(content);
+        } finally {
+            rmSync(workspacePath, {recursive: true, force: true});
+        }
+    });
+
+    test("accepts every regular child path and preserves the native read byte limit", async () => {
+        const workspacePath = mkdtempSync(join(tmpdir(), "tomekin-pi-skills-"));
+        const dottedSkillPath = join(workspacePath, "skills", "..references");
+        const unicodeSkillPath = join(workspacePath, "skills", "unicode");
+        mkdirSync(dottedSkillPath, {recursive: true});
+        mkdirSync(unicodeSkillPath, {recursive: true});
+        writeFileSync(join(dottedSkillPath, "SKILL.md"), "available");
+        writeFileSync(join(unicodeSkillPath, "SKILL.md"), "😀".repeat(30_000));
+        try {
+            const read = createMethodologyReadTool({workspacePath});
+            const dotted = await read.execute("call", {path: "skills/..references/SKILL.md"}, new AbortController().signal) as {content: readonly {text: string}[]};
+            const unicode = await read.execute("call", {path: "skills/unicode/SKILL.md"}, new AbortController().signal) as {content: readonly {text: string}[]};
+            expect(dotted.content[0]!.text).toBe("available");
+            expect(Buffer.byteLength(unicode.content[0]!.text, "utf8")).toBeLessThanOrEqual(50 * 1024);
+        } finally {
+            rmSync(workspacePath, {recursive: true, force: true});
+        }
     });
 
     test("sanitizes unexpected failures and discards completed work after cancellation", async () => {
@@ -106,8 +162,8 @@ describe("Pi reference-status transport", () => {
         const prompt = beforeAgentStart!({systemPrompt: "Pi base prompt"}).systemPrompt;
         expect(prompt).toStartWith("Pi base prompt");
         expect(prompt).toContain("collection-first Magic: The Gathering deck-building assistant");
-        expect(prompt).toContain("load the approved Product Methodology entry named tomekin-deck-building");
-        expect(prompt).toContain("no filesystem, shell, network, raw database, or generic coding authority");
+        expect(prompt).toContain("read skills/tomekin-deck-building/SKILL.md");
+        expect(prompt).toContain("no general filesystem, shell, network, raw database, or generic coding authority");
         expect(prompt).toBe(appendTomekinPiBootstrap("Pi base prompt"));
     });
 

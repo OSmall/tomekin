@@ -3,7 +3,7 @@ import {mkdtempSync, readFileSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {dirname, join} from "node:path";
 import {createRootLogger, createTestRootLoggerFromEnv, resolveLogConfigFromEnv} from "@tomekin/core";
-import {createLocalAgentToolRuntime, loadProductMethodology} from "@tomekin/agent";
+import {createLocalAgentToolRuntime} from "@tomekin/agent";
 import {applySqliteMigrations} from "@tomekin/sqlite";
 
 const log = createTestRootLoggerFromEnv();
@@ -51,48 +51,6 @@ describe("local Agent Tool runtime", () => {
             }));
         } finally {
             rmSync(directory, {recursive: true, force: true});
-        }
-    });
-});
-
-describe("Product Methodology catalog", () => {
-    test("loads the seven reviewed entries by exact name and rejects unknown names", () => {
-        const expectedNames = [
-            "tomekin-deck-building",
-            "query-cards",
-            "collection-opportunity-discovery",
-            "commander-deck-architecture",
-            "commander-deck-tuning",
-            "sixty-card-constructed-deck-architecture",
-            "sixty-card-constructed-deck-tuning",
-        ] as const;
-
-        for (const name of expectedNames) {
-            const result = loadProductMethodology(name);
-            expect(result.ok).toBe(true);
-            if (result.ok) {
-                expect(result.value.name).toBe(name);
-                expect(result.value.content.length).toBeGreaterThan(0);
-            }
-        }
-
-        for (const name of ["../AGENTS.md", "toString", "constructor", "__proto__", "hasOwnProperty"]) {
-            expect(loadProductMethodology(name)).toEqual({
-                ok: false,
-                error: {type: "unknown_product_methodology", name},
-            });
-        }
-    });
-
-    test("fails closed when an approved mapping cannot resolve inside a reviewed methodology root", () => {
-        const isolatedRoot = mkdtempSync(join(tmpdir(), "tomekin-unapproved-methodology-"));
-        try {
-            expect(loadProductMethodology("tomekin-deck-building", isolatedRoot)).toEqual({
-                ok: false,
-                error: {type: "unapproved_product_methodology", name: "tomekin-deck-building"},
-            });
-        } finally {
-            rmSync(isolatedRoot, {recursive: true, force: true});
         }
     });
 });

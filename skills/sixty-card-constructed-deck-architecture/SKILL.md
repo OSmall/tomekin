@@ -5,7 +5,7 @@ description: Use after a Standard, Pioneer, Modern, Legacy, Vintage, Pauper, or 
 
 # 60-card Constructed Deck Architecture
 
-Use this methodology only for fresh construction after `tomekin-deck-building` confirms both the Deck Building Brief and
+Use this skill only for fresh construction after `tomekin-deck-building` confirms both the Deck Building Brief and
 a selected Deck Opportunity or sufficiently specific Format Anchor. Use `sixty-card-constructed-deck-tuning` first for
 an Existing Deck; enter this workflow from tuning only after the agent recommends and the user confirms a rebuild or
 fresh-construction path.

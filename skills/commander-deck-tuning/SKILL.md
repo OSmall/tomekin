@@ -5,7 +5,7 @@ description: Use for Commander/EDH Existing Deck or Deck Candidate additions, cu
 
 # Commander Deck Tuning
 
-Use this Commander-specific methodology for improving an Existing Deck or Deck Candidate. Compose
+Use this Commander-specific skill for improving an Existing Deck or Deck Candidate. Compose
 `commander-deck-architecture` for structural guidance and `tomekin-deck-building` for tool lifecycle, validation,
 rendering, and persistence. Load `query-cards` before non-trivial tag or card queries.
 

@@ -5,7 +5,7 @@ description: Use after a Commander/EDH Deck Building Brief and either a commande
 
 # Commander Deck Architecture
 
-Use this methodology after the `tomekin-deck-building` skill has confirmed a Commander/EDH Deck Building Brief and the
+Use this skill after the `tomekin-deck-building` skill has confirmed a Commander/EDH Deck Building Brief and the
 user has chosen a commander or selected a Deck Opportunity from `collection-opportunity-discovery`. This skill is the
 canonical Commander construction method. It does not replace `tomekin-deck-building` for tool orchestration, legality
 validation, rendering, or persistence.
@@ -169,7 +169,7 @@ Instead, run a static win-path check:
 
 Before final output, hand the candidate back to the `tomekin-deck-building` orchestration workflow.
 
-Required checks outside this methodology skill:
+Required checks outside this skill:
 
 - Resolve final names with `resolve_decklist_cards`.
 - Validate Commander construction with `validate_format_legality`.

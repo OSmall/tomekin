@@ -3,9 +3,7 @@ description: Use for Collection Opportunity discovery, fresh Commander/EDH and 6
 mode: primary
 steps: 80
 permission:
-  read:
-    "*": deny
-    "product-session/tomekin-deck-builder.md": allow
+  read: deny
   glob: deny
   grep: deny
   list: deny
@@ -34,6 +32,6 @@ permission:
   "tomekin_list_collection_locations": allow
 ---
 
-You are the local Tomekin deck-building product agent. Before responding to the user, use the Read tool to load
-`product-session/tomekin-deck-builder.md`, then follow those shared product-session instructions exactly. That file is
-the only non-tool product resource you may read.
+You are the local Tomekin deck-building product agent. Before responding to the user, load the native
+`tomekin-deck-building` skill and follow it. That root skill routes to any additional Tomekin skills needed for the
+request.

@@ -10,7 +10,6 @@ describe("Tomekin agent configuration", () => {
         const commanderArchitecture = read(".opencode/skills/commander-deck-architecture/SKILL.md");
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
         const agent = read(".opencode/agents/tomekin-deck-builder.md");
-        const productSession = read("product-session/tomekin-deck-builder.md");
 
         expect(discovery).toContain("Return up to three viable Deck Opportunities");
         expect(discovery).toContain("never pad the shortlist");
@@ -21,14 +20,17 @@ describe("Tomekin agent configuration", () => {
         expect(commanderArchitecture).toContain("Preserve the confirmed `(locationType, locationName)` Collection allow-list unchanged");
         expect(commanderArchitecture).toContain("Recheck final Availability with the same confirmed Collection Location allow-list");
         expect(coordinator).toContain("collection-opportunity-discovery");
-        expect(productSession).toContain("collection-opportunity-discovery");
-        expect(agent).toContain("product-session/tomekin-deck-builder.md");
+        expect(agent).toContain("tomekin-deck-building");
+        expect(coordinator).toContain("Format is absent or ambiguous");
+        expect(coordinator).toMatch(/Do not silently default to\s+Commander/);
+        expect(coordinator).toContain("Rule Zero exceptions must be explicit");
+        expect(coordinator).toContain("contextualised nominated-card tuning review");
+        expect(coordinator).toContain("explicit Addition Pool");
     });
 
     test("routes fresh 60-card construction through the selected-opportunity methodology", () => {
         const methodology = read(".opencode/skills/sixty-card-constructed-deck-architecture/SKILL.md");
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
-        const productSession = read("product-session/tomekin-deck-builder.md");
 
         expect(methodology).toContain("selected Deck Opportunity or sufficiently specific Format Anchor");
         expect(methodology).toContain("three weakest included nonland cards");
@@ -38,13 +40,12 @@ describe("Tomekin agent configuration", () => {
         expect(methodology).toContain("Do not create a Sideboard by default");
         expect(methodology).toContain("at most three complete construction/review passes");
         expect(coordinator).toContain("sixty-card-constructed-deck-architecture");
-        expect(productSession).toMatch(/selected\s+Deck Opportunity or specific Format Anchor/);
+        expect(coordinator).toMatch(/selected\s+Deck Opportunity or specific Format Anchor/);
     });
 
     test("routes Existing 60-card decks through diagnosis before architecture", () => {
         const tuning = read(".opencode/skills/sixty-card-constructed-deck-tuning/SKILL.md");
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
-        const productSession = read("product-session/tomekin-deck-builder.md");
 
         for (const path of ["Focused repair", "Rebuild around identity", "Fresh construction"]) {
             expect(tuning).toContain(path);
@@ -53,8 +54,6 @@ describe("Tomekin agent configuration", () => {
         expect(tuning).toMatch(/wait\s+for separate confirmation/);
         expect(coordinator).toContain("sixty-card-constructed-deck-tuning");
         expect(coordinator).toContain("Do not route it directly to fresh architecture");
-        expect(productSession).toContain("sixty-card-constructed-deck-tuning");
-        expect(productSession).toContain("Do not route these requests directly");
     });
 
     test("documents deterministic allow-list reuse and staged Card Query retrieval", () => {

@@ -1,1 +1,1 @@
-../../../product-methodology/sixty-card-constructed-deck-tuning/SKILL.md
+../../../skills/sixty-card-constructed-deck-tuning/SKILL.md

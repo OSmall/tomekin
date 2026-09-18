@@ -7,7 +7,7 @@ export const expectedPiToolNames = [
     "draft_deck_building_brief", "query_cards", "get_card_identity", "search_card_identity_tags",
     "search_card_sets", "summarize_reference_support", "get_format_constraints", "resolve_decklist_cards",
     "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "save_deck_candidate",
-    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "load_methodology", "ask_user",
+    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
 ] as const;
 
 /** Review anchor; Bun's lockfile records the matching package integrity. */
@@ -71,6 +71,7 @@ export function createPiSpawnConfiguration(options: {
         executable: options.executablePath,
         args: [
             "--no-skills", "--no-context-files", "--no-builtin-tools",
+            "--skill", join(options.workspacePath, "skills"),
             "--tools", expectedPiToolNames.join(","), "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,

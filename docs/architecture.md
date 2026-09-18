@@ -1,7 +1,7 @@
 # Architecture
 
 Tomekin is a local TypeScript and Bun application delivered through a project-local OpenCode agent. Its architecture
-keeps deterministic product services separate from agent methodology and keeps SQLite and external data authority
+keeps deterministic product services separate from agent skills and keeps SQLite and external data authority
 behind explicit adapters.
 
 Current observable workflows are defined in [Product Behavior](./product-behavior.md). The persisted model is defined
@@ -46,21 +46,22 @@ Collection import read user-supplied local files.
 
 ### Agent harness adapter
 
-`packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness and owns the fixed reviewed
-Product Methodology catalog. Callers pass an explicit database path and logger, invoke handlers, then close the runtime.
-`product-session/` contains shared product instructions and `product-methodology/` contains the seven canonical
-methodology entries. `packages/opencode` and `.opencode/` remain a thin OpenCode adapter: it translates tool input and
-output, uses the shared runtime per call, and reaches canonical methodology through repository-local shims. The adapter
+`packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness. Callers pass an explicit
+database path and logger, invoke handlers, then close the runtime.
+`skills/` contains the seven canonical Tomekin skills, rooted at `tomekin-deck-building`. `packages/opencode` and
+`.opencode/` remain a thin OpenCode adapter: it translates tool input and output, uses the shared runtime per call, and
+reaches canonical skills through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
 
 `packages/pi` is a sibling interactive adapter. Its launcher verifies the pinned Pi standalone binary before execution,
 uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
 It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
-point and no package skills, prompts, or themes. A Bun-bundled extension translates all 15 shared Agent Tools plus the
-committed Product Methodology loader, closes the SQLite runtime per call, bounds model results, and re-audits the
-17-name model-visible registry (including Pi's `ask_user`) at session start. Before each agent turn, the extension
-appends its controlled Tomekin bootstrap to Pi's existing system prompt; it does not enable ambient Pi skills or context
-files. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
+point and no package skills, prompts, or themes. The launcher explicitly registers `skills/` as Pi-native
+skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates all 15
+shared Agent Tools, replaces Pi's `read` with a working-tree Tomekin-skill-only reader, closes the SQLite runtime
+per call, applies the temporary 16,000-character core-tool safety cap, and re-audits the 17-name model-visible registry
+(including Pi's `ask_user`) at session start. Before each agent turn, the extension appends its controlled Tomekin
+bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.
 

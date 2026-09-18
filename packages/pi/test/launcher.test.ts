@@ -54,6 +54,7 @@ describe("Pi launcher", () => {
         expect(configuration.env.PI_CODING_AGENT_DIR).toBe("/clone/.data/pi");
         expect(configuration.args).toEqual(expect.arrayContaining<string>([
             "--no-skills", "--no-context-files", "--no-builtin-tools",
+            "--skill", "/clone/skills",
             "--tools", expectedPiToolNames.join(","), "--extension", "/cache/tomekin-extension.mjs",
         ]));
         expect(expectedPiToolNames).toContain("ask_user");

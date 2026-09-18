@@ -1,7 +1,4 @@
 import {createAgentToolHandlers, type Logger} from "@tomekin/core";
-import {readFileSync, realpathSync} from "node:fs";
-import {relative, resolve} from "node:path";
-import {execFileSync} from "node:child_process";
 import {
     closeDatabase,
     createSqliteCardQueryRepository,
@@ -48,73 +45,4 @@ export function createLocalAgentToolRuntime(options: LocalAgentToolRuntimeOption
             closeDatabase(database);
         },
     };
-}
-
-export const productMethodologyCatalog = {
-    "tomekin-deck-building": {
-        description: "Coordinate local deck-building through Tomekin tools.",
-        path: "tomekin-deck-building/SKILL.md",
-    },
-    "query-cards": {
-        description: "Compose, fix, and explain query_cards filters.",
-        path: "query-cards/SKILL.md",
-    },
-    "collection-opportunity-discovery": {
-        description: "Discover viable Collection-supported Deck Opportunities.",
-        path: "collection-opportunity-discovery/SKILL.md",
-    },
-    "commander-deck-architecture": {
-        description: "Construct a Commander Deck Candidate.",
-        path: "commander-deck-architecture/SKILL.md",
-    },
-    "commander-deck-tuning": {
-        description: "Tune a Commander Existing Deck or Deck Candidate.",
-        path: "commander-deck-tuning/SKILL.md",
-    },
-    "sixty-card-constructed-deck-architecture": {
-        description: "Construct a 60-card Constructed Deck Candidate.",
-        path: "sixty-card-constructed-deck-architecture/SKILL.md",
-    },
-    "sixty-card-constructed-deck-tuning": {
-        description: "Tune a 60-card Constructed Existing Deck or Deck Candidate.",
-        path: "sixty-card-constructed-deck-tuning/SKILL.md",
-    },
-} as const;
-
-export type ProductMethodologyName = keyof typeof productMethodologyCatalog;
-
-export type ProductMethodology = {
-    readonly name: ProductMethodologyName;
-    readonly description: string;
-    readonly content: string;
-};
-
-export type ProductMethodologyLoadResult =
-    | {readonly ok: true; readonly value: ProductMethodology}
-    | {readonly ok: false; readonly error: {readonly type: "unknown_product_methodology" | "unapproved_product_methodology"; readonly name: string}};
-
-const productMethodologyRoot = new URL("../../../product-methodology/", import.meta.url);
-
-/** Loads only an exact, reviewed Product Methodology entry from the fixed catalog. */
-export function loadProductMethodology(name: string, rootPath = productMethodologyRoot.pathname): ProductMethodologyLoadResult {
-    if (!Object.hasOwn(productMethodologyCatalog, name)) {
-        return {ok: false, error: {type: "unknown_product_methodology", name}};
-    }
-    const entry = productMethodologyCatalog[name as ProductMethodologyName];
-    try {
-        const root = realpathSync(rootPath);
-        const path = resolve(root, entry.path);
-        const pathWithinRoot = relative(root, path);
-        if (pathWithinRoot.startsWith("..") || pathWithinRoot === "" || !pathWithinRoot.endsWith("SKILL.md")) throw new Error("mapping escapes methodology root");
-        const realPath = realpathSync(path);
-        if (relative(root, realPath).startsWith("..")) throw new Error("resource resolves outside methodology root");
-        const content = readFileSync(realPath, "utf8");
-        const repositoryRoot = resolve(root, "..");
-        const committed = execFileSync("git", ["-C", repositoryRoot, "show", `HEAD:product-methodology/${entry.path}`], {encoding: "utf8"});
-        if (content !== committed) throw new Error("methodology content is not committed");
-
-        return {ok: true, value: {name: name as ProductMethodologyName, description: entry.description, content}};
-    } catch {
-        return {ok: false, error: {type: "unapproved_product_methodology", name}};
-    }
 }

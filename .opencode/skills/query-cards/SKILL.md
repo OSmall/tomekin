@@ -1,1 +1,1 @@
-../../../product-methodology/query-cards/SKILL.md
+../../../skills/query-cards/SKILL.md

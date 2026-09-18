@@ -69,7 +69,7 @@ export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
-    query_cards: {description: "Run a structured local Card Query. Load query-cards methodology before non-trivial filters.", inputSchema: CardQueryInputSchema},
+    query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
     get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
     search_card_identity_tags: {description: "Search local Card Identity Tags by slug, label, or alias.", inputSchema: SearchCardIdentityTagsArgsSchema},
     search_card_sets: {description: "Search local Card Sets by code or name.", inputSchema: SearchCardSetsArgsSchema},

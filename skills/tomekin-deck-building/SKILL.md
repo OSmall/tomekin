@@ -5,9 +5,9 @@ description: Use when discovering, building, or revising an MTG deck with Tomeki
 
 # Tomekin Deck Building
 
-Use this workflow to coordinate local deck-building through Tomekin tools. This skill owns the tool lifecycle and intent
-routing. Strategic methodology belongs in `collection-opportunity-discovery`, the Format architecture skills, and the
-Format tuning skills.
+Use this workflow to coordinate local deck-building through Tomekin tools. This root skill owns the tool lifecycle and
+intent routing. Strategic guidance belongs in `collection-opportunity-discovery`, the Format architecture skills, and
+the Format tuning skills.
 
 ## Establish The Working Contract
 
@@ -19,6 +19,11 @@ Format tuning skills.
    `playExperience` describes desired gameplay feel and complexity.
 5. When Collection evidence matters, call `list_collection_locations`, confirm an exact allow-list, and preserve the
    same `(locationType, locationName)` scope for all later Collection queries and the final Availability recheck.
+6. If the Format is absent or ambiguous, ask one focused Format question before drafting. Do not silently default to
+   Commander.
+7. For a sufficiently contextualised nominated-card tuning review, state material assumptions and proceed. For open
+   tuning, confirm a concise tuning Brief and explicit Addition Pool first.
+8. Rule Zero exceptions must be explicit in the confirmed Brief and labelled in output.
 
 ## Route By Intent
 
@@ -32,10 +37,10 @@ Format tuning skills.
   Casual 60 construction only after the Brief and a selected Deck Opportunity or specific Format Anchor are confirmed.
 - Load `sixty-card-constructed-deck-tuning` for a 60-card Existing Deck or Deck Candidate involving additions, cuts,
   swaps, upgrades, or improvement. Do not route it directly to fresh architecture.
-- If the requested Format is unsupported or lacks a methodology skill, say so and ask whether the user wants a
+- If the requested Format is unsupported or lacks a suitable skill, say so and ask whether the user wants a
   best-effort unsupported build.
 
-Do not duplicate format-specific heuristics here. Let each methodology skill decide its structural analysis while this
+Do not duplicate format-specific heuristics here. Let each route-specific skill decide its structural analysis while this
 skill preserves the lifecycle and authority constraints.
 
 ## Retrieve Evidence Economically
@@ -57,7 +62,7 @@ skill preserves the lifecycle and authority constraints.
    rendering. With an empty Collection, classify every copy as Missing without a Collection Pull List.
 4. Run `evaluate_deck_candidate` for legality, Format-appropriate power context, Mana Value distribution, Mainboard land
    count, and Collection caveats. It is not a deterministic deck-quality verdict.
-5. Follow the active methodology's static quality review and revise for at most three complete passes.
+5. Follow the active skill's static quality review and revise for at most three complete passes.
 6. Render Markdown and Portable Decklist with `render_deck_candidate`.
 7. Save with `save_deck_candidate` only after final cards resolve, legality passes, scoped Availability is rechecked,
    and assumptions and caveats are represented.
@@ -65,6 +70,16 @@ skill preserves the lifecycle and authority constraints.
 If the Collection allow-list was accidentally omitted or changed during a query, discard that result and retry. The
 current enforcement is procedural because the Brief and evaluator do not yet carry a structured Collection Access
 Policy.
+
+If local reference data is unavailable, stop deck-building and tell the user to run this setup before retrying. Do not
+attempt to compensate with live web data or unsupported sources.
+
+```sh
+bun run db:sqlite:migration:apply
+bun run import:scryfall -- oracle_cards /path/to/oracle-cards.jsonl.gz
+bun run import:scryfall -- all_cards /path/to/all-cards.jsonl.gz
+bun run import:scryfall -- oracle_tags /path/to/oracle-tags.jsonl.gz
+```
 
 ## Quality And Safety Rules
 
