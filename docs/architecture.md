@@ -8,6 +8,15 @@ Current observable workflows are defined in [Product Behavior](./product-behavio
 in [Data Model](./data-model.md), structured retrieval in [Card Query](./card-query.md), and verification policy in
 [Testing](./testing.md). Historical rationale and adopted trade-offs live in [`adr/`](./adr/).
 
+## Adopted retrieval direction (not implemented)
+
+[ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) adopts provider-backed Scryfall-syntax discovery while
+retaining Tomekin's current domain model and relational reference corpus for known-card lookup, Collection import,
+and deterministic checks. Existing Collection and Deck Candidate foreign keys remain; no duplicated identity columns
+or name snapshots are adopted. The existing DSL remains an explicitly enabled legacy capability after migration.
+Public lookup mapping and live-versus-local freshness policy are still being resolved. The sections below describe
+the delivered implementation, including its current local-only network policy, not this pending transition.
+
 ## Current Components
 
 ### Portable core

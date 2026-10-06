@@ -7,6 +7,11 @@ user-observable behavior belongs in [`product-behavior.md`](./product-behavior.m
 The current SQLite model keeps the user's Collection, Scryfall-backed reference data, and saved Deck Candidates
 separate. Repository interfaces in the portable core keep SQLite and Drizzle details out of service contracts.
 
+The adopted retrieval direction in [ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) retains these domain
+records and relationships, including Collection-to-Printing and candidate-to-Identity foreign keys. It does not adopt
+duplicate identity columns or diagnostic name snapshots. Provider-backed search is not implemented yet and does not
+currently require a persisted-model migration.
+
 ## Persistence Boundaries
 
 - Collection imports retain attempt summaries. Collection Locations and Collection Cards represent only the latest

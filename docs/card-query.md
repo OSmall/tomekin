@@ -5,6 +5,10 @@ Card Identity-rooted language over local reference and Collection data without e
 or physical schema details. Product workflows that use this contract are described in
 [`product-behavior.md`](./product-behavior.md).
 
+[ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) adopts provider-backed Scryfall-syntax search as the
+normal discovery path after implementation. The existing DSL will remain an explicitly enabled legacy capability;
+this document continues to describe the delivered contract and does not imply that the transition has shipped.
+
 Domain terms are defined in the [glossary](../CONTEXT.md), and the related persisted records are defined in
 [`data-model.md`](./data-model.md). The rationale for the query language and SQLite compilation boundary is retained in
 ADRs [`0012`](./adr/0012-cql2-shaped-card-queries.md) and
