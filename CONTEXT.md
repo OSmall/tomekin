@@ -102,12 +102,19 @@ _Avoid_: Current deck, real deck
 A proposed decklist produced or modified by the agent. A Deck Candidate remains separate from the user's Collection state unless it later appears in imported source collection data as an Existing Deck.
 _Avoid_: Suggested deck, generated deck
 
+**Deck Plan**:
+The strategic reasoning behind a Deck Candidate's card choices: its intended activities and routes to winning,
+contextual card contributions and Deck Roles, and the relationships, conditions, and support needs that connect them. It
+provides context for construction and later Deck Tuning. _Avoid_: Decklist, piloting guide, Card Identity Tags,
+executable card-effects model
+
 **Deck Tuning**:
 The evaluation and revision of an Existing Deck or Deck Candidate to better satisfy its confirmed Deck Building Brief, usually through paired additions and cuts. Deck Tuning preserves the intended Power Level and play experience by default unless the brief explicitly changes them.
 _Avoid_: Deck upgrade when the goal is not strictly greater power
 
 **Deck Change Proposal**:
-A non-persisted Deck Tuning result that recommends paired additions and cuts, records rejected additions when relevant, and explains the expected aggregate effects without creating a revised Deck Candidate.
+A non-persisted Deck Tuning result describing proposed card changes, Deck Plan changes, or both. It records the intended
+revision and expected effects, including rejected additions when relevant, without creating a revised Deck Candidate.
 _Avoid_: Deck Candidate, upgrade list, maybeboard
 
 **Addition Pool**:
@@ -115,19 +122,66 @@ The set of cards the agent may consider adding during Deck Tuning, such as Avail
 _Avoid_: Card source, upgrade pool, candidate pool
 
 **Deck Role**:
-A function a card performs within a specific Deck Candidate, such as ramp, card advantage, interaction, protection, enabler, payoff, or win condition. A card may perform multiple Deck Roles, which are candidate-specific and distinct from source-backed Card Identity Tags.
+A candidate-specific activity or supporting function within a Deck Plan, such as generating mana, drawing cards,
+sacrificing creatures, or protecting the engine, distinct from source-backed Card Identity Tags. Cards may contribute to
+multiple Deck Roles under contextual conditions, and a desired role may remain unfilled as a Role Coverage Gap.
 _Avoid_: Category, package
+
+**Deck Plan Relationship**:
+A contextual connection between Deck Roles, or from a Deck Role to a route to winning. A function enables another by
+supplying an input, resource, or event; enhances it by increasing output, frequency, or effectiveness; supports it
+through access, protection, recovery, or resilience; or competes with another function for resources or mutually
+exclusive use. _Avoid_: Execution sequence, mandatory prerequisite, Card Identity Relationship
+
+**Card Contribution**:
+A reasoned assessment of how a card performs a Deck Role in one Deck Plan, based on its rules text and relevant card
+characteristics. Its rationale explains the fit, with tags as supporting evidence and qualifications such as conditions,
+costs, timing, limitations, and repeatability distinguishing how that card serves the role. _Avoid_: Card Identity
+Tagging, contribution strength score
+
+**Deck Card Pool**:
+A Deck Candidate's maintained set of assessed card options, including selected cards and active alternatives for
+rotation, sourcing, and fallback choices. Options retain contextual Card Contributions, while quantities and coverage
+expectations belong to the selected deck rather than the pool. _Avoid_: Collection, Addition Pool, prescribed reserve
+list
+
+**Role Card Pool**:
+A role-specific view of a Deck Card Pool through contextual Card Contributions. A card may appear in multiple Role Card
+Pools, while Deck Candidate membership determines the currently selected deck. _Avoid_: Sideboard, maybeboard, discarded
+draft, rejection history
 
 **Role Coverage**:
 The degree to which cards in a Deck Candidate perform a Deck Role in that deck's context. Role Coverage accounts for reliability, conditions, efficiency, repeatability, modal competition, and dependencies rather than treating every matching Card Identity Tag as an equal contribution.
 _Avoid_: Tag count, role count when contributions are not equivalent
+
+**Deck Plan Evidence**:
+A source reference and explanation supporting a particular Deck Plan node, Card Contribution, relationship, or Role
+Coverage Assessment. Evidence explains what the source establishes for that claim, while the strategic judgment remains
+specific to the claim and its deck context. _Avoid_: Shared card justification, independently verified strategy
+
+**Role Coverage Gap**:
+An intended Deck Role that the current Deck Candidate does not adequately fulfill, including a desired role with no
+contributing cards. A gap may reflect strict Deck Building Brief constraints or an unmet need for later Deck Tuning.
+_Avoid_: Missing Card, abandoned role
+
+**Role Coverage Goal**:
+A deck-specific expectation for a Deck Role, expressed through relevant sections, an optional minimum copy count,
+qualitative criteria, and rationale. A goal is optional and does not imply that reaching its numerical minimum
+establishes adequate Role Coverage. _Avoid_: Mandatory role quota, fixed template ratio
+
+**Role Coverage Assessment**:
+A reasoned judgment of a Deck Role's adequacy, conditions, reliability, and gaps, supported by relevant evidence. It
+explains intentionally unfilled desired roles and remains distinct from counts derived from selected-card quantities and
+contributions. _Avoid_: Synergy score, verified viability
 
 **Deck Package**:
 A coherent group of cards in a Deck Candidate that work together toward a shared strategic purpose, such as sacrifice fodder, sacrifice outlets, and death payoffs. A Deck Package may contain several Deck Roles, and a card may participate in multiple Deck Packages.
 _Avoid_: Category, role
 
 **Portable Decklist**:
-The importable card-name decklist for a Deck Candidate, formatted for broad compatibility with common MTG deck tools. A Portable Decklist does not include collection locations, prices, explanations, or printing details by default.
+The importable card-name decklist generated from a Deck Candidate's authoritative card membership, formatted for broad
+compatibility with common MTG deck tools. A Portable Decklist does not include collection locations, prices,
+explanations, or printing details by default.
 _Avoid_: Export, raw list
 
 **Collection Pull List**:

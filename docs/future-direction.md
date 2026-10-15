@@ -19,6 +19,13 @@ variance that such work would need to consider.
 Future product design may introduce maybeboards, considering boards, upgrade boards, or budget alternatives as
 structures separate from the final importable Portable Decklist.
 
+## Validation Evidence
+
+Content fingerprints could eventually support reuse of Deck Candidate validation results by recognizing unchanged
+relevant inputs, including when edits are later reversed. This is an optional alternative to the UTC timestamp
+approach adopted in the [pool planning decision](https://github.com/OSmall/tomekin/issues/78#issuecomment-6192102478),
+not a queued requirement or an implemented feature.
+
 ## Persistence History
 
 Future work may add Deck Candidate versioning, undo, historical revision browsing, comparison across revisions, or
