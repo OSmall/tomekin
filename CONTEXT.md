@@ -127,6 +127,10 @@ sacrificing creatures, or protecting the engine, distinct from source-backed Car
 multiple Deck Roles under contextual conditions, and a desired role may remain unfilled as a Role Coverage Gap.
 _Avoid_: Category, package
 
+**Win Route**:
+A candidate-specific intended way to win within a Deck Plan, with its priority and justification assessed in the context
+of the deck's strategy. _Avoid_: Guaranteed win, executable combo
+
 **Deck Plan Relationship**:
 A contextual connection between Deck Roles, or from a Deck Role to a route to winning. A function enables another by
 supplying an input, resource, or event; enhances it by increasing output, frequency, or effectiveness; supports it
