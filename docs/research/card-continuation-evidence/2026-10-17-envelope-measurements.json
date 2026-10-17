@@ -1,0 +1,345 @@
+{
+  "status": "draft_schema_fixture_check_not_implementation_tests",
+  "budget_bytes": 51200,
+  "measurements": [
+    {
+      "case": "Identifier-only live search",
+      "records": 1,
+      "utf8_bytes": 664,
+      "token_characters": 366
+    },
+    {
+      "case": "Local mixed-reference batch with a miss and preserved duplicates",
+      "records": 4,
+      "utf8_bytes": 1474,
+      "token_characters": 708
+    },
+    {
+      "case": "Adventure full supported faces",
+      "records": 1,
+      "utf8_bytes": 1401,
+      "token_characters": 458
+    },
+    {
+      "case": "Selected tags, synthetic enrichment fixture",
+      "records": 1,
+      "utf8_bytes": 975,
+      "token_characters": 455
+    },
+    {
+      "case": "Copy evidence only includes rows matching confirmed criteria",
+      "records": 1,
+      "utf8_bytes": 2044,
+      "token_characters": 686
+    },
+    {
+      "case": "Explicit opt-in local provenance",
+      "records": 1,
+      "utf8_bytes": 986,
+      "token_characters": 442
+    },
+    {
+      "case": "Synthetic boundary: repeated complete face fixtures",
+      "records": 77,
+      "utf8_bytes": 50585,
+      "next_record_fits": false
+    },
+    {
+      "case": "Synthetic oversized escaped/non-ASCII record error",
+      "records": 0,
+      "utf8_bytes": 772,
+      "required_bytes": 109270
+    }
+  ],
+  "oversized_token_metadata_bytes": 240614,
+  "envelopes": [
+    {
+      "status": "ok",
+      "results": [
+        {
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487"
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 1,
+        "returned_count": 1,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLXNjcnlmYWxsIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJjYXJkcyIsImZpZWxkcyI6WyJvcmFjbGVfaWQiXSwicGFnZV9zaXplIjoxfSwicG9zaXRpb24iOnsicHJvdmlkZXJfcGFnZV91cmwiOiJodHRwczovL2FwaS5zY3J5ZmFsbC5jb20vY2FyZHMvc2VhcmNoP3BhZ2U9MSZxPWYlM0Fjb21tYW5kZXIiLCJuZXh0X3JlY29yZF9pbmRleCI6MX0sImltcG9ydHMiOnt9fQ",
+        "provider_total": 1000,
+        "scoped_total": null,
+        "response_budget_bytes": 51200
+      }
+    },
+    {
+      "status": "ok",
+      "results": [
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+            "name": "Sol Ring",
+            "mana_value": 1.0
+          }
+        },
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+            "printing_id": "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+            "name": "Sol Ring",
+            "mana_value": 1.0
+          }
+        },
+        {
+          "status": "not_found",
+          "reference": {
+            "kind": "name",
+            "value": "Lightning Boltt"
+          }
+        },
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+            "name": "Sol Ring",
+            "mana_value": 1.0
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 4,
+        "returned_count": 4,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoibG9va3VwX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLWxvY2FsLXJlZmVyZW5jZSIsInJlcXVlc3QiOnsicmVmZXJlbmNlcyI6W3sia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IlNvbCBSaW5nIn0seyJraW5kIjoicHJpbnRpbmdfaWQiLCJ2YWx1ZSI6IjA3M2JmZGNhLWQ3YjgtNGY0Yi05M2YzLTZlN2M0NGJjMGIwYSJ9LHsia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IkxpZ2h0bmluZyBCb2x0dCJ9LHsia2luZCI6Im9yYWNsZV9pZCIsInZhbHVlIjoiNmFkODAxMWQtMzQ3MS00MzY5LTlkNjgtYjI2NGNjMDI3NDg3In0seyJraW5kIjoib3JhY2xlX2lkIiwidmFsdWUiOiI2YWQ4MDExZC0zNDcxLTQzNjktOWQ2OC1iMjY0Y2MwMjc0ODcifV0sImZpZWxkcyI6WyJuYW1lIiwibWFuYV92YWx1ZSJdLCJwYWdlX3NpemUiOjR9LCJwb3NpdGlvbiI6eyJyZWZlcmVuY2VfaW5kZXgiOjR9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtaW1wb3J0LTEiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLWltcG9ydC0yIn19",
+        "provider_total": null,
+        "scoped_total": null,
+        "response_budget_bytes": 51200,
+        "lookup": {
+          "input_count": 5,
+          "start_index": 0,
+          "next_index": 4
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "results": [
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+            "card_faces": [
+              {
+                "name": "Fae of Wishes",
+                "mana_cost": "{1}{U}",
+                "type_line": "Creature — Faerie Wizard",
+                "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                "colors": null,
+                "color_indicator": null,
+                "power": "1",
+                "toughness": "4",
+                "loyalty": null,
+                "defense": null
+              },
+              {
+                "name": "Granted",
+                "mana_cost": "{3}{U}",
+                "type_line": "Sorcery — Adventure",
+                "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                "colors": null,
+                "color_indicator": null,
+                "power": null,
+                "toughness": null,
+                "loyalty": null,
+                "defense": null
+              }
+            ]
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 1,
+        "returned_count": 1,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoibG9va3VwX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLWxvY2FsLXJlZmVyZW5jZSIsInJlcXVlc3QiOnsicmVmZXJlbmNlcyI6W3sia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IkZhZSBvZiBXaXNoZXMgLy8gR3JhbnRlZCJ9LHsia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IkZhZSBvZiBXaXNoZXMgLy8gR3JhbnRlZCJ9XSwiZmllbGRzIjpbImNhcmRfZmFjZXMiXSwicGFnZV9zaXplIjoxfSwicG9zaXRpb24iOnsicmVmZXJlbmNlX2luZGV4IjoxfSwiaW1wb3J0cyI6eyJvcmFjbGVfY2FyZHMiOiJmaXh0dXJlLWltcG9ydC0xIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1pbXBvcnQtMiJ9fQ",
+        "provider_total": null,
+        "scoped_total": null,
+        "response_budget_bytes": 51200,
+        "lookup": {
+          "input_count": 2,
+          "start_index": 0,
+          "next_index": 1
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "results": [
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+            "tags": {
+              "direct": [
+                {
+                  "slug": "example-mana-source",
+                  "weight": "strong",
+                  "annotation": null
+                }
+              ],
+              "inherited": [
+                {
+                  "slug": "example-resource",
+                  "weight": "strong"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 1,
+        "returned_count": 1,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoibG9va3VwX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLWxvY2FsLXJlZmVyZW5jZSIsInJlcXVlc3QiOnsicmVmZXJlbmNlcyI6W3sia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IlNvbCBSaW5nIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifV0sImZpZWxkcyI6WyJ0YWdzIl0sInBhZ2Vfc2l6ZSI6MX0sInBvc2l0aW9uIjp7InJlZmVyZW5jZV9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1pbXBvcnQtMSIsImFsbF9jYXJkcyI6ImZpeHR1cmUtaW1wb3J0LTIiLCJvcmFjbGVfdGFncyI6ImZpeHR1cmUtdGFncy1pbXBvcnQifX0",
+        "provider_total": null,
+        "scoped_total": null,
+        "response_budget_bytes": 51200,
+        "lookup": {
+          "input_count": 2,
+          "start_index": 0,
+          "next_index": 1
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "results": [
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
+            "name": "Cultivate"
+          },
+          "collection_evidence": {
+            "summary": {
+              "owned_quantity": 4,
+              "eligible_quantity": 2,
+              "uncertain_quantity": 0,
+              "policy_status": "confirmed"
+            },
+            "copies": [
+              {
+                "collection_card_id": "00000000-0000-4000-8000-000000000031",
+                "printing_id": "0c5f5297-fe94-44df-9004-427640196afd",
+                "quantity": 2,
+                "location": {
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "type": "binder",
+                  "name": "Example Binder A"
+                },
+                "finish": "nonfoil"
+              }
+            ]
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 1,
+        "returned_count": 1,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoibG9va3VwX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLWxvY2FsLXJlZmVyZW5jZSIsInJlcXVlc3QiOnsicmVmZXJlbmNlcyI6W3sia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IkN1bHRpdmF0ZSJ9LHsia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IkN1bHRpdmF0ZSJ9XSwiZmllbGRzIjpbIm5hbWUiXSwiY29sbGVjdGlvbl9wb2xpY3kiOnsia2luZCI6ImNhbmRpZGF0ZSIsImNhbmRpZGF0ZV9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAyMCJ9LCJjb2xsZWN0aW9uX2V2aWRlbmNlIjp7Im1vZGUiOiJjb3BpZXMiLCJmaWVsZHMiOlsibG9jYXRpb24iLCJmaW5pc2giXX0sInBhZ2Vfc2l6ZSI6MX0sInBvc2l0aW9uIjp7InJlZmVyZW5jZV9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1pbXBvcnQtMSIsImFsbF9jYXJkcyI6ImZpeHR1cmUtaW1wb3J0LTIiLCJjb2xsZWN0aW9uIjoiZml4dHVyZS1jb2xsZWN0aW9uLWltcG9ydCJ9fQ",
+        "provider_total": null,
+        "scoped_total": null,
+        "response_budget_bytes": 51200,
+        "lookup": {
+          "input_count": 2,
+          "start_index": 0,
+          "next_index": 1
+        }
+      },
+      "collection_context": {
+        "state": "ready",
+        "collection_import_id": "00000000-0000-4000-8000-000000000010",
+        "match": "identity",
+        "effective_policy": {
+          "collection_import_id": "00000000-0000-4000-8000-000000000010",
+          "allowed_locations": [
+            {
+              "id": "00000000-0000-4000-8000-000000000011",
+              "type": "binder",
+              "name": "Example Binder A"
+            }
+          ],
+          "protected_locations": [
+            {
+              "id": "00000000-0000-4000-8000-000000000012",
+              "type": "deck",
+              "name": "Example Deck B"
+            }
+          ],
+          "excluded_locations": [],
+          "excluded_oracle_ids": [],
+          "excluded_printing_ids": [],
+          "excluded_collection_card_ids": [],
+          "copy_requirements": {
+            "finish": {
+              "in": [
+                "nonfoil"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "results": [
+        {
+          "status": "found",
+          "card": {
+            "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+            "name": "Sol Ring"
+          }
+        }
+      ],
+      "page": {
+        "requested_count": 1,
+        "returned_count": 1,
+        "stop_reason": "page_size",
+        "source_exhausted": false,
+        "can_continue": true,
+        "continuation": "eyJ2IjoxLCJ0b29sIjoibG9va3VwX2NhcmRzIiwicHJvdmlkZXIiOiJmaXh0dXJlLWxvY2FsLXJlZmVyZW5jZSIsInJlcXVlc3QiOnsicmVmZXJlbmNlcyI6W3sia2luZCI6Im5hbWUiLCJ2YWx1ZSI6IlNvbCBSaW5nIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifV0sImZpZWxkcyI6WyJuYW1lIl0sImluY2x1ZGVfcHJvdmVuYW5jZSI6dHJ1ZSwicGFnZV9zaXplIjoxfSwicG9zaXRpb24iOnsicmVmZXJlbmNlX2luZGV4IjoxfSwiaW1wb3J0cyI6eyJvcmFjbGVfY2FyZHMiOiJmaXh0dXJlLWltcG9ydC0xIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1pbXBvcnQtMiJ9fQ",
+        "provider_total": null,
+        "scoped_total": null,
+        "response_budget_bytes": 51200,
+        "lookup": {
+          "input_count": 2,
+          "start_index": 0,
+          "next_index": 1
+        }
+      },
+      "provenance": {
+        "reference_imports": [
+          {
+            "dataset": "oracle_cards",
+            "import_id": "00000000-0000-4000-8000-000000000041",
+            "completed_at": "2026-10-16T00:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}
