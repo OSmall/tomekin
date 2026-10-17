@@ -4,18 +4,19 @@ Date: 2026-10-17 (Australia/Sydney). Investigation:
 [Measure Scryfall search pacing and cooldown behavior](https://github.com/OSmall/tomekin/issues/82).
 This is research evidence for the pending provider, not delivered application behavior.
 
-**Status: unresolved.** The initial closure and adoption of 550 ms start pacing were withdrawn
-after user review: the measurements below compare two pacing policies but do not establish
-the enforcement boundary or Scryfall's admission clock. The 550 ms suggestion below is an
-unadopted proposal. The investigation remains open on GitHub.
+**Status: user-approved decision, 2026-10-17.** Adopt a minimum of **500 ms between actual
+request starts**, enforced by a shared monotonic admission clock, with no catch-up bursts.
+No additional fixed 50 ms margin or mandatory 500 ms wait after response completion is adopted.
+Retain a **31-second operational cooldown from 429 receipt**, or longer valid `Retry-After`.
+The previous 550 ms proposal is superseded. This selects a compliant client policy; it does
+not claim that the server's enforcement threshold or admission algorithm has been discovered.
 
-The requested follow-up was a bounded experiment aiming for three HTTP 429 events, separated
-by at least **31 seconds from receipt**, or longer when `Retry-After` requires it. Automatic
-approval review rejected execution because it intentionally exceeds the published limit to
-induce repeated 429s, risking access restriction or a ban. The user confirmed there is no
-provider authorization. That above-limit follow-up sent no API requests; its proposed runner
-was removed without execution. A later 48-request follow-up stayed at or below the published
-ceiling, as recorded below. The retained scratch script enforces a 31-second minimum cooldown; its updated
+The original two agent-run experiments and a later user-run experiment are recorded below.
+An earlier proposal to elicit three 429s was rejected before execution; no requests were
+sent by that proposed runner. The user subsequently supplied independently generated output
+and selected the documented 500 ms interval after reviewing it. Successful short samples below
+500 ms suggest possible tolerance, but provide no guaranteed buffer against packet timing,
+competing callers or future 429s. The 31-second cooldown's
 [offline fixture results](scryfall-pacing-evidence/fixtures-31s.json) verify that a new request
 cannot dispatch at 30.999 seconds and can dispatch after the full delay. Historical
 [fixture results](scryfall-pacing-evidence/fixtures.json) belong to the original run.
@@ -194,7 +195,49 @@ The measurement point is the monotonic admission start immediately before URL/si
 and the fetch call; it is not a network-wire or server-arrival timestamp. This short sample
 demonstrates successful operation close to the documented ceiling on this path. It does
 **not** locate a 429 enforcement boundary, distinguish an undocumented server admission
-algorithm, or guarantee future acceptance at 500 ms. The investigation remains unresolved.
+algorithm, or guarantee future acceptance at 500 ms. The final policy was selected after the
+additional user-run evidence below.
+
+### User-run evidence and final decision
+
+The user independently ran an edited scratch script on 2026-10-17, 17:01:29–17:03:31
+Australia/Sydney (06:01:29–06:03:31 UTC) and supplied its output. The saved
+[raw user-run evidence](scryfall-pacing-evidence/near-limit-rerun.json) contains 13 profiles:
+510, 505, 500, then 499 through 490 ms, with 16 requests each. This report analyses that
+existing artifact; no further API requests were made to record the decision.
+
+All **208 requests returned HTTP 200**, with no 429 or Retry-After. All were cache HITs,
+revisiting 16 distinct URLs and transferring 36,400 raw records across those repeated pages.
+Each profile was a short sample with a two-second quiet gap before the next. Across the
+whole 121.489-second experiment, the request rate was approximately 1.712/sec.
+
+| Configured interval | Mean client-start gap | Steady requests/sec | HTTP 200 / requests |
+| --- | ---: | ---: | ---: |
+| 510 ms | 510.956 ms | 1.957 | 16 / 16 |
+| 500 ms | 500.544 ms | 1.998 | 16 / 16 |
+| 499 ms | 500.017 ms | 2.000 | 16 / 16 |
+| 490 ms | 490.976 ms | 2.037 | 16 / 16 |
+
+In the 500 ms profile, the next request started on average 473.446 ms after the preceding
+body completed, or 466.820 ms after validation. A mandatory additional 500 ms wait after
+client-observed completion was therefore unnecessary for this sample to succeed. That
+does not identify the server's clock. The 490 ms profile was only about 1.84% faster than
+two requests/sec; short trials and quiet gaps could accommodate a limiter's burst tolerance.
+Cache HITs do not establish how uncached work is admitted.
+
+The artifact's free-text note still describes the earlier 48-request/500 ms-floor experiment;
+that note is stale. Counts and observations above are derived from its actual schedule and
+rows. The working scratch file was edited by the user; those edits are not silently included
+in the recorded decision commit. Earlier pinned source/fixture artifacts describe their own
+historical runs, not this modified script. The printed batch `cardsPerSecond` has a free-first
+dispatch effect: the 500 ms sample's steady estimate is about 349.62 raw cards/sec, rather
+than its printed 371.64. Its whole-page projection is 41,825 records/120 seconds, not a measured
+two-minute scan or a coverage guarantee.
+
+The user chose the documented 500 ms request-start interval to avoid intentional overages.
+Record the mild apparent tolerance as an observation only; do not depend on it or choose a
+faster production interval. All three recorded experiments total 304 successful requests and
+zero live 429s. No live 429 enforcement boundary or safe jitter allowance was established.
 
 ## What the timing comparison can establish
 
@@ -213,21 +256,24 @@ still cannot guarantee acceptance when unrelated callers share the server's limi
 when server policy changes. These are deductions from the client/server ordering, not claims
 made by Scryfall's documentation.
 
-## Unadopted production proposal
+## Adopted production policy
 
 Use one serialized admission owner for the selected live provider. Measure elapsed time with a
 monotonic clock and reserve the next start relative to the actual previous dispatch. Use a
-minimum of 550 ms between actual starts initially: the additional 50 ms is a deliberately
-chosen 10% operational margin above the documented interval, not a measured network bound or
-provider guarantee. Keep a single next-page chain sequential. The completion-based alternative
-is a conservative fallback if observed operation needs more headroom; measurements should make
-its throughput cost explicit before choosing it as the default.
+minimum of **500 ms between actual request starts**. Reserve from the actual last dispatch,
+not an ideal timer schedule, and recheck after waits so late timers never create catch-up
+bursts. Keep each supplied-next-page chain sequential. Wait for the preceding page's body and
+validation when necessary to obtain its next URL; do not add another fixed 500 ms after
+completion. When a page takes longer than 500 ms, that dependency controls the next dispatch.
+The removed 550 ms proposal is not the production default, and observed tolerance is not an
+extra budget that callers may spend.
 
 At the first 429, atomically raise shared `blockedUntil` before releasing the admission lane.
-Use at least 30 seconds from receipt, or longer if a valid `Retry-After` requires it. Never
+Use at least **31 seconds from receipt**, or longer if a valid `Retry-After` requires it. This
+adds one second to the documented 30-second minimum. Never
 shorten an existing cooldown. Parse integer delays strictly; convert valid future HTTP dates
 to a duration at receipt, then enforce that duration monotonically. Missing, malformed, or past
-values retain the 30-second minimum. Treat this as a lower bound for when another attempt may
+values retain the 31-second operational minimum. Treat this as a lower bound for when another attempt may
 be considered, not a promise of acceptance. Do not automatically retry a failed page inside
 the benchmark. Production recovery should preserve partial progress and return explicit retry
 guidance rather than conceal a long blocking retry loop.
@@ -244,12 +290,14 @@ exercise them.
 
 The ideal `120 × 2 × 175 = 42,000` records assumes sustained ceiling throughput, full pages,
 no expensive responses, no competing callers, no cooldown, and negligible surrounding work.
-It is capacity arithmetic, not an observed throughput guarantee. A 550 ms interval reduces
-steady theoretical capacity to approximately 218 pages / 38,150 raw records per 120 seconds
-before other costs. Boundary conventions and completion of the last response also matter.
-If sequential page processing exceeds 550 ms, it becomes the bottleneck. Local Collection
+It is capacity arithmetic, not an observed throughput guarantee. The selected 500 ms interval
+retains that theoretical ceiling; the user-run cached 500 ms sample projects 239 whole pages /
+41,825 raw records over 120 seconds from its observed mean start gaps. The earlier 550 ms
+experiment's lower figures are historical comparisons. Boundary conventions and completion
+of the last response also matter. If sequential page processing exceeds 500 ms, it becomes
+the bottleneck. Local Collection
 matching and response-size limits can reduce useful results further. A single mandatory
-30-second cooldown consumes at least one quarter of a 120-second call's budget. The measured
+31-second operational cooldown consumes more than one quarter of a 120-second call's budget. The measured
 start-gap projections above range from 16,800 records for the MISS sample to 37,975 for the
 HIT start-based sample, versus 35,875–36,050 for HIT completion-based samples. These are
 raw source records with no Collection filtering cost. They do not support promising 42,000

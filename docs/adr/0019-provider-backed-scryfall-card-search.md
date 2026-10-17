@@ -38,8 +38,20 @@ failure. A successfully exhausted search with no matches is a normal empty resul
 progress are distinct errors. Public examples and the eventual tool contract use consistent snake_case field names,
 including `collection_evidence`, rather than mixing casing styles with Scryfall parameters.
 
-The initial scan time budget is approximately ten seconds per call, including rate-limit scheduling delays; measurements
-may justify adjusting it. Provider result totals are labelled separately from Collection totals. Tomekin does not report
+The initial scan time budget is 120 seconds per call, including admission waits, network work, local evaluation and
+cooldown, as specified by
+[Specify recoverable Card Query continuation and adapter truncation](https://github.com/OSmall/tomekin/issues/29).
+Live Scryfall search uses a shared monotonic gate with at least 500 ms between actual request starts, without catch-up
+bursts or a mandatory additional 500 ms after response completion. Each supplied-next-page chain remains sequential.
+Admission and cooldown state must outlive per-call runtimes and disposable Pi Workers and coordinate relevant callers.
+On HTTP 429, block admission for at least 31 seconds from receipt, or longer valid `Retry-After`, without resetting
+cooldown on cancellation. Successful short cached runs suggest possible tolerance but establish no guaranteed buffer
+against packet timing or future rate limits. See
+[Scryfall pacing evidence](../research/scryfall-pacing.md) and
+[Measure Scryfall search pacing and cooldown behavior](https://github.com/OSmall/tomekin/issues/82).
+This is adopted provider design, not implemented application behavior.
+
+Provider result totals are labelled separately from Collection totals. Tomekin does not report
 an exact Collection total before exhaustive filtering and need not perform extra scans merely to calculate one.
 Returned page counts are explicit, and an unknown Collection total is represented as unknown rather than zero.
 
