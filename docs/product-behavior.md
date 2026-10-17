@@ -1,7 +1,7 @@
 # Product Behavior
 
 This document is the durable contract for Tomekin's current user-observable behavior. Product promise and scope belong
-in [`product-scope.md`](./product-scope.md); domain terms belong in the [glossary](../CONTEXT.md); persisted records
+in [`product-scope.md`](./product-scope.md); domain terms belong in the [glossary](../GLOSSARY.md); persisted records
 belong in [`data-model.md`](./data-model.md); Card Query semantics belong in [`card-query.md`](./card-query.md); and
 verification policy belongs in [`testing.md`](./testing.md).
 

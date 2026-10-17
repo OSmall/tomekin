@@ -223,7 +223,8 @@ bun run typecheck
 
 ## Documentation
 
-- [`CONTEXT.md`](./CONTEXT.md): canonical glossary and domain language.
+- [`GLOSSARY.md`](./GLOSSARY.md): canonical glossary and domain language.
+- [`GLOSSARY-MAP.md`](./GLOSSARY-MAP.md): routes shared and package-specific domain documentation.
 - [`docs/product-scope.md`](./docs/product-scope.md): product promise, supported scope, boundaries, and non-goals.
 - [`docs/product-behavior.md`](./docs/product-behavior.md): current user-observable workflows, confirmations, outputs,
   imports, and authority limits.

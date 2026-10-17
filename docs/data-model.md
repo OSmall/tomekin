@@ -2,7 +2,7 @@
 
 This document owns Tomekin's implemented persisted records, relationships, and import invariants. Current
 user-observable behavior belongs in [`product-behavior.md`](./product-behavior.md), Card Query semantics belong in
-[`card-query.md`](./card-query.md), and canonical domain language belongs in the [shared glossary](../CONTEXT.md).
+[`card-query.md`](./card-query.md), and canonical domain language belongs in the [shared glossary](../GLOSSARY.md).
 
 The current SQLite model keeps the user's Collection, Scryfall-backed reference data, and saved Deck Candidates
 separate. Repository interfaces in the portable core keep SQLite and Drizzle details out of service contracts.

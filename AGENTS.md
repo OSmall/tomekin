@@ -6,8 +6,8 @@ Keep documentation in sync with implemented behavior and adopted design decision
 
 - `README.md`: current user setup, commands, features, limitations, and the high-level documentation index.
 - `AGENTS.md`: contribution rules, documentation ownership, and work-tracking policy.
-- `CONTEXT-MAP.md`: domain-context routing only, not general documentation navigation or implementation status.
-- `CONTEXT.md`: glossary and shared domain language only, not implementation status or work tracking.
+- `GLOSSARY-MAP.md`: domain-context routing only, not general documentation navigation or implementation status.
+- `GLOSSARY.md`: glossary and shared domain language only, not implementation status or work tracking.
 - `docs/product-scope.md`: product promise, principles, supported scope, boundaries, and non-goals.
 - `docs/product-behavior.md`: current user-observable workflows, contracts, and behavioral invariants.
 - `docs/architecture.md`: current components, seams, authority boundaries, and concise summaries of adopted architecture.
@@ -40,7 +40,7 @@ Uses the default canonical triage labels. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-Uses a multi-context layout. See `docs/agents/domain.md`.
+Uses a multi-context layout routed by `GLOSSARY-MAP.md`. Before exploring the codebase, read `docs/agents/domain.md`.
 
 ## SQLite Migrations
 

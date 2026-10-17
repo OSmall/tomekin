@@ -65,7 +65,7 @@ document. A **graph library** provides manipulation and algorithms. **Storage** 
 A **renderer** arranges and displays a projection. One package can serve several roles, but choosing a
 renderer does not settle the other decisions.
 
-The [domain glossary](../../CONTEXT.md) makes Deck Plans contextual strategic claims, including Card
+The [domain glossary](../../GLOSSARY.md) makes Deck Plans contextual strategic claims, including Card
 Contributions, conditions, support needs, and evidence. An existing format can supply graph mechanics;
 it cannot supply Tomekin's meanings of `enables`, `enhances`, `supports`, or `competes_with`, or determine whether
 a claimed route is strategically sound. Those meanings remain a domain contract whatever the syntax.
