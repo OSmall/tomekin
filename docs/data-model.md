@@ -21,6 +21,8 @@ currently require a persisted-model migration.
 - Deck Candidates are the only persisted deck-building result. Deck Opportunity shortlists and Deck Change Proposals
   remain transient.
 - Card Query requests and results are transient. Queries do not create saved filters or cached product records.
+- Local lookup cursors encode original reference occurrences, source position and relevant successful import IDs.
+  They contain no result objects and have no persisted search/cursor record. Failed imports do not replace bindings.
 - Saved Collection evidence is provenance, not current Availability. Tomekin does not persist an Availability decision,
   Collection Pull List, candidate freshness state, or refresh result.
 

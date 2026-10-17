@@ -1,3 +1,4 @@
+import {retrievalCancellationEnvelope, serializeAgentToolDetails} from "@tomekin/core";
 export type PiToolOutput = {readonly content: readonly {readonly type: "text"; readonly text: string}[]; readonly details: unknown};
 
 type WorkerRequest = Readonly<Record<string, unknown>> & {readonly toolCallId: string; readonly cancellable?: boolean};
@@ -18,7 +19,7 @@ export class PiWorkerTransport {
     constructor(private readonly options: {readonly workerUrl: string}) {}
 
     invoke(request: WorkerRequest, signal: AbortSignal): Promise<PiToolOutput> {
-        if (signal.aborted) return Promise.resolve(cancelledOutput("Cancelled before dispatch."));
+        if (signal.aborted) return Promise.resolve(cancelledOutput("Cancelled before dispatch.", request));
         if (this.pending) return Promise.resolve(failureOutput("tool_error", "Another approved tool is already running."));
         const worker = this.getWorker();
         return new Promise<PiToolOutput>((resolve, reject) => {
@@ -28,7 +29,7 @@ export class PiWorkerTransport {
                 if (!this.pending) return;
                 this.pending = undefined;
                 void this.terminateWorker();
-                resolve(cancelledOutput("Cancelled while the approved tool was running."));
+                resolve(cancelledOutput("Cancelled while the approved tool was running. Reuse the last received cursor or original request.", request));
             };
             signal.addEventListener("abort", cancel, {once: true});
             worker.postMessage({id: request.toolCallId, ...request});
@@ -75,8 +76,8 @@ export function createPiWorkerTransport(options: {readonly workerUrl: string}): 
 }
 
 function projectOutput(details: unknown): PiToolOutput {
-    return {content: [{type: "text", text: JSON.stringify(details, null, 2) ?? "null"}], details};
+    return {content: [{type: "text", text: serializeAgentToolDetails(details)}], details};
 }
 
-function cancelledOutput(message: string): PiToolOutput { return projectOutput({error: "cancelled", message}); }
+function cancelledOutput(message: string, request?: WorkerRequest): PiToolOutput { return projectOutput(request?.toolName === "lookup_cards" ? retrievalCancellationEnvelope(request.params, message) : {error: "cancelled", message}); }
 function failureOutput(error: string, message: string): PiToolOutput { return projectOutput({error, message}); }

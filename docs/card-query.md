@@ -17,7 +17,89 @@ ADRs [`0012`](./adr/0012-cql2-shaped-card-queries.md) and
 The implementation is inspired by CQL2-JSON expression nodes but does not claim CQL2 conformance. `sortby`, `include`,
 and `limit` are Tomekin query-envelope fields rather than CQL2 filter members.
 
-## Request Envelope
+## Known-card lookup
+
+`lookup_cards` is the delivered local retrieval contract through Core, SQLite, OpenCode and Pi Worker/fallback.
+The existing `query_cards` discovery contract follows below. Provider-backed `search_cards`, Collection-policy
+filtering/evidence and catalogue continuation remain separate work; lookup currently returns card facts only.
+
+```json
+{"references":[{"kind":"name","value":"Sol Ring"},{"kind":"printing_id","value":"073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a"}],"select":{"name":true,"oracle_text":true},"first":50}
+```
+
+References are nonempty, ordered `{kind, value}` objects: `oracle_id`/`printing_id` require UUIDs and `name` means an
+exact case-sensitive canonical whole identity name. Faces and fuzzy spellings do not resolve separately. Every input
+occurrence produces a found card or `not_found` with its original reference, including duplicates and local misses.
+A miss establishes neither invalidity nor nonownership. There is no provider fallback or automatic hydration.
+
+`select` is a closed nonempty object: every property is optional literal `true`. Both actual adapter JSON Schemas
+enumerate meanings, prohibit additional properties and publish `minProperties: 1`. Selection names are:
+
+- Identity: `oracle_id`, `name`, `layout`, `mana_cost`, `mana_value`, `type_line`, `oracle_text`, `colors`,
+  `color_identity`, `color_indicator`, `produced_mana`, `keywords`, `power`, `toughness`, `loyalty`, `defense`,
+  `legalities`, `game_changer`, `edhrec_rank`, `card_faces`, `tags`.
+- Printing: `printing_id`, `set`, `set_id`, `set_name`, `set_type`, `collector_number`, `lang`, `printed_name`,
+  `finishes`, `promo_types`, `tcgplayer_id`, `cardmarket_id`, `printing_layout`.
+
+Every found record includes `oracle_id`; exact Printing references also retain `printing_id`. Other unselected facts
+are absent. Printing facts reject a batch containing any Oracle/name reference before record retrieval, including
+references before a supplied cursor. `mana_value` maps stored `manaValue` without a `cmc` alias. Colors reconstruct
+arrays from stored scalars: null stays null and known colorless becomes `[]`. Produced-mana symbols retain stored
+order. Scalar absence is null; known empty associations are arrays/maps. `layout` is canonical gameplay layout;
+`printing_layout` is its separate standard/reversible presentation. Printing Set fields join the exact local Set,
+`printed_name` never falls back to the canonical name, and `finishes` describes supported versions rather than an
+owned copy's Finish. Legalities include the complete imported map without fabricated Casual 60 entries.
+
+`oracle_text` preserves its complete top-level value, including null, plus each existing ordered face's name/text.
+`card_faces` requests the complete face projection: name, mana_cost, type_line, oracle_text, colors,
+color_indicator, power, toughness, loyalty and defense. Selecting both returns the fuller faces once. Ordinary cards
+have no invented faces; explicit `card_faces` returns `[]`. Nothing is concatenated, matched-face-inferred or clipped.
+
+`tags` returns `{direct:[{slug,weight,annotation}], inherited:[{slug,weight}]}`. Direct preference, all reachable
+ancestors, deduplication and strongest supporting direct prominence are retained. Missing/incompatible tag imports
+omit `card.tags` and explain `unavailable_fields.tags` as `dataset_not_imported`/`dataset_incompatible`; imported cards
+with no tags return both empty arrays. Unexpected repository failures remain errors. Lookup's whole-call readiness
+requires compatible successful Oracle Cards and All Cards imports; missing/incompatible core data returns
+`reference_data_unready` with dataset lists and the explicit sync command. Failed attempts preserve usable imports.
+
+Successful responses contain `status: "ok"`, complete `edges: [{node: LookupOutcome}]`, `pageInfo` with
+`startCursor`, `endCursor`, `hasNextPage`, `hasPreviousPage`, `stop_reason` (`first`, `response_budget`,
+`source_exhausted`), and metadata. `first` defaults to 50, accepts integer 0–200 and counts every outcome. A zero
+request consumes nothing, returns null cursors, and reports whether input occurrences remain. Page cursors correspond
+to the first/last emitted outcome; an exhausted empty page has null cursors. Metadata includes requested/returned
+counts, `response_budget_bytes`, null provider/scoped totals, and `lookup: {input_count,start_index,next_index}`.
+Indices are zero-based positions in the original batch; `next_index` is the next unconsumed occurrence.
+
+Continue using the same ordinary request with returned `endCursor` as `after`. Repeat references and the effective
+`include_provenance` setting exactly; selection and `first` may change. Omitted provenance means false. Versioned
+opaque tokens contain fixed bindings, successful import IDs (including optional tag absence when first selected),
+and next input position; they contain no results and use no saved cursor/search store or arbitrary expiry.
+Previously bound optional imports remain dependencies when selection later omits them. Unrelated/failed imports do
+not invalidate a cursor; successful replacement of any bound import returns `stale_cursor` and restart guidance.
+Local records and import revisions are read in one SQLite view; imports are checked again after cursor preflight.
+
+Failures carry `status: "error"`, complete partial `edges`, `error: {code,message,retryable,...}` and metadata;
+they have no `pageInfo`. Input, readiness and invalid/stale cursor failures have no recovery cursor. Recoverable
+execution stops carry a sole `error.cursor` before the first unreturned occurrence. Errors include `invalid_request`,
+`invalid_cursor`, `stale_cursor`, `reference_data_unready`, `local_error`, `scan_timeout`, `cancelled`,
+`record_too_large`, `cursor_too_large` and `response_budget_too_small`. Validation issues have paths/stable codes;
+Printing incompatibility names the selected field and original reference indices. Source/tool/request mismatches are
+explicit. Hard Worker cancellation delivers no invented new position; reuse the last delivered cursor/original call.
+
+The default whole compact model-visible envelope is at most 51,200 UTF-8 bytes and the scan budget is 120 seconds.
+Both are runtime configuration, not agent request parameters. Exact escaped JSON includes cursors, error/provenance
+metadata and counts. Complete outcomes, rules text, face lists and tag lists are indivisible. A fitting prefix stops
+before its next outcome; an oversized individual outcome returns `record_too_large` with measured required/limit
+bytes and safe recovery. Error fitting rolls back unreturned outcomes when metadata grows. Requests whose
+self-contained bindings cannot return usable continuation fail preflight with `cursor_too_large`; an adapter unable
+to carry a minimal structured error rejects clearly. There is no preview, spill file or hidden cursor store.
+
+`include_provenance: true` adds response-level `reference_imports` with only used datasets/import IDs and nullable
+completion/source-update timestamps. It is omitted by default. No Collection context/evidence is exposed in this
+slice. Info logging records selected fact names, status/counts, whole UTF-8 bytes and timing; deliberate debug logging
+records incoming/outgoing continuation positions, without complete production result-body logging.
+
+## Local discovery request envelope
 
 `query_cards` accepts one strict object with four optional fields:
 

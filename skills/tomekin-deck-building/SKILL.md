@@ -17,8 +17,9 @@ For a standalone supplied sampling question, use `hypergeometric_calculator` wit
 This pure calculation needs no Collection import, reference readiness or Deck Candidate. Apply the workflow below when
 card facts, discovery, construction or tuning are needed.
 
-1. Check `summarize_reference_support`. Missing `oracle_cards`, `all_cards`, or `oracle_tags` blocks local
-   deck-building.
+1. Use startup/setup diagnostics and tool readiness errors for reference status. Local `lookup_cards` needs compatible
+   Oracle Cards and All Cards imports; absent tags are reported as unavailable enrichment. Local `query_cards` still
+   requires all three datasets. Follow the actionable sync instruction when a required dataset is unavailable.
 2. Draft a best-effort Deck Building Brief with `draft_deck_building_brief`.
 3. Ask the user to confirm or edit the Brief before substantial discovery or full construction.
 4. Keep strength and pilot complexity explicit: `powerLevel` or Commander Bracket describes strength, while
@@ -52,7 +53,7 @@ skill preserves the lifecycle and authority constraints.
 ## Retrieve Evidence Economically
 
 - Load `query-cards` before non-trivial filters or after any validation error.
-- Use `query_cards`, `search_card_identity_tags`, and `get_card_identity` to assemble and compare coherent packages.
+- Use `query_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
   cards.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.
@@ -61,7 +62,8 @@ skill preserves the lifecycle and authority constraints.
 
 ## Validate And Finish A Deck Candidate
 
-1. Resolve final names with `resolve_decklist_cards`.
+1. Resolve final names with batched `lookup_cards` name references and `select: {name: true}`. Check every ordered
+   outcome across pages and resolve any local miss before validation.
 2. Validate deterministic Format construction with `validate_format_legality`.
 3. When a non-empty Collection scope is active, requery all final card names with the unchanged allow-list. Compare
    scoped `totalQuantity` with required quantities and classify Available, Committed, and Missing cards before

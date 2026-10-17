@@ -5,6 +5,20 @@ in [`product-scope.md`](./product-scope.md); domain terms belong in the [glossar
 belong in [`data-model.md`](./data-model.md); Card Query semantics belong in [`card-query.md`](./card-query.md); and
 verification policy belongs in [`testing.md`](./testing.md).
 
+## Known-card facts
+
+Use `lookup_cards` for batched exact canonical names, Oracle IDs or exact Printing IDs. It returns every ordered
+occurrence, including duplicates and explicit local misses. Select complete facts explicitly; Oracle identity is always
+present and exact Printing references also retain Printing identity. Selected multipart Oracle text includes all existing
+ordered face text. Complete direct/inherited tags are optional local enrichment. Compatible Oracle Cards and All Cards
+imports are required; missing optional tags are unavailable rather than false empty associations. Lookup does not fetch
+from a provider or establish ownership/Availability. Its [contract](./card-query.md#known-card-lookup) specifies selectors,
+whole-envelope byte limits, positional cursors, readiness, invalidation and complete error recovery.
+
+The default adapters consolidate `get_card_identity` and `resolve_decklist_cards` into this tool and remove the normal
+`summarize_reference_support` catalogue capability. Setup diagnostics and actionable tool readiness failures report
+reference status. Internal legacy/validation handlers remain available to existing application code.
+
 ## Supported Routes
 
 Tomekin supports three distinct ways to reach or revise a Deck Candidate.
@@ -16,7 +30,7 @@ On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using
 its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes exactly the 16 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
+The session exposes the approved Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
 in one lazy Bun Worker lane; `read` is Pi-local and
 limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
 `offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
@@ -26,8 +40,9 @@ its restricted authority, and directs the agent to read the root `tomekin-deck-b
 use. That skill routes to the further skills required by the request.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
-Core Agent Tool output has a temporary 16,000-character prefix safety cap; this is not a recovery mechanism and does
-not apply to scoped `read`. Compact, recoverable product-tool output remains separate planned work. Aborting a read
+`lookup_cards` preserves its complete 51,200-byte compact success/error envelope in model-visible content and details,
+with ordinary `first`/`after` recovery. Other unmigrated core tools retain their temporary 16,000-character preview cap;
+scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. A dispatched save is not terminated or reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
 only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled resources. Pi

@@ -8,14 +8,15 @@ Current observable workflows are defined in [Product Behavior](./product-behavio
 in [Data Model](./data-model.md), structured retrieval in [Card Query](./card-query.md), and verification policy in
 [Testing](./testing.md). Historical rationale and adopted trade-offs live in [`adr/`](./adr/).
 
-## Adopted retrieval direction (not implemented)
+## Retrieval transition
 
 [ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) adopts provider-backed Scryfall-syntax discovery while
 retaining Tomekin's current domain model and relational reference corpus for known-card lookup, Collection import,
 and deterministic checks. Existing Collection and Deck Candidate foreign keys remain; no duplicated identity columns
 or name snapshots are adopted. The existing DSL remains an explicitly enabled legacy capability after migration.
-Public lookup mapping and live-versus-local freshness policy are still being resolved. The sections below describe
-the delivered implementation, including its current local-only network policy, not this pending transition.
+Local `lookup_cards` now implements the complete selected-fact, bounded-envelope and stateless input-position contract.
+Provider search, Collection-policy evidence and catalogue migration remain separate slices. Local-only normal network
+behavior remains in effect until provider discovery ships.
 
 ## Current Components
 
@@ -40,6 +41,19 @@ event variants and optional qualifying-count/target fields with descriptions of 
 Object-level validation and the shared service enforce the complete strict operation union, including missing or
 forbidden operation-specific fields. OpenCode's model-visible schema cannot express those root conditional requirements;
 both harnesses nevertheless execute the same request/result/error contract.
+
+Known-card retrieval uses the Core `CardLookupRepository` snapshot port. Its SQLite implementation reads exact
+identity/Printing/Set relationships, complete parts/legalities and selected tag enrichment in a synchronous read
+transaction. The service preflights closed selectors and whole-original-batch Printing compatibility, then binds
+successful import revisions and sizes self-contained continuation before reading records. A second revision check
+prevents mixing snapshots during preflight. It projects only requested facts and advances one input occurrence per
+complete outcome. Shared card selectors, projection/envelope types, cursor codec and compact transport serialization
+are reusable by subsequent retrieval tools. No migration, result cache or cursor store is added.
+
+Lookup failures remain on Result's error side with their complete wire envelope. Shared adapter serialization unwraps
+that envelope without flattening readiness/validation/recovery details. OpenCode bundles an older Zod metadata registry,
+so its annotated selector is built with the host schema instance from Core's one canonical fact-description map; actual
+serialized-schema tests cover `minProperties`, closed properties and complete meanings. Pi uses Core's JSON Schema.
 
 ### SQLite adapter
 
@@ -79,11 +93,11 @@ does not receive raw database, shell, source-tree, or arbitrary network authorit
 uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
 It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
 point and no package skills, prompts, or themes. The launcher explicitly registers `skills/` as Pi-native
-skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates all 16
-shared Agent Tools through one lazy Worker lane; the Worker owns the SQLite runtime, result projection, and temporary
-16,000-character core-tool safety cap, and is recreated after cancellation or failure. Pi-local `read` remains a
-working-tree Tomekin-skill-only reader. The extension re-audits the 18-name model-visible registry
-(including Pi's `ask_user`) at session start. Before each agent turn, the extension appends its controlled Tomekin
+skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates the approved
+shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
+lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
+cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
+approved model-visible registry (including Pi's `ask_user`) at session start. Before each agent turn, it appends its controlled Tomekin
 bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.

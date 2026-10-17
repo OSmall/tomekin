@@ -1,3 +1,5 @@
+import {lookupCards, type CardLookupOptions} from "./card-lookup";
+import {LookupCardsArgsSchema, type CardLookupRepository} from "./card-retrieval";
 import {calculateHypergeometric, HypergeometricCalculatorArgsSchema, HypergeometricCalculatorRequestSchema} from "./hypergeometric-calculator";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
@@ -18,6 +20,7 @@ import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
   "query_cards",
+  "lookup_cards",
   "hypergeometric_calculator",
   "get_card_identity",
   "search_card_identity_tags",
@@ -70,6 +73,7 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
     query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
@@ -92,6 +96,7 @@ export function agentToolInputJsonSchema(name: AgentToolName): Record<string, un
     return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
+  readonly cardLookup?: CardLookupRepository;
   readonly cardReference: CardReferenceRepository;
   readonly cardQuery: CardQueryRepository;
   readonly deckCandidates: DeckCandidateRepository;
@@ -107,8 +112,12 @@ export type AgentToolError =
     readonly reimportRequiredBulkDataTypes: readonly ScryfallBulkDataType[];
 };
 
-export function createAgentToolHandlers(repositories: AgentToolRepositories) {
+export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
   return {
+      lookupCards(input: unknown, signal?: AbortSignal) {
+          if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
+          return lookupCards(repositories.cardLookup, input, options.lookup, signal);
+      },
       hypergeometricCalculator: calculateHypergeometric,
       async queryCards(input: unknown) {
       const parsed = parseCardQueryInput(input);

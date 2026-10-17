@@ -1,6 +1,7 @@
-import {createAgentToolHandlers, type Logger} from "@tomekin/core";
+import {createAgentToolHandlers, type Logger, type CardLookupOptions} from "@tomekin/core";
 import {
     closeDatabase,
+    createSqliteCardLookupRepository,
     createSqliteCardQueryRepository,
     createSqliteCardReferenceRepository,
     createSqliteCollectionRepository,
@@ -19,6 +20,7 @@ export type LocalAgentToolRuntime = {
 export type LocalAgentToolRuntimeOptions = {
     readonly databasePath: string;
     readonly log: Logger;
+    readonly lookup?: CardLookupOptions;
 };
 
 /**
@@ -30,12 +32,17 @@ export function createLocalAgentToolRuntime(options: LocalAgentToolRuntimeOption
     logger.info({operation: "create_agent_tool_runtime", status: "started"}, "Local Agent Tool runtime starting");
     const database = openDatabase(options.databasePath, {log: options.log});
     const clock = {now: () => new Date()};
+    const cardReference = createSqliteCardReferenceRepository(database);
+    void cardReference.summarizeReferenceSupport().then((support) => {
+        logger.info(support.isOk() ? {operation: "reference_readiness", status: support.value.ready ? "ready" : "unready", missingDatasets: support.value.missing, reimportRequiredDatasets: support.value.reimportRequired} : {operation: "reference_readiness", status: "failed"}, "Local reference readiness diagnostic");
+    });
     const handlers = createAgentToolHandlers({
-        cardReference: createSqliteCardReferenceRepository(database),
+        cardLookup: createSqliteCardLookupRepository(database),
+        cardReference,
         cardQuery: createSqliteCardQueryRepository(database),
         collection: createSqliteCollectionRepository(database, clock),
         deckCandidates: createSqliteDeckCandidateRepository(database, clock),
-    });
+    }, {lookup: {...options.lookup, log: options.log}});
 
     return {
         databasePath: options.databasePath,
