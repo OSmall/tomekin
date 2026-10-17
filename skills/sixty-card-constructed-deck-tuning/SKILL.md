@@ -19,6 +19,8 @@ support mana repair, minimum-size consistency, plan focus, curve scrutiny, and d
 selection-versus-advantage distinction. Named historical lists and categorical card-type rules are not part of the
 method.
 
+Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution tuning and retained reasoning.
+
 ## Establish Tuning Context
 
 Determine from the conversation or concise clarification:
@@ -101,6 +103,15 @@ Evaluate the proposed change set as one resulting deck:
 
 Revise or clearly caveat any aggregate regression. A series of individually plausible swaps must not create a new
 structural deficit.
+
+## Compact Whole-Contribution Example
+
+For a Casual 60 deck, replacing one of four selected draw/sacrifice enablers with a draw-only option preserves the
+number of card-access contributors but reduces sacrifice access from four to three. Review the lost function and
+payoff dependence before approving. If a requested Sideboard holds another enabler, it supplies no game-one
+Mainboard coverage. If a coordinated second swap was meant to restore that function but the user rejects it, review
+the actual three-enabler aggregate and explain or repair the gap. Keep the cut option as an assessed alternative when
+viable; it does not repair selected coverage by remaining in the pool.
 
 ## Deck Change Proposal
 

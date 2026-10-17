@@ -9,8 +9,11 @@ Use this workflow before construction when the user asks what they can build, wa
 only a broad seed such as a card, creature type, mechanic, color, or play pattern. Compose `tomekin-deck-building` for
 the Deck Building Brief and tool lifecycle. Load `query-cards` before Collection or tag searches.
 
-Discovery is a decision layer, not construction. Return a compact Deck Opportunity shortlist and wait for the user to
+Apply the shared method at opportunity-comparison fidelity: explain each activity, advantage mechanism, winning
+direction and material support risk without demanding a full candidate graph. Discovery is a decision layer, not construction. Return a compact Deck Opportunity shortlist and wait for the user to
 choose or refine a direction. Do not produce, render, or save a full decklist.
+
+Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution tuning and retained reasoning.
 
 ## Establish Discovery Context
 
