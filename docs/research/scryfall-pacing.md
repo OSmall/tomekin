@@ -13,9 +13,9 @@ The requested follow-up was a bounded experiment aiming for three HTTP 429 event
 by at least **31 seconds from receipt**, or longer when `Retry-After` requires it. Automatic
 approval review rejected execution because it intentionally exceeds the published limit to
 induce repeated 429s, risking access restriction or a ban. The user confirmed there is no
-provider authorization. No follow-up API requests were sent; the only live observations
-remain the original 48 requests. The proposed above-limit runner was removed without being
-executed. The retained scratch script now enforces a 31-second minimum cooldown; its updated
+provider authorization. That above-limit follow-up sent no API requests; its proposed runner
+was removed without execution. A later 48-request follow-up stayed at or below the published
+ceiling, as recorded below. The retained scratch script enforces a 31-second minimum cooldown; its updated
 [offline fixture results](scryfall-pacing-evidence/fixtures-31s.json) verify that a new request
 cannot dispatch at 30.999 seconds and can dispatch after the full delay. Historical
 [fixture results](scryfall-pacing-evidence/fixtures.json) belong to the original run.
@@ -159,6 +159,42 @@ previous dispatch plus its configured interval, while still waiting for the prec
 body/validation to discover `next_page`. Completion-based mode waits the interval after body
 completion, with parsing/validation also finishing before dispatch. A late timer must never cause several overdue requests to dispatch as a
 catch-up burst. The first 429 stops the run, regardless of remaining sample budget.
+
+### Follow-up within the published ceiling
+
+On 2026-10-17 at 16:54:32–16:55:03 Australia/Sydney (05:54:32–05:55:03 UTC), the user requested
+creeping down from 510 ms and stopping completely on the first 429. The executed alternative
+used **510, 505 and 500 ms** profiles, with a hard 500 ms floor so no profile deliberately
+exceeded the documented allowance. Each profile fetched at most 16 sequential supplied-next-page
+responses; the experiment stopped after 48 requests, without retries or further probes.
+
+```sh
+bun docs/research/scryfall-pacing-evidence/scratch.ts --near-limit --out=/tmp/tomekin-scryfall-near-limit.json
+```
+
+Same Bun 1.3.14, Zod 4.4.3, public query, identifying headers and two-second gaps as above.
+[Raw follow-up observations](scryfall-pacing-evidence/near-limit.json) and
+[13 passing offline checks](scryfall-pacing-evidence/fixtures-near-limit.json) are retained.
+The new profile fixture verifies the 500 ms floor; existing fixtures check the 31-second
+cooldown and longer Retry-After behavior. Standalone TypeScript checking also passed.
+
+| Configured client interval | Requests / HTTP 200 | Minimum recorded start gap | Mean start gap | Cache HIT / MISS |
+| --- | ---: | ---: | ---: | ---: |
+| 510 ms | 16 / 16 | 510.194 ms | 665.067 ms | 12 / 4 |
+| 505 ms | 16 / 16 | 505.017 ms | 506.542 ms | 16 / 0 |
+| 500 ms | 16 / 16 | 500.037 ms | 501.421 ms | 16 / 0 |
+
+**No HTTP 429 occurred.** All 48 responses contained 175 records and a next page; all three
+profiles reached their page cap. An evidence audit checked status/counts, every supplied
+next-page transition and every configured/global minimum start gap. No cooldown was needed.
+The runner would persist the first 429 and cooldown deadline, stop all HTTP, wait at least
+31 seconds from receipt or longer valid Retry-After, then exit without another request.
+
+The measurement point is the monotonic admission start immediately before URL/signal setup
+and the fetch call; it is not a network-wire or server-arrival timestamp. This short sample
+demonstrates successful operation close to the documented ceiling on this path. It does
+**not** locate a 429 enforcement boundary, distinguish an undocumented server admission
+algorithm, or guarantee future acceptance at 500 ms. The investigation remains unresolved.
 
 ## What the timing comparison can establish
 

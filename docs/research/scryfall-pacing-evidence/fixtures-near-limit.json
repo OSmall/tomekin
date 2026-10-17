@@ -1,0 +1,20 @@
+{
+  "bun": "1.3.14",
+  "zod": "4.4.3",
+  "checks": [
+    "510/505/500ms profiles preserve the published 500ms floor",
+    "start clock with response slower than spacing",
+    "completion clock with response slower than spacing",
+    "429 cooldown and new invocation: Retry-After=null",
+    "429 cooldown and new invocation: Retry-After=5",
+    "429 cooldown and new invocation: Retry-After=60",
+    "429 cooldown and new invocation: Retry-After=Sat, 17 Oct 2026 00:01:00 GMT",
+    "429 cooldown and new invocation: Retry-After=nonsense",
+    "simultaneous callers serialize and space starts",
+    "cooldown rechecked after wait and no late-timer catch-up burst",
+    "cancellation while waiting dispatches nothing",
+    "in-flight HTTP cancellation propagates",
+    "deadline prevents dispatch and rejects late response"
+  ],
+  "passed": 13
+}

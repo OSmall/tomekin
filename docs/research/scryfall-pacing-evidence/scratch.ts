@@ -1,4 +1,4 @@
-// Throwaway investigation, not a production provider. No API calls without --live.
+// Throwaway investigation. Live modes never schedule faster than 500 ms/start.
 // bun docs/research/scryfall-pacing-evidence/scratch.ts --self-test
 // bun docs/research/scryfall-pacing-evidence/scratch.ts --live --out=docs/research/scryfall-pacing-evidence/live.json
 import assert from "node:assert/strict";
@@ -150,22 +150,32 @@ function summary(rows: Row[], elapsedMs: number) {
     pageSizes: [...new Set(completed.map(r => r.cards))],
   };
 }
-async function live() {
-  const gate = new Gate(clock);
+const nearLimitProfiles = [510, 505, 500] as const;
+async function live(nearLimit = false) {
+  const schedule: { policy: Policy; spacingMs: number }[] = nearLimit
+    ? nearLimitProfiles.map(spacingMs => ({ policy: "start", spacingMs }))
+    : (["start", "completion", "completion", "start"] as const).map(policy => ({ policy, spacingMs: 550 }));
+  assert.ok(schedule.every(profile => profile.spacingMs >= 500), "Live tests must stay within the published ceiling");
+  let gate = new Gate(clock, schedule[0]!.spacingMs);
   const abort = new AbortController();
   process.once("SIGINT", () => abort.abort(new Stop("cancelled")));
   const initial = new URL("https://api.scryfall.com/cards/search");
   initial.search = new URLSearchParams({ q: "game:paper", unique: "prints", order: "set", dir: "asc" }).toString();
   const report = {
     startedAt: new Date().toISOString(), bun: Bun.version, zod: zodPackage.version,
-    platform: `${process.platform}/${process.arch}`, spacingMs: gate.spacingMs,
-    query: initial.href, headers, maxPagesPerRun: 12, deadlineMsPerRun: 120_000,
-    note: "ABBA order; sequential next_page only; stop entire experiment on any error/429; no retries. 120s coverage is extrapolated, not a measured 120s scan. Schema validates list and card identities, not the whole production projection.",
-    runs: [] as { policy: Policy; startedAt: string; rows: Row[]; stop: string; summary: ReturnType<typeof summary> }[],
+    platform: `${process.platform}/${process.arch}`, schedule,
+    query: initial.href, headers, maxPagesPerRun: nearLimit ? 16 : 12, deadlineMsPerRun: 120_000,
+    note: `${nearLimit ? "510/505/500ms request-start profiles; minimum 500ms; maximum 48 requests" : "550ms ABBA order"}; sequential next_page only; stop entire experiment on any error/429; no retries. On 429 wait >=31s from receipt or longer Retry-After, then exit without further HTTP. 120s coverage is extrapolated, not a measured 120s scan. Schema validates list and card identities, not the whole production projection.`,
+    cooldown: undefined as { receivedMs: number; untilMs: number; completedMs?: number } | undefined,
+    runs: [] as { policy: Policy; spacingMs: number; startedAt: string; rows: Row[]; stop: string; summary: ReturnType<typeof summary> }[],
   };
-  for (const policy of ["start", "completion", "completion", "start"] as const) {
+  for (const { policy, spacingMs } of schedule) {
     // Quiet gap between bounded runs. No hidden warmup requests.
     if (report.runs.length) await clock.sleep(2000, abort.signal);
+    const profileGate = new Gate(clock, spacingMs);
+    profileGate.lastStart = gate.lastStart; profileGate.lastCompletion = gate.lastCompletion;
+    profileGate.cooldownUntil = gate.cooldownUntil;
+    gate = profileGate;
     const started = clock.now();
     const rows: Row[] = [];
     let next: string | undefined = initial.href;
@@ -176,9 +186,9 @@ async function live() {
       }
       if (!next) stop = "exhausted";
     } catch (error) { stop = error instanceof Stop ? error.reason : "cancelled"; }
-    const run = { policy, startedAt: new Date(clock.wall() - (clock.now() - started)).toISOString(), rows, stop, summary: summary(rows, clock.now() - started) };
+    const run = { policy, spacingMs, startedAt: new Date(clock.wall() - (clock.now() - started)).toISOString(), rows, stop, summary: summary(rows, clock.now() - started) };
     report.runs.push(run);
-    console.log(JSON.stringify({ policy, stop, ...run.summary }));
+    console.log(JSON.stringify({ policy, spacingMs, stop, ...run.summary }));
     if (stop !== "page_cap" && stop !== "exhausted") break;
   }
   const out = process.argv.find(arg => arg.startsWith("--out="))?.slice(6) ?? "/tmp/tomekin-scryfall-pacing.json";
@@ -188,6 +198,13 @@ async function live() {
   if (report.runs.some(run => run.stop === "rate_limited")) {
     const until = Math.ceil(clock.wall() + Math.max(0, gate.cooldownUntil - clock.now()));
     await writeFile("/tmp/tomekin-scryfall-pacing-cooldown-until", String(until));
+    const limited = report.runs.flatMap(run => run.rows).find(row => row.status === 429);
+    report.cooldown = { receivedMs: limited!.headersMs!, untilMs: gate.cooldownUntil };
+    await writeFile(out, JSON.stringify(report, null, 2) + "\n");
+    console.log(`First 429: no further HTTP. Waiting ${((gate.cooldownUntil - clock.now()) / 1000).toFixed(3)}s before exit.`);
+    while (clock.now() < gate.cooldownUntil) await clock.sleep(gate.cooldownUntil - clock.now(), abort.signal);
+    report.cooldown.completedMs = clock.now();
+    await writeFile(out, JSON.stringify({ ...report, finishedAt: new Date().toISOString() }, null, 2) + "\n");
   }
 }
 async function fixtures() {
@@ -201,6 +218,14 @@ async function fixtures() {
     data: [{ object: "card", id: "00000000-0000-4000-8000-000000000001" }] });
   const slow: Http = async () => { time += 800; return page(); };
   const checks: string[] = [];
+  for (const spacing of nearLimitProfiles) {
+    const gate = new Gate(fake, spacing); time = 0; const rows: Row[] = [];
+    await request(url, "start", gate, 10_000, signal, async () => page(), rows);
+    await request(url, "start", gate, 10_000, signal, async () => page(), rows);
+    assert.equal(rows[1]!.startMs - rows[0]!.startMs, spacing);
+    assert.ok(spacing >= 500);
+  }
+  checks.push("510/505/500ms profiles preserve the published 500ms floor");
   for (const policy of ["start", "completion"] as const) {
     const gate = reset(); const rows: Row[] = [];
     await request(url, policy, gate, 10_000, signal, slow, rows);
@@ -272,8 +297,8 @@ async function fixtures() {
   console.log(JSON.stringify({ bun: Bun.version, zod: zodPackage.version, checks, passed: checks.length }, null, 2));
 }
 if (process.argv.includes("--self-test")) await fixtures();
-else if (process.argv.includes("--live")) {
+else if (process.argv.includes("--live") || process.argv.includes("--near-limit")) {
   const saved = Bun.file("/tmp/tomekin-scryfall-pacing-cooldown-until");
   if (await saved.exists() && Number(await saved.text()) > Date.now()) throw new Error("Prior 429 cooldown is still active; do not dispatch.");
-  await live();
-} else console.log("Pass --self-test (offline) or --live [--out=path] (at most 48 HTTP requests, 550ms minimum spacing).");
+  await live(process.argv.includes("--near-limit"));
+} else console.log("Pass --self-test, --live (550ms ABBA), or --near-limit (510/505/500ms, maximum 48 requests). Live modes stop at first 429, wait >=31s, then exit without further HTTP.");
