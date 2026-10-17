@@ -53,7 +53,7 @@ describe("Pi reference-status transport", () => {
         expect(expectedPiToolNames).toEqual([
             "draft_deck_building_brief", "query_cards", "hypergeometric_calculator", "get_card_identity", "search_card_identity_tags",
             "search_card_sets", "summarize_reference_support", "get_format_constraints", "resolve_decklist_cards",
-            "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "save_deck_candidate",
+            "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
             "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
         ]);
         expect(() => auditPiToolRegistry(expectedPiToolNames)).not.toThrow();
@@ -192,4 +192,23 @@ describe("Pi reference-status transport", () => {
         registerTomekinExtension(api as never);
         expect(() => api.registerTool({name: "bash"})).toThrow("unexpected tool bash");
     });
+});
+
+test('dispatched candidate mutations settle after abort and session shutdown',async()=>{
+ const transport=createPiWorkerTransport({workerUrl:new URL('./fixtures/worker-transport-fixture.ts',import.meta.url).href});
+ const controller=new AbortController();
+ const pending=transport.invoke({toolCallId:'settle-create',toolName:'create_deck_candidate',waitMilliseconds:80},controller.signal);
+ controller.abort();const closing=transport.close();
+ expect((await pending).details).toEqual({done:true});await closing;
+});
+
+test('an old controller cannot cancel a newer Worker invocation',async()=>{
+ const transport=createPiWorkerTransport({workerUrl:new URL('./fixtures/worker-transport-fixture.ts',import.meta.url).href});
+ const oldController=new AbortController();
+ try{
+  await transport.invoke({toolCallId:'first',waitMilliseconds:1},oldController.signal);
+  const current=transport.invoke({toolCallId:'second',waitMilliseconds:20},new AbortController().signal);
+  oldController.abort();
+  expect((await current).details).toEqual({done:true});
+ }finally{await transport.close();}
 });

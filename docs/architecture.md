@@ -117,8 +117,9 @@ Turborepo.
   labelled user-authorized exceptions rather than rewritten facts.
 - **Strategy:** the agent reasons about roles, packages, Synergy, play experience, and trade-offs. These are explained
   proposals, not deterministic or source-backed facts.
-- **Persistence:** only confirmed full Deck Candidates are saved. Deck Opportunities and Deck Change Proposals are
-  transient, and saving never changes the Collection.
+- **Persistence:** authorized structured construction progress is candidate-owned and may be incomplete. Targeted
+  changes validate the resulting record state atomically; explicit deck checks and agent confirmation remain distinct.
+  Deck Opportunities and Deck Change Proposals are transient; candidate writes never change the Collection.
 - **External network:** normal deck-building is local. Live data access occurs only through an explicit user-invoked
   Scryfall sync.
 
@@ -132,8 +133,8 @@ listed record shipped.
 Scryfall sync or local import populates local reference records. ManaBox import resolves owned rows against that
 reference data and transactionally replaces the current Collection snapshot. The agent then calls typed Agent Tools,
 which validate requests in core services and read or write through repository ports. SQLite executes the bounded data
-operations and returns domain-shaped results. Rendering produces stable Markdown and a Portable Decklist before a
-confirmed candidate is persisted.
+operations and returns domain-shaped results. Candidate create/edit operations save structured records without implicitly rendering or checking a deck. Rendering
+produces Markdown and a Portable Decklist from supplied or saved records.
 
 Imports and repository writes preserve the last usable state on expected validation or replacement failures. Tests use
 the same public services and repository boundaries with isolated temporary databases; see [Testing](./testing.md).

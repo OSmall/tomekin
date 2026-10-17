@@ -103,16 +103,14 @@ Keep quick reviews concise. Use these sections when relevant and omit empty ones
 The user may accept, reject, or modify individual swaps. On partial acceptance, reanalyse role representation, deck size,
 curve, and legality; explain dependency or aggregate-rationale breakage.
 
-Build a complete revised Deck Candidate only when the user explicitly asks to apply or accept a proposal. Acceptance of a
-recommendation does not authorize persistence. Before saving, show a final Change Summary with exact additions, cuts,
-quantities, any commander change, and the persistence target, then wait for confirmation of that exact set. Never save
-in the same message that first reveals the exact final change set or persistence target.
+Apply an authorized proposal only after explaining the actual resulting additions, cuts, quantities, relevant
+plan/Brief changes and persistence target. Existing explicit authorization for that result counts; otherwise obtain
+candidate-level agreement. Partial acceptance requires reassessing the aggregate result. Follow the root
+`tomekin-deck-building` skill's create/edit, concurrency and unknown-outcome contract.
 
-After confirmation, resolve the resulting list, rerun `validate_format_legality` and `evaluate_deck_candidate`, render
-the revised Deck Candidate, and save only when deterministic checks pass.
-
-- When tuning a saved Deck Candidate, update that candidate in place by passing its existing ID to
-  `save_deck_candidate`. Do not create a new candidate unless the user explicitly requests a copy, variant, or new
-  candidate.
-- When tuning an Existing Deck inferred from imported Collection data, do not mutate the Collection or source deck.
-  Save an accepted revision as a Deck Candidate because Collection write-back is unsupported.
+- For a saved Deck Candidate, use `edit_deck_candidate` with its ID and exact last-read timestamp. Preserve assessed
+  alternatives when cutting selected membership unless deliberate pool removal is part of the authorized result.
+- For an Existing Deck inferred from imported Collection data, save accepted construction with `create_deck_candidate`;
+  Collection write-back is unsupported.
+- Explicitly validate/evaluate and recheck scoped Availability before presenting a completed result. Intermediate
+  construction can be saved before those checks; a successful write establishes record integrity.

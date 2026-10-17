@@ -27,7 +27,8 @@ permission:
   "tomekin_validate_format_legality": allow
   "tomekin_evaluate_deck_candidate": allow
   "tomekin_render_deck_candidate": allow
-  "tomekin_save_deck_candidate": allow
+  "tomekin_create_deck_candidate": allow
+  "tomekin_edit_deck_candidate": allow
   "tomekin_get_deck_candidate": allow
   "tomekin_list_deck_candidates": allow
   "tomekin_list_collection_locations": allow

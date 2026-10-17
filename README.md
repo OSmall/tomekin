@@ -69,7 +69,7 @@ tokens. OpenCode remains supported. The profile and database remain intact after
 For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
 `tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `query_cards` call after
 loading `query-cards` when a non-trivial filter is needed. During a deliberately slow product-tool call, confirm that
-the spinner and terminal input remain responsive, Escape cancels a read, and a dispatched save is not reported cancelled.
+the spinner and terminal input remain responsive, Escape cancels a read, and dispatched candidate writes settle and are not reported cancelled.
 
 ### Upgrading an existing pre-Card-Set database
 
@@ -178,6 +178,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 ## Current Features
 
 - Local SQLite persistence for Scryfall reference data, Collection snapshots, and saved Deck Candidates.
+- Structured candidate create/edit with provisional plans, assessed options, selected memberships and exact timestamp
+  concurrency checks. Saves and reads do not automatically validate a deck.
 - Explicit Scryfall bulk sync for `oracle_cards`, `all_cards`, and `oracle_tags`.
 - Local Card Set discovery plus Printing-scoped Card Query filters, including Universes Beyond and promo-type semantics.
 - ManaBox Collection CSV import with blocking validation and non-destructive failed imports.

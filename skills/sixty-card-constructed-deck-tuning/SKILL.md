@@ -128,13 +128,12 @@ Use these sections when relevant:
 
 ## Apply And Persist Safely
 
-Acceptance of strategic advice does not authorize persistence. Build a complete revised Deck Candidate only when the
-user explicitly accepts or applies a proposal.
+Explain the actual resulting additions, cuts, quantities, relevant plan/Brief changes and persistence target. Existing
+explicit authorization for that result counts; otherwise obtain candidate-level agreement. Reassess the aggregate result
+when only part of a proposal is accepted. Follow `tomekin-deck-building` for exact create/edit, concurrency and recovery.
 
-Before saving, show an exact final Change Summary with additions, cuts, quantities, and persistence target, then wait
-for separate confirmation. After confirmation, resolve the resulting list, run `validate_format_legality`, perform the
-final scoped Availability recheck required by `tomekin-deck-building`, run `evaluate_deck_candidate`, render, and save
-only when checks pass.
-
-- Update a saved Deck Candidate in place by passing its ID unless the user requests a copy or variant.
-- Never mutate an imported Existing Deck or Collection state; save its accepted revision as a Deck Candidate.
+- Use `edit_deck_candidate` with the saved candidate ID and exact last-read timestamp. Cutting membership retains its
+  assessed option unless deliberate pool removal is authorized.
+- Use `create_deck_candidate` for an accepted revision of an imported Existing Deck. Collection write-back is unsupported.
+- Construction progress can be saved before checks. Explicitly validate/evaluate and perform the final scoped Availability
+  recheck before claiming a completed result; structural write success does not establish that result.
