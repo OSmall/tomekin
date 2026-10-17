@@ -12,14 +12,9 @@ rendering, and persistence. Load `query-cards` before non-trivial tag or card qu
 Produce a reasoned Deck Change Proposal, not a claim of mathematical optimality. Keep generic Deck Tuning language
 format-extensible; these heuristics apply only to Commander/EDH.
 
-Method provenance: EDHREC's
-[Commander upgrade guide](https://edhrec.com/guides/edhrec-guide-to-upgrading-your-commander-deck) supports repairing
-structural deficits, commander-specific counts, curve review, and synergistic flexible additions; the
-[Commander Power Levels template](https://www.commanderpowerlevels.com/deckbuilding/template) supports treating role
-targets as starting points and cards as multi-role. EDHREC's
-[commander curve analysis](https://edhrec.com/articles/paradigm-shift-how-your-commanders-mana-value-alters-your-curve)
-and [Wizards' Commander Brackets update](https://magic.wizards.com/en/news/announcements/commander-brackets-beta-update-october-21-2025)
-support contextual curve and play-experience judgments rather than a universal optimum.
+Load `deck-shape-methodology` for qualified coverage, whole-contribution tuning and retained current reasoning.
+Use the adopted starting profile and contextual examples in `commander-deck-architecture`. Consume retained
+criteria and justified departures before diagnosing a deficit; use the shared method for whole-contribution swaps.
 
 ## Establish Tuning Context
 
@@ -46,11 +41,11 @@ Identify the commander, game plan, important Deck Packages and dependencies, cre
 interaction, card advantage, commander dependence, mana curve, and mana-base concerns. Identify cards that are
 redundant, inefficient, overly conditional, or off-plan.
 
-Use `commander-deck-architecture` role-density targets as adjustable starting ranges, not pass/fail rules. Give
+Use `commander-deck-architecture` starting profile as contextual guidance, not pass/fail rules. Give
 credible user-reported play patterns more weight than generic targets. Without those observations, perform static
 analysis and never claim playtesting, simulation, or goldfishing.
 
-### Infer Roles Transiently
+### Assess Contextual Roles
 
 Define useful task-specific Deck Roles and Deck Packages from the whole card context:
 
@@ -59,8 +54,8 @@ Define useful task-specific Deck Roles and Deck Packages from the whole card con
 - Required board state, commander or package dependence, and modal competition or opportunity cost.
 
 Group and count cards when it clarifies representation. A card may occupy several roles. These counts are diagnostic
-evidence, not persisted card facts: do not create a canonical role taxonomy, aliases, numeric role scores, contribution
-enums, database fields, or a role-analysis tool.
+evidence, distinct from global card facts. Retain candidate-specific reasoning through supported candidate records;
+an imported Existing Deck review remains transient. Use no global role taxonomy or numeric contribution score.
 
 ## Discover Additions
 
