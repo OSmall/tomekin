@@ -4,7 +4,7 @@
 
 Keep documentation in sync with implemented behavior and adopted design decisions.
 
-- `README.md`: current user setup, commands, features, limitations, and the documentation index.
+- `README.md`: current user setup, commands, features, limitations, and the high-level documentation index.
 - `AGENTS.md`: contribution rules, documentation ownership, and work-tracking policy.
 - `CONTEXT-MAP.md`: domain-context routing only, not general documentation navigation or implementation status.
 - `CONTEXT.md`: glossary and shared domain language only, not implementation status or work tracking.
