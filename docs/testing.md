@@ -210,3 +210,11 @@ acceptance. Across those scenarios, the current quality gate requires an explici
 paired additions and cuts, aggregate re-analysis, preserved deck size, deterministic legality validation when a
 revised Deck Candidate is built, evidence-backed explanations, and no persistence before confirmation of the exact
 final change set.
+
+## Synthetic workflow baseline
+
+`bun run evaluate:baseline` measures discovery, construction, tuning and assembly through isolated public handlers and
+actual adapter transport/serialization. The default test suite includes its fixed coverage, same-row evidence, clipping,
+long-text and three-card-save assertions. See [the evaluation protocol and captured artifact](evaluation/README.md) for
+fixture cardinalities, cold/warm conditions, known limits and the separately runnable legacy comparator. These synthetic
+measurements establish no live-model, production latency, strategic-quality or whole-deck Availability claim.

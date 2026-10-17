@@ -15,7 +15,9 @@
     "sync:scryfall": "bun packages/cli/src/sync-scryfall.ts",
     "tomekin": "bun packages/pi/src/run.ts",
     "test": "bun test",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "evaluate:baseline": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/baseline.ts",
+    "evaluate:legacy": "bun packages/evaluation/src/legacy.ts"
   },
   "devDependencies": {
     "@opencode-ai/plugin": "1.18.13",
