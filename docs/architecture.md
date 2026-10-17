@@ -28,6 +28,19 @@ and Agent Tool handlers. It does not depend on OpenCode, Drizzle, SQLite paths, 
 Expected service failures use typed `Result` values. Zod validates data at service and adapter boundaries. Repository
 ports expose only the persistence operations each service needs.
 
+The hypergeometric service is pure and independent of repository ports/reference readiness. It sums exact BigInt
+combinatorial weights, uses exact decimal fractions and a monotone lower-bound search for minimum qualifying counts,
+and determines event status before approximate display conversion. With the 1,000 population limit, every numerator
+and denominator is at most `2^1000`; Number conversion stays finite and their smallest positive ratio stays normal.
+No numerical or probability record is persisted.
+
+The calculator's strict operation union owns runtime validation and Pi's serialized schema. OpenCode's supported
+`tool.args` API accepts only a flat Zod property shape, so its serialized calculator schema exposes the operation enum,
+event variants and optional qualifying-count/target fields with descriptions of their conditional requirements.
+Object-level validation and the shared service enforce the complete strict operation union, including missing or
+forbidden operation-specific fields. OpenCode's model-visible schema cannot express those root conditional requirements;
+both harnesses nevertheless execute the same request/result/error contract.
+
 ### SQLite adapter
 
 `packages/sqlite` implements repository ports with Drizzle and SQLite. It owns schema, generated migrations,
@@ -66,10 +79,10 @@ does not receive raw database, shell, source-tree, or arbitrary network authorit
 uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
 It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
 point and no package skills, prompts, or themes. The launcher explicitly registers `skills/` as Pi-native
-skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates all 15
+skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates all 16
 shared Agent Tools through one lazy Worker lane; the Worker owns the SQLite runtime, result projection, and temporary
 16,000-character core-tool safety cap, and is recreated after cancellation or failure. Pi-local `read` remains a
-working-tree Tomekin-skill-only reader. The extension re-audits the 17-name model-visible registry
+working-tree Tomekin-skill-only reader. The extension re-audits the 18-name model-visible registry
 (including Pi's `ask_user`) at session start. Before each agent turn, the extension appends its controlled Tomekin
 bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;

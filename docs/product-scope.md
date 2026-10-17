@@ -25,6 +25,8 @@ card usage is not an automatic objective.
   Oracle Tags.
 - Local Card Query over Card Identity, legality, tags, Collection rows, and Printing/Set criteria.
 - Deterministic local card resolution, Format construction validation, rendering, and Deck Candidate persistence.
+- Generic hypergeometric probability and minimum qualifying-count calculations for a uniformly sampled population of
+  at most 1,000 copies, without replacement.
 - Local SQLite storage for the current Collection snapshot, import history, reference data, and saved Deck Candidates.
 
 The exact workflow and output guarantees are in [Product Behavior](./product-behavior.md). The public retrieval

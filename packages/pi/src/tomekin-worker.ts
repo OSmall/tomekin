@@ -9,7 +9,7 @@ let runtimePath: string | undefined;
 const log = createRootLogger(resolveLogConfigFromEnv(process.env));
 
 const handlers: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-    draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", save_deck_candidate: "saveDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+    draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", save_deck_candidate: "saveDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
 };
 
 self.onmessage = async (event: MessageEvent<{id: string; toolName: string; params: unknown; databasePath: string}>) => {

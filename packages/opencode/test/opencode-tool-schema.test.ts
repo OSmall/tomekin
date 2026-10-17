@@ -1,5 +1,5 @@
 import {describe, expect, test} from "bun:test";
-import {mkdtempSync, readFileSync} from "node:fs";
+import {mkdtempSync, readFileSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {createRootLogger, resolveLogConfigFromEnv} from "@tomekin/core";
@@ -105,4 +105,38 @@ describe("opencode tool schemas", () => {
             status: "succeeded",
         }));
     });
+});
+
+test("exposes and executes the generic calculator through OpenCode with actionable errors", async () => {
+    const definition = tomekinTools.hypergeometric_calculator;
+    expect(isToolDefinition(definition)).toBe(true);
+    const schema = tool.schema.toJSONSchema(tool.schema.object(definition.args));
+    expect(JSON.stringify(schema)).toContain("minimum_successes");
+    expect(JSON.stringify(schema)).toContain("targetProbability");
+    // OpenCode wraps a raw property shape: the root operation-dependent requirements remain runtime checks.
+    expect(schema.required).toEqual(["operation", "populationSize", "sampleSize", "event"]);
+    expect(schema.additionalProperties).toBe(false);
+    expect((schema.properties as Record<string, unknown>).populationSuccesses).toBeDefined();
+    expect((schema.properties as Record<string, unknown>).targetProbability).toBeDefined();
+    const probability = {operation: "probability" as const, populationSize: 4, populationSuccesses: 2, sampleSize: 2, event: {kind: "between" as const, lower: 1, upper: 2}};
+    const minimum = {operation: "minimum_successes" as const, populationSize: 5, sampleSize: 2, event: {kind: "at_least" as const, count: 1}, targetProbability: "0.70"};
+    expect(tool.schema.object(definition.args).safeParse(probability).success).toBe(true);
+    expect(tool.schema.object(definition.args).safeParse(minimum).success).toBe(true);
+    const directory = mkdtempSync(join(tmpdir(), "tomekin-opencode-calculator-"));
+    const databasePath = join(directory, "test.sqlite");
+    const log = createRootLogger(resolveLogConfigFromEnv({TOMEKIN_LOG_ENABLED: "false"}));
+    applySqliteMigrations(databasePath, {log});
+    const restore = tomekinTools.configureAgentToolRuntimeForTests({log, createHandlers: (options) => createLocalAgentToolHandlers({...options, databasePath})});
+    try {
+        expect(JSON.parse(await definition.execute(probability))).toMatchObject({probability: 5 / 6, eventStatus: "nontrivial"});
+        expect(JSON.parse(await definition.execute(minimum))).toMatchObject({minimumSuccesses: 2, previous: {populationSuccesses: 1}});
+        expect(JSON.parse(await definition.execute({...probability, extra: true} as never))).toMatchObject({error: "validation_error", message: expect.stringContaining("extra")});
+        const {populationSuccesses: _omitted, ...missingCount} = probability;
+        for (const invalid of [missingCount, {...minimum, populationSuccesses: 1}, {...probability, targetProbability: "0.7"}, {...minimum, event: {kind: "exactly", count: 1}}]) {
+            expect(JSON.parse(await definition.execute(invalid as never))).toMatchObject({error: "validation_error", message: expect.any(String)});
+        }
+        expect(JSON.parse(await definition.execute({...minimum, sampleSize: 0}))).toMatchObject({error: "target_unattainable", message: expect.stringContaining("sampleSize 0")});
+        const agent = readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8");
+        expect(agent).toContain('"tomekin_hypergeometric_calculator": allow');
+    } finally { restore(); rmSync(directory, {recursive: true, force: true}); }
 });
