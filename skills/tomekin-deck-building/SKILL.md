@@ -13,6 +13,10 @@ Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution t
 
 ## Establish The Working Contract
 
+For a standalone supplied sampling question, use `hypergeometric_calculator` with the shared bounded-statistics method.
+This pure calculation needs no Collection import, reference readiness or Deck Candidate. Apply the workflow below when
+card facts, discovery, construction or tuning are needed.
+
 1. Check `summarize_reference_support`. Missing `oracle_cards`, `all_cards`, or `oracle_tags` blocks local
    deck-building.
 2. Draft a best-effort Deck Building Brief with `draft_deck_building_brief`.
@@ -89,8 +93,9 @@ bun run import:scryfall -- oracle_tags /path/to/oracle-tags.jsonl.gz
 - Include enough enablers, payoffs, mana support, interaction, actual card advantage, resilience, and credible win
   conditions for the confirmed Brief.
 - Do not reduce requested strength merely to meet an approachable pilot-complexity target.
-- Do not claim gameplay simulation, opening-hand analysis, goldfishing, live prices, live metagame knowledge, or
-  exhaustive combo detection.
+- Use the shared bounded-statistics method for explicit sampling questions. Gameplay simulation, mulligan/selection
+  sequences, casting analysis, goldfishing, live prices, live metagame knowledge and exhaustive combo detection remain
+  unsupported.
 - Deterministic legality results cannot be overridden by agent judgment.
 - Build no 60-card Sideboard unless requested; Commander does not gain a Sideboard.
 

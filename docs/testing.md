@@ -62,6 +62,21 @@ be represented as JSON Schema, because OpenCode performs that conversion during 
 and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is
 added.
 
+## Calculator Done Bar
+
+The pure numerical seam is an explicit exception to the broader shared-handler seam: independent subset enumeration
+checks every small distribution/event, while direct factorial ratios and a linear scan verify minimum-count results,
+monotone tails and adjacent failing counts. Independently scaled exact decimal expansions check relative display error
+at most `1e-12`, including the smallest positive and dense probabilities at population 1,000. Cover strict schemas,
+zero/one, out-of-support events, exact decimal equality, target one and unattainable targets.
+
+An isolated SQLite shared-runtime test proves calculator calls work with unready reference data and do not create
+candidates. Thin OpenCode, Pi fallback and production Worker tests verify actual serialized schemas/registries,
+complete JSON-safe results and preserved validation/unattainable error types/messages. OpenCode's flat schema limitation
+is explicit: test the available structural projection and enforce conditional operation requirements at execution.
+Maximum-population workloads run in the deterministic suite; timings are evidence of the measured environment, not a
+universal latency guarantee. Contextual deck examples and agent interpretation belong in the manual workflow corpus.
+
 ## Test Layout
 
 Production source code should live in a package's `src/` directory.

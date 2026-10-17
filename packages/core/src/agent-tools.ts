@@ -1,3 +1,4 @@
+import {calculateHypergeometric, HypergeometricCalculatorArgsSchema, HypergeometricCalculatorRequestSchema} from "./hypergeometric-calculator";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {DeckBuildingBriefSchema, DeckFormatSchema, draftDeckBuildingBrief} from "./deck-building-brief";
@@ -17,6 +18,7 @@ import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
   "query_cards",
+  "hypergeometric_calculator",
   "get_card_identity",
   "search_card_identity_tags",
   "search_card_sets",
@@ -68,6 +70,7 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
     query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
     get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
@@ -86,7 +89,7 @@ export const agentToolContracts = {
 } as const;
 
 export function agentToolInputJsonSchema(name: AgentToolName): Record<string, unknown> {
-    return z.toJSONSchema(agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
+    return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
   readonly cardReference: CardReferenceRepository;
@@ -96,7 +99,7 @@ export type AgentToolRepositories = {
 };
 
 export type AgentToolError =
-    | { readonly type: "validation_error" | "tool_error"; readonly message: string }
+    | { readonly type: "validation_error" | "tool_error" | "target_unattainable"; readonly message: string }
     | {
     readonly type: "reference_data_unready";
     readonly message: string;
@@ -106,6 +109,7 @@ export type AgentToolError =
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories) {
   return {
+      hypergeometricCalculator: calculateHypergeometric,
       async queryCards(input: unknown) {
       const parsed = parseCardQueryInput(input);
           if (parsed.isErr()) return parsed;

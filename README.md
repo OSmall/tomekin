@@ -49,7 +49,7 @@ On macOS arm64, `bun run tomekin` launches Pi v0.85.1 through your terminal usin
 at `.data/pi`. The launcher downloads only the pinned, SHA-256-verified standalone artifact into Tomekin's own
 `.data/tomekin-pi-runtime/` cache and keeps the normal Tomekin database (or `TOMEKIN_DB_PATH`) unchanged.
 
-The session exposes the 15 Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
+The session exposes the 16 Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
 Pi's interactive `ask_user` tool. It does not give the model coding, shell, general filesystem, network, raw-database,
 MCP, task, discovery, or todo tools. The launcher explicitly registers the canonical `skills/` directory
 as Pi skills while ambient skill and context-file discovery remain disabled. The clone-local profile selects only the
@@ -57,6 +57,10 @@ reviewed `pi-ask-user@0.15.0` extension entry point, not its bundled skills, pro
 controlled per-turn orientation that directs the assistant to read the root deck-building skill before product-tool
 use. Pi retains ownership of login, settings, and conversation data within this clone-local profile. Other platforms fail clearly until
 a reviewed artifact is added.
+
+The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
+explicit decimal target. It works without imported card data and does not save records. See the
+[calculator contract](docs/product-behavior.md#hypergeometric-calculator) for inputs, precision and sampling limits.
 
 The separate account-holder-consented manual acceptance check covers authentication, one harmless request, a successful
 and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout, and clean shutdown without exposing

@@ -12,3 +12,5 @@ export * from "./import-foundation";
 export * from "./logging";
 export * from "./scryfall-json-source";
 export * from "./scryfall-sync";
+
+export * from "./hypergeometric-calculator";

@@ -177,3 +177,11 @@ export const list_collection_locations = tool({
     return runTool("list_collection_locations", {}, (handlers) => handlers.listCollectionLocations());
   },
 });
+
+export const hypergeometric_calculator = tool({
+    description: agentToolContracts.hypergeometric_calculator.description,
+    args: argsOf("hypergeometric_calculator"),
+    async execute(args) {
+        return runTool("hypergeometric_calculator", args, (handlers) => handlers.hypergeometricCalculator(args));
+    },
+});

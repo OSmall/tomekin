@@ -16,7 +16,7 @@ On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using
 its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes exactly the 15 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
+The session exposes exactly the 16 Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
 in one lazy Bun Worker lane; `read` is Pi-local and
 limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
 `offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
@@ -191,6 +191,54 @@ Markdown, Collection import timestamp when supplied, and relational commander/Ma
 return the stored Markdown, while the Portable Decklist can be rendered from the saved card rows. Save and update are
 transactional at the repository boundary.
 
+## Hypergeometric Calculator
+
+`hypergeometric_calculator` is one shared Agent Tool exposed through Pi and OpenCode. It models a uniformly chosen
+sample without replacement from one binary qualifying/nonqualifying population, independently of reference readiness,
+Collection data or Deck Candidates. It reads and writes no records and is never implicitly invoked by candidate reads,
+saves or evaluation. The agent supplies and explains the qualifying predicate, actual copy counts, sampling assumptions,
+event and chosen reliability target. Commander access, Sideboard cards and pool alternatives do not create library copies.
+
+Both operations require `operation`, integer `populationSize` in `0..1000`, integer `sampleSize` in `0..populationSize`,
+and an explicit `event`:
+
+- `probability` also requires integer `populationSuccesses` in `0..populationSize`. Supported event shapes are
+  `{kind: "exactly", count}`, `{kind: "at_least", count}`, `{kind: "at_most", count}` and
+  `{kind: "between", lower, upper}` with inclusive endpoints and `lower <= upper`.
+- `minimum_successes` omits `populationSuccesses`, requires an `at_least` event and an exact `targetProbability` decimal
+  string in `[0,1]` with at most 18 fractional digits. Examples include `"0"`, `"0.70"`, `"1.000"` and
+  `"0.999999999999999999"`. Whitespace, signs, exponents, percentages, numeric targets and excess precision are rejected.
+
+Counts and event endpoints are nonnegative safe integers. Event endpoints may exceed population/sample support and
+retain ordinary zero/one probability semantics. Unknown properties, missing requirements, unsupported combinations,
+coercion and mathematical defaults are rejected with `validation_error`; the message identifies the invalid field or
+combination. An impossible event is a successful zero probability. A positive minimum-count target for an event above
+the sample size returns `target_unattainable` with the sample/event/target limitation.
+
+Successful results contain the validated `request`, `model: "uniform_without_replacement"`, approximate numeric
+`probability` and exact `eventStatus` (`impossible`, `certain` or `nontrivial`). Minimum-count results additionally
+contain `minimumSuccesses` and `previous`, either `null` at minimum zero or
+`{populationSuccesses, probability, eventStatus}` for the immediately preceding count. The returned minimum is the
+smallest qualifying population count meeting the target; exact integer comparisons decide equality and minimality even
+when displayed probabilities round alike. No fractions, BigInt values, distributions or explanation prose are serialized.
+
+The empty population permits only an empty sample/count, with zero observed successes certainly. Target zero returns
+minimum zero even for an impossible event; an at-least-zero event returns zero for any valid target. For positive event
+count `k` within sample size `n`, target exactly one requires `populationSize - n + k` qualifying copies. A displayed
+probability rounded to one can still have `nontrivial` status. Nonzero numeric probabilities remain positive and have
+relative error at most `1e-12` within the supported domain; exact zero and one display as zero and one.
+
+For example, this request returns minimum `11`, approximately `0.7102774789751556`, with previous count `10` at
+approximately `0.6736037421365677`:
+
+```json
+{"operation":"minimum_successes","populationSize":99,"sampleSize":10,"event":{"kind":"at_least","count":1},"targetProbability":"0.70"}
+```
+
+This is a bounded sampling calculation, not evidence of castability or a universal reliability target. Joint or
+overlapping-category events, mulligans, selection/draw sequences, sequencing and mana, simulation and win-rate/power
+judgments are unsupported. The agent must interpret the result against the stated Deck Plan and assumptions.
+
 ## Import Behavior
 
 The supported Collection source is a ManaBox Collection CSV. The file must be readable before an import attempt reaches
@@ -220,5 +268,6 @@ Collection state.
 
 Local Scryfall data is authoritative for Card Identity, Oracle text, Format legality, Game Changer flags, EDHREC rank,
 Card Sets and Printings, and Oracle Tags. Tomekin does not claim live prices, current metagame knowledge, exhaustive
-combo detection, gameplay simulation, opening-hand analysis, goldfishing, or deterministic strategic optimality.
+combo detection, gameplay simulation, mulligan or casting analysis, goldfishing, or deterministic strategic optimality.
+The bounded uniform-sampling calculation above supports explicit opening-sample events only.
 Only the explicit Scryfall sync command performs live Scryfall network requests.
