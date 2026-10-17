@@ -131,6 +131,73 @@ every proposed addition has a cut, and partial acceptance triggers deck-size, ro
 re-analysis. The agent must show the exact resulting change set and persistence target, then wait for separate
 confirmation before saving.
 
+## Methodology Foundation Expectations
+
+These human-reviewed scenarios exercise the shared reasoning skill, not deterministic deck-quality scoring. Record
+conditions and reviewer evidence using the result procedure below. Their presence is an acceptance rubric, not a claim
+that live-model runs have passed. [Foundation #98](https://github.com/OSmall/tomekin/issues/98) supplies reasoning and
+routing; [integration #64](https://github.com/OSmall/tomekin/issues/64) retains executable retrieval/edit/calculator
+examples and the final discovery, fresh-construction, Existing Deck tuning and saved-candidate tuning workflow passes.
+Use supported tools only; test durable resumption/edit/check expectations when their owning capabilities are available.
+
+### Scenario 14: Commander Profile And Resumption
+
+Ask for ordinary Commander construction, then provide a plausible reason for a specific departure from the adopted
+38 mana-access / 12 advantage / 10 ramp / 12 targeted / 6 mass / approximately 30 plan-serving starting profile.
+Resume the current reasoning in a later session.
+
+Accept when the profile is used meaningfully, the departure explains the resulting plan and accepted compromise, and
+its criteria/rationale remain with the focused owner rather than disappearing into conversation history. The later
+session consumes that reason instead of restoring generic counts. Counts overlap; MDFCs/landcyclers remain qualified
+functional access, distinct from factual land count. Commander effects do not become extra library copies. Neither a
+profile match nor a justified strategic gap waives deterministic Format failure.
+
+### Scenario 15: Facts, Modes And Whole Contributions
+
+Offer a tag-matched card that cannot perform the desired function in context, a modal card whose protection and removal
+uses compete, and a same-role swap that loses a secondary sacrifice/enabler function.
+
+Accept when relevant facts qualify or reject the tag match, modes retain costs/competition, and every material lost or
+gained contribution is reviewed. Healthy-deck swaps preserve intended function; intentional redistribution states the
+reason, compensation and resulting trade-off. Partial acceptance triggers review of only the actual resulting changes.
+No role sum becomes deck size or simultaneous resource use, and no invented strength weights certify coverage.
+
+### Scenario 16: Active Alternatives And Section Coverage
+
+Cut a selected viable option while retaining it as an assessed alternative. Leave a desired role with no selected
+contributors but one pool alternative. In a 60-card Format, include repeated Mainboard copies and a Sideboard option.
+
+Accept when the cut remains available by default, pool-only options supply zero selected coverage, the desired gap is
+explained, and repeated copies are counted once per identity/role/section at their selected quantity. Sideboard
+coverage remains separate. Explicit removal/reassignment reconciles affected reasoning; an invented role cannot rescue
+an otherwise unsuitable option. Format-owned examples stay in the applicable Format skills.
+
+### Scenario 17: Plan Review And Bounded Evidence
+
+Present a complementary multi-stage plan, a high curve with a possible ramp explanation, and a small set of human
+observations. Change relevant anchor or card-function evidence; separately remove a supporting tag without changing
+facts. Where the calculator is available, ask an at-least access question and then an exactly question.
+
+Accept when the agent connects early actions, dependencies, resources, resilience and winning direction instead of
+applying universal step/curve/redundancy ceilings. It preserves observation provenance and focuses reassessment on the
+material change; tag disappearance alone does not force cuts or erase rationale. Statistics state qualified effects,
+population, sample, event and context-specific reliability target; they establish access within assumptions rather
+than mana, execution or win rate. No source Sidisi percentages/turn guarantee, invented caption names or catalogue
+slugs enter the reasoning. No agent-run playtesting or mandatory goldfish sample is claimed.
+
+### Scenario 18: Reasoning Ownership And Checking Boundary
+
+Inspect the shared-method route from discovery, Commander and 60-card construction/tuning in both supported harnesses.
+For adopted candidate-edit workflows, save authorized incomplete progress, read it, then explicitly check the relevant
+inputs before a completed-result claim.
+
+Accept when one shared method supplies common reasoning, discovery remains a concise transient comparison, and Format
+assumptions/examples remain with their owners. Focused plan/contribution/goal reasoning remains understandable on
+resumption. Available adapters expose only implemented operations. Saves and reads do not implicitly check in the
+adopted edit workflow; evidence is reused only while applicable. The agent reviews strategy, Brief and Collection and
+uses existing authorization covering the actual result/target, seeking agreement where absent. Existing whole-report
+persistence paths remain governed by their supported lifecycle until the integration migration replaces them.
+
 ## Recording Results
 
 Record pass/fail per invariant and concise human notes. Do not use an LLM judge, aggregate quality score, exact-card

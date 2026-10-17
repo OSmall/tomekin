@@ -241,6 +241,11 @@ bun run typecheck
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 - [`docs/research/`](./docs/research/): saved research notes and prototypes.
 
+The canonical [deck-shape methodology](skills/deck-shape-methodology/SKILL.md) supplies shared reasoning for discovery,
+construction and tuning. The [Commander skill](skills/commander-deck-architecture/SKILL.md) owns its adopted contextual
+starting profile and compact example; 60-card guidance remains in its Format skills. This reasoning foundation does
+not add tools or complete the [remaining executable workflow integration](https://github.com/OSmall/tomekin/issues/64).
+
 ## Future Direction
 
 Possible future directions include friendlier setup, packaging around stable commands, and additional interfaces over

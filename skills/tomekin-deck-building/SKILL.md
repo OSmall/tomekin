@@ -6,8 +6,10 @@ description: Use when discovering, building, or revising an MTG deck with Tomeki
 # Tomekin Deck Building
 
 Use this workflow to coordinate local deck-building through Tomekin tools. This root skill owns the tool lifecycle and
-intent routing. Strategic guidance belongs in `collection-opportunity-discovery`, the Format architecture skills, and
-the Format tuning skills.
+intent routing. Shared strategic reasoning belongs in `deck-shape-methodology`; discovery and Format skills apply it at their
+workflow fidelity and own Format-specific guidance.
+
+Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution tuning and retained reasoning.
 
 ## Establish The Working Contract
 

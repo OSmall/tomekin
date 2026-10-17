@@ -21,6 +21,8 @@ Karsten's [updated analysis](https://www.tcgplayer.com/content/article/How-Many-
 Named cards, historical lists, universal curve claims, and current-metagame claims from those sources are not part of
 the method.
 
+Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution tuning and retained reasoning.
+
 ## 1. Establish The Plan
 
 Turn the chosen direction into a functional plan before selecting cards. State:
@@ -123,6 +125,16 @@ material value.
 
 Identify the three weakest included nonland cards. Replace each one or justify it using a required Deck Role, package
 dependency, protected theme, power/play-experience goal, or Collection constraint. “On theme” alone is insufficient.
+
+## Compact Coverage Example
+
+In a Casual 60 Mainboard, four selected copies of an early enabler and three of a payoff supply four and three
+copies to their respective contextual roles. An assessed pool-only replacement supplies zero current coverage. One
+Sideboard copy, if requested, remains outside active Mainboard coverage; quantities across sections still obey
+applicable Format/copy rules. Explain why multiples help or compete rather than importing Commander singleton counts
+or its starting profile. For a supported access calculation, use the actual 60-card population, relevant qualifying
+selected copies and stated sample/event, excluding Sideboard cards from the initial Mainboard population. Access alone
+does not establish castability. Executable tool examples remain with [#64](https://github.com/OSmall/tomekin/issues/64).
 
 ## 7. Validate, Recheck Availability, And Hand Back
 

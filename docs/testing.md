@@ -225,3 +225,10 @@ acceptance. Across those scenarios, the current quality gate requires an explici
 paired additions and cuts, aggregate re-analysis, preserved deck size, deterministic legality validation when a
 revised Deck Candidate is built, evidence-backed explanations, and no persistence before confirmation of the exact
 final change set.
+
+
+The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
+profiles and retained departures, factual qualification and modal competition, whole-contribution swaps, section-aware
+selected coverage versus active alternatives, current reasoning/evidence and explicit checking boundaries. These are
+reasoning invariants, not new CI quality scores. Foundation routing does not constitute the remaining executable
+four-workflow acceptance owned by [#64](https://github.com/OSmall/tomekin/issues/64).
