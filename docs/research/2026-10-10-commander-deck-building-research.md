@@ -1,19 +1,23 @@
 # Commander deck-building research — read first
 
 Consolidated **2026-10-10** from the supplied Gemini report, its replacement, and the evidence audit.
+Adoption and interpretation notes updated **2026-10-18** following the methodology decision.
 This is the single entry point for this research packet. Read it before the supporting files; those files preserve
 provenance and review history rather than provide competing current instructions.
 
-**Status:** qualified research for Deck Plan design, not an adopted deck-building skill, numerical template, or schema.
-The canonical extraction resolution is
+**Status:** qualified research input. Selected guidance and a contextual Commander starting template have been adopted
+in [Define a shared deck-shape methodology foundation](https://github.com/OSmall/tomekin/issues/75#issuecomment-6234696206).
+That decision does not endorse every report claim or independently verify its source attributions. This research packet
+is not itself the operational skill or persistence contract. The canonical extraction resolution is
 [Extract Commander deck-building guidance from the source report](https://github.com/OSmall/tomekin/issues/74#issuecomment-6083834396).
 GitHub Issues holds decisions and remaining work. This document holds the consolidated research and its limitations.
 
 ## Reading order and authority
 
 1. Read this document for the current qualified synthesis and evidence limits.
-2. Read the linked extraction resolution for the decision made from that research. Subsequent decisions may adopt or
-   narrow parts of it; current operational methodology belongs in the canonical deck-building skills.
+2. Read the linked extraction and final methodology resolutions for their adopted scope. The methodology resolution
+   governs interpretation where the reports conflict with it; operational instructions belong in the canonical
+   deck-building skills.
 3. Consult the supporting records below only when checking a particular attribution, example, or correction.
 
 The latest Gemini submission is the **correction file**, which contains both a correction table and a full replacement
@@ -24,6 +28,34 @@ earlier sections describe the earlier report.
 “Supported” in the Gemini correction means the report author claims source support. It does not mean the claim was
 independently verified by Tomekin's audit. “Unverified” here means the available evidence cannot establish a claim;
 it does not establish that the claim is false.
+
+## Adopted interpretation and report corrections
+
+The final methodology resolution owns the full decision and acceptance criteria. These notes prevent the preserved
+reports' stronger wording from being mistaken for adopted instructions:
+
+- **Start from the template and justify departures.** The user adopted the report-attributed Commander targets as a
+  meaningful starting profile. A sufficient deck-specific reason can justify a departure; retain that reason for later
+  tuning. Read the report's checklist as **baseline met or a justified departure recorded**, rather than a requirement
+  to restore every generic target. The report already contains category-specific exceptions.
+- **Preserve intended functions when tuning.** Prefer same-role swaps when maintaining shape, but sharing a role label
+  is not automatic approval. Review every material contribution lost or gained. Cross-role changes need an intentional,
+  explained redistribution of coverage. The correction already includes this guardrail and its exceptions.
+- **Keep counts separate from effectiveness.** Overlapping roles and modal options do not establish simultaneous
+  performance. The report's MDFC/one-mana-landcycler convention concerns functional mana access; it does not change card
+  types or deterministic land/construction facts. Explain meaningful costs, conditions and competing uses.
+- **Use contextual guidance rather than unsupported absolutes.** Short plans, curve, redundancy and commander
+  compensation inform review. Do not import universal one-to-two-step limits, compulsory low curves, drastic role-ratio
+  changes, a fixed five-to-seven-copy ceiling, or a mandatory 50–100 goldfish sample into operational instructions.
+- **Distinguish probability from execution.** The report does mention hypergeometric calculators. Its inconsistent
+  Sidisi figures and guaranteed-turn-three wording are excluded from operational evidence unless repaired with explicit
+  assumptions. A separately calculated sampling probability can support a contextual target without establishing
+  castability, strategic execution or win rate. The adopted single generic calculator's API is owned by
+  [Define the generic hypergeometric calculator contract](https://github.com/OSmall/tomekin/issues/83).
+
+No broad report regeneration is required for this adopted scope. The numerical/source qualifications below remain;
+there is no new transcript verification or certification of exhaustive podcast coverage. Keep the original submissions
+and audit intact as provenance, and derive operational instructions using these qualifications and the owning decision.
 
 ## Sources and access
 
@@ -41,8 +73,8 @@ audio, or visuals. Chapter titles establish topics, not all the claimed advice w
 
 ## Qualified synthesis
 
-The following integrates the supplied reports with the audit. It is a proposal for evaluating methodology and
-information needs, rather than a claim that every source prescribes this exact process.
+The following integrates the supplied reports with the audit as research synthesis. Read it with the adopted
+interpretation above; it is not a claim that every source prescribes this exact process.
 
 ### Start with intent and a coherent activity
 
@@ -99,7 +131,10 @@ Neither a static review nor a small set of solo trials proves resilience against
 
 ## Information needs for a revisable Deck Plan
 
-These are considerations for the representation discussion, not an adopted persistence contract.
+These are the research information needs that informed the representation decision, not a persistence contract.
+The adopted representation and its later refinements live in the
+[final Deck Plan graph decision](https://github.com/OSmall/tomekin/issues/62#issuecomment-6193312738) and
+[final targeted-edit decision](https://github.com/OSmall/tomekin/issues/73#issuecomment-6230849972).
 
 | Information                                                                         | Why it matters across revisions                                                                    |
 |-------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
@@ -111,8 +146,8 @@ These are considerations for the representation discussion, not an adopted persi
 
 Representative information tests are a multi-role/modal card, a cross-role swap, a commander/anchor change, and
 corrected tag, card, or methodology evidence. Each tests whether the retained context can explain affected functions,
-dependencies, expectations, and rationale. Markdown, structured overlapping assignments, and causal strategic
-relationships remain alternatives for the human-led design decision.
+dependencies, expectations, and rationale. The representation alternatives explored during extraction are historical;
+consume the final decisions rather than reopening that choice from this research synthesis.
 
 ## Claims that remain qualified
 
@@ -122,7 +157,7 @@ blanket source conflict with a synergy/fragility trade-off. Its exact source cla
 
 | Claim family                                                                                                                                | Current qualification                                                                                                                                                                                                                                                            |
 |---------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 38 lands, 12 card advantage, 10 ramp, 12 targeted disruption, 6 mass disruption, and approximately 30 plan cards                            | Report-attributed provisional starting figures. Exact targets, overlap, counting rules, and exceptions were not independently verified; they are not mandatory Tomekin checks.                                                                                                   |
+| 38 lands, 12 card advantage, 10 ramp, 12 targeted disruption, 6 mass disruption, and approximately 30 plan cards                            | Adopted as a user-selected, report-attributed Commander starting profile, with justified departures. Transcript attribution, counting conventions and sufficiency remain unverified by this audit; adoption does not make them universal or deterministic Tomekin checks.        |
 | Sidisi example: 53%/68%, “exactly” three lands and one ramp, “by the first mulligan,” and guaranteed turn-three casting                     | The correction table and replacement prose still use inconsistent events and assumptions. The audit's hypothetical calculation illustrates that “exactly” and “at least” yield different answers; it does not reproduce the source calculation or establish a casting guarantee. |
 | Universal one-to-two-step plans, drastically reduced commander-provided categories, compulsory low curves, and a five-to-seven-copy ceiling | These remain overgeneralized or unsupported as universal instructions. Chapter topics and contextual heuristics do not establish these hard requirements.                                                                                                                        |
 | Mandatory 50–100 goldfish trials                                                                                                            | The exact mandate was not independently established. Retain the distinction between human observations and static review without importing that sample-size requirement.                                                                                                         |
@@ -130,9 +165,9 @@ blanket source conflict with a synergy/fragility trade-off. Its exact source cla
 | Real Scryfall tags and comprehensive source coverage                                                                                        | This packet does not validate a tag catalogue or establish an exhaustive inventory of every substantive lesson and exception. A section-to-video matrix is not proof of completeness.                                                                                            |
 
 Before any disputed prescription becomes operational methodology, its source evidence must be checked, its actual
-scope qualified, or the claim excluded. These limitations do not prevent choosing what strategic information a
-plan can represent. The extraction resolution records that distinction; this packet does not require another broad
-Gemini rewrite or adopt the report's checklist as an agent skill.
+scope qualified, or the claim excluded. The final methodology resolution applies those options to the adopted scope;
+it does not resolve the remaining source-evidence limitations. This packet does not require another broad Gemini rewrite
+or adopt the report's checklist verbatim as an agent skill.
 
 ## Supporting records and provenance
 
