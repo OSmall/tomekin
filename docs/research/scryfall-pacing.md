@@ -4,6 +4,22 @@ Date: 2026-10-17 (Australia/Sydney). Investigation:
 [Measure Scryfall search pacing and cooldown behavior](https://github.com/OSmall/tomekin/issues/82).
 This is research evidence for the pending provider, not delivered application behavior.
 
+**Status: unresolved.** The initial closure and adoption of 550 ms start pacing were withdrawn
+after user review: the measurements below compare two pacing policies but do not establish
+the enforcement boundary or Scryfall's admission clock. The 550 ms suggestion below is an
+unadopted proposal. The investigation remains open on GitHub.
+
+The requested follow-up was a bounded experiment aiming for three HTTP 429 events, separated
+by at least **31 seconds from receipt**, or longer when `Retry-After` requires it. Automatic
+approval review rejected execution because it intentionally exceeds the published limit to
+induce repeated 429s, risking access restriction or a ban. The user confirmed there is no
+provider authorization. No follow-up API requests were sent; the only live observations
+remain the original 48 requests. The proposed above-limit runner was removed without being
+executed. The retained scratch script now enforces a 31-second minimum cooldown; its updated
+[offline fixture results](scryfall-pacing-evidence/fixtures-31s.json) verify that a new request
+cannot dispatch at 30.999 seconds and can dispatch after the full delay. Historical
+[fixture results](scryfall-pacing-evidence/fixtures.json) belong to the original run.
+
 ## Documented contract
 
 Current official guidance gives `GET /cards/search` a hard limit of two requests per second,
@@ -161,7 +177,7 @@ still cannot guarantee acceptance when unrelated callers share the server's limi
 when server policy changes. These are deductions from the client/server ordering, not claims
 made by Scryfall's documentation.
 
-## Production recommendation
+## Unadopted production proposal
 
 Use one serialized admission owner for the selected live provider. Measure elapsed time with a
 monotonic clock and reserve the next start relative to the actual previous dispatch. Use a

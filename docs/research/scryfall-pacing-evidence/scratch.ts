@@ -21,10 +21,10 @@ class Stop extends Error {
   constructor(readonly reason: string, readonly retryMs = 0) { super(reason); }
 }
 function retryDelay(value: string | null, wall: number): number {
-  if (!value) return 30_000;
+  if (!value) return 31_000;
   const seconds = /^\d+$/.test(value.trim()) ? Number(value) * 1000 : NaN;
   const delay = Number.isFinite(seconds) ? seconds : Date.parse(value) - wall;
-  return Math.max(30_000, Number.isFinite(delay) ? delay : 0);
+  return Math.max(31_000, Number.isFinite(delay) ? delay : 0);
 }
 // Shared control state. No search results/cursors; lifetime must exceed an invocation.
 class Gate {
@@ -213,10 +213,10 @@ async function fixtures() {
     await assert.rejects(request(url, "start", gate, 120_000, signal,
       async () => new Response(null, { status: 429, headers: value ? { "Retry-After": value } : {} }), rows),
       (e: unknown) => e instanceof Stop && e.reason === "rate_limited");
-    const delay = value === "60" || value?.startsWith("Sat") ? 60_000 : 30_000;
+    const delay = value === "60" || value?.startsWith("Sat") ? 60_000 : 31_000;
     assert.equal(gate.cooldownUntil, delay);
     let sent = false;
-    await assert.rejects(request(url, "start", gate, 20_000, signal, async () => { sent = true; return page(); }, rows));
+    await assert.rejects(request(url, "start", gate, 30_999, signal, async () => { sent = true; return page(); }, rows));
     assert.equal(sent, false);
     // A new invocation shares the gate; it can proceed only at expiry.
     await request(url, "start", gate, 120_000, signal, async () => { assert.equal(time, delay); return page(); }, rows);
