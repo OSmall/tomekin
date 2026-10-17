@@ -234,13 +234,7 @@ bun run typecheck
 - [`docs/testing.md`](./docs/testing.md): testing posture, TDD expectations, test layers, fixture guidance, and LLM test boundary.
 - [`docs/future-direction.md`](./docs/future-direction.md): deferred scope and likely future product directions.
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
-- [`docs/research/2026-10-11-pi-deck-plan-graph-display.md`](./docs/research/2026-10-11-pi-deck-plan-graph-display.md):
-  verified Pi graph-display and developer SVG-export options for Deck Plan inspection; research rather than an
-  implemented feature.
-- [
-  `docs/research/2026-10-12-deck-candidate-markdown-value.md`](./docs/research/2026-10-12-deck-candidate-markdown-value.md):
-  saved candidate Markdown's useful reasoning, duplicated facts, and reporting alternatives; deprecation remains
-  undecided.
+- [`docs/research/`](./docs/research/): saved research notes and prototypes.
 
 ## Future Direction
 
