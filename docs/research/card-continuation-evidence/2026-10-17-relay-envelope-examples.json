@@ -1,0 +1,3171 @@
+{
+  "status": "review_schema_illustrations_not_production_tests_or_live_pacing",
+  "examples": [
+    {
+      "case": "Identifier-only live search",
+      "request": {
+        "q": "f:commander",
+        "unique": "cards",
+        "first": 1,
+        "select": {
+          "oracle_id": true
+        }
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487"
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJjYXJkcyJ9LCJwb3NpdGlvbiI6eyJwYWdlIjoxLCJwYWdlVXJsIjoiaHR0cHM6Ly9hcGkuc2NyeWZhbGwuY29tL2NhcmRzL3NlYXJjaD9xPWYlM0Fjb21tYW5kZXImcGFnZT0xIiwiYXRQYWdlRW5kIjpmYWxzZSwibGFzdElkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTAwMDEtMDAwMDAwMDAwMDAxIn0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJjYXJkcyJ9LCJwb3NpdGlvbiI6eyJwYWdlIjoxLCJwYWdlVXJsIjoiaHR0cHM6Ly9hcGkuc2NyeWZhbGwuY29tL2NhcmRzL3NlYXJjaD9xPWYlM0Fjb21tYW5kZXImcGFnZT0xIiwiYXRQYWdlRW5kIjpmYWxzZSwibGFzdElkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTAwMDEtMDAwMDAwMDAwMDAxIn0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 1,
+          "returned_count": 1,
+          "response_budget_bytes": 51200,
+          "provider_total": 300,
+          "scoped_total": null
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Local mixed-reference batch with a miss and preserved duplicates",
+      "request": {
+        "references": [
+          {
+            "kind": "name",
+            "value": "Sol Ring"
+          },
+          {
+            "kind": "printing_id",
+            "value": "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a"
+          },
+          {
+            "kind": "name",
+            "value": "Lightning Boltt"
+          },
+          {
+            "kind": "oracle_id",
+            "value": "6ad8011d-3471-4369-9d68-b264cc027487"
+          },
+          {
+            "kind": "oracle_id",
+            "value": "6ad8011d-3471-4369-9d68-b264cc027487"
+          }
+        ],
+        "select": {
+          "name": true,
+          "mana_value": true
+        },
+        "first": 4
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+                "name": "Sol Ring",
+                "mana_value": 1.0
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+                "printing_id": "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a",
+                "name": "Sol Ring",
+                "mana_value": 1.0
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "not_found",
+              "reference": {
+                "kind": "name",
+                "value": "Lightning Boltt"
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+                "name": "Sol Ring",
+                "mana_value": 1.0
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJwcmludGluZ19pZCIsInZhbHVlIjoiMDczYmZkY2EtZDdiOC00ZjRiLTkzZjMtNmU3YzQ0YmMwYjBhIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiTGlnaHRuaW5nIEJvbHR0In0seyJraW5kIjoib3JhY2xlX2lkIiwidmFsdWUiOiI2YWQ4MDExZC0zNDcxLTQzNjktOWQ2OC1iMjY0Y2MwMjc0ODcifSx7ImtpbmQiOiJvcmFjbGVfaWQiLCJ2YWx1ZSI6IjZhZDgwMTFkLTM0NzEtNDM2OS05ZDY4LWIyNjRjYzAyNzQ4NyJ9XX0sInBvc2l0aW9uIjp7Im5leHRfaW5wdXRfaW5kZXgiOjF9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyJ9fQ",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJwcmludGluZ19pZCIsInZhbHVlIjoiMDczYmZkY2EtZDdiOC00ZjRiLTkzZjMtNmU3YzQ0YmMwYjBhIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiTGlnaHRuaW5nIEJvbHR0In0seyJraW5kIjoib3JhY2xlX2lkIiwidmFsdWUiOiI2YWQ4MDExZC0zNDcxLTQzNjktOWQ2OC1iMjY0Y2MwMjc0ODcifSx7ImtpbmQiOiJvcmFjbGVfaWQiLCJ2YWx1ZSI6IjZhZDgwMTFkLTM0NzEtNDM2OS05ZDY4LWIyNjRjYzAyNzQ4NyJ9XX0sInBvc2l0aW9uIjp7Im5leHRfaW5wdXRfaW5kZXgiOjR9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyJ9fQ",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 4,
+          "returned_count": 4,
+          "response_budget_bytes": 51200,
+          "provider_total": null,
+          "scoped_total": null,
+          "lookup": {
+            "input_count": 5,
+            "start_index": 0,
+            "next_index": 4
+          }
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Adventure full supported faces",
+      "request": {
+        "references": [
+          {
+            "kind": "name",
+            "value": "Fae of Wishes // Granted"
+          },
+          {
+            "kind": "name",
+            "value": "Fae of Wishes // Granted"
+          }
+        ],
+        "select": {
+          "card_faces": true
+        },
+        "first": 1
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiRmFlIG9mIFdpc2hlcyAvLyBHcmFudGVkIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiRmFlIG9mIFdpc2hlcyAvLyBHcmFudGVkIn1dfSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiRmFlIG9mIFdpc2hlcyAvLyBHcmFudGVkIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiRmFlIG9mIFdpc2hlcyAvLyBHcmFudGVkIn1dfSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 1,
+          "returned_count": 1,
+          "response_budget_bytes": 51200,
+          "provider_total": null,
+          "scoped_total": null,
+          "lookup": {
+            "input_count": 2,
+            "start_index": 0,
+            "next_index": 1
+          }
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Selected tags, synthetic enrichment fixture",
+      "request": {
+        "references": [
+          {
+            "kind": "name",
+            "value": "Sol Ring"
+          },
+          {
+            "kind": "name",
+            "value": "Sol Ring"
+          }
+        ],
+        "select": {
+          "tags": true
+        },
+        "first": 1
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+                "tags": {
+                  "direct": [
+                    {
+                      "slug": "example-mana-source",
+                      "weight": "strong",
+                      "annotation": null
+                    }
+                  ],
+                  "inherited": [
+                    {
+                      "slug": "example-resource",
+                      "weight": "strong"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJuYW1lIiwidmFsdWUiOiJTb2wgUmluZyJ9XX0sInBvc2l0aW9uIjp7Im5leHRfaW5wdXRfaW5kZXgiOjF9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyIsIm9yYWNsZV90YWdzIjoiZml4dHVyZS10YWdzIn19",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJuYW1lIiwidmFsdWUiOiJTb2wgUmluZyJ9XX0sInBvc2l0aW9uIjp7Im5leHRfaW5wdXRfaW5kZXgiOjF9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyIsIm9yYWNsZV90YWdzIjoiZml4dHVyZS10YWdzIn19",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 1,
+          "returned_count": 1,
+          "response_budget_bytes": 51200,
+          "provider_total": null,
+          "scoped_total": null,
+          "lookup": {
+            "input_count": 2,
+            "start_index": 0,
+            "next_index": 1
+          }
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Copy evidence only includes rows matching confirmed criteria",
+      "request": {
+        "references": [
+          {
+            "kind": "name",
+            "value": "Cultivate"
+          },
+          {
+            "kind": "name",
+            "value": "Cultivate"
+          }
+        ],
+        "collection_policy": {
+          "kind": "candidate",
+          "candidate_id": "00000000-0000-4000-8000-000000000020"
+        },
+        "collection_evidence": {
+          "mode": "copies",
+          "select": {
+            "location": true,
+            "finish": true
+          }
+        },
+        "select": {
+          "name": true
+        },
+        "first": 1
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
+                "name": "Cultivate"
+              },
+              "collection_evidence": {
+                "summary": {
+                  "owned_quantity": 4,
+                  "eligible_quantity": 2,
+                  "uncertain_quantity": 0,
+                  "policy_status": "confirmed"
+                },
+                "copies": [
+                  {
+                    "collection_card_id": "00000000-0000-4000-8000-000000000031",
+                    "printing_id": "0c5f5297-fe94-44df-9004-427640196afd",
+                    "quantity": 2,
+                    "location": {
+                      "id": "00000000-0000-4000-8000-000000000011",
+                      "type": "binder",
+                      "name": "Example Binder A"
+                    },
+                    "finish": "nonfoil"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiQ3VsdGl2YXRlIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiQ3VsdGl2YXRlIn1dLCJjb2xsZWN0aW9uX3BvbGljeSI6eyJraW5kIjoiY2FuZGlkYXRlIiwiY2FuZGlkYXRlX2lkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDIwIn0sImNvbGxlY3Rpb25fZXZpZGVuY2UiOnsibW9kZSI6ImNvcGllcyJ9fSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIiwiY29sbGVjdGlvbiI6ImZpeHR1cmUtY29sbGVjdGlvbiJ9fQ",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiQ3VsdGl2YXRlIn0seyJraW5kIjoibmFtZSIsInZhbHVlIjoiQ3VsdGl2YXRlIn1dLCJjb2xsZWN0aW9uX3BvbGljeSI6eyJraW5kIjoiY2FuZGlkYXRlIiwiY2FuZGlkYXRlX2lkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDIwIn0sImNvbGxlY3Rpb25fZXZpZGVuY2UiOnsibW9kZSI6ImNvcGllcyJ9fSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIiwiY29sbGVjdGlvbiI6ImZpeHR1cmUtY29sbGVjdGlvbiJ9fQ",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 1,
+          "returned_count": 1,
+          "response_budget_bytes": 51200,
+          "provider_total": null,
+          "scoped_total": null,
+          "lookup": {
+            "input_count": 2,
+            "start_index": 0,
+            "next_index": 1
+          }
+        },
+        "collection_context": {
+          "state": "ready",
+          "collection_import_id": "00000000-0000-4000-8000-000000000010",
+          "match": "identity",
+          "effective_policy": {
+            "collection_import_id": "00000000-0000-4000-8000-000000000010",
+            "allowed_locations": [
+              {
+                "id": "00000000-0000-4000-8000-000000000011",
+                "type": "binder",
+                "name": "Example Binder A"
+              }
+            ],
+            "protected_locations": [
+              {
+                "id": "00000000-0000-4000-8000-000000000012",
+                "type": "deck",
+                "name": "Example Deck B"
+              }
+            ],
+            "excluded_locations": [],
+            "excluded_oracle_ids": [],
+            "excluded_printing_ids": [],
+            "excluded_collection_card_ids": [],
+            "copy_requirements": {
+              "finish": {
+                "in": [
+                  "nonfoil"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Explicit opt-in local provenance",
+      "request": {
+        "references": [
+          {
+            "kind": "name",
+            "value": "Sol Ring"
+          },
+          {
+            "kind": "name",
+            "value": "Sol Ring"
+          }
+        ],
+        "include_provenance": true,
+        "select": {
+          "name": true
+        },
+        "first": 1
+      },
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+                "name": "Sol Ring"
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJuYW1lIiwidmFsdWUiOiJTb2wgUmluZyJ9XSwiaW5jbHVkZV9wcm92ZW5hbmNlIjp0cnVlfSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoibG9va3VwX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJyZWZlcmVuY2VzIjpbeyJraW5kIjoibmFtZSIsInZhbHVlIjoiU29sIFJpbmcifSx7ImtpbmQiOiJuYW1lIiwidmFsdWUiOiJTb2wgUmluZyJ9XSwiaW5jbHVkZV9wcm92ZW5hbmNlIjp0cnVlfSwicG9zaXRpb24iOnsibmV4dF9pbnB1dF9pbmRleCI6MX0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "first",
+        "metadata": {
+          "requested_count": 1,
+          "returned_count": 1,
+          "response_budget_bytes": 51200,
+          "provider_total": null,
+          "scoped_total": null,
+          "lookup": {
+            "input_count": 2,
+            "start_index": 0,
+            "next_index": 1
+          }
+        },
+        "provenance": {
+          "reference_imports": [
+            {
+              "dataset": "oracle_cards",
+              "import_id": "00000000-0000-4000-8000-000000000041",
+              "completed_at": "2026-10-16T00:00:00Z"
+            }
+          ]
+        }
+      },
+      "note": "Public/synthetic record facts; remaining input and transport positions are illustrative."
+    },
+    {
+      "case": "Mid-page byte boundary",
+      "response": {
+        "status": "ok",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "startCursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJwcmludHMifSwicG9zaXRpb24iOnsicGFnZSI6MSwicGFnZVVybCI6Imh0dHBzOi8vYXBpLnNjcnlmYWxsLmNvbS9jYXJkcy9zZWFyY2g_cT1mJTNBY29tbWFuZGVyJnBhZ2U9MSIsImF0UGFnZUVuZCI6ZmFsc2UsImxhc3RJZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC0wMDAxLTAwMDAwMDAwMDAwMSJ9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyJ9fQ",
+          "endCursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJwcmludHMifSwicG9zaXRpb24iOnsicGFnZSI6MSwicGFnZVVybCI6Imh0dHBzOi8vYXBpLnNjcnlmYWxsLmNvbS9jYXJkcy9zZWFyY2g_cT1mJTNBY29tbWFuZGVyJnBhZ2U9MSIsImF0UGFnZUVuZCI6ZmFsc2UsImxhc3RJZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC0wMDAxLTAwMDAwMDAwMDA3NSJ9LCJpbXBvcnRzIjp7Im9yYWNsZV9jYXJkcyI6ImZpeHR1cmUtb3JhY2xlIiwiYWxsX2NhcmRzIjoiZml4dHVyZS1wcmludGluZyJ9fQ",
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "stop_reason": "response_budget",
+        "metadata": {
+          "requested_count": 175,
+          "returned_count": 75,
+          "response_budget_bytes": 51200,
+          "provider_total": 300,
+          "scoped_total": null
+        }
+      },
+      "note": "Repeated fixture facts with synthetic distinct transport IDs, not a representative provider page."
+    },
+    {
+      "case": "Empty timed-out scan recovery",
+      "response": {
+        "status": "error",
+        "edges": [],
+        "error": {
+          "code": "scan_timeout",
+          "message": "scan timeout",
+          "retryable": true,
+          "cursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJwcmludHMifSwicG9zaXRpb24iOnsicGFnZSI6ODAsInBhZ2VVcmwiOiJodHRwczovL2FwaS5zY3J5ZmFsbC5jb20vY2FyZHMvc2VhcmNoP3E9ZiUzQWNvbW1hbmRlciZwYWdlPTgwIiwiYXRQYWdlRW5kIjp0cnVlLCJsYXN0SWQiOiIwMDAwMDAwMC0wMDAwLTQwMDAtMDA4MC0wMDAwMDAwMDAxNzUifSwiaW1wb3J0cyI6eyJvcmFjbGVfY2FyZHMiOiJmaXh0dXJlLW9yYWNsZSIsImFsbF9jYXJkcyI6ImZpeHR1cmUtcHJpbnRpbmcifX0"
+        },
+        "metadata": {
+          "requested_count": 175,
+          "returned_count": 0,
+          "response_budget_bytes": 51200,
+          "provider_total": 300,
+          "scoped_total": null
+        }
+      },
+      "note": "Assumed safely examined nonmatching source prefix; illustrates recovery encoding, not query execution or elapsed time."
+    },
+    {
+      "case": "Partial timeout",
+      "response": {
+        "status": "error",
+        "edges": [
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "node": {
+              "status": "found",
+              "card": {
+                "oracle_id": "c0abbed2-d213-47ef-8d6c-4a21efb9a55f",
+                "card_faces": [
+                  {
+                    "name": "Fae of Wishes",
+                    "mana_cost": "{1}{U}",
+                    "type_line": "Creature — Faerie Wizard",
+                    "oracle_text": "Flying\n{1}{U}, Discard two cards: Return this creature to its owner's hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": "1",
+                    "toughness": "4",
+                    "loyalty": null,
+                    "defense": null
+                  },
+                  {
+                    "name": "Granted",
+                    "mana_cost": "{3}{U}",
+                    "type_line": "Sorcery — Adventure",
+                    "oracle_text": "You may reveal a noncreature card you own from outside the game and put it into your hand.",
+                    "colors": null,
+                    "color_indicator": null,
+                    "power": null,
+                    "toughness": null,
+                    "loyalty": null,
+                    "defense": null
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "error": {
+          "code": "scan_timeout",
+          "message": "scan timeout",
+          "retryable": true,
+          "cursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJwcmludHMifSwicG9zaXRpb24iOnsicGFnZSI6NCwicGFnZVVybCI6Imh0dHBzOi8vYXBpLnNjcnlmYWxsLmNvbS9jYXJkcy9zZWFyY2g_cT1mJTNBY29tbWFuZGVyJnBhZ2U9NCIsImF0UGFnZUVuZCI6dHJ1ZSwibGFzdElkIjoiMDAwMDAwMDAtMDAwMC00MDAwLTAwMDQtMDAwMDAwMDAwMTc1In0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19"
+        },
+        "metadata": {
+          "requested_count": 175,
+          "returned_count": 2,
+          "response_budget_bytes": 51200,
+          "provider_total": 300,
+          "scoped_total": null
+        }
+      }
+    },
+    {
+      "case": "Indivisible object overflow",
+      "response": {
+        "status": "error",
+        "edges": [],
+        "error": {
+          "code": "record_too_large",
+          "message": "record too large",
+          "retryable": false,
+          "cursor": "eyJ2IjoyLCJ0b29sIjoic2VhcmNoX2NhcmRzIiwic291cmNlIjoiZGV0ZXJtaW5pc3RpYy1maXh0dXJlIiwicmVxdWVzdCI6eyJxIjoiZjpjb21tYW5kZXIiLCJ1bmlxdWUiOiJwcmludHMifSwicG9zaXRpb24iOnsicGFnZSI6MSwicGFnZVVybCI6Imh0dHBzOi8vYXBpLnNjcnlmYWxsLmNvbS9jYXJkcy9zZWFyY2g_cT1mJTNBY29tbWFuZGVyJnBhZ2U9MSIsImF0UGFnZUVuZCI6ZmFsc2UsImxhc3RJZCI6bnVsbH0sImltcG9ydHMiOnsib3JhY2xlX2NhcmRzIjoiZml4dHVyZS1vcmFjbGUiLCJhbGxfY2FyZHMiOiJmaXh0dXJlLXByaW50aW5nIn19",
+          "required_bytes": 109859,
+          "limit_bytes": 51200
+        },
+        "metadata": {
+          "requested_count": 175,
+          "returned_count": 0,
+          "response_budget_bytes": 51200,
+          "provider_total": 300,
+          "scoped_total": null
+        }
+      }
+    }
+  ]
+}

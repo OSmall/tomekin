@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "CardSelection": {
+      "type": "object",
+      "properties": {
+        "oracle_id": {
+          "const": true,
+          "description": "Select the canonical Oracle identity identifier; mandatory on every resolved card even if unselected."
+        },
+        "printing_id": {
+          "const": true,
+          "description": "Select the actual provider-returned or exactly referenced Printing identifier; incompatible with local name/Oracle references."
+        },
+        "name": {
+          "const": true,
+          "description": "Select the approved name fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "layout": {
+          "const": true,
+          "description": "Canonical gameplay layout, distinct from Printing presentation layout."
+        },
+        "mana_cost": {
+          "const": true,
+          "description": "Select the approved mana_cost fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "mana_value": {
+          "const": true,
+          "description": "Mana Value; maps provider cmc/local manaValue without exposing a second cmc alias."
+        },
+        "type_line": {
+          "const": true,
+          "description": "Select the approved type_line fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "oracle_text": {
+          "const": true,
+          "description": "Complete top-level Oracle text and every existing face name/Oracle text in source order; never abbreviated."
+        },
+        "colors": {
+          "const": true,
+          "description": "Preserve absent colors versus a known empty/colorless array."
+        },
+        "color_identity": {
+          "const": true,
+          "description": "Color Identity, distinct from colors."
+        },
+        "color_indicator": {
+          "const": true,
+          "description": "Printed color indicator, preserving known absence."
+        },
+        "produced_mana": {
+          "const": true,
+          "description": "Select the approved produced_mana fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "keywords": {
+          "const": true,
+          "description": "Select the approved keywords fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "power": {
+          "const": true,
+          "description": "Select the approved power fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "toughness": {
+          "const": true,
+          "description": "Select the approved toughness fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "loyalty": {
+          "const": true,
+          "description": "Select the approved loyalty fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "defense": {
+          "const": true,
+          "description": "Select the approved defense fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "legalities": {
+          "const": true,
+          "description": "Complete supported source legality map, not an inferred format filter."
+        },
+        "game_changer": {
+          "const": true,
+          "description": "Select the approved game_changer fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "edhrec_rank": {
+          "const": true,
+          "description": "Select the approved edhrec_rank fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "card_faces": {
+          "const": true,
+          "description": "Complete supported face projection for each existing face in order; known no faces is an empty array."
+        },
+        "tags": {
+          "const": true,
+          "description": "Complete approved direct slug/weight/annotation and inherited slug/weight lists; local unavailability is explicit."
+        },
+        "set": {
+          "const": true,
+          "description": "Select the approved set fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_id": {
+          "const": true,
+          "description": "Select the approved set_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_name": {
+          "const": true,
+          "description": "Select the approved set_name fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_type": {
+          "const": true,
+          "description": "Select the approved set_type fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "collector_number": {
+          "const": true,
+          "description": "Select the approved collector_number fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "lang": {
+          "const": true,
+          "description": "Select the approved lang fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "printed_name": {
+          "const": true,
+          "description": "Actual Printing supplied Printed Name; no canonical-name substitution."
+        },
+        "finishes": {
+          "const": true,
+          "description": "Supported Finish treatments of the actual Printing; not the treatment of an owned row."
+        },
+        "promo_types": {
+          "const": true,
+          "description": "Select the approved promo_types fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "tcgplayer_id": {
+          "const": true,
+          "description": "Select the approved tcgplayer_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "cardmarket_id": {
+          "const": true,
+          "description": "Select the approved cardmarket_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "printing_layout": {
+          "const": true,
+          "description": "Printing presentation: standard or reversible_card, distinct from gameplay layout."
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "CopySelection": {
+      "type": "object",
+      "properties": {
+        "collection_card_id": {
+          "const": true,
+          "description": "Snapshot-local Collection row identifier; mandatory on every emitted copy row."
+        },
+        "printing_id": {
+          "const": true,
+          "description": "Select the actual provider-returned or exactly referenced Printing identifier; incompatible with local name/Oracle references."
+        },
+        "quantity": {
+          "const": true,
+          "description": "Source-row quantity, not an individually tracked physical object or allocation quantity; mandatory on copy rows."
+        },
+        "location": {
+          "const": true,
+          "description": "Exact Collection Location ID, type and name for the owned row."
+        },
+        "added_at": {
+          "const": true,
+          "description": "Optional source-added date; never inferred from Set/Printing/import recency."
+        },
+        "finish": {
+          "const": true,
+          "description": "The singular Finish of this owned Collection row."
+        },
+        "condition": {
+          "const": true,
+          "description": "Select the approved condition fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "altered": {
+          "const": true,
+          "description": "Select the approved altered fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "misprint": {
+          "const": true,
+          "description": "Select the approved misprint fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "purchase_price": {
+          "const": true,
+          "description": "Select the approved purchase_price fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "purchase_price_currency": {
+          "const": true,
+          "description": "Select the approved purchase_price_currency fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "source_row_number": {
+          "const": true,
+          "description": "Select the approved source_row_number fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved set fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_id": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved set_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_name": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved set_name fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "set_type": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved set_type fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "collector_number": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved collector_number fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "lang": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved lang fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "printed_name": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Actual Printing supplied Printed Name; no canonical-name substitution."
+        },
+        "finishes": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Supported Finish treatments of the actual Printing; not the treatment of an owned row."
+        },
+        "promo_types": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved promo_types fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "tcgplayer_id": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved tcgplayer_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "cardmarket_id": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Select the approved cardmarket_id fact with the owning projection contract's full null/empty/unavailable semantics."
+        },
+        "printing_layout": {
+          "const": true,
+          "description": "Fact of this owned row's actual Printing. Printing presentation: standard or reversible_card, distinct from gameplay layout."
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    }
+  }
+}

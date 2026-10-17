@@ -1,0 +1,67 @@
+{
+  "status": "review_schema_illustrations_not_production_tests_or_live_pacing",
+  "budget_bytes": 51200,
+  "measurements": [
+    {
+      "case": "Identifier-only live search",
+      "complete_objects": 1,
+      "utf8_bytes": 1249
+    },
+    {
+      "case": "Local mixed-reference batch with a miss and preserved duplicates",
+      "complete_objects": 4,
+      "utf8_bytes": 2109
+    },
+    {
+      "case": "Adventure full supported faces",
+      "complete_objects": 1,
+      "utf8_bytes": 1775
+    },
+    {
+      "case": "Selected tags, synthetic enrichment fixture",
+      "complete_objects": 1,
+      "utf8_bytes": 1344
+    },
+    {
+      "case": "Copy evidence only includes rows matching confirmed criteria",
+      "complete_objects": 1,
+      "utf8_bytes": 2562
+    },
+    {
+      "case": "Explicit opt-in local provenance",
+      "complete_objects": 1,
+      "utf8_bytes": 1360
+    },
+    {
+      "case": "Synthetic full-face boundary with mid-page ID anchor",
+      "complete_objects": 75,
+      "utf8_bytes": 50545
+    },
+    {
+      "case": "Zero-match timeout with recovery after page 80",
+      "complete_objects": 0,
+      "utf8_bytes": 703
+    },
+    {
+      "case": "Partial timeout with two intact results and one recovery cursor",
+      "complete_objects": 2,
+      "utf8_bytes": 2015
+    },
+    {
+      "case": "Oversized indivisible object error before first object",
+      "complete_objects": 0,
+      "utf8_bytes": 709,
+      "required_bytes": 109859
+    }
+  ],
+  "checks": [
+    "closed typed selectors",
+    "full-envelope UTF-8 sizing",
+    "mid/end provider-page source-ID positions",
+    "missing/ambiguous anchor detection",
+    "lookup duplicate/miss correspondence",
+    "empty/partial error recovery cursor",
+    "indivisible oversized object",
+    "fixed query binding with mutable selection"
+  ]
+}
