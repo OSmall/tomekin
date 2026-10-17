@@ -107,8 +107,9 @@ formula as legality or a quality score.
 
 ## 6. Run A Static Quality Review
 
-True playtesting, simulation, opening-hand analysis, and goldfishing are unsupported. Perform a static review and use
-later user-reported gameplay as stronger tuning evidence.
+Use `hypergeometric_calculator` for explicit uniform-sampling questions under the shared bounded-statistics method.
+True playtesting, simulation, mulligan/selection sequences, casting analysis and goldfishing remain unsupported. Perform
+a static review and use later user-reported gameplay as stronger tuning evidence.
 
 Require explicit evidence for:
 

@@ -70,7 +70,7 @@ Collection import read user-supplied local files.
 
 `packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness. Callers pass an explicit
 database path and logger, invoke handlers, then close the runtime.
-`skills/` contains the seven canonical Tomekin skills, rooted at `tomekin-deck-building`. `packages/opencode` and
+`skills/` contains the eight canonical Tomekin skills, rooted at `tomekin-deck-building`. `packages/opencode` and
 `.opencode/` remain a thin OpenCode adapter: it translates tool input and output, uses the shared runtime per call, and
 reaches canonical skills through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.

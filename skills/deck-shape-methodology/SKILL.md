@@ -104,7 +104,8 @@ implied by this reasoning method.
 
 ## Use Bounded Statistics And Applicable Checks
 
-For a supported calculation, identify the plan requirement, qualifying effects, population/sample/event and assumptions;
+Use `hypergeometric_calculator` for a supported calculation. Identify the plan requirement, qualifying effects,
+population/sample/event and assumptions;
 choose and explain a contextual reliability target, then interpret the result within those bounds. Distinguish exactly
 from at-least events. There is no universal 70% threshold. Seeing a card does not establish mana, castability,
 sequencing, opponent cooperation or winning. Exclude the report's inconsistent Sidisi percentages and turn guarantee
