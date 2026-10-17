@@ -1,0 +1,4 @@
+{
+  "name": "@tomekin/evaluation", "version": "0.0.0", "private": true, "type": "module",
+  "dependencies": {"@tomekin/agent": "workspace:*", "@tomekin/core": "workspace:*", "@tomekin/sqlite": "workspace:*", "@tomekin/pi": "workspace:*", "@tomekin/opencode": "workspace:*"}
+}

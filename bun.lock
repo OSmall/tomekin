@@ -60,6 +60,17 @@
         "typescript": "7.0.2",
       },
     },
+    "packages/evaluation": {
+      "name": "@tomekin/evaluation",
+      "version": "0.0.0",
+      "dependencies": {
+        "@tomekin/agent": "workspace:*",
+        "@tomekin/core": "workspace:*",
+        "@tomekin/opencode": "workspace:*",
+        "@tomekin/pi": "workspace:*",
+        "@tomekin/sqlite": "workspace:*",
+      },
+    },
     "packages/opencode": {
       "name": "@tomekin/opencode",
       "version": "0.0.0",
@@ -320,6 +331,8 @@
     "@tomekin/cli": ["@tomekin/cli@workspace:packages/cli"],
 
     "@tomekin/core": ["@tomekin/core@workspace:packages/core"],
+
+    "@tomekin/evaluation": ["@tomekin/evaluation@workspace:packages/evaluation"],
 
     "@tomekin/opencode": ["@tomekin/opencode@workspace:packages/opencode"],
 

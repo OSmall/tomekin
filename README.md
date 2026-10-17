@@ -247,3 +247,6 @@ not add tools or complete the [remaining executable workflow integration](https:
 Possible future directions include friendlier setup, packaging around stable commands, and additional interfaces over
 the same portable core. They are possibilities rather than alpha promises; see
 [`docs/future-direction.md`](./docs/future-direction.md).
+
+For reproducible synthetic workflow and pre-migration candidate measurements, run `bun run evaluate:baseline`.
+[The evaluation protocol](docs/evaluation/README.md) describes the recorded artifact, limitations and legacy comparator.
