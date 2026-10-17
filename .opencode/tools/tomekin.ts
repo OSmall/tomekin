@@ -146,11 +146,18 @@ export const render_deck_candidate = tool({
   },
 });
 
-export const save_deck_candidate = tool({
-    description: "Persist a final Deck Candidate and its resolved Card Identity rows, deriving Format from its authoritative Brief. Pass an existing Deck Candidate ID to update it in place; omit the ID only to create a new candidate.",
-  args: argsOf("save_deck_candidate"),
+export const create_deck_candidate = tool({
+  description: agentToolContracts.create_deck_candidate.description,
+  args: argsOf("create_deck_candidate"),
   async execute(args) {
-    return runTool("save_deck_candidate", args, (handlers) => handlers.saveDeckCandidate(args));
+    return runTool("create_deck_candidate", args, handlers => handlers.createDeckCandidate(args));
+  },
+});
+export const edit_deck_candidate = tool({
+  description: agentToolContracts.edit_deck_candidate.description,
+  args: argsOf("edit_deck_candidate"),
+  async execute(args) {
+    return runTool("edit_deck_candidate", args, handlers => handlers.editDeckCandidate(args));
   },
 });
 

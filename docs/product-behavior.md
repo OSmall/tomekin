@@ -28,7 +28,7 @@ Core-owned Zod input contracts supply tool argument affordance; Card Query prese
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
 Core Agent Tool output has a temporary 16,000-character prefix safety cap; this is not a recovery mechanism and does
 not apply to scoped `read`. Compact, recoverable product-tool output remains separate planned work. Aborting a read
-terminates its Worker and discards late output. A dispatched save is not terminated or reported as cancelled; an
+terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
 only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled resources. Pi
 login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. Unsupported platforms and failed artifact verification
@@ -76,8 +76,8 @@ For a 60-card deck, Tomekin first classifies the work as focused repair, rebuild
 construction. Moving beyond focused repair requires user confirmation. Commander tuning preserves the established game
 plan, intended Commander Bracket, and play experience unless the user asks to change them.
 
-Accepting advice does not itself authorize persistence. Tomekin first shows the exact final additions, cuts,
-quantities, any commander change, and the persistence target, then waits for separate confirmation. A saved Deck
+Tomekin explains the exact resulting additions, cuts, quantities, plan/Brief changes and persistence target. Existing
+explicit authorization for that result counts; otherwise it obtains candidate-level confirmation. A saved Deck
 Candidate is updated in place unless the user asks for a copy or variant. An imported Existing Deck is never mutated; an
 accepted revision can only be saved as a new Deck Candidate.
 
@@ -148,7 +148,7 @@ compares scoped quantities with required quantities before rendering. It then re
 and Missing evidence from the imported snapshot.
 
 This evidence is not a deterministic final Availability service. Card Query reports owned rows and quantities; the
-agent applies the procedurally confirmed scope and explains the result. Saved Markdown may therefore become stale after
+agent applies the procedurally confirmed scope and explains the result. Retained scoped reasoning may therefore become stale after
 a later import, and the current product has no automatic refresh service or persisted freshness status.
 
 ## Validation, Rendering, and Persistence
@@ -186,10 +186,40 @@ renders `Mainboard`, followed by `Sideboard` only when Sideboard cards exist. To
 default; it does so only when requested, using user-supplied matchup context or clearly labelled general-purpose
 assumptions.
 
-The save boundary accepts only resolved Card Identity IDs and persists the Format-discriminated Brief, canonical
-Markdown, Collection import timestamp when supplied, and relational commander/Mainboard/Sideboard card rows. Reads
-return the stored Markdown, while the Portable Decklist can be rendered from the saved card rows. Save and update are
-transactional at the repository boundary.
+### Structured candidate writes
+
+`create_deck_candidate({label, brief, plan?, options?, memberships?, assessments?})` saves concrete authorized construction
+progress, including unfinished or empty selection. `edit_deck_candidate({candidate_id, expected_updated_at, changes})`
+loads unchanged records server-side and applies one atomic typed change set. There is no mandatory Markdown, automatic
+legality/evaluation/Availability check, dedicated copy tool, stored proposal, confirmation token or completion state.
+
+The Brief owns Format and preferences. A plan uses `schema_version: 1`; node and relationship additions declare a local
+`ref`. Contributions use `role_id` or `role_ref`; relationships use `source_id`/`source_ref` and `target_id`/`target_ref`.
+The server returns candidate/authored UUIDs in `created_ids`. Local references are confined to the request. Roles and
+relationships retain stable IDs across wording changes. Options use Card Identity, contributions use option/role pairs,
+and selected memberships use Card Identity/section. New record operations are explicit `add`; updates use `update` and
+field `changes`; removals use `remove`. Membership `set` uses an absolute positive quantity and supplied order/note;
+zero does not remove. Omitted fields survive; explicit `null` clears optional fields. Lists replace their own field.
+
+Every assessed option needs a reasoned contribution. Selected membership needs its option. Desired roles with zero selected
+contributors require an explained coverage gap. Pool alternatives contribute zero selected copies. Related removals must
+be reconciled together. Duplicate logical records, cross-candidate/unknown references, invalid endpoints, unknown fields,
+unsupported schema versions and invalid text fail without partial writes. Contribution/relationship/route rationales,
+option comparison notes, individual qualifications and evidence notes allow at most 500 Unicode code points. Stored or
+returned reasoning is never silently truncated.
+
+The exact UTC `updated_at` is candidate-wide. A stale edit returns `conflict`, with candidate ID and expected/current
+timestamps. Reload and reconcile rather than silently rebasing. Success returns compact actual-change context and stable
+ID mappings. `get_deck_candidate({id})` and `list_deck_candidates` return summaries with Format/anchor, timestamps, selected
+section quantities, pool size and concise role/gap information. Explicit `get_deck_candidate({id, view: "state"})` exposes
+current authoritative records for resumption. Ordinary reads do not invoke checks; the write foundation currently reports
+validation evidence as absent. Saved-input reusable check evidence and complete generated views have separate ownership.
+
+After an unknown Worker write outcome, inspect before retrying. For edits, compare saved records and timestamps with the
+intended result. For creates, use list/get to inspect possible matches by label, Format/anchor, times and contents; labels
+are not unique and exact-once retries are not guaranteed. Inspect ambiguous matches rather than guessing. Pi serializes
+mutations, ignores cancellation once dispatched and waits for their settlement during shutdown. Unexpected Worker failure
+reports `unknown_write_outcome`. Neither the Worker lane nor a candidate ID replaces concurrency checks or authorization.
 
 ## Hypergeometric Calculator
 

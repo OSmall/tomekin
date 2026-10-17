@@ -14,3 +14,4 @@ export * from "./scryfall-json-source";
 export * from "./scryfall-sync";
 
 export * from "./hypergeometric-calculator";
+export * from "./deck-candidate-changes";

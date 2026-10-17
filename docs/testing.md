@@ -240,3 +240,12 @@ long-text and three-card-save assertions. See [the evaluation protocol and captu
 fixture cardinalities, cold/warm conditions, known limits and the separately runnable legacy comparator. These synthetic
 measurements establish no live-model, production latency, strategic-quality or whole-deck Availability claim.
 
+
+## Structured candidate write coverage
+
+Public create/edit/get/list handlers run against migrated temporary on-disk SQLite, including reopened connections,
+linked local references, explained gaps, explicit removal/clearing, Unicode limits and same-tick stale-write conflicts.
+Focused SQLite failure injection verifies transaction rollback; direct constraint checks cover relational ownership and
+uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlement, preserved conflict context and
+inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
+legacy comparator remains pinned and does not depend on compatibility product tools.

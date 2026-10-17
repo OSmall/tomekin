@@ -1,5 +1,5 @@
 import {sql} from "drizzle-orm";
-import {check, index, integer, primaryKey, real, sqliteTable, text, unique,} from "drizzle-orm/sqlite-core";
+import {check, foreignKey, index, integer, primaryKey, real, sqliteTable, text, unique,} from "drizzle-orm/sqlite-core";
 import {cardIdentityTaggingWeightValues, colorIdentityValues, formatLegalityValues,} from "@tomekin/core/scryfall-sync";
 import {deckFormatValues} from "@tomekin/core/deck-building-brief";
 import {deckCandidateCardSectionValues} from "@tomekin/core/deck-candidate";
@@ -86,6 +86,12 @@ export const deckCandidate = sqliteTable(
         briefJson: text("brief_json", {mode: "json"}).notNull(),
         collectionImportTimestamp: integer("collection_import_timestamp", {mode: "timestamp"}),
         markdown: text("markdown").notNull(),
+        createdAtExact: text("created_at_exact"),
+        updatedAtExact: text("updated_at_exact"),
+        selectedChangedAt: text("selected_changed_at"),
+        briefChangedAt: text("brief_changed_at"),
+        planChangedAt: text("plan_changed_at"),
+        assessmentsJson: text("assessments_json", {mode: "json"}),
         createdAt: integer("created_at", {mode: "timestamp"}).notNull(),
         updatedAt: integer("updated_at", {mode: "timestamp"}).notNull(),
     },
@@ -111,8 +117,10 @@ export const deckCandidateCard = sqliteTable(
         note: text("note"),
     },
     (table) => [
-        check("deck_candidate_card_quantity_check", sql`${table.quantity} > 0`),
-        check("deck_candidate_card_section_check", sql`${table.section} IN ('commander', 'mainboard', 'sideboard')`),
+        check("deck_candidate_card_quantity_check", sql`typeof("quantity") = 'integer' AND "quantity" > 0`),
+        check("deck_candidate_card_sort_order_check", sql`typeof("sort_order") = 'integer' AND "sort_order" >= 0`),
+        check("deck_candidate_card_section_check", sql`"section" IN ('commander', 'mainboard', 'sideboard')`),
+        unique("deck_candidate_card_membership_unique").on(table.deckCandidateId, table.cardIdentityId, table.section),
         index("idx_deck_candidate_card_deck_candidate_id").on(table.deckCandidateId),
         index("idx_deck_candidate_card_card_identity_id").on(table.cardIdentityId),
     ],
@@ -415,5 +423,159 @@ export const cardIdentityTagHierarchy = sqliteTable(
     (table) => [
         primaryKey({columns: [table.parentTagId, table.childTagId]}),
         index("idx_card_identity_tag_hierarchy_child_tag_id").on(table.childTagId),
+    ],
+);
+
+
+// Candidate-owned records; JSON stores only claim-local metadata, never the graph.
+export const deckCandidatePlan = sqliteTable(
+    "deck_candidate_plan",
+    {
+        candidateId: text("candidate_id")
+            .primaryKey()
+            .references(() => deckCandidate.id),
+        description: text("description").notNull(),
+    },
+    (t) => [
+        check(
+            "deck_candidate_plan_description",
+            sql`length(trim(${t.description})) > 0`,
+        ),
+    ],
+);
+export const deckCandidateNode = sqliteTable(
+    "deck_candidate_node",
+    {
+        candidateId: text("candidate_id")
+            .notNull()
+            .references(() => deckCandidatePlan.candidateId),
+        id: text("id").notNull(),
+        kind: text("kind", { enum: ["role", "win_route"] }).notNull(),
+        label: text("label").notNull(),
+        description: text("description").notNull(),
+        priority: text("priority", { enum: ["primary", "secondary"] }),
+        rationale: text("rationale"),
+        coverageGoalJson: text("coverage_goal_json", { mode: "json" }),
+        coverageAssessmentJson: text("coverage_assessment_json", {
+            mode: "json",
+        }),
+        evidenceJson: text("evidence_json", { mode: "json" }),
+    },
+    (t) => [
+        primaryKey({ columns: [t.candidateId, t.id] }),
+        check("candidate_node_kind", sql`${t.kind} IN ('role','win_route')`),
+        check(
+            "candidate_node_text",
+            sql`length(trim(${t.label})) > 0 AND length(trim(${t.description})) > 0`,
+        ),
+        check(
+            "candidate_node_fields",
+            sql`(${t.kind} = 'role' AND ${t.priority} IS NULL AND ${t.rationale} IS NULL) OR (${t.kind} = 'win_route' AND ${t.priority} IN ('primary','secondary') AND ${t.rationale} IS NOT NULL AND length(trim(${t.rationale})) > 0 AND ${t.coverageGoalJson} IS NULL AND ${t.coverageAssessmentJson} IS NULL)`,
+        ),
+    ],
+);
+export const deckCandidateOption = sqliteTable(
+    "deck_candidate_option",
+    {
+        candidateId: text("candidate_id")
+            .notNull()
+            .references(() => deckCandidate.id),
+        cardIdentityId: text("card_identity_id")
+            .notNull()
+            .references(() => cardIdentity.id),
+        comparisonNote: text("comparison_note"),
+    },
+    (t) => [
+        primaryKey({ columns: [t.candidateId, t.cardIdentityId] }),
+        check(
+            "candidate_option_note",
+            sql`${t.comparisonNote} IS NULL OR length(trim(${t.comparisonNote})) > 0`,
+        ),
+    ],
+);
+export const deckCandidateContribution = sqliteTable(
+    "deck_candidate_contribution",
+    {
+        candidateId: text("candidate_id").notNull(),
+        cardIdentityId: text("card_identity_id").notNull(),
+        roleId: text("role_id").notNull(),
+        rationale: text("rationale").notNull(),
+        qualificationsJson: text("qualifications_json", { mode: "json" }),
+        evidenceJson: text("evidence_json", { mode: "json" }),
+    },
+    (t) => [
+        primaryKey({ columns: [t.candidateId, t.cardIdentityId, t.roleId] }),
+        foreignKey({
+            columns: [t.candidateId, t.cardIdentityId],
+            foreignColumns: [
+                deckCandidateOption.candidateId,
+                deckCandidateOption.cardIdentityId,
+            ],
+        }),
+        foreignKey({
+            columns: [t.candidateId, t.roleId],
+            foreignColumns: [
+                deckCandidateNode.candidateId,
+                deckCandidateNode.id,
+            ],
+        }),
+        check(
+            "candidate_contribution_rationale",
+            sql`length(trim(${t.rationale})) > 0`,
+        ),
+    ],
+);
+export const deckCandidateRelationship = sqliteTable(
+    "deck_candidate_relationship",
+    {
+        candidateId: text("candidate_id").notNull(),
+        id: text("id").notNull(),
+        kind: text("kind", {
+            enum: ["enables", "enhances", "supports", "competes_with"],
+        }).notNull(),
+        sourceId: text("source_id").notNull(),
+        targetId: text("target_id").notNull(),
+        rationale: text("rationale").notNull(),
+        qualificationsJson: text("qualifications_json", { mode: "json" }),
+        evidenceJson: text("evidence_json", { mode: "json" }),
+    },
+    (t) => [
+        primaryKey({ columns: [t.candidateId, t.id] }),
+        unique("candidate_relationship_logical").on(
+            t.candidateId,
+            t.kind,
+            t.sourceId,
+            t.targetId,
+        ),
+        foreignKey({
+            columns: [t.candidateId, t.sourceId],
+            foreignColumns: [
+                deckCandidateNode.candidateId,
+                deckCandidateNode.id,
+            ],
+        }),
+        foreignKey({
+            columns: [t.candidateId, t.targetId],
+            foreignColumns: [
+                deckCandidateNode.candidateId,
+                deckCandidateNode.id,
+            ],
+        }),
+        check(
+            "candidate_relationship_kind",
+            sql`${t.kind} IN ('enables','enhances','supports','competes_with')`,
+        ),
+        check(
+            "candidate_relationship_distinct",
+            sql`${t.sourceId} != ${t.targetId}`,
+        ),
+        check(
+            "candidate_relationship_symmetric",
+            sql`${t.kind} != 'competes_with' OR ${t.sourceId} < ${t.targetId}`,
+        ),
+        check(
+            "candidate_relationship_rationale",
+            sql`length(trim(${t.rationale})) > 0`,
+        ),
     ],
 );
