@@ -21,6 +21,7 @@ import {
     collectionCard,
     collectionImport,
     collectionLocation,
+    collectionState,
     scryfallBulkDataImport,
 } from "./schema";
 
@@ -109,7 +110,7 @@ export function createSqliteCollectionRepository(
                     db.insert(collectionLocation).values(location).run();
                 }
                 for (const card of input.snapshot.cards) {
-                    db.insert(collectionCard).values(card).run();
+                    db.insert(collectionCard).values({...card, addedAtExact: card.addedAt?.toISOString() ?? null}).run();
                 }
                 const attempt = insertCollectionImport(db, {
                     status: "succeeded",
@@ -123,6 +124,7 @@ export function createSqliteCollectionRepository(
                     warnings: input.warnings,
                     errors: [],
                 });
+                db.insert(collectionState).values({singleton: 1, activeImportId: attempt.id}).onConflictDoUpdate({target: collectionState.singleton, set: {activeImportId: attempt.id}}).run();
                 commitTransaction(db);
                 return ok(attempt);
             } catch (error) {
@@ -163,7 +165,7 @@ export function createSqliteCollectionRepository(
         async listCollectionCards() {
             try {
                 const rows = await db.select().from(collectionCard).orderBy(collectionCard.sourceRowNumber);
-                return ok(rows);
+                return ok(rows.map(({addedAtExact, ...row}) => ({...row, addedAt: addedAtExact ? new Date(addedAtExact) : row.addedAt})));
             } catch (error) {
                 return err(toRepositoryError(error));
             }

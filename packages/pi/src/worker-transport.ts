@@ -159,7 +159,7 @@ function projectOutput(details: unknown): PiToolOutput {
     };
 }
 function cancelledOutput(message: string, request?: WorkerRequest) {
-    return projectOutput(request?.toolName === "lookup_cards" ? retrievalCancellationEnvelope(request.params, message) : { error: "cancelled", message });
+    return projectOutput(request && typeof request.toolName === "string" && ["lookup_cards", "browse_collection_cards"].includes(request.toolName) ? retrievalCancellationEnvelope(request.params, message) : { error: "cancelled", message });
 }
 function failureOutput(error: string, message: string) {
     return projectOutput({ error, message });

@@ -1,3 +1,5 @@
+import {CollectionAccessPolicySchema} from "./collection-policy";
+import {RecentAdditionsSchema} from "./deck-building-brief";
 import { z } from "zod";
 import {
     type DeckBuildingBrief,
@@ -265,6 +267,8 @@ const relationshipOperation = z.union([
 ]);
 // Brief patch fields are checked against the resulting discriminated Brief after merging.
 const briefPatch = z.strictObject({
+    collectionAccessPolicy: CollectionAccessPolicySchema.nullable().optional(),
+    recentAdditions: RecentAdditionsSchema.nullable().optional(),
     goal: text.optional(),
     format: DeckFormatSchema.optional(),
     formatAnchor: text.nullable().optional(),

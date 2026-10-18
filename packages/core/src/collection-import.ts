@@ -2,6 +2,7 @@ import {parse} from "csv-parse/sync";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {randomUUIDv7} from "bun";
+import {parseReliableSourceInstant} from "./collection-policy";
 import type {Clock} from "./scryfall-sync";
 
 export const collectionFinishValues = ["nonfoil", "foil", "etched"] as const;
@@ -120,10 +121,9 @@ const requiredHeaders = [
     "Condition",
     "Language",
     "Purchase price currency",
-    "Added",
 ] as const;
 
-const allowedHeaders = new Set<string>([...requiredHeaders, "Set name", "Rarity"]);
+const allowedHeaders = new Set<string>([...requiredHeaders, "Set name", "Rarity", "Added"]);
 const uuidSchema = z.uuid();
 
 export function createCollectionImportServices(
@@ -326,7 +326,7 @@ function normalizeFinish(input: string): CollectionFinish | null {
 function parsePositiveInteger(input: string): number | null {
     if (!/^\d+$/.test(input)) return null;
     const value = Number(input);
-    return value > 0 ? value : null;
+    return Number.isSafeInteger(value) && value > 0 ? value : null;
 }
 
 function parseBoolean(input: string): boolean | null {
@@ -347,10 +347,10 @@ function parsePurchasePrice(input: string): { readonly value: number | null; rea
 
 function parseAddedAt(input: string): { readonly value: Date | null; readonly warning?: string | undefined } {
     if (!input) return {value: null};
-    const date = new Date(input);
-    if (Number.isNaN(date.getTime())) return {
+    const date = parseReliableSourceInstant(input);
+    if (date === null) return {
         value: null,
-        warning: `Added timestamp ${JSON.stringify(input)} is malformed; stored null.`
+        warning: `Added timestamp ${JSON.stringify(input)} is malformed, ambiguous, or has unsupported precision; stored null.`
     };
     return {value: date};
 }
