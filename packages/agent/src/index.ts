@@ -1,5 +1,5 @@
 import {getProcessCardSearchProvider} from "./provider";
-export {getProcessCardSearchProvider} from "./provider";
+export {getProcessCardSearchProvider, dispatchScryfallHttp} from "./provider";
 import {createAgentToolHandlers, type Logger, type CardSearchOptions, type CardLookupOptions} from "@tomekin/core";
 import {
     closeDatabase,

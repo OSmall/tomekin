@@ -36,6 +36,7 @@
       "name": "@tomekin/cli",
       "version": "0.0.0",
       "dependencies": {
+        "@tomekin/agent": "workspace:*",
         "@tomekin/core": "workspace:*",
         "@tomekin/sqlite": "workspace:*",
         "neverthrow": "8.2.0",

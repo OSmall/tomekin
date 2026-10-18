@@ -19,6 +19,12 @@ variance that such work would need to consider.
 Future product design may introduce maybeboards, considering boards, upgrade boards, or budget alternatives as
 structures separate from the final importable Portable Decklist.
 
+## Reference Data Setup
+
+The single-file Scryfall import command could eventually be deprecated in favor of coordinated Scryfall Bulk Data
+Sync. Until an explicit deprecation decision, the local-file command remains supported for offline repair, debugging,
+and fixture workflows.
+
 ## Validation Evidence
 
 Content fingerprints could eventually support reuse of Deck Candidate validation results by recognizing unchanged

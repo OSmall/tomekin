@@ -75,6 +75,7 @@ export type CollectionImportError =
     | CollectionRepositoryError;
 
 export type CollectionImportRepository = {
+    getPrintingMigrationGuidance?(id: string): Promise<Result<string | null, CollectionRepositoryError>>;
     hasRequiredReferenceData(): Promise<Result<true, CollectionRepositoryError>>;
     resolveCardPrintingById(id: string): Promise<Result<ResolvedCollectionCardPrinting | null, CollectionRepositoryError>>;
     replaceCollectionSnapshot(input: {
@@ -148,6 +149,11 @@ export function createCollectionImportServices(
                 const resolved = await repository.resolveCardPrintingById(id);
                 if (resolved.isErr()) throw new RepositoryLookupError(resolved.error.message);
                 return resolved.value;
+            }, async id => {
+                if (!repository.getPrintingMigrationGuidance) return null;
+                const guidance = await repository.getPrintingMigrationGuidance(id);
+                if (guidance.isErr()) throw new RepositoryLookupError(guidance.error.message);
+                return guidance.value;
             });
 
             if (parsed.isErr()) {
@@ -191,6 +197,7 @@ type ParseFailure = {
 export async function parseManaBoxCollectionCsv(
     csvText: string,
     resolvePrinting: (id: string) => Promise<ResolvedCollectionCardPrinting | null>,
+    missingPrintingGuidance?: (id: string) => Promise<string | null>,
 ): Promise<Result<ParseSuccess, ParseFailure | CollectionRepositoryError>> {
     let rows: Record<string, string>[];
     try {
@@ -255,6 +262,10 @@ export async function parseManaBoxCollectionCsv(
         if (uuidSchema.safeParse(scryfallId).success) {
             try {
                 printing = await resolvePrinting(scryfallId);
+                if (!printing) {
+                    const guidance = await missingPrintingGuidance?.(scryfallId);
+                    errors.push(rowError(rowNumber, `Scryfall ID ${scryfallId} was not found in local Card Printings.${guidance ? ` ${guidance}` : ""}`));
+                }
             } catch (error) {
                 if (error instanceof RepositoryLookupError) return err({
                     type: "repository_error",
@@ -262,7 +273,6 @@ export async function parseManaBoxCollectionCsv(
                 });
                 throw error;
             }
-            if (!printing) errors.push(rowError(rowNumber, `Scryfall ID ${scryfallId} was not found in local Card Printings.`));
         }
 
         if (printing) {

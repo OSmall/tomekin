@@ -12,6 +12,7 @@ export type ProviderControlState = {
 };
 export type ProviderOwnerOptions = {
     now?: () => number;
+    intervalMs?: (url: string) => number;
     wallNow?: () => number;
     wait?: (ms: number, signal?: AbortSignal) => Promise<void>;
     dispatch: (url: string) => Promise<ProviderReply>;
@@ -27,6 +28,7 @@ export function createProviderDispatchOwner(
         wall = options.wallNow ?? (() => Date.now()),
         wait = options.wait ?? abortableWait;
     let lastStart = -Infinity,
+        lastInterval = 0,
         cooldown =
             now() +
             Math.max(
@@ -90,7 +92,7 @@ export function createProviderDispatchOwner(
                     const remaining = deadline - now(),
                         delay = Math.max(
                             0,
-                            lastStart + 500 - now(),
+                            lastStart + Math.max(lastInterval, options.intervalMs?.(url) ?? 500) - now(),
                             cooldown - now(),
                         );
                     if (remaining <= 0 || delay >= remaining)
@@ -128,6 +130,7 @@ export function createProviderDispatchOwner(
                 }
                 if (context.signal?.aborted) throw cancelled();
                 persist(true);
+                lastInterval = options.intervalMs?.(url) ?? 500;
                 lastStart = now();
                 // No await separates this timestamp from transport invocation.
                 const response = options.dispatch(url);

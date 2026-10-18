@@ -16,8 +16,9 @@ currently require a persisted-model migration.
 
 - Collection imports retain attempt summaries. Collection Locations and Collection Cards represent only the latest
   successful snapshot.
-- Scryfall imports retain attempt summaries. Each supported reference dataset is replaced independently and
-  transactionally.
+- Scryfall imports retain attempt summaries. Live sync publishes all three staged datasets, safe user-reference
+  remapping and successful application history in one transaction. Compatible local-file imports remain individually
+  transactional.
 - Deck Candidates are the only persisted deck-building result. Deck Opportunity shortlists and Deck Change Proposals
   remain transient.
 - Card Query requests and results are transient. Queries do not create saved filters or cached product records.
@@ -81,20 +82,29 @@ a warning. Card Identity is reached through the exact Card Printing rather than 
 Import Contract Revision, status, start and completion times, optional source update time and URI, imported record
 count, warnings, and blocking errors.
 
-Each dataset uses staging and transactional full replacement. A successful import replaces that dataset and records a
-successful attempt. A failed import records diagnostics and preserves the previous usable dataset. Reference readiness
-distinguishes a missing dataset from one produced by an incompatible Import Contract Revision.
+Live sync stages Oracle Cards, All Cards and Oracle Tags before validating their incoming graph. Publication establishes
+replacement targets, remaps validated user references, replaces source dependents, removes obsolete source records and
+records all three successes atomically with foreign keys enabled. Card Identity membership exactly matches the incoming
+Oracle Cards source. A failed coordinated refresh records no new successful provenance or application history.
+Local-file failures continue recording failed import attempts. Readiness distinguishes missing datasets from
+incompatible Import Contract Revisions; current successful imports follow committed row order rather than timestamps.
 
-The default explicit sync processes `oracle_cards`, then `all_cards`, then `oracle_tags`. Local-file import and explicit
-single-dataset sync use the same replacement rules. Normal deck-building and Collection import do not perform hidden
-network refreshes.
+Every disappearing Printing or identity requires applicable official evidence, including unreferenced removals. Identity
+replacement derives from old Printing relationships and validated incoming targets. A surviving identity retains its
+candidate references. Deletes with user references, candidate collisions, ambiguous targets and incomplete evidence
+block publication. Collection row identifiers and metadata, candidate sections/quantities, options and contributions
+survive safe remapping. Affected candidates receive a new content revision; new successful reference revisions invalidate
+reference-dependent lookup/check evidence. Concurrent database changes during staging/discovery cause a safe retry.
 
-Replacement invariants include:
+`scryfall_migration_evidence` caches validated official evidence, source URI and fetch time. It contains discarded IDs
+without live-card foreign keys. Downloaded evidence is not an application checkpoint or a claim of complete history.
+`scryfall_migration_application` records the committed Oracle import, official migration, old/final Printing IDs,
+available old/replacement identity provenance and application time. It commits with publication and supports strict
+offline CSV replacement guidance. Neither table retains historical card records.
 
-- `oracle_cards` replacement is blocked when it would orphan existing Card Printings or Card Identity Taggings.
-- `all_cards` replacement is blocked when a Card Printing references a missing Card Identity, when repeated Set
-  metadata conflicts by ID or code, or when equivalent Printing IDs disagree.
-- `oracle_tags` replacement is atomic across tags, aliases, direct taggings, and hierarchy links.
+Compatible offline single-dataset imports preserve existing validation. Identity/Printing removals require coordinated
+sync; tag replacement remains atomic across tags, aliases, taggings and hierarchy. Duplicate Printing equivalence,
+Set metadata, finish/part/promo checks, supported legalities and Copy Limit Overrides remain enforced.
 
 ### CardIdentity
 

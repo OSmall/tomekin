@@ -13,6 +13,7 @@ import {join} from "node:path";
 import {
     createProviderDispatchOwner,
     retryAfterDelay,
+    isScryfallMigrationPageUrl,
     validateSearchPageUrl,
     ProviderFailure,
     type CardSearchProvider,
@@ -64,7 +65,7 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
         try {
             process.kill(pid, 0);
             throw new Error(
-                "Another Tomekin process owns Scryfall search. Use one active provider process per user.",
+                "Another Tomekin process owns Scryfall API access. Use one active provider process per user.",
             );
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error;
@@ -86,7 +87,7 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
             try {
                 process.kill(retained, 0);
                 throw new Error(
-                    "Another Tomekin process owns Scryfall search.",
+                    "Another Tomekin process owns Scryfall API access.",
                 );
             } catch (error) {
                 if ((error as NodeJS.ErrnoException).code !== "ESRCH")
@@ -142,49 +143,8 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
         ...(initial ? {initialState: initial} : {}),
         persist,
         ...(log ? {log} : {}),
-        async dispatch(url) {
-            if (!validateSearchPageUrl(url, {}))
-                throw new ProviderFailure({
-                    code: "provider_error",
-                    message: "Unsupported provider search address.",
-                    reason: "invalid_response",
-                    retryable: false,
-                });
-            const controller = new AbortController(),
-                timer = setTimeout(() => controller.abort(), 120000);
-            try {
-                const response = await fetch(url, {
-                    signal: controller.signal,
-                    redirect: "error",
-                    headers: {
-                        "User-Agent": "Tomekin/0.0.0 (card search)",
-                        Accept: "application/json",
-                    },
-                });
-                // Persist observed cooldown before any disposable caller receives status or body.
-                const retry =
-                    response.status === 429
-                        ? retryAfterDelay(
-                              response.headers.get("Retry-After"),
-                              Date.now(),
-                          )
-                        : undefined;
-                if (response.status === 429) {
-                    void response.body?.cancel();
-                    return {status: 429, body: null, retryAfterMs: retry!};
-                }
-                return {status: response.status, body: await response.json()};
-            } catch {
-                throw new ProviderFailure({
-                    code: "provider_error",
-                    message: "Scryfall HTTP transport failed.",
-                    reason: "transport_failure",
-                    retryable: true,
-                });
-            } finally {
-                clearTimeout(timer);
-            }
-        },
+        intervalMs: url => new URL(url).pathname === "/cards/search" ? 500 : 100,
+        dispatch: dispatchScryfallHttp,
     });
     process.once("exit", () => {
         try {
@@ -201,4 +161,69 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
         } catch {}
     });
     return provider;
+}
+
+/** Shared HTTP transport; its owner observes 429 before delivering to disposable callers. */
+export async function dispatchScryfallHttp(url: string, wallNow = () => Date.now()) {
+
+            if (!validateSearchPageUrl(url, {}) && url !== "https://api.scryfall.com/bulk-data" && !isScryfallMigrationPageUrl(url))
+                throw new ProviderFailure({
+                    code: "provider_error",
+                    message: "Unsupported provider search address.",
+                    reason: "invalid_response",
+                    retryable: false,
+                });
+            const controller = new AbortController(),
+                timer = setTimeout(() => controller.abort(), 120000);
+            try {
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    redirect: "error",
+                    headers: {
+                        "User-Agent": "Tomekin/0.0.0 (reference data and card search)",
+                        Accept: "application/json",
+                    },
+                });
+                // Persist observed cooldown before any disposable caller receives status or body.
+                const retry =
+                    response.status === 429
+                        ? retryAfterDelay(
+                              response.headers.get("Retry-After"),
+                              wallNow(),
+                          )
+                        : undefined;
+                if (response.status === 429) {
+                    void response.body?.cancel();
+                    return {status: 429, body: null, retryAfterMs: retry!};
+                }
+                const maxBytes = new URL(url).pathname === "/cards/search" ? 64 * 1024 * 1024 : 1024 * 1024;
+                const reader = response.body?.getReader();
+                let bytes = 0;
+                const chunks: Uint8Array[] = [];
+                if (reader) {
+                    try {
+                        while (true) {
+                            const item = await reader.read();
+                            if (item.done) break;
+                            bytes += item.value.byteLength;
+                            if (bytes > maxBytes) { await reader.cancel(); throw new Error("Scryfall response byte budget exhausted."); }
+                            chunks.push(item.value);
+                        }
+                    } finally { reader.releaseLock(); }
+                }
+                const combined = new Uint8Array(bytes);
+                let offset = 0;
+                for (const chunk of chunks) { combined.set(chunk, offset); offset += chunk.byteLength; }
+                const body = JSON.parse(new TextDecoder().decode(combined));
+                return {status: response.status, body, responseBytes: bytes};
+            } catch {
+                throw new ProviderFailure({
+                    code: "provider_error",
+                    message: "Scryfall HTTP transport failed.",
+                    reason: "transport_failure",
+                    retryable: true,
+                });
+            } finally {
+                clearTimeout(timer);
+            }
 }

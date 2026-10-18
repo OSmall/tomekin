@@ -60,6 +60,7 @@ export type ProviderReply = {
     status: number;
     body: unknown;
     retryAfterMs?: number;
+    responseBytes?: number;
 };
 export type CardSearchProvider = {
     id: string;

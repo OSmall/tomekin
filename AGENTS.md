@@ -42,6 +42,15 @@ Uses the default canonical triage labels. See `docs/agents/triage-labels.md`.
 
 Uses a multi-context layout routed by `GLOSSARY-MAP.md`. Before exploring the codebase, read `docs/agents/domain.md`.
 
+## Zod Schema Syntax
+
+When editing Zod schemas, check the version pinned in `packages/core/package.json` and use Context7 documentation for
+that major version, verifying deprecations against the installed declarations. For Zod 4, use top-level format schemas
+such as `z.uuid()`, `z.url()`, `z.email()`, and `z.iso.date()` / `z.iso.datetime()`; chained string-format methods are
+deprecated. Use `.refine()` for predicates or `.check()` for custom issues. With `.check()`, supply each issue's `input`
+and set `continue: true` when preserving non-aborting validation. Preserve accepted inputs and diagnostics when updating
+syntax. See the [Zod 4 migration guide](https://zod.dev/v4/changelog).
+
 ## SQLite Migrations
 
 - Generate SQLite schema migrations with `bun run db:sqlite:migration:generate` from the workspace root.

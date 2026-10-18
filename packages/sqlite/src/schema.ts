@@ -587,3 +587,22 @@ export const deckCandidateRelationship = sqliteTable(
         ),
     ],
 );
+
+/** Downloaded official evidence is distinct from successful application. IDs intentionally have no live-card FK. */
+export const scryfallMigrationEvidence = sqliteTable("scryfall_migration_evidence", {
+  id: text("id").primaryKey(),
+  oldPrintingId: text("old_printing_id").notNull(),
+  evidenceJson: text("evidence_json", {mode: "json"}).notNull(),
+  sourceUri: text("source_uri").notNull(),
+  fetchedAt: integer("fetched_at", {mode: "timestamp_ms"}).notNull(),
+}, t => [index("scryfall_migration_old_printing").on(t.oldPrintingId)]);
+export const scryfallMigrationApplication = sqliteTable("scryfall_migration_application", {
+  id: text("id").primaryKey(),
+  migrationId: text("migration_id").notNull().references(() => scryfallMigrationEvidence.id),
+  oracleImportId: text("oracle_import_id").notNull().references(() => scryfallBulkDataImport.id),
+  oldPrintingId: text("old_printing_id").notNull(),
+  newPrintingId: text("new_printing_id"),
+  oldIdentityId: text("old_identity_id"),
+  newIdentityId: text("new_identity_id"),
+  appliedAt: integer("applied_at", {mode: "timestamp_ms"}).notNull(),
+}, t => [unique("scryfall_migration_application_unique").on(t.migrationId, t.oracleImportId)]);

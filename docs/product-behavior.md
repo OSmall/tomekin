@@ -389,7 +389,22 @@ ManaBox List rows are not currently skipped and summarized as desired; unsupport
 tracked compliance work is [issue #39](https://github.com/OSmall/tomekin/issues/39).
 
 Scryfall reference data is populated only by explicit user-invoked sync or local-file import commands. Successful
-dataset replacement is transactional, and a failed import preserves the previous usable dataset. Provider discovery fetches live search results but never refreshes the retained local corpus automatically.
+live sync stages all three datasets and publishes them atomically with safe official migration remapping and successful
+history. Failed staging, reconciliation or publication preserves the previous reference and user data. Paper and digital
+reference coverage remains intact; current identities match the selected Oracle snapshot exactly. Unexplained removals,
+referenced deletes and candidate collisions block with bounded source/phase/recovery diagnostics. Fetched migration
+evidence may survive a failed refresh as cache; applied history cannot. Ordinary additions and source-field updates
+continue from bulk data without unnecessary migration discovery.
+
+Metadata and migration discovery share the process-wide Scryfall owner with search, including retained cooldown and
+conservative restart recovery. Sync API starts are at least 100 ms apart; search keeps 500 ms. Discovery stops as soon as
+required transitions resolve, within 32 requests, 16 MiB and 180 seconds including retries and waits. HTTP 429 enforces
+at least 31 seconds, extends for longer valid Retry-After values, and retries at most twice within budget. Budget or retry
+exhaustion preserves the database and requires a later retry. Independent bulk-file origins do not consume API cadence.
+Compatible local-file imports remain offline; Identity/Printing removals require coordinated sync. A discarded CSV
+Printing ID is rejected with any locally cached official replacement guidance, preserving strict Set, collector
+number, language and finish checks. Provider discovery fetches live search results but never refreshes the retained
+local corpus automatically.
 
 ## External Authority Limits
 

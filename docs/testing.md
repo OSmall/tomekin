@@ -158,9 +158,10 @@ ManaBox import tests should use small package-local fixtures and must not call l
 
 Scryfall sync should have its own tested done bar before ManaBox Collection import is considered complete.
 
-Scryfall sync tests should prove successful and failed `ScryfallBulkDataImport` attempts are recorded, failed sync
-preserves the last usable dataset, `oracle_cards` imports before `all_cards`, `all_cards` rows reference existing
-`CardIdentity` rows, and operations that need card identity fail clearly when required Scryfall datasets are missing or
+Scryfall tests should prove local-file success/failure attempts are recorded and coordinated sync records all three
+successes only with committed publication. Failed coordinated attempts return diagnostics without adding successful
+history; validated fetched evidence may remain cached. Failed sync preserves the last usable dataset, coordinated live sync validates incoming `all_cards` against staged
+`CardIdentity` rows before atomic publication, and operations that need card identity fail clearly when required Scryfall datasets are missing or
 use an incompatible Import Contract Revision. Oracle Cards coverage should include required supported-Format legality
 rows and accepted and rejected Copy Limit Override wording. Repository coverage should prove equivalent duplicate Card
 Printing records import once while conflicting duplicates reject the import without replacing the previous usable
@@ -178,6 +179,22 @@ survive cleanup and migration. Fresh databases must contain no synthetic placeho
 Scryfall sync tests should use small package-local Scryfall fixtures, not real Scryfall bulk data files. Real Scryfall bulk files are too large for ordinary tests and must not be required by `bun test`.
 
 Tests must not call live Scryfall network services as part of `bun test`.
+
+Coordinated refresh coverage uses the public sync command, injected source ports and real isolated SQLite. Tiny fixtures
+exercise populated retirements and official merges, retained Collection metadata and candidate memberships/options/
+contributions, Printing-only corrections, genuine deletes, ambiguous mappings/collisions, chains, malformed evidence,
+unexplained disappearance, cache reuse, exact source membership and repeated sync. Late publication triggers compare
+logical table snapshots and foreign-key checks; concurrent edits safely reject stale plans. Generated metadata upgrades
+preserve populated prior-schema user data. Offline CSV tests retain exact metadata checks and replacement guidance.
+
+Focused tests exercise the actual HTTP adapter with a fake clock for 100 ms starts, stricter search cadence, late timers,
+independent bulk origins, 31-second and longer Retry-After cooldown, two-retry exhaustion, budgets and owner restart.
+No default test uses live services, real cooldown sleeps, full bulk files or the working-tree database. Outside the suite,
+verification on a copy of the affected populated database must establish exact incoming identity membership, preserved
+user content, successful/rejected before/after evidence and zero FK violations before closing #104/#26's merge gate.
+Automated fixture results alone do not claim that live acceptance has passed. The
+[18 October cached-source populated replay](research/scryfall-sync-evidence/2026-10-18-staging-performance.md) records
+full-source success, protected user content, exact identity membership, rejected-refresh preservation and staging timings.
 
 ## Pi Launcher Done Bar
 

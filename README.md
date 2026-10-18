@@ -117,8 +117,21 @@ then `oracle_tags`.
 bun run sync:scryfall
 ```
 
-This command explicitly makes live Scryfall Bulk Data API requests. It fetches bulk metadata, downloads the selected bulk
-files, imports them into SQLite, and keeps failed imports non-destructive so the previous usable dataset is preserved.
+This command explicitly fetches Scryfall metadata and all three bulk datasets. It stages and validates the incoming
+graph, resolves disappearances using official Card Migrations, and publishes the complete reference refresh in one
+transaction. Paper and digital cards are retained. Safe official merges preserve Collection row metadata and saved
+candidate memberships, options and contributions; referenced deletes, ambiguous replacements, collisions and unexplained
+disappearances abort the refresh and preserve the prior usable data. Apply SQLite migrations before running an updated
+checkout. Staging reports record counts every 25,000 records and at each dataset's completion; success is reported only
+after the complete refresh commits.
+
+Initial setup and refreshes without disappearances need no migration history. Discovery reuses cached evidence and stops
+when required chains resolve, within 32 API requests (including retries), 16 MiB of responses and 180 seconds including
+waits. Budget exhaustion means incomplete reconciliation. Metadata and migrations share the search process owner:
+API starts are at least 100 ms apart, with search retaining its stricter 500 ms cadence. Bulk-file downloads use a
+separate origin. Every HTTP 429 retains a minimum 31-second cooldown, honors longer Retry-After values, and permits at
+most two retries per request within budget. One active Tomekin API owner per user/state directory is supported; close
+another active Tomekin process before starting sync. Retry after reported cooldown; restart does not bypass it.
 
 Override the database for one sync run with `--db`:
 
@@ -160,7 +173,9 @@ bun run import:scryfall -- oracle_tags /path/to/local/file/oracle-tags.jsonl.gz
 ```
 
 Run `oracle_cards` before `all_cards` or `oracle_tags`. The local-file command only reads local files and does not download
-from Scryfall.
+from Scryfall. Compatible replacements remain supported; removing Card Identities or Printings requires the coordinated
+live sync and its migration safeguards. Older ManaBox CSVs with discarded Printing IDs are rejected with locally
+cached official replacement guidance; repair the source CSV and verify exact Printing metadata before reimporting.
 
 Add `--timing` to print diagnostic import timing, record counters, finalization timings, and lightweight JavaScript heap
 snapshots for large-file smoke testing:

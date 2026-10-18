@@ -38,53 +38,6 @@ describe("Scryfall sync services", () => {
     expect(result.error.issues.length).toBeGreaterThan(0);
   });
 
-  test("sync downloads every default dataset before importing in dependency order", async () => {
-    const repository = fakeRepository([]);
-    const events: string[] = [];
-    const services = createScryfallSyncServices(repository, clock, {
-      async listBulkDataMetadata() {
-        return ok(defaultMetadata());
-      },
-      async downloadBulkData(metadata) {
-        events.push(`download:${metadata.bulkDataType}`);
-        return ok(downloadedSource(metadata));
-      },
-    });
-
-    const result = await services.syncScryfallData(
-      {bulkDataTypes: ["oracle_tags", "all_cards", "oracle_cards"]},
-      {
-        observer: {
-          onEvent(event) {
-            if (event.type === "import_started") {
-              events.push(`import:${event.bulkDataType}`);
-            }
-          },
-        },
-      },
-    );
-
-    expect(result.isOk()).toBe(true);
-    if (result.isErr()) throw new Error(result.error.message);
-    expect(events).toEqual([
-      "download:oracle_cards",
-      "download:all_cards",
-      "download:oracle_tags",
-      "import:oracle_cards",
-      "import:all_cards",
-      "import:oracle_tags",
-    ]);
-    expect(result.value.bulkDataTypes).toEqual([
-      "oracle_cards",
-      "all_cards",
-      "oracle_tags",
-    ]);
-    expect(result.value.datasets.map((dataset) => dataset.status)).toEqual([
-      "succeeded",
-      "succeeded",
-      "succeeded",
-    ]);
-  });
 
   test("sync fails before downloading when required metadata is missing", async () => {
     let downloaded = false;
@@ -140,36 +93,6 @@ describe("Scryfall sync services", () => {
     expect(result.error.type).toBe("download_failed");
   });
 
-  test("sync stops at first import failure and preserves prior successful datasets", async () => {
-    const repository = fakeRepository([], {failOn: "all_cards"});
-    const imported: ScryfallBulkDataType[] = [];
-    const services = createScryfallSyncServices(repository, clock, {
-      async listBulkDataMetadata() {
-        return ok(defaultMetadata());
-      },
-      async downloadBulkData(metadata) {
-        return ok(downloadedSource(metadata));
-      },
-    });
-
-    const result = await services.syncScryfallData(
-      {bulkDataTypes: ["oracle_cards", "all_cards", "oracle_tags"]},
-      {
-        observer: {
-          onEvent(event) {
-            if (event.type === "import_started") imported.push(event.bulkDataType);
-          },
-        },
-      },
-    );
-
-    expect(result.isErr()).toBe(true);
-    if (result.isOk()) throw new Error("expected import failure");
-    expect(result.error.type).toBe("import_failed");
-    expect(imported).toEqual(["oracle_cards", "all_cards"]);
-    expect((await repository.getLatestSuccessfulBulkDataImport("oracle_cards"))._unsafeUnwrap()).not.toBeNull();
-    expect((await repository.getLatestSuccessfulBulkDataImport("all_cards"))._unsafeUnwrap()).toBeNull();
-  });
 
   test("returns structured failures for missing required card reference datasets", async () => {
     const services = createScryfallSyncServices(fakeRepository(["oracle_cards"]), clock);

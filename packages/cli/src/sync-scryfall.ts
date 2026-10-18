@@ -1,9 +1,13 @@
+import {getProcessCardSearchProvider} from "@tomekin/agent";
 import {mkdtemp, rm} from "node:fs/promises";
 import {join} from "node:path";
 import {tmpdir} from "node:os";
 import {err, ok} from "neverthrow";
 import {
+    ScryfallRefreshFailure, ProviderFailure,
+    type ScryfallRefreshDiagnostics,
     type Clock,
+    type CardSearchProvider,
     createRootLogger,
     createScryfallSyncServices,
     defaultScryfallSyncBulkDataTypes,
@@ -37,6 +41,8 @@ export type SyncScryfallCommandEnv = {
 export type SyncScryfallCommandRuntime = {
   readonly log: Logger;
   readonly syncPorts?: ScryfallBulkDataSyncPorts | undefined;
+  readonly apiProvider?: CardSearchProvider;
+  readonly monotonicNow?: () => number;
 };
 
 export async function runSyncScryfallCommand(
@@ -62,7 +68,7 @@ export async function runSyncScryfallCommand(
   renderStart(io, {dbPath, bulkDataTypes});
 
   const db = openDatabase(dbPath, {log: runtime.log});
-  const temporaryPorts = runtime.syncPorts ? null : await createBunScryfallSyncPorts();
+  const temporaryPorts = runtime.syncPorts ? null : await createBunScryfallSyncPorts(runtime.apiProvider, runtime.monotonicNow);
 
   try {
     const repository = createSqliteScryfallRepository(db, clock);
@@ -73,7 +79,7 @@ export async function runSyncScryfallCommand(
     );
       const importLogState: SyncImportLogState = {currentBulkDataType: null};
       const observer = createCliSyncObserver(io, importLogState);
-      const importObserver = createLoggingImportObserver(logger, context, importLogState);
+      const importObserver = createLoggingImportObserver(io, logger, context, importLogState);
       const result = await services.syncScryfallData({bulkDataTypes: [...bulkDataTypes]}, {observer, importObserver});
 
     if (result.isOk()) {
@@ -83,7 +89,7 @@ export async function runSyncScryfallCommand(
     }
 
     logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: result.error}, "Scryfall sync command failed");
-    renderFailure(io, {dbPath, message: result.error.message});
+    renderFailure(io, {dbPath, message: result.error.message, ...(result.error.type === "repository_error" && result.error.diagnostics ? {diagnostics: result.error.diagnostics} : {})});
     return 1;
   } catch (error) {
     logger.error({...context, status: "failed", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Scryfall sync command failed unexpectedly");
@@ -156,6 +162,7 @@ function createCliSyncObserver(
 }
 
 function createLoggingImportObserver(
+    io: SyncScryfallCommandIo,
     logger: Logger,
     context: {
         readonly operation: string;
@@ -164,8 +171,14 @@ function createLoggingImportObserver(
     },
     state: SyncImportLogState,
 ): ScryfallImportObserver {
+    const stagedCounts = new Map<ScryfallBulkDataType, number>();
     return {
         onEvent(event) {
+            const bulkDataType = state.currentBulkDataType;
+            if (event.type === "record_staged" && bulkDataType && stagedCounts.get(bulkDataType) !== event.stagedRecordCount) {
+                stagedCounts.set(bulkDataType, event.stagedRecordCount);
+                io.stderr.write(`Staged ${bulkDataType}: ${event.stagedRecordCount} ${event.stagedRecordCount === 1 ? "record" : "records"}.\n`);
+            }
             logImportEvent(logger, context, state.currentBulkDataType, event);
         },
     };
@@ -247,21 +260,41 @@ function renderSyncEvent(io: SyncScryfallCommandIo, event: ScryfallSyncEvent): v
   }
 }
 
-async function createBunScryfallSyncPorts(): Promise<{
+export async function createBunScryfallSyncPorts(provider?: CardSearchProvider, now = () => performance.now()): Promise<{
   readonly ports: ScryfallBulkDataSyncPorts;
   cleanup(): Promise<void>;
 }> {
   const tempDir = await mkdtemp(join(tmpdir(), "tomekin-scryfall-sync-"));
+  async function apiRequest(url: string, budget = {remainingMs: 180000, remainingBytes: 16 * 1024 * 1024, remainingRequests: 3}) {
+    const started = now();
+    let requests = 0, bytes = 0;
+    while (true) {
+      if (requests >= Math.min(3, budget.remainingRequests) || now() - started >= budget.remainingMs)
+        throw new ScryfallRefreshFailure("rate_limit_exhausted", "rate_limit_exhausted: request/retry budget reached. Previous data preserved; retry after the shared cooldown.");
+      const reply = await (provider ?? getProcessCardSearchProvider()).dispatch(url, {remainingMs: budget.remainingMs - (now() - started)});
+      requests++;
+      bytes += reply.responseBytes ?? new TextEncoder().encode(JSON.stringify(reply.body)).byteLength;
+      if (bytes > budget.remainingBytes) throw new ScryfallRefreshFailure("discovery_budget_exhausted", "discovery_budget_exhausted: response byte budget reached; reconciliation incomplete.");
+      if (reply.status === 429) continue;
+      if (reply.status !== 200) throw new Error(`Scryfall API request failed with HTTP ${reply.status}.`);
+      return {body: reply.body, requestCount: requests, responseBytes: bytes};
+    }
+  }
   const ports: ScryfallBulkDataSyncPorts = {
+    monotonicNow: now,
+    async listCardMigrations(url, budget) {
+      try {
+        const response = await apiRequest(url, budget);
+        return ok({...response.body as {data: readonly unknown[]; has_more: boolean; next_page?: string},
+          responseBytes: response.responseBytes, requestCount: response.requestCount});
+      } catch (error) {
+        return err({message: error instanceof ProviderFailure ? `${error.message} Retry after ${error.problem.retry_after_ms ?? 0} ms; shared cooldown remains active.` : error instanceof Error ? error.message : String(error),
+          ...(error instanceof ScryfallRefreshFailure ? {reason: error.reason} : error instanceof ProviderFailure && error.problem.code === "rate_limited" ? {reason: "rate_limit_exhausted" as const} : {})});
+      }
+    },
     async listBulkDataMetadata() {
       try {
-        const response = await fetch(SCRYFALL_BULK_DATA_URL, {
-          headers: {"User-Agent": USER_AGENT, Accept: "application/json"},
-        });
-        if (!response.ok) {
-          return err({message: `Scryfall bulk metadata request failed with HTTP ${response.status}.`});
-        }
-        const body = await response.json();
+        const {body} = await apiRequest(SCRYFALL_BULK_DATA_URL);
         return ok(parseBulkDataMetadata(body));
       } catch (error) {
         return err({message: error instanceof Error ? error.message : String(error)});
@@ -339,11 +372,17 @@ function renderSuccess(io: SyncScryfallCommandIo, summary: {readonly dbPath: str
   }
 }
 
-function renderFailure(io: SyncScryfallCommandIo, summary: {readonly dbPath: string; readonly message: string}): void {
+function renderFailure(io: SyncScryfallCommandIo, summary: {readonly dbPath: string; readonly message: string; readonly diagnostics?: ScryfallRefreshDiagnostics}): void {
   io.stderr.write("Scryfall Bulk Data Sync failed.\n");
-  io.stderr.write("Previous usable datasets were preserved for failed imports.\n");
+  io.stderr.write("Previous usable datasets were preserved; no partial reference refresh was committed.\n");
   io.stderr.write(`Target database: ${summary.dbPath}\n`);
   io.stderr.write(`Blocking error: ${summary.message}\n`);
+  if (summary.diagnostics) {
+    const detail = summary.diagnostics;
+    io.stderr.write(`Phase: ${detail.phase}; reason: ${detail.reason}\n`);
+    if (detail.referenceCounts) io.stderr.write(`Affected reference counts: ${JSON.stringify(detail.referenceCounts)}\n`);
+    for (const source of detail.sources) io.stderr.write(`Source ${source.bulkDataType}: ${source.sourceUri ?? "unknown"} (${source.sourceUpdatedAt?.toISOString() ?? "unknown update time"})\n`);
+  }
 }
 
 function usage(): string {

@@ -26,7 +26,7 @@ test("one provider process owns all databases and an interrupted owner restarts 
         const second = spawn('console.log("unexpected");');
         expect(await second.exited).not.toBe(0);
         expect(await new Response(second.stderr).text()).toContain(
-            "Another Tomekin process owns Scryfall search",
+            "Another Tomekin process owns Scryfall API access",
         );
         first.kill("SIGKILL");
         await first.exited;

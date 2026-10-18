@@ -11,7 +11,7 @@ import type {
     CollectionRepositoryError,
     ResolvedCollectionCardPrinting,
 } from "@tomekin/core";
-import {requiredScryfallImportContractRevisions} from "@tomekin/core";
+import {CardMigrationSchema, requiredScryfallImportContractRevisions} from "@tomekin/core";
 import type {TomekinDatabase} from "./database";
 import {
     cardIdentity,
@@ -23,6 +23,7 @@ import {
     collectionLocation,
     collectionState,
     scryfallBulkDataImport,
+    scryfallMigrationEvidence,
 } from "./schema";
 
 export type SqliteCollectionRepository = CollectionImportRepository & CollectionQueryRepository & {
@@ -36,6 +37,26 @@ export function createSqliteCollectionRepository(
     _clock: Clock,
 ): SqliteCollectionRepository {
     return {
+        async getPrintingMigrationGuidance(id) {
+            try {
+                let current = id;
+                const visited = new Set<string>();
+                while (true) {
+                    if (visited.has(current)) return ok("Local official migration evidence contains a cycle. Repair reference sync before editing the CSV.");
+                    visited.add(current);
+                    if (current !== id && db.select({id: cardPrinting.id}).from(cardPrinting).where(eq(cardPrinting.id, current)).get())
+                        return ok(`Official Scryfall migration replaces this Printing with ${current}. Repair the CSV source, checking Set, collector number, language and finish; imports do not remap automatically.`);
+                    const evidence = db.select().from(scryfallMigrationEvidence).where(eq(scryfallMigrationEvidence.oldPrintingId, current)).all()
+                        .map(row => CardMigrationSchema.parse(row.evidenceJson));
+                    if (!evidence.length) return ok(current === id ? null : `Official replacement chain leads to ${current}, which is not installed locally. Run coordinated sync:scryfall and verify the CSV Printing metadata before importing.`);
+                    const targets = new Set(evidence.map(record => record.new_scryfall_id));
+                    if (targets.size !== 1) return ok("Local official migration evidence conflicts. Repair reference sync before editing the CSV.");
+                    const target = [...targets][0];
+                    if (!target) return ok("Official Scryfall migration deletes this Printing without replacement. Repair the CSV source before importing.");
+                    current = target;
+                }
+            } catch (error) { return err(toRepositoryError(error)); }
+        },
         async hasRequiredReferenceData() {
             try {
                 const rows = await db

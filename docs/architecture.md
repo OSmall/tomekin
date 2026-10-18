@@ -104,6 +104,23 @@ allowlisted and typed; all query values are bound parameters. See ADRs
 The default database path is `.data/tomekin.sqlite`, configurable with `TOMEKIN_DB_PATH`. Database files are local and
 uncommitted.
 
+### Coordinated Scryfall refresh
+
+Core owns source decoding and the single sync orchestration entry point, with migration-chain resolution and typed
+failure reasons independent of SQLite. Adapter-provided re-openable downloads finish before staging; no network wait
+occurs in the publication transaction. The repository stages into temporary tables, validates incoming relationships,
+exposes only the graph facts needed for reconciliation, rechecks concurrent state under a write lock, and publishes
+reference/user changes and provenance together. TEMP writes use a deferred staging transaction to avoid per-row
+autocommit overhead after the page cache spills; the main database remains writable, and this transaction finishes
+before migration discovery. Existing local-file imports reuse the same staging/publication routines
+while refusing removals that require coordinated reconciliation. See [ADR 0020](./adr/0020-scryfall-migration-authority-and-reference-coverage.md).
+
+The CLI reuses the agent runtime's process-wide HTTP owner for metadata and migration pages. Its actual-start admission
+uses 100 ms for sync endpoints and preserves the stricter search cadence; one enforced owner/state root prevents
+independent process bypass. Durable cooldown survives disposable callers and restart. The CLI bounds HTTP bodies,
+per-request 429 retries and overall migration discovery, while separate bulk-file downloads remain outside API pacing.
+Fetched migration evidence and committed application history have separate persistence semantics.
+
 ### CLI adapter
 
 `packages/cli` owns explicit local commands for migrations, Scryfall bulk sync/import, ManaBox Collection import, and
