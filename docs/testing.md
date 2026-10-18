@@ -288,3 +288,14 @@ representative variant has 24 selected identities and eight active alternatives 
 three projections, confirm special characters render as text, verify quantities/alternatives remain distinguishable,
 and inspect layout at readable zoom. A passing render establishes no strategic quality. No renderer, live LLM or network
 is part of the default test suite.
+
+## Collection policy and chronology
+
+The public shared-runtime tests use isolated on-disk SQLite and tiny synthetic/public reference fixtures. They exercise
+exact location collisions, empty/unconfirmed/no-import states, same-row/actual-Printing conjunctions, currency mismatch,
+unknown metadata, strict versus exploratory Brief intent, reliable source chronology, null-last ordering, closed
+selectors, byte/exhaustion boundaries, safe continuation, cancellation and successful-versus-failed import invalidation.
+Actual Pi Worker/fallback and OpenCode tests assert canonical selector metadata and complete model-visible envelopes;
+exact location inspection also survives the former preview cap. Focused SQLite exceptions establish transaction rollback,
+equal-time/out-of-order import completion and generated migration preservation of records and integer timestamp units.
+Legacy lost source precision remains an explicit unknown rather than a guessed passing date.

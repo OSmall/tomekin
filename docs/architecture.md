@@ -15,7 +15,7 @@ retaining Tomekin's current domain model and relational reference corpus for kno
 and deterministic checks. Existing Collection and Deck Candidate foreign keys remain; no duplicated identity columns
 or name snapshots are adopted. The existing DSL remains an explicitly enabled legacy capability after migration.
 Local `lookup_cards` now implements the complete selected-fact, bounded-envelope and stateless input-position contract.
-Provider search, Collection-policy evidence and catalogue migration remain separate slices. Local-only normal network
+Local Collection policy resolution and bounded owned-row browsing are implemented; provider filtering/evidence and catalogue migration remain separate slices. Local-only normal network
 behavior remains in effect until provider discovery ships.
 
 ## Current Components
@@ -183,3 +183,18 @@ reads do not depend on unused evidence/import state. No persisted report, finger
 CLI loads a saved candidate, generates source in Core, writes a unique temporary file beside the destination and
 publishes by atomic rename. Filesystem failures clean the temporary file and leave previous output untouched. Diagram
 rendering remains an external inspection concern; no Mermaid/SVG production dependency is introduced.
+
+## Collection policy and owned-row browse
+
+Core owns closed copy selectors, exact snapshot/location resolution, whole-Brief strict-date consistency and pure
+same-row policy evaluation. `OwnedRowFacts` carries a row's actual Printing/Set/language facts independently of selected
+output so omitted display facts cannot weaken proof. The evaluator classifies eligible, excluded and uncertain rows,
+retains reasons/proof fields and marks Existing Deck quantities Committed. It is reusable by retrieval evidence and
+whole-demand allocation; browsing itself performs no final deck allocation.
+
+SQLite supplies bounded joined row batches and the authoritative active Collection pointer. Core applies all policy,
+row/date and actual-Printing criteria before emitting result bounds. It uses the common stateless cursor/envelope and
+UTF-8 sizing contract, with revision checks around evaluation and final emission. Tokens bind fixed inputs, effective
+policy and relevant successful imports; they contain no results. New exact UTC date text preserves milliseconds without
+changing legacy timestamp units. The active pointer commits/rolls back with Collection replacement. No provider scan,
+historical Collection rows, duplicate identity columns, saved search or standalone policy handle is introduced.

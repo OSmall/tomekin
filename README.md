@@ -63,6 +63,11 @@ including multipart text and direct/inherited tags. Complete bounded envelopes s
 OpenCode and both Pi execution paths. Local misses remain explicit, and optional unavailable tags do not block core
 lookup. It performs no network fallback or ownership evaluation. See the [lookup contract](docs/card-query.md#known-card-lookup).
 
+`list_collection_locations` exposes exact locations and the authoritative active Collection import ID.
+`browse_collection_cards` reads bounded actual owned rows under an explicit confirmed policy or a candidate's Brief,
+including reliable source-added dates and independently searchable unknown dates. Successful reimport requires scope
+reconfirmation; failed attempts preserve current references. See the [Collection contract](docs/card-query.md#collection-policy-and-owned-row-browsing).
+
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
 explicit decimal target. It works without imported card data and does not save records. See the
 [calculator contract](docs/product-behavior.md#hypergeometric-calculator) for inputs, precision and sampling limits.
@@ -214,8 +219,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
   purchase recommendations are not yet supported.
 - Deck Opportunity shortlists are transient in the current agent workflow; durable Deck Opportunity persistence remains
   future work.
-- Collection Location allow-list enforcement is procedural; the Deck Building Brief and evaluator do not carry a
-  structured Collection Access Policy.
+- Confirmed Collection Access Policy is enforced by `browse_collection_cards`. Legacy `query_cards` still needs
+  explicit scoped predicates and does not prove the new policy or actual owned-Printing restrictions.
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.
 - Final Available, Committed, and Missing classifications are best-effort agent conclusions from scoped Card Query

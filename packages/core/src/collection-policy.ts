@@ -14,7 +14,7 @@ export function parseReliableSourceInstant(input: string): Date | null {
     if (month < 1 || month > 12 || day < 1 || day > days[month - 1]! || Number(h) > 23 || Number(mi) > 59 || Number(s) > 59) return null;
     if (zone !== "Z" && (Number(zone!.slice(1, 3)) > 23 || Number(zone!.slice(4)) > 59)) return null;
     const date = new Date(input);
-    return Number.isFinite(date.getTime()) ? date : null;
+    return Number.isFinite(date.getTime()) && date.getUTCFullYear() >= 0 && date.getUTCFullYear() <= 9999 ? date : null;
 }
 export const UtcInstantSchema = z.string().refine(value => value.endsWith("Z") && parseReliableSourceInstant(value) !== null, "Expected a valid explicit UTC calendar instant.");
 const nonemptyStrings = z.array(z.string().min(1)).min(1);
@@ -92,12 +92,12 @@ export type RowPolicyEvaluation = {decision: "eligible" | "excluded" | "uncertai
 /** A known failure defeats a conjunction even when other requested facts are unknown. */
 export function evaluateCopyRequirements(requirements: CopyRequirements, row: OwnedRowFacts): Pick<RowPolicyEvaluation, "decision" | "reasons" | "uncertain_fields" | "proof_fields"> {
     const reasons: string[] = [], uncertain_fields: string[] = [], proof_fields: string[] = [];
-    const test = (field: string, value: unknown, passes: (value: never) => boolean) => {
+    const test = <T>(field: string, value: T | null | undefined, passes: (value: T) => boolean) => {
         proof_fields.push(field);
         if (value === null || value === undefined) {uncertain_fields.push(field); return;}
-        if (!passes(value as never)) reasons.push(`requirement:${field}`);
+        if (!passes(value)) reasons.push(`requirement:${field}`);
     };
-    for (const field of ["finish", "condition"] as const) if (requirements[field]) test(field, row[field], value => requirements[field]!.includes(value));
+    for (const field of ["finish", "condition"] as const) {const allowed: readonly string[] | undefined = requirements[field]; if (allowed) test(field, row[field], value => allowed.includes(value));}
     for (const field of ["altered", "misprint"] as const) if (requirements[field] !== undefined) test(field, row[field], value => value === requirements[field]);
     if (requirements.date_state) {proof_fields.push("added_at"); if (requirements.date_state === "known" && row.added_at === null) uncertain_fields.push("added_at"); else if (requirements.date_state === "unknown" && row.added_at !== null) reasons.push("requirement:date_state");}
     if (requirements.added_at_from) test("added_at", row.added_at, value => Date.parse(value) >= Date.parse(requirements.added_at_from!));
@@ -120,7 +120,7 @@ export function evaluateOwnedRow(policy: ResolvedCollectionPolicy, row: OwnedRow
     if (policy.excluded_oracle_ids.includes(row.oracle_id)) reasons.push("excluded_oracle_id");
     if (policy.excluded_printing_ids.includes(row.printing_id)) reasons.push("excluded_printing_id");
     if (policy.excluded_collection_card_ids.includes(row.collection_card_id)) reasons.push("excluded_collection_card_id");
-    return {...result, reasons, decision: reasons.length ? "excluded" : result.decision, committed: row.location.type === "deck"};
+    return {...result, proof_fields: ["location", ...result.proof_fields], reasons, decision: reasons.length ? "excluded" : result.decision, committed: row.location.type === "deck"};
 }
 export type CollectionPolicySnapshot = {activeImport: {id: string; imported_at: string} | null; legacySnapshot: boolean; locations: readonly CollectionLocationImportRecord[]; referenceImports: readonly ScryfallBulkDataImport[]};
 export type CollectionRowOrder = "source_order" | "added_at_asc" | "added_at_desc";

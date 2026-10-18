@@ -40,8 +40,8 @@ its restricted authority, and directs the agent to read the root `tomekin-deck-b
 use. That skill routes to the further skills required by the request.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
-`lookup_cards` preserves its complete 51,200-byte compact success/error envelope in model-visible content and details,
-with ordinary `first`/`after` recovery. Other unmigrated core tools retain their temporary 16,000-character preview cap;
+`lookup_cards` and `browse_collection_cards` preserve their complete 51,200-byte compact success/error envelopes in model-visible content and details,
+with ordinary `first`/`after` recovery. Location inspection preserves complete names/IDs and snapshot context. Other unmigrated core tools retain their temporary 16,000-character preview cap;
 scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
@@ -112,10 +112,12 @@ The Brief is discriminated by `format`:
 The drafting tool always marks the Brief as requiring confirmation. It also records that Collection availability must
 be checked before treating cards as Missing Cards, and it calls out an omitted Commander Bracket for confirmation.
 
-The current Brief schema does not contain a structured Collection Access Policy or dedicated Deck Opportunity ranking
-priorities. The agent therefore keeps the confirmed exact Collection Location allow-list and relevant priorities in
-the working conversation and repeats that scope in each Collection query. This procedural boundary is a current
-limitation, not hidden policy state.
+The Brief stores nullable `collectionAccessPolicy` and `recentAdditions`. A confirmed policy is bound to the active
+successful Collection import, exact locations and typed conjunctive copy requirements. Recent-addition intent records
+strict physical-copy eligibility versus exploratory identity inspiration, explicit UTC bounds, the user's task timezone,
+and whether undated discovery was required or declined. With a confirmed policy, strict intent requires policy date
+bounds at least as restrictive as its interval; incompatible/incomplete inputs reject before eligibility is claimed.
+A provisional candidate may retain null permission. Ranking priorities remain in the working conversation.
 
 ## Power And Play Experience
 
@@ -141,30 +143,46 @@ The Collection is an imported, read-only snapshot. Tomekin may search and reason
 change locations, register a deck in the source collection manager, or write back to ManaBox. Saving a Deck Candidate
 does not make it part of the Collection. After physical or source-system changes, the user reimports the Collection.
 
-Collection queries are stateless. When Collection evidence matters, Tomekin lists the available Collection Locations,
-confirms an exact case-sensitive allow-list of `(locationType, locationName)` pairs, and reuses it unchanged. A query
-that accidentally omits or widens the confirmed scope is discarded and retried.
+`list_collection_locations` returns exact `locations` and `collection_context` identifying the active successful import.
+The agent confirms allowed sources once and records the policy in the Brief or passes an explicit confirmed policy
+before candidate creation. Exact case-sensitive type/name pairs or UUID plus type/name resolve only within that snapshot.
+An empty allow-list explicitly permits zero copies. Contradictory dispositions and stale references reject; excluded
+cards, Printings and row IDs subtract from permission. Existing Deck rows remain visibly Committed even when permitted.
 
-Locations of type `deck` are treated as Existing Decks. Whether their cards may be used is expressed procedurally in
-the confirmed working context; the tools do not independently decide whether an owned copy is Available, Committed, or
-excluded.
+`browse_collection_cards` evaluates all restrictions on one actual row and its own Printing before applying result
+bounds. Missing relevant metadata is uncertain, never positive strict proof; currency-qualified prices compare only
+known matching currencies. Legacy Card Query still requires its explicit positive scope and does not enforce the new
+policy or correlate independent Printing predicates with owned rows.
 
-### Empty Collection
+ManaBox `Added` is optional operational source chronology. Valid explicit-zone calendar timestamps normalize to UTC;
+missing, malformed, timezone-ambiguous and unsupported-precision values remain unknown, with nonblocking diagnostics
+where appropriate. New imports preserve milliseconds. Legacy dates whose precision was lost cannot prove strict date
+bounds. Release dates and import times never substitute for source-added dates.
 
-No imported Collection and an imported empty Collection have the same deck-building consequence: there are no owned
-copies available to the workflow. Tomekin can still discover directions from the user's stated preferences and can
-construct and save a Deck Candidate. Every required copy is reported as Missing, and no Collection Pull List is
-presented beyond stating that no owned copies are available.
+Recent browsing accepts explicit inclusive `added_at_from` and exclusive `added_at_before` UTC instants. The agent
+resolves human intervals using the user's task timezone. It separately browses `date_state: "unknown"` within the same
+permitted scope unless declined, labels those rows possibly relevant and reports incomplete coverage. Strict recent
+copies require known dates inside the interval; exploratory inspiration may assemble identities from other permitted
+rows. Source order is source row then ID; both date directions put nulls last and break ties by row ID.
+
+### Empty, absent and unconfirmed Collection
+
+No import is explicit `no_collection`; an imported empty snapshot is `ready` with its active import ID and zero rows.
+Both supply zero recorded ownership without proving the user's physical possessions. A legacy snapshot lacking an
+authoritative active pointer reports `reimport_required`. A nonempty snapshot with null Brief policy establishes no
+permission; browse returns `unconfirmed_policy`. It is distinct from an explicitly confirmed empty allow-list.
+
+Successful replacement invalidates prior policy/row/location references and continuation; list locations and reconfirm
+scope. Failed attempts preserve active references and usable continuation. Relevant successful reference replacement
+also invalidates dependent browse cursors. Results expose the effective policy, bounded completion and undated coverage;
+opaque candidate/cursor IDs never substitute for inspectable permission.
 
 ### Owned and missing evidence
 
-For a non-empty active Collection scope, Tomekin re-queries every final card name under the unchanged allow-list and
-compares scoped quantities with required quantities before rendering. It then reports best-effort Available, Committed,
-and Missing evidence from the imported snapshot.
-
-This evidence is not a deterministic final Availability service. Card Query reports owned rows and quantities; the
-agent applies the procedurally confirmed scope and explains the result. Retained scoped reasoning may therefore become stale after
-a later import, and the current product has no automatic refresh service or persisted freshness status.
+Row browsing establishes policy-compliant matching row quantities, not joint allocation across a complete deck. The
+current final Available, Committed and Missing conclusions remain best-effort agent reasoning until the deterministic
+whole-demand Availability service ships. A candidate save does not reserve copies, move cards or publish final
+Availability proof.
 
 ## Validation, Rendering, and Persistence
 

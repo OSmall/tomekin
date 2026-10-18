@@ -251,3 +251,20 @@ a deliberate local miss with explicit `name`/`oracle_text` selection and a small
 ordered outcomes and recovery by repeating the original references with `after`; request additional tags on the next
 page. Confirm missing tag data is unavailable, a successful bound import replacement requires restart, and cancellation
 reuses only delivered progress. Lookup alone establishes neither Collection permission nor final Availability.
+
+## Recent and undated Collection discovery
+
+Run in both harnesses with a tiny synthetic Collection containing identically named binder/deck locations, known source
+dates on both UTC boundaries, an unknown source date and different Printings/Finishes of the same identity. Confirm the
+exact binder and date interval in the task timezone. Inspect the effective policy and traverse small `first` pages;
+verify the excluded Existing Deck and rows failing any conjunct do not consume result slots.
+
+Ask for exploratory recent-card inspiration, then strict recent physical copies. Exploratory assembly may use other
+permitted rows. Strict intent must reject a wider policy until confirmed date restrictions agree. Independently search
+unknown dates unless declined, label them possible rather than confirmed recent additions, and report partial coverage.
+Permit an Existing Deck explicitly and confirm borrowed rows stay Committed with their source deck visible.
+
+Record a failed import and resume a delivered cursor; the active snapshot remains usable. Successfully replace the
+Collection, then verify the old policy and cursor require refreshed exact locations and scope reconfirmation. Observe
+`no_collection`, imported-empty, null policy and confirmed empty allow-list as distinct states. Do not treat browse row
+quantities as whole-deck joint allocation or physical reservations.

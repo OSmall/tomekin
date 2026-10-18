@@ -58,13 +58,14 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
             envelope = {status: "error", edges: [], error: {code: "response_budget_too_small", message: "Mandatory Collection context exceeds the response budget.", retryable: false, limit_bytes: budget}, metadata: {...metadata(), returned_count: 0}};
             if (compactJsonBytes(envelope) > budget) throw new Error("Adapter cannot carry a minimal Collection browse error.");
         }
-        options.log?.info({operation: "browse_collection_cards", status: envelope.status, selectedFields: parsed.success ? Object.keys(parsed.data.select) : [], returnedCount: envelope.edges.length, outputBytes: compactJsonBytes(envelope), durationMs: now() - started}, "Collection browse completed");
+        options.log?.info({operation: "browse_collection_cards", status: envelope.status, selectedFields: parsed.success ? Object.keys(parsed.data.select) : [], returnedCount: envelope.edges.length, outputBytes: compactJsonBytes(envelope), ...(envelope.status === "error" ? {errorCode: envelope.error.code, requiredBytes: envelope.error.required_bytes, limitBytes: envelope.error.limit_bytes} : {}), durationMs: now() - started}, "Collection browse completed");
         options.log?.debug({operation: "browse_collection_cards", after: parsed.success ? parsed.data.after : undefined, cursors: envelope.status === "error" ? envelope.error.cursor : envelope.pageInfo}, "Collection browse continuation");
         return envelope.status === "error" ? err({type: "retrieval_error", message: envelope.error.message, envelope}) : ok(envelope as CollectionBrowseSuccess);
     };
     if (!parsed.success) return finish(failure({code: "invalid_request", message: "Invalid Collection browse request.", retryable: false, issues: parsed.error.issues.map(issue => ({path: issue.path.map(part => typeof part === "symbol" ? String(part) : part), code: issue.code}))}));
     const args = parsed.data;
-    const {select: _select, first: _first, after: _after, ...fixed} = args;
+    const {select: _select, first: _first, after: _after, ...boundArgs} = args;
+    const fixed = {...boundArgs, include_provenance: args.include_provenance ?? false};
     let incoming: RetrievalCursor | undefined;
     if (args.after) {
         const decoded = decodeRetrievalCursor(args.after);
@@ -151,7 +152,7 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
             if (now() - started >= deadline) return settle(recover({code: "scan_timeout", message: "Collection browse deadline reached.", retryable: true}));
             const evaluation = evaluateOwnedRow(policy, row);
             if (row.date_reliability === "legacy_precision_lost") coverage.legacy_precision_lost = true;
-            if (row.added_at === null && (evaluation.decision === "eligible" || (evaluation.decision === "uncertain" && evaluation.uncertain_fields.every(field => field === "added_at")))) coverage.undated = "present";
+            if (row.added_at === null && evaluation.decision !== "excluded") coverage.undated = "present";
             const matches = evaluation.decision === "eligible" && evaluateCopyRequirements(args.copy_requirements, row).decision === "eligible" && evaluateCopyRequirements(dateCriteria, row).decision === "eligible";
             if (!matches) {safe = ++offset; continue;}
             if (edges.length >= first) return settle(page(true, "first"));
