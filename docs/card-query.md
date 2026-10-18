@@ -17,7 +17,8 @@ Domain terms are defined in the [glossary](../GLOSSARY.md). Historical CQL2 rati
 `next_page` URLs may contain the provider's own defaults. Tomekin neither parses q nor claims an effective rollup,
 matched face or matched tag. Prefer `unique: "cards"` for identity discovery and `prints` for an explicit version need.
 A representative Printing cannot establish all matching owned versions. Pure live discovery requires no local import.
-Collection policy/filtering/evidence is not part of this delivered search slice; no Collection identifiers go upstream.
+Collection scope is evaluated locally under confirmed policy; no Collection identifiers go upstream.
+See [Collection retrieval evidence](#collection-retrieval-evidence) for the opt-in shared search/lookup inputs.
 
 The selected card projection below is shared with lookup. Search nodes are `{card, unavailable_fields?}` without a
 lookup occurrence status. Every card retains Oracle identity; selected Printing facts additionally retain Printing ID.
@@ -68,10 +69,70 @@ Info logs contain selected-property names, stage timings, provider/raw/returned 
 bytes. Debug deliberately includes q, full incoming/outgoing cursors and decoded positions/import bindings. Operational
 logs do not dump complete results. Production defaults to info and retains credential redaction.
 
+## Collection retrieval evidence
+
+Both tools accept optional `collection_policy`, `collection_scope`, and `collection_evidence`. Without these inputs,
+there is no ownership payload or Collection dependency. `collection_policy` is `{kind: "explicit", policy: ...}`
+using the confirmed policy below, or `{kind: "candidate", candidate_id: ...}`. Candidate permission loads the whole
+Brief, including strict recent-copy intent. An effective policy is inspected once in `collection_context`.
+
+`collection_scope` is `{match?: "identity" | "printing", locations?: [...], copy_requirements?: {...}}`.
+Its presence filters provider discovery to results with at least one eligible row under the same-row conjunction of
+scope and confirmed policy. An omitted match defaults to identity. Locations accept `{id: UUID}`, an exact
+case-sensitive `{type: "binder" | "deck", name}`, or ID plus matching type/name; an empty list selects no rows.
+Scope restrictions narrow permission and never replace it. Copy requirements reuse the finite membership/equality,
+source-date and currency-qualified price constraints in the policy contract below. A scope requires confirmed policy.
+Lookup preserves every input occurrence and attaches its evaluated evidence, including zero eligible rows.
+Printing match requires exact Printing references throughout an original lookup batch. Search Printing matching tests
+only each raw provider Printing actually returned and retains its Printing ID. Collapsed representative results cannot
+establish coverage of all owned versions. Neither matching mode changes q or injects a native `unique` control.
+
+```json
+{"references":[{"kind":"name","value":"Sol Ring"}],"select":{"oracle_id":true},"collection_evidence":{"mode":"summary"}}
+```
+
+`collection_evidence: {mode: "summary"}` requests exact `owned_quantity`, `eligible_quantity`, `uncertain_quantity`,
+and `policy_status`. Compatible ownership counts independently of policy permission; supplied scope locations and
+copy criteria still apply. Confirmed policy determines eligibility. Unknown metadata cannot prove strict requirements:
+possible rows contribute uncertainty rather than eligible quantity. With unconfirmed policy, eligibility and uncertainty
+are null and policy_status is unconfirmed; recorded ownership can still be counted.
+
+`collection_evidence: {mode: "copies", select: {...}}` adds complete matching-only actual source rows. Its closed,
+nonempty literal-true selector permits `collection_card_id`, `printing_id`, `quantity`, `location`, `added_at`, `finish`,
+`condition`, `altered`, `misprint`, `purchase_price`, `purchase_price_currency`, `source_row_number`, and all approved
+Printing facts (`set` through `printing_layout` in the field list below). Mandatory row ID, actual Printing ID and
+source-row quantity always remain. Permitted deck borrowing remains `committed: true` with its exact source location.
+Unconfirmed policy returns no permission-proven copy rows. There is no all-rows/diagnostic mode.
+
+Printing fields in `card` describe that result's Printing. Copy fields join each row's actual owned Printing; supported
+`finishes` never substitutes for singular owned `finish`. Every requested local quantity and the whole selected copy
+list finish evaluation before a card is emitted. A row represents quantity, rather than individually tracked physical
+objects or an allocated amount. These retrieval summaries and rows do not reserve copies or establish final joint
+whole-deck Availability.
+
+One response-level `collection_context` records `state`, `collection_import_id`, `match`, and `effective_policy`.
+No imported Collection is `no_collection` with a null ID; imported empty is `ready` with its successful import ID.
+Both have zero recorded ownership, without claiming knowledge of all physical possessions. Legacy snapshots without
+an authoritative active import return `reference_data_unready/collection_reimport_required` and
+`state: "reimport_required"`. Selected provenance adds the actual Collection import ID/time. Failed Collection/reference
+attempts do not replace these dependencies.
+
+Repeat fixed Collection scope, policy source, evidence mode and provenance setting on every ordinary first/after call.
+Card/copy selectors and first may change. Cursors retain active successful Collection/reference imports and the effective
+policy, including dependencies no longer selected. Reference replacements use committed insertion order, including same-tick and clock-rollback imports.
+Successful replacement or candidate-policy change invalidates dependent cursors and in-flight results; stale work emits
+no old edges with fresh context. Failed and unrelated imports do not invalidate. Reconfirm Collection scope after
+replacement; reference replacement needs restart. No historical row store or saved result buffer is added.
+
+The existing whole-envelope limits include policy/context, evidence, escaping and all cursors. Complete copy lists
+remain indivisible: oversize/deadline failures leave that card unconsumed and provide safe ordinary-call recovery where
+representable. The [deterministic evidence report](research/collection-query-evidence/2026-10-18-report.md) records
+comparable application/adapter costs and exact matching/recovery checks.
+
 ## Known-card lookup
 
 `lookup_cards` is the delivered local retrieval contract through Core, SQLite, OpenCode and Pi Worker/fallback.
-Lookup returns card facts; provider Collection filtering/evidence remains separate work.
+Lookup returns card facts and explicitly requested Collection evidence. Ordered references remain outcomes even when no owned row matches.
 
 ```json
 {"references":[{"kind":"name","value":"Sol Ring"},{"kind":"printing_id","value":"073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a"}],"select":{"name":true,"oracle_text":true},"first":50}

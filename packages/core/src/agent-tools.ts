@@ -1,3 +1,4 @@
+import type {CollectionRetrievalDependencies} from "./collection-retrieval";
 import {CheckCollectionAvailabilityArgsSchema, CheckCollectionAvailabilityInputSchema, normalizeAvailabilityDemands, computeCollectionAvailability, availabilityPage} from "./collection-availability";
 import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
 import {browseTags, BrowseTagsArgsSchema} from "./tag-catalogue";
@@ -63,10 +64,10 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    search_cards: {description: "Search the boot-configured live Scryfall provider using unchanged native q and optional native controls. Prefer unique cards for identity discovery; use prints for explicit Printing needs. Select complete facts explicitly. Repeat fixed q/controls/provenance with first/after; live traversal can drift, scoped totals remain unknown. Optional collection_scope filters locally under confirmed collection_policy, matching identity or explicit actual Printing. Optional summary/copies evidence is complete and matching-only, with one Collection context; never a final joint Availability proof. Repeat fixed scope/policy/evidence mode on continuation. No local import required unless local dependencies are requested.", inputSchema: SearchCardsArgsSchema},
     check_collection_availability: {description:"Explicitly check the complete selected demand jointly against recorded Collection quantities and the whole Brief policy. Optional requirements cover every selected section/quantity exactly and only narrow compatible copies. Saved evidence publishes conditionally; trials remain transient. Complete bounded path/value witnesses recover with first/after; no reservations or moves.",inputSchema:CheckCollectionAvailabilityArgsSchema},
-    search_cards: {description: "Search the boot-configured live Scryfall provider using unchanged native q and optional native controls. Prefer unique cards for identity discovery; use prints for explicit Printing needs. Select complete facts explicitly. Repeat fixed q/controls/provenance with first/after; live traversal can drift, scoped totals remain unknown. No local import required unless local enrichment is selected.", inputSchema: SearchCardsArgsSchema},
     browse_collection_cards: {description: "Browse actual owned Collection rows locally under an inspectable confirmed policy, with exact Printing/date filters before bounds. added_at is reliable source chronology; unknown dates remain independently searchable. Use first/after for complete pages.", inputSchema: BrowseCollectionCardsArgsSchema},
-    lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
+    lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback. Optional Collection summary/copies evidence uses actual owned rows conjunctively with supplied scope and confirmed policy; unconfirmed policy proves no eligibility. Repeat fixed Collection inputs/evidence mode with after. Retrieval is not final joint Availability proof.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
     legacy_query_cards: {description: "Explicitly enabled legacy local CQL2 retrieval. Disabled by default; prefer search_cards and lookup_cards.", inputSchema: CardQueryInputSchema},
@@ -108,6 +109,11 @@ export type AgentToolError =
 };
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions; search?: CardSearchOptions; enableLegacyQuery?: boolean} = {}) {
+  const collection: CollectionRetrievalDependencies | undefined = repositories.collectionBrowse ? {repository: repositories.collectionBrowse, loadPolicy: async reference => {
+      if (reference.kind === "explicit") return ok(reference.policy);
+      const candidate = await repositories.deckCandidates.getDeckCandidate(reference.candidate_id);
+      return candidate.andThen(value => collectionPolicyFromBrief(value.brief));
+  }} : undefined;
   return {
       async checkCollectionAvailability(input: unknown, signal?: AbortSignal) {
           const parsed = CheckCollectionAvailabilityArgsSchema.safeParse(input);
@@ -136,7 +142,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
       },
       searchCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup || !options.search) throw new Error("Search provider unavailable.");
-          return searchCards(repositories.cardLookup, input, options.search, signal);
+          return searchCards(repositories.cardLookup, input, {...options.search, collection}, signal);
       },
       browseCollectionCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.collectionBrowse) throw new Error("Collection browse repository is unavailable.");
@@ -148,7 +154,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
       },
       lookupCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
-          return lookupCards(repositories.cardLookup, input, options.lookup, signal);
+          return lookupCards(repositories.cardLookup, input, {...options.lookup, collection}, signal);
       },
       browseTags(input: unknown, signal?: AbortSignal) {
           const read = repositories.cardReference.readTagCatalogue;

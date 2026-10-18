@@ -324,6 +324,15 @@ import bindings and whole-record UTF-8 budgets. Thin actual Pi Worker/fallback a
 replacement, serialized nested operation schemas across independent metadata registries, complete large definitions
 and structured errors. Default tests use deterministic local fixtures and perform no source download.
 
+## Collection retrieval evidence coverage
+
+`bun run evaluate:collection-query` repeats the four public synthetic workflow populations with confirmed binder scope,
+complete selected actual-row evidence and ordinary refetch/anchor traversal. Independent source-row expectations assert
+exact counts and Printing joins; OpenCode serialization and actual Pi Worker/fallback bytes are measured separately.
+Public real-SQLite tests cover no/empty/unconfirmed/legacy states, policy/source metadata conjunctions, >128-row complete
+copy lists, indivisible oversize/deadline recovery, concurrent replacement and successful same-tick revision invalidation.
+Failed/unrelated imports and unrelated candidate edits preserve cursors. See the
+[Collection retrieval report](research/collection-query-evidence/2026-10-18-report.md) for measured costs and limits.
 
 ## Final Collection Availability coverage
 

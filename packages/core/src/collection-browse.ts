@@ -175,8 +175,8 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
 function latestReferences(snapshot: CollectionPolicySnapshot) {
     const latest = new Map<string, CollectionPolicySnapshot["referenceImports"][number]>();
     for (const item of snapshot.referenceImports) if (item.status === "succeeded" && ["oracle_cards", "all_cards"].includes(item.bulkDataType)) {
-        const old = latest.get(item.bulkDataType), time = (item.completedAt ?? item.startedAt).getTime();
-        if (!old || time > (old.completedAt ?? old.startedAt).getTime()) latest.set(item.bulkDataType, item);
+        const old = latest.get(item.bulkDataType);
+        if (!old) latest.set(item.bulkDataType, item);
     }
     return latest;
 }

@@ -1,4 +1,6 @@
+import type {CollectionContext} from "./collection-browse";
 import {z} from "zod";
+import {collectionRetrievalShape, type CollectionEvidence, type CollectionRetrievalContext} from "./collection-retrieval";
 import type {CardIdentity, CardIdentityPart, CardIdentityTaggingWeight, CardPrinting, CardSet, ScryfallBulkDataImport} from "./scryfall-sync";
 import type {CardIdentityDetail, CardReferenceRepositoryError} from "./card-reference-queries";
 import type {Result} from "neverthrow";
@@ -29,19 +31,19 @@ export const CardReferenceSchema = z.discriminatedUnion("kind", [
 ]);
 export type CardReference = z.infer<typeof CardReferenceSchema>;
 export const LookupCardsArgsSchema = z.strictObject({
-    references: z.array(CardReferenceSchema).min(1), select: CardSelectionSchema,
+    references: z.array(CardReferenceSchema).min(1), select: CardSelectionSchema, ...collectionRetrievalShape,
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(), include_provenance: z.boolean().optional(),
 });
 export type LookupCardsArgs = z.infer<typeof LookupCardsArgsSchema>;
-export type CardResult = {card: {oracle_id: string; printing_id?: string} & Record<string, unknown>; unavailable_fields?: Record<string, string>};
+export type CardResult = {card: {oracle_id: string; printing_id?: string} & Record<string, unknown>; unavailable_fields?: Record<string, string>; collection_evidence?: CollectionEvidence};
 export type LookupOutcome = ({status: "found"} & CardResult) | {status: "not_found"; reference: CardReference};
 export type RetrievalMetadata = {requested_count: number; returned_count: number; response_budget_bytes: number; provider_total: number | null; scoped_total: number | null; lookup?: {input_count: number; start_index: number; next_index: number}};
 export type RetrievalErrorCode = "invalid_request" | "invalid_cursor" | "stale_cursor" | "cursor_anchor_not_found" | "reference_data_unready" | "provider_error" | "unsupported_source_record" | "local_error" | "rate_limited" | "scan_timeout" | "cancelled" | "record_too_large" | "cursor_too_large" | "response_budget_too_small";
 export type RetrievalIssue = {path: (string | number)[]; code: string; field?: string; reference_indices?: number[]};
 export type RetrievalProblem = {code: RetrievalErrorCode; message: string; retryable: boolean; cursor?: string; retry_after_ms?: number; issues?: RetrievalIssue[]; missing_datasets?: string[]; reimport_required_datasets?: string[]; reason?: string; required_bytes?: number; limit_bytes?: number; recovery?: "restart" | "reconfirm_scope"};
-export type RetrievalProvenance = {provider?: {name: string; retrieved_at: string}; reference_imports: {dataset: string; import_id: string; completed_at: string | null; source_updated_at: string | null}[]};
-export type RetrievalSuccess<N> = {status: "ok"; edges: {node: N}[]; pageInfo: {startCursor: string | null; endCursor: string | null; hasNextPage: boolean; hasPreviousPage: boolean}; stop_reason: "first" | "response_budget" | "source_exhausted"; metadata: RetrievalMetadata; provenance?: RetrievalProvenance};
-export type RetrievalFailure<N> = {status: "error"; edges: {node: N}[]; error: RetrievalProblem; metadata: RetrievalMetadata; provenance?: RetrievalProvenance};
+export type RetrievalProvenance = {collection_import?: {import_id: string; imported_at: string}; provider?: {name: string; retrieved_at: string}; reference_imports: {dataset: string; import_id: string; completed_at: string | null; source_updated_at: string | null}[]};
+export type RetrievalSuccess<N> = {status: "ok"; edges: {node: N}[]; pageInfo: {startCursor: string | null; endCursor: string | null; hasNextPage: boolean; hasPreviousPage: boolean}; stop_reason: "first" | "response_budget" | "source_exhausted"; metadata: RetrievalMetadata; provenance?: RetrievalProvenance; collection_context?: CollectionRetrievalContext | CollectionContext};
+export type RetrievalFailure<N> = {status: "error"; edges: {node: N}[]; error: RetrievalProblem; metadata: RetrievalMetadata; provenance?: RetrievalProvenance; collection_context?: CollectionRetrievalContext | CollectionContext};
 export type RetrievalEnvelope<N> = RetrievalSuccess<N> | RetrievalFailure<N>;
 /** Expected failures stay on Result's error side; adapters expose the envelope intact. */
 export type RetrievalToolError<N> = {type: "retrieval_error"; message: string; envelope: RetrievalFailure<N>};
@@ -68,6 +70,7 @@ export function decodeRetrievalCursor(token: string): {cursor?: RetrievalCursor;
 }
 export type CardTags = {direct: {slug: string; weight: CardIdentityTaggingWeight; annotation: string | null}[]; inherited: {slug: string; weight: CardIdentityTaggingWeight}[]};
 export type LocalLookupRecord = {detail: CardIdentityDetail; printing?: CardPrinting; set?: CardSet; promoTypes?: string[]; tags?: CardTags};
+/** Import records are newest committed insertion first; wall-clock timestamps do not establish replacement authority. */
 export type CardLookupSnapshot = {imports: readonly ScryfallBulkDataImport[]; records: readonly (LocalLookupRecord | null)[]};
 export type CardLookupRepository = {readSnapshot(references: readonly CardReference[], includeTags: boolean): Promise<Result<CardLookupSnapshot, CardReferenceRepositoryError>>};
 
