@@ -1,3 +1,4 @@
+import {availabilityRecords,type AvailabilityResult} from "./collection-availability";
 import {createHash} from "node:crypto";
 import {err, ok} from "neverthrow";
 import {z} from "zod";
@@ -5,7 +6,7 @@ import {type DeckCandidate, roleSelectedCopies, summarizeDeckCandidate} from "./
 import {compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
 import {renderCandidateReportParts, renderPortableDecklist} from "./deck-candidate-rendering";
 
-export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist"] as const;
+export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
 export const GetDeckCandidateViewArgsSchema = z.strictObject({
     id: z.uuid(), view: z.enum(candidateViewValues).default("summary"),
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(),
@@ -30,6 +31,12 @@ export function candidatePoolView(candidate: DeckCandidate) {
     }))};
 }
 function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord[] {
+    if(view === "availability" || view === "collection_pull_list") {
+        const evidence=candidate.validation_evidence?.checks?.collection_availability;
+        if(!evidence || evidence.status==="absent") return [{path:[],value:{evidence_status:"absent",message:"Explicit Availability check required before assembly."}}];
+        if(evidence.status!=="applicable") return [{path:[],value:{evidence_status:"outdated",checked_at:evidence.checked_at,message:"Reconfirm current scope and explicitly recheck Availability before assembly."}}];
+        return [{path:["evidence"],value:{status:evidence.status,checked_at:evidence.checked_at,dependencies:evidence.dependencies}},...availabilityRecords(evidence.result as AvailabilityResult,view==="collection_pull_list")];
+    }
     let value: unknown;
     if (view === "brief") value = candidate.brief;
     else if (view === "selected") value = candidate.memberships;

@@ -1,3 +1,4 @@
+import {availabilityRecords, type AvailabilityResult} from "./collection-availability";
 import {roleSelectedCopies, summarizeDeckCandidate, type DeckCandidate, type DeckCandidateCard} from "./deck-candidate";
 import type {DeckFormat} from "./deck-building-brief";
 
@@ -69,7 +70,22 @@ function defaultSectionContent(section: DeckCandidateMarkdownSection): string {
 /** Ordered complete report fragments; join with the empty string to render Markdown. */
 export function renderCandidateReportParts(candidate: DeckCandidate): string[] {
     const json = (value: unknown) => `\n\n\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\`\n\n`;
-    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", json(candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence), "## Collection Status\n\nCurrent Availability and Collection Pull List evidence is unrecorded. Historical contribution/source notes do not establish current owned-copy proof.\n\n", "## Portable Decklist\n\n\`\`\`txt\n", ...renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line=>`${line}\n`), "\`\`\`\n\n", "## Selected Membership\n\n"];
+    const availability=candidate.validation_evidence?.checks?.collection_availability;
+    const collectionStatus=!availability||availability.status==="absent"?"Current Availability and Collection Pull List evidence is unrecorded.":availability.status==="outdated"?"Availability evidence is outdated. Reconfirm scope and explicitly recheck before assembly.":`Availability was explicitly checked at ${availability.checked_at}. Recover complete requirements and row witnesses with the availability or collection_pull_list view. ${JSON.stringify((availability.result as import("./collection-availability").AvailabilityResult).summary)}`;
+    const checkEvidence = candidate.validation_evidence;
+    const evidenceParts: string[] = [];
+    if (!checkEvidence?.checks?.collection_availability || checkEvidence.checks.collection_availability.status === "absent") {
+        evidenceParts.push(json(checkEvidence ?? summarizeDeckCandidate(candidate).validation_evidence));
+    } else {
+        const {collection_availability, ...otherChecks} = checkEvidence.checks;
+        evidenceParts.push(json({status:checkEvidence.status,checks:otherChecks}));
+        const {availability_requirements: _requirements, ...dependencies} = collection_availability.dependencies;
+        evidenceParts.push(json({check:"collection_availability",status:collection_availability.status,checked_at:collection_availability.checked_at,dependencies,requirements_recovered_in:"requirements"}));
+        for (const record of availabilityRecords(collection_availability.result as AvailabilityResult)) {
+            evidenceParts.push(json({check:"collection_availability",...record}));
+        }
+    }
+    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", ...evidenceParts, `## Collection Status\n\n${collectionStatus} Historical contribution/source notes do not establish current owned-copy proof.\n\n`, "## Portable Decklist\n\n\`\`\`txt\n", ...renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line=>`${line}\n`), "\`\`\`\n\n", "## Selected Membership\n\n"];
     for (const membership of candidate.memberships) parts.push(json(membership));
     parts.push("## Roles And Win Routes\n\n");
     for (const node of candidate.plan?.nodes ?? []) parts.push(json(node.kind === "role" ? {...node, selected_copies:roleSelectedCopies(candidate,node), assessment_status:node.coverage_assessment ? "recorded" : "unrecorded"} : node));

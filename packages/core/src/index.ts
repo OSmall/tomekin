@@ -30,3 +30,5 @@ export * from "./provider-admission";
 export * from "./tag-catalogue";
 export * from "./collection-policy";
 export * from "./collection-browse";
+
+export * from "./collection-availability";

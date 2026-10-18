@@ -1,3 +1,4 @@
+import {CheckCollectionAvailabilityArgsSchema, CheckCollectionAvailabilityInputSchema, normalizeAvailabilityDemands, computeCollectionAvailability, availabilityPage} from "./collection-availability";
 import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
 import {browseTags, BrowseTagsArgsSchema} from "./tag-catalogue";
 import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
@@ -36,6 +37,7 @@ export const AgentToolNameSchema = z.enum([
   "resolve_decklist_cards",
   "validate_format_legality",
   "evaluate_deck_candidate",
+  "check_collection_availability",
   "render_deck_candidate",
   "create_deck_candidate",
   "edit_deck_candidate",
@@ -51,7 +53,7 @@ export const SearchCardSetsArgsSchema = z.object({query: z.string().optional(), 
 export const ResolveDecklistCardsArgsSchema = z.object({names: z.array(z.string().min(1)).min(1)});
 export const ValidateDeckCandidateArgsSchema = DeckCheckInputSchema;
 export const RenderDeckCandidateArgsSchema = z.strictObject({
-    candidate_id:z.uuid(), output:z.enum(["report","portable_decklist"]).default("report"),
+    candidate_id:z.uuid(), output:z.enum(["report","portable_decklist","collection_pull_list"]).default("report"),
     first:z.number().int().min(0).max(200).optional(), after:z.string().min(1).optional(),
 });
 export const CreateDeckCandidateArgsSchema = CreateDeckCandidateInputSchema;
@@ -61,6 +63,7 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    check_collection_availability: {description:"Explicitly check the complete selected demand jointly against recorded Collection quantities and the whole Brief policy. Optional requirements cover every selected section/quantity exactly and only narrow compatible copies. Saved evidence publishes conditionally; trials remain transient. Complete bounded path/value witnesses recover with first/after; no reservations or moves.",inputSchema:CheckCollectionAvailabilityArgsSchema},
     search_cards: {description: "Search the boot-configured live Scryfall provider using unchanged native q and optional native controls. Prefer unique cards for identity discovery; use prints for explicit Printing needs. Select complete facts explicitly. Repeat fixed q/controls/provenance with first/after; live traversal can drift, scoped totals remain unknown. No local import required unless local enrichment is selected.", inputSchema: SearchCardsArgsSchema},
     browse_collection_cards: {description: "Browse actual owned Collection rows locally under an inspectable confirmed policy, with exact Printing/date filters before bounds. added_at is reliable source chronology; unknown dates remain independently searchable. Use first/after for complete pages.", inputSchema: BrowseCollectionCardsArgsSchema},
     lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
@@ -75,16 +78,16 @@ export const agentToolContracts = {
     resolve_decklist_cards: {description: "Resolve proposed card names to local Card Identities.", inputSchema: ResolveDecklistCardsArgsSchema},
     validate_format_legality: {description: "Explicitly check Format legality using candidate_id and expected_updated_at, with optional transient changes, or initial cards and Brief. Saved checks conditionally publish latest reusable evidence; trials remain transient.", inputSchema: DeckCheckArgsSchema},
     evaluate_deck_candidate: {description: "Explicitly evaluate legality, power context, mana curve and land count from saved candidate_id/expected_updated_at or initial cards/Brief. Optional changes are a transient trial. Saved evidence publishes only for matching inputs. Collection Availability is separate.", inputSchema: DeckCheckArgsSchema},
-    render_deck_candidate: {description: "Generate a saved candidate report or selected-only canonical Portable Decklist. Returns complete ordered path/value records; repeat candidate_id/output with first/after. No editable report input and no implicit checks.", inputSchema: RenderDeckCandidateArgsSchema},
+    render_deck_candidate: {description: "Generate a saved candidate report, selected-only canonical Portable Decklist, or Collection Pull List from applicable explicit Availability evidence. Returns complete ordered path/value records; repeat candidate_id/output with first/after. No editable report input and no implicit checks.", inputSchema: RenderDeckCandidateArgsSchema},
     create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
     edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
-    get_deck_candidate: {description: "Read a compact saved candidate summary by default. Explicit brief/selected/options/pool/plan/assessments/json/report/portable_decklist views return complete path/value records with first/after continuation bound to the baseline. Repeat id/view; apply records in order; concatenate report/decklist string values. Pool groups roles and deduplicates options. No implicit checks.", inputSchema: GetDeckCandidateArgsSchema},
+    get_deck_candidate: {description: "Read a compact saved candidate summary by default. Explicit brief/selected/options/pool/plan/assessments/json/report/portable_decklist/availability/collection_pull_list views return complete path/value records with first/after continuation bound to the baseline. Repeat id/view; apply records in order; concatenate report/decklist string values. Pool groups roles and deduplicates options. No implicit checks.", inputSchema: GetDeckCandidateArgsSchema},
     list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
     list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
 } as const;
 
 export function agentToolInputJsonSchema(name: AgentToolName): Record<string, unknown> {
-    return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : name === "validate_format_legality" || name === "evaluate_deck_candidate" ? DeckCheckInputSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
+    return z.toJSONSchema(name === "check_collection_availability" ? CheckCollectionAvailabilityInputSchema : name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : name === "validate_format_legality" || name === "evaluate_deck_candidate" ? DeckCheckInputSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
   readonly cardLookup?: CardLookupRepository;
@@ -106,6 +109,31 @@ export type AgentToolError =
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions; search?: CardSearchOptions; enableLegacyQuery?: boolean} = {}) {
   return {
+      async checkCollectionAvailability(input: unknown, signal?: AbortSignal) {
+          const parsed = CheckCollectionAvailabilityArgsSchema.safeParse(input);
+          if (!parsed.success) return err({type:"validation_error" as const,message:parsed.error.message});
+          const {requirements,first,after,...checkInput}=parsed.data;
+          const checked=DeckCheckInputSchema.safeParse(checkInput);
+          if(!checked.success) return err({type:"validation_error" as const,message:checked.error.message});
+          const captured=await captureCheck(repositories,checked.data,"collection_availability");
+          if(captured.isErr())return captured;
+          if(!repositories.collectionBrowse) return err({type:"tool_error" as const,message:"Collection repository is unavailable."});
+          try {
+              const normalized=normalizeAvailabilityDemands(captured.value.cards,requirements);
+              const computed=await computeCollectionAvailability(repositories.collectionBrowse,captured.value,normalized,options.lookup,signal);
+              if(computed.isErr()) return computed;
+              if(captured.value.dependencies) captured.value.dependencies.availability_requirements=normalized;
+              const preflight=availabilityPage(computed.value,{...first!==undefined?{first}:{},...after?{after}:{}},{status:captured.value.trial?"transient":"applicable",checked_at:captured.value.checked_at},options.lookup,checkInput);
+              if(preflight.isErr())return preflight;
+              const settled=await settleCheck(repositories,captured.value,"collection_availability",computed.value);
+              if(settled.isErr())return settled;
+              return availabilityPage(computed.value,{...first!==undefined?{first}:{},...after?{after}:{}},settled.value.evidence,options.lookup,checkInput);
+          } catch(error) {
+              const message=error instanceof Error?error.message:String(error);
+              if(message==="cancelled"||message==="scan_timeout") return err({type:"retrieval_error" as const,message,envelope:{status:"error" as const,check_completion:"partial",edges:[],error:{code:message,retryable:true,message:"Availability computation did not complete; no final deficits or sufficiency were established. Recompute from the original request."},metadata:{requested_count:first??50,returned_count:0,response_budget_bytes:options.lookup?.responseBudgetBytes??51200,provider_total:null,scoped_total:null}}});
+              return err({type:"validation_error" as const,message});
+          }
+      },
       searchCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup || !options.search) throw new Error("Search provider unavailable.");
           return searchCards(repositories.cardLookup, input, options.search, signal);
@@ -284,8 +312,8 @@ async function captureCheck(repositories:AgentToolRepositories,input:import("./d
     const captured=await repositories.deckCandidates.captureDeckCheck(input,check);
     if(captured.isErr()) return captured;
     const reference=captured.value.reference;
-    const missing=reference.missing.filter(type=>type==="oracle_cards");
-    const reimportRequired=reference.reimportRequired.filter(type=>type==="oracle_cards");
+    const missing=reference.missing.filter(type=>type==="oracle_cards" || check==="collection_availability" && type==="all_cards");
+    const reimportRequired=reference.reimportRequired.filter(type=>type==="oracle_cards" || check==="collection_availability" && type==="all_cards");
     const ready=referenceReadiness({...reference,missing,reimportRequired,ready:missing.length===0&&reimportRequired.length===0});
     return ready.isErr()?err(ready.error):ok(captured.value);
 }
@@ -344,10 +372,11 @@ export function agentToolMutates(name: string): boolean {
         "edit_deck_candidate",
         "validate_format_legality",
         "evaluate_deck_candidate",
+        "check_collection_availability",
     ].includes(name);
 }
 
 /** Candidate reasoning and explicit findings must survive adapter serialization. */
 export function agentToolPreservesCompleteOutput(name:string):boolean {
-    return name.includes("deck_candidate") || name === "validate_format_legality" || name === "list_collection_locations";
+    return name === "check_collection_availability" || name.includes("deck_candidate") || name === "validate_format_legality" || name === "list_collection_locations";
 }

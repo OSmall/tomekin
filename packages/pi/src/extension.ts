@@ -126,6 +126,7 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
+    check_collection_availability: "checkCollectionAvailability",
         browse_collection_cards: "browseCollectionCards", search_cards: "searchCards", lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", legacy_query_cards: "legacyQueryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", browse_tags: "browseTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;

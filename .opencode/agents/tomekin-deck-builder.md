@@ -26,6 +26,7 @@ permission:
   "tomekin_get_format_constraints": allow
   "tomekin_validate_format_legality": allow
   "tomekin_evaluate_deck_candidate": allow
+  "tomekin_check_collection_availability": allow
   "tomekin_render_deck_candidate": allow
   "tomekin_create_deck_candidate": allow
   "tomekin_edit_deck_candidate": allow

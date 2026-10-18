@@ -24,6 +24,7 @@ import {readCardIdentityDetail} from "./card-reference-detail";
 import type { TomekinDatabase } from "./database";
 import {
     cardIdentity,
+    collectionState,
     deckCandidate,
     deckCandidateCard,
     deckCandidatePlan,
@@ -196,7 +197,7 @@ export function createSqliteDeckCandidateRepository(
                 });
                 const reference=readReferenceSupport(tx);
                 return {brief,cards,reference,checked_at:now,
-                    ...(candidate ? {candidate_id:candidate.id,dependencies:checkDependencies(candidate,check,reference.imports,versions)} : {}),
+                    ...(candidate ? {candidate_id:candidate.id,dependencies:checkDependencies(candidate,check,reference.imports,versions,tx.select().from(collectionState).get()?.activeImportId??null)} : {}),
                     trial,
                 };
             }));
@@ -204,7 +205,7 @@ export function createSqliteDeckCandidateRepository(
         async publishDeckCheck(candidateId, check, evidence) {
             return wrap(() => db.transaction(tx=> {
                 const candidate=readCandidate(tx,candidateId,versions);
-                const current=checkDependencies(candidate,check,readReferenceSupport(tx).imports,versions);
+                const current=checkDependencies(candidate,check,readReferenceSupport(tx).imports,versions,tx.select().from(collectionState).get()?.activeImportId??null,evidence.dependencies.availability_requirements);
                 if(!matchingCheckDependencies(current,evidence.dependencies)) return "outdated" as const;
                 const row=tx.select({evidence:deckCandidate.checkEvidenceJson}).from(deckCandidate).where(eq(deckCandidate.id,candidateId)).get()!;
                 tx.update(deckCandidate).set({checkEvidenceJson:{...(row.evidence as object??{}),[check]:evidence}}).where(eq(deckCandidate.id,candidateId)).run();
@@ -644,7 +645,7 @@ function readCandidate(db: Store, id: string, versions:DeckCheckVersions=deckChe
             note: m.note,
         })),
     };
-    candidate.validation_evidence=candidateValidationEvidence(candidate,(row.checkEvidenceJson??{}) as Partial<Record<DeckCheckName,RecordedDeckCheck>>,readReferenceSupport(db).imports,versions);
+    candidate.validation_evidence=candidateValidationEvidence(candidate,(row.checkEvidenceJson??{}) as Partial<Record<DeckCheckName,RecordedDeckCheck>>,readReferenceSupport(db).imports,versions,db.select().from(collectionState).get()?.activeImportId??null);
     return candidate;
 }
 function wrap<T>(fn: () => T): Result<T, DeckCandidateRepositoryError> {
