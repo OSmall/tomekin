@@ -1,5 +1,5 @@
 import {tool} from "@opencode-ai/plugin";
-import {CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {CollectionCopySelectionSchema, type CollectionCopySelection, CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createCanonicalOpenCodeInputSchema, createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
@@ -9,6 +9,12 @@ const lookupSelection = createCanonicalOpenCodeInputSchema(
     CardSelectionSchema,
     (agentToolInputJsonSchema("lookup_cards").properties as Record<string, unknown>).select,
     (validate) => tool.schema.custom<CardSelection>(validate),
+);
+
+const collectionSelection = createCanonicalOpenCodeInputSchema(
+    CollectionCopySelectionSchema,
+    (agentToolInputJsonSchema("browse_collection_cards").properties as Record<string, unknown>).select,
+    (validate) => tool.schema.custom<CollectionCopySelection>(validate),
 );
 
 type AgentToolRuntime = {
@@ -188,4 +194,12 @@ export const search_cards = tool({
  description: agentToolContracts.search_cards.description,
  args: {...argsOf("search_cards"), select: lookupSelection},
  async execute(args, context?: {abort: AbortSignal}) {return runTool("search_cards",args,handlers=>handlers.searchCards(args, context?.abort));},
+});
+
+export const browse_collection_cards = tool({
+    description: agentToolContracts.browse_collection_cards.description,
+    args: {...argsOf("browse_collection_cards"), select: collectionSelection},
+    async execute(args, context?: {abort:AbortSignal}) {
+        return runTool("browse_collection_cards", args, handlers => handlers.browseCollectionCards(args,context?.abort));
+    },
 });

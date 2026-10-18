@@ -306,3 +306,14 @@ measurements report application/adapter bytes and fixture stages/calls, without 
 Run `bun run evaluate:search` for the provider fixture protocol. The committed
 [measurement evidence](./research/provider-search-evidence/README.md) records source identity counts, ordinary
 continuation call costs, complete page/adapter bytes and five warm timing samples without a live-throughput claim.
+
+## Collection policy and chronology
+
+The public shared-runtime tests use isolated on-disk SQLite and tiny synthetic/public reference fixtures. They exercise
+exact location collisions, empty/unconfirmed/no-import states, same-row/actual-Printing conjunctions, currency mismatch,
+unknown metadata, strict versus exploratory Brief intent, reliable source chronology, null-last ordering, closed
+selectors, byte/exhaustion boundaries, safe continuation, cancellation and successful-versus-failed import invalidation.
+Actual Pi Worker/fallback and OpenCode tests assert canonical selector metadata and complete model-visible envelopes;
+exact location inspection also survives the former preview cap. Focused SQLite exceptions establish transaction rollback,
+equal-time/out-of-order import completion and generated migration preservation of records and integer timestamp units.
+Legacy lost source precision remains an explicit unknown rather than a guessed passing date.

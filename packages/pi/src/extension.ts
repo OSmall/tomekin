@@ -49,7 +49,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
         parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
-            if (signal.aborted) return (name === "lookup_cards" || name === "search_cards") ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.", name === "search_cards" ? 175 : 50)) : cancelledOutput("Cancelled before dispatch.");
+            if (signal.aborted) return (name === "lookup_cards" || name === "search_cards" || name === "browse_collection_cards") ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.", name === "search_cards" ? 175 : 50)) : cancelledOutput("Cancelled before dispatch.");
             if (options.transport && options.databasePath) {
                 return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: !agentToolMutates(name)}, signal);
             }
@@ -58,8 +58,8 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
-                const result = await ((name === "lookup_cards" || name === "search_cards") ? (name === "search_cards" ? runtime.handlers.searchCards(params, signal) : runtime.handlers.lookupCards(params, signal)) : handler(params)) as ResultLike;
-                if (signal.aborted && name !== "lookup_cards" && name !== "search_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
+                const result = await (name === "search_cards" ? runtime.handlers.searchCards(params,signal) : name === "lookup_cards" ? runtime.handlers.lookupCards(params,signal) : name === "browse_collection_cards" ? runtime.handlers.browseCollectionCards(params,signal) : handler(params)) as ResultLike;
+                if(signal.aborted && !["lookup_cards","search_cards","browse_collection_cards"].includes(name) && !agentToolMutates(name))return cancelledOutput("Work settled after cancellation; result discarded.");
                 const details = agentToolResultDetails(result);
                 const serializationStarted = performance.now();
                 const output = projectOutput(details, agentToolPreservesCompleteOutput(name));
@@ -126,7 +126,7 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-        search_cards: "searchCards", lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", legacy_query_cards: "legacyQueryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+        browse_collection_cards: "browseCollectionCards", search_cards: "searchCards", lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", legacy_query_cards: "legacyQueryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;
 }

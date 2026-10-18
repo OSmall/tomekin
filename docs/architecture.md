@@ -13,7 +13,7 @@ in [Data Model](./data-model.md), structured retrieval in [Card Query](./card-qu
 [ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) is implemented for provider discovery and local lookup.
 Core owns native request bindings, selected projections, bounded envelopes, stateless source-position traversal and
 admission policy. The common runtime injects one provider and retains SQLite for local lookup/enrichment, Collection
-import and deterministic checks. Collection-policy filtering/evidence remains separate work; no corpus migration or
+import and deterministic checks. Confirmed-policy owned-row browsing is implemented; provider Collection filtering/evidence remains separate work. No retrieval-only corpus migration or
 result/search store is introduced.
 
 The process-lifetime provider owner performs HTTP outside disposable runtimes/Workers. Pi brokers transient provider
@@ -192,3 +192,18 @@ reads do not depend on unused evidence/import state. No persisted report, finger
 CLI loads a saved candidate, generates source in Core, writes a unique temporary file beside the destination and
 publishes by atomic rename. Filesystem failures clean the temporary file and leave previous output untouched. Diagram
 rendering remains an external inspection concern; no Mermaid/SVG production dependency is introduced.
+
+## Collection policy and owned-row browse
+
+Core owns closed copy selectors, exact snapshot/location resolution, whole-Brief strict-date consistency and pure
+same-row policy evaluation. `OwnedRowFacts` carries a row's actual Printing/Set/language facts independently of selected
+output so omitted display facts cannot weaken proof. The evaluator classifies eligible, excluded and uncertain rows,
+retains reasons/proof fields and marks Existing Deck quantities Committed. It is reusable by retrieval evidence and
+whole-demand allocation; browsing itself performs no final deck allocation.
+
+SQLite supplies bounded joined row batches and the authoritative active Collection pointer. Core applies all policy,
+row/date and actual-Printing criteria before emitting result bounds. It uses the common stateless cursor/envelope and
+UTF-8 sizing contract, with revision checks around evaluation and final emission. Tokens bind fixed inputs, effective
+policy and relevant successful imports; they contain no results. New exact UTC date text preserves milliseconds without
+changing legacy timestamp units. The active pointer commits/rolls back with Collection replacement. No provider scan,
+historical Collection rows, duplicate identity columns, saved search or standalone policy handle is introduced.

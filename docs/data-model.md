@@ -43,22 +43,31 @@ attempt that fails reference-data prerequisites or row validation records a fail
 previous Collection snapshot unchanged. A missing or unreadable source file fails before the import service reaches the
 repository and therefore creates no `CollectionImport` record.
 
-Current Collection rows are understood to come from the latest successful import; they do not carry a per-row import
-foreign key, and historical Collection snapshots are not retained.
+`collection_state` has one transactionally updated active-successful-import pointer. Replacement updates this pointer
+inside the same transaction as rows/locations and the success record. Import start time, UUID order and the latest
+attempt do not determine active state. Failed imports and failed replacement transactions preserve the pointer.
+Rows do not carry duplicate Identity/name columns or per-row import foreign keys; historical snapshots are not retained.
+Migration 0009 preserves existing records and integer timestamp units. Legacy snapshots without a provable pointer
+require Collection reimport rather than an inferred binding.
 
 ### CollectionLocation
 
 `CollectionLocation` stores a unique `(type, name)` pair for the current Collection snapshot. The implemented location
 types are `binder` and `deck`; a `deck` location is an Existing Deck. Each Collection Card belongs to one location.
 
-The data model does not store or enforce a structured Collection Access Policy. The agent confirms exact allowed
-location pairs procedurally and passes them to Card Query.
+The candidate-owned Brief can retain `collectionAccessPolicy`, or null while permission is unconfirmed. The policy
+binds the active import and exact location references, explicit exclusions and conjunctive typed copy requirements.
+No standalone policy/Brief store or authorization handle exists. Successful replacement regenerates imported references;
+same-looking location names do not authorize automatic policy rebinding.
 
 ### CollectionCard
 
 `CollectionCard` stores one owned row from the source CSV rather than expanding the row into individual physical
 copies. It records quantity, location, finish, optional ManaBox ID, exact Card Printing ID, misprint and altered flags,
-condition, optional purchase price and currency, optional added time, and source row number.
+condition, optional purchase price and currency, optional added time, and source row number. `added_at_exact` stores
+new reliable source instants as normalized millisecond UTC text. The existing seconds-valued `added_at` column retains
+its unit and old values. Strict policy/browse proof treats a legacy non-null date without exact text as unknown with
+`legacy_precision_lost`; the source's original fraction cannot be recovered. New imports populate both fields.
 
 The source name, Set code, collector number, and language are validation inputs rather than duplicated Collection Card
 fields. Set code, collector number, language, and finish must agree with the resolved Card Printing; a name mismatch is

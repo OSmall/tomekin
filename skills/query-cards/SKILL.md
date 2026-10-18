@@ -32,6 +32,15 @@ occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imp
 It performs no network fallback, automatic hydration, ownership lookup or final Availability proof.
 Read `docs/card-query.md` for the complete field, cursor and error contract.
 
+## Owned-row Browsing
+
+For policy-aware actual-row, source-date and exact owned-Printing discovery, use `browse_collection_cards` with an
+explicit confirmed `collectionAccessPolicy` or its candidate-owned Brief reference. Inspect `list_collection_locations`
+for the active import ID and exact locations. See `docs/card-query.md#collection-policy-and-owned-row-browsing` for
+closed policy/copy selectors and ordinary first/after recovery. Reconfirm scope after successful Collection reimport.
+For recent additions, independently browse unknown source dates unless the user declines. Legacy CQL2 predicates
+remain procedural; independent Printing and Collection predicates cannot prove that the owned Printing matches.
+
 ## Live Discovery
 
 Use `search_cards` for native Scryfall discovery. Forward q and supplied native controls unchanged; omitted controls
@@ -47,7 +56,7 @@ ordered face names/text; explicit `card_faces` selects the full face projection.
 `mana_value` has no cmc alias. `tags` is optional local enrichment with complete direct/inherited associations.
 Pure live discovery needs no local reference import; unavailable optional tags remain visibly unavailable.
 Search currently returns card facts rather than Collection filtering, policy eligibility, quantities or owned-row evidence.
-Use established Collection evidence separately; live hits cannot prove ownership or final Availability.
+Use `browse_collection_cards` for policy-aware owned-row evidence; live hits cannot prove ownership or final Availability.
 
 Repeat fixed q, native controls and effective include_provenance with ordinary `after`. `first` defaults to 175 and
 accepts 0–200. Selection and first may change. Success uses pageInfo; failure has complete partial edges and at most

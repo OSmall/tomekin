@@ -24,6 +24,7 @@ let runtimePath: string | undefined;
 const log = createRootLogger(resolveLogConfigFromEnv(process.env));
 
 const handlers: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
+    browse_collection_cards: "browseCollectionCards",
     search_cards: "searchCards",
     lookup_cards: "lookupCards",
     draft_deck_building_brief: "draftDeckBuildingBrief",

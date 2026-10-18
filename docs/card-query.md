@@ -149,6 +149,86 @@ completion/source-update timestamps. It is omitted by default. No Collection con
 slice. Info logging records selected fact names, status/counts, whole UTF-8 bytes and timing; deliberate debug logging
 records incoming/outgoing continuation positions, without complete production result-body logging.
 
+## Collection policy and owned-row browsing
+
+`list_collection_locations` returns `{locations, collection_context}`. The context gives `state`, authoritative
+`collection_import_id` and `imported_at`, with explicit `no_collection` or `reimport_required` when appropriate.
+Confirm exact locations before supplying the policy below; a candidate owns its policy inside `brief.collectionAccessPolicy`.
+
+```json
+{
+  "collection_import_id": "11111111-1111-4111-8111-111111111111",
+  "policy": {"kind":"explicit", "policy": {
+    "confirmed": true,
+    "collection_import_id": "11111111-1111-4111-8111-111111111111",
+    "allowed_locations": [{"type":"binder", "name":"Main Binder"}],
+    "copy_requirements": {"finish":["nonfoil"]}
+  }},
+  "date_state": "known",
+  "added_at_from": "2026-10-16T13:00:00.000Z",
+  "added_at_before": "2026-10-17T13:00:00.000Z",
+  "order": "added_at_desc",
+  "select": {"quantity":true, "location":true, "added_at":true, "set":true, "lang":true},
+  "first": 50
+}
+```
+
+For a saved candidate, use `policy: {kind:"candidate", candidate_id}` and the same explicit active import ID. Its
+whole Brief is checked: strict recent-copy intent requires policy date bounds at least as restrictive as the stated
+interval; exploratory inspiration does not impose those assembly bounds. Null policy is unconfirmed, while a confirmed
+empty `allowed_locations` explicitly permits zero rows. No independent policy/Brief handle exists.
+
+A policy requires `confirmed:true`, `collection_import_id` and `allowed_locations`. Locations are exact case-sensitive
+`{type,name}` or `{id,type,name}` values; UUID plus names must agree with the same active snapshot. Optional
+`protected_locations`, `excluded_locations`, `excluded_oracle_ids`, `excluded_printing_ids`, and
+`excluded_collection_card_ids` default to empty arrays. Contradictory dispositions, unresolved locations and stale row
+exclusions reject. Unlisted deck locations stay protected/Committed; other unlisted locations are excluded. Permitted
+deck rows remain Committed and retain their exact source location even when location was not selected.
+
+`copy_requirements` is a closed conjunctive object with these optional constraints:
+
+- nonempty finite membership: `finish` (`nonfoil`, `foil`, `etched`), exact `condition`, `printing_ids`, `set_ids`,
+  `set_codes`, `languages`;
+- boolean equality: `altered`, `misprint`;
+- `date_state: "known" | "unknown"`, and inclusive `added_at_from`/exclusive `added_at_before` UTC instants;
+- `purchase_price: {currency, min?, max?}` with a three-letter uppercase currency and nonnegative inclusive bounds.
+  At least one bound is required and unlike/unknown currency never proves the range.
+
+All conditions apply to the same owned source row and its actual Printing. Unknown relevant metadata cannot prove a
+positive strict condition. A known failure excludes a conjunction even when another requested fact is uncertain.
+`date_state:"unknown"` positively selects unknown source chronology; contradictory date combinations and empty ranges
+reject. Explicit source offsets normalize at import, while browse boundaries require valid UTC `Z` instants.
+
+`browse_collection_cards` optionally narrows `oracle_ids` and `printing_ids`, applies additional `copy_requirements`,
+and supports `date_state: "any" | "known" | "unknown"` (default `any`) plus date boundaries. All restrictions apply
+before result count/byte bounds. `order` is `source_order` (default), `added_at_asc`, or `added_at_desc`. Source order is
+source row number then row ID; both date directions put unknown dates last and break ties by row ID.
+
+`select` is a shared closed, nonempty literal-true copy selector. Every row retains `collection_card_id`, `oracle_id`,
+`printing_id`, source-row `quantity` and `committed`. Other supported selectors are `location`, `added_at`,
+`date_reliability`, `finish`, `condition`, `altered`, `misprint`, `purchase_price`, `purchase_price_currency`,
+`source_row_number`, `set`, `set_id`, `set_name`, `set_type`, `lang`, `collector_number`, `printed_name`,
+`printing_layout`, `finishes`, `promo_types`, `tcgplayer_id`, `cardmarket_id`. Printing properties refer to that owned
+Printing; singular `finish` is the owned Finish and `finishes` is its supported Printing list. Use `lookup_cards` for
+additional identity facts. Source row quantities are not individual physical IDs or final allocated quantities.
+
+Browsing uses the same complete success/error envelopes and 51,200-byte/120-second budgets as lookup. `first` defaults
+to 50 and accepts 0–200; zero-first performs lookahead without consuming a matching row. `collection_context` exposes
+state, active import ID, effective policy and confirmation status. `date_coverage` reports `undated` as `present`,
+`unchecked` or `absent`, scan `completion` as `complete` or `partial`, and detected `legacy_precision_lost`. Partial or
+resumed traversal never turns unchecked undated coverage into a false absence. Recent discovery requires a separate
+bounded same-scope unknown-date browse unless explicitly declined; possibly relevant undated rows are not dated proof.
+
+Continue with the ordinary fixed request and `after`; selection and page size may change. Cursors bind fixed
+policy/criteria/order, effective provenance setting, successful Collection/reference imports and raw source position.
+They contain no rows or hidden permission. A successful Collection replacement rejects old policy/location/row/cursor
+references and requires reconfirmation, regardless of unchanged names. Failed attempts preserve the active snapshot.
+Reference replacements reject dependent continuation. Unexpected mid-call dependency changes discard in-flight rows.
+Complete rows never split; oversized rows remain unconsumed and errors carry a safe cursor when it fits. Response
+budgeting includes final exhaustion metadata, Collection context, all cursors and optional provenance. No provider scan,
+historical Collection store or new card-query language is involved. This is row eligibility evidence, not whole-deck
+joint allocation or a reservation.
+
 ## Legacy local discovery request envelope
 
 `legacy_query_cards` accepts one strict object with four optional fields:
