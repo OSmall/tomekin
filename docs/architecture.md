@@ -8,18 +8,27 @@ Current observable workflows are defined in [Product Behavior](./product-behavio
 in [Data Model](./data-model.md), structured retrieval in [Card Query](./card-query.md), and verification policy in
 [Testing](./testing.md). Historical rationale and adopted trade-offs live in [`adr/`](./adr/).
 
-## Retrieval transition
+## Retrieval
 
-[ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) adopts provider-backed Scryfall-syntax discovery while
-retaining Tomekin's current domain model and relational reference corpus for known-card lookup, Collection import,
-and deterministic checks. Existing Collection and Deck Candidate foreign keys remain; no duplicated identity columns
-or name snapshots are adopted. The existing DSL remains an explicitly enabled legacy capability after migration.
-Local `lookup_cards` now implements the complete selected-fact, bounded-envelope and stateless input-position contract.
-Local `browse_tags` now provides explicit search/lookup/list operations over retained tag, alias and hierarchy tables.
-Its bounded complete-record envelopes use shared stateless cursors bound to the successful tag import. Catalogue reads
-are transactional, hierarchy depth is explicit and bounded, and no separate reference/search store is introduced.
-Local Collection policy resolution and bounded owned-row browsing are implemented. Provider filtering/evidence remains a separate slice. Local-only normal network
-behavior remains in effect until provider discovery ships.
+[ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) is implemented for provider discovery and local lookup.
+Core owns native request bindings, selected projections, bounded envelopes, stateless source-position traversal and
+admission policy. The common runtime injects one provider and retains SQLite for local lookup/enrichment, Collection
+import and deterministic checks. Confirmed-policy owned-row browsing is implemented; provider Collection filtering/evidence remains separate work. No retrieval-only corpus migration or
+result/search store is introduced.
+
+The process-lifetime provider owner performs HTTP outside disposable runtimes/Workers. Pi brokers transient provider
+request/reply messages through its extension host; cancellation terminates the search Worker and detaches its caller,
+while the host observes any 429 and retains cooldown. OpenCode and fallback runtimes reuse the same process owner.
+Monotonic actual-start admission, durable minimal recovery metadata and an enforced single-provider-process state-root
+boundary survive runtime disposal and Worker replacement. See [request control](./card-query.md#live-card-discovery)
+for operating rules, restart recovery and the unrecorded-header crash limitation.
+
+Normal discovery is `search_cards`; local CQL2 is only explicitly enabled `legacy_query_cards`. `lookup_cards` remains
+local and does not hydrate missing facts from the provider. Reference relationships and existing foreign keys remain.
+
+Local `browse_tags` provides explicit search/lookup/list over retained tags, aliases and hierarchy. Complete-record
+pages use stateless import-bound cursors and transactional catalogue reads; hierarchy depth is explicit and bounded.
+`search_card_sets` uses the existing Set catalogue and only requires All Cards readiness. No second reference store.
 
 ## Current Components
 
@@ -90,7 +99,7 @@ uncommitted.
 the one-time Card Set migration preparation workflow. It wires core services to SQLite repositories and renders command
 results for a human operator.
 
-Only the explicit Scryfall sync command performs live Scryfall network requests. Local-file Scryfall import and ManaBox
+Live `search_cards` and explicit Scryfall sync perform Scryfall network requests. Local-file Scryfall import and ManaBox
 Collection import read user-supplied local files.
 
 ### Agent harness adapter
@@ -136,8 +145,9 @@ Turborepo.
   discovery, construction, tuning, and persistence choices.
 - **Collection:** the latest successful ManaBox import is read-only evidence of owned rows. Tomekin does not write back
   or mutate imported Existing Decks.
-- **Reference facts:** compatible local Scryfall datasets are authoritative for card identity, text, legality, Sets,
-  Printings, Game Changer flags, EDHREC rank, and Oracle Tags.
+- **Reference facts:** live search evidence comes from the selected provider; local lookup and deterministic checks
+  use compatible retained Scryfall datasets. Incidental material rules/legality disagreements require explicit sync
+  and recheck before a successful final claim; normal search does not redundantly cross-check every result.
 - **Retrieval:** Card Query and reference repositories expose bounded allowlisted reads. Raw SQL and arbitrary database
   access are not Agent Tools.
 - **Legality:** deterministic service results cannot be overridden by the agent. Explicit Rule Zero exceptions remain
@@ -147,7 +157,7 @@ Turborepo.
 - **Persistence:** authorized structured construction progress is candidate-owned and may be incomplete. Targeted
   changes validate the resulting record state atomically; explicit deck checks and agent confirmation remain distinct.
   Deck Opportunities and Deck Change Proposals are transient; candidate writes never change the Collection.
-- **External network:** normal deck-building is local. Live data access occurs only through an explicit user-invoked
+- **External network:** discovery uses the injected Scryfall search provider; bulk reference refresh remains an explicit user-invoked
   Scryfall sync.
 
 ADR 0005 established portable repository ownership and named `DeckOpportunity` among the records the anticipated MVP

@@ -80,8 +80,8 @@ and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout
 tokens. OpenCode remains supported. The profile and database remain intact after each run.
 
 For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
-`tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `query_cards` call after
-loading `query-cards` when a non-trivial filter is needed. During a deliberately slow product-tool call, confirm that
+`tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `search_cards` call after
+loading `query-cards` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
 the spinner and terminal input remain responsive, Escape cancels a read, and dispatched candidate writes settle and are not reported cancelled.
 
 ### Upgrading an existing pre-Card-Set database
@@ -198,14 +198,14 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Compact candidate summaries and complete paged Brief/selection/pool/plan/reasoning/report views. Saved rendering uses
   selected canonical names; developer JSON/Mermaid exports preserve current reasoning without running checks.
 - Explicit Scryfall bulk sync for `oracle_cards`, `all_cards`, and `oracle_tags`.
-- Local Card Set discovery plus Printing-scoped Card Query filters, including Universes Beyond and promo-type semantics.
+- Local Card Set discovery. Retained local CQL2 filters require explicit `TOMEKIN_ENABLE_LEGACY_QUERY=true` and the `legacy_query_cards` capability (OpenCode also requires an allow permission).
 - ManaBox Collection CSV import with blocking validation and non-destructive failed imports.
 - Format-aware opencode deck-building agent with deterministic local tools and researched 60-card construction guidance.
 - Collection Opportunity discovery across all supported Formats, with ranked viable directions before full construction.
 - Commander Existing Deck tuning: review proposed additions, identify paired cuts, or diagnose open-ended improvements
   within an explicitly stated Addition Pool.
 - 60-card Existing Deck tuning with an explicit focused-repair, rebuild-around-identity, or fresh-construction gate.
-- Card search, card identity lookup, Oracle Tag lookup, Format legality validation, deck rendering, and Deck Candidate
+- Native Scryfall `search_cards`, selected local `lookup_cards`, Oracle Tag lookup, Format legality validation, deck rendering, and Deck Candidate
   persistence tools for Commander/EDH and the supported 60-card Formats.
 - Optional 60-card Sideboards when requested, with matchup context or explicit general-purpose assumptions.
 - Structured local logging for CLI commands, SQLite queries, imports, sync, and opencode tool calls.
@@ -213,7 +213,9 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 ## Known Limitations
 
 - Collection-aware deck-building depends on an imported ManaBox CSV snapshot; there is no collection write-back.
-- Normal deck-building is local/offline and will not fetch missing Scryfall data automatically.
+- Discovery uses live Scryfall search. Known-card lookup and deterministic checks use explicit local imports; no automatic corpus hydration occurs.
+- One active provider process per shared user/state root is supported. A second active Pi/OpenCode process must wait for the owner to exit. See [provider operating rules](docs/card-query.md#live-card-discovery).
+- Native search currently returns card facts and optional local tags; Collection-policy filtering/evidence is separate work.
 - Normal 60-card deck-building has no live metagame feed; Sideboard recommendations depend on user-supplied context or
   clearly stated general-purpose assumptions.
 - No npm package, installer, hosted UI, or plugin marketplace packaging is provided in this alpha.
@@ -222,7 +224,7 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
   purchase recommendations are not yet supported.
 - Deck Opportunity shortlists are transient in the current agent workflow; durable Deck Opportunity persistence remains
   future work.
-- Confirmed Collection Access Policy is enforced by `browse_collection_cards`. Legacy `query_cards` still needs
+- Confirmed Collection Access Policy is enforced by `browse_collection_cards`. Legacy `legacy_query_cards` still needs
   explicit scoped predicates and does not prove the new policy or actual owned-Printing restrictions.
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.

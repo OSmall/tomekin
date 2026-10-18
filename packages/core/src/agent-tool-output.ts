@@ -15,7 +15,7 @@ export function serializeAgentToolDetails(details: unknown): string {
 }
 
 /** Hard Worker cancellation has no newly delivered source position. */
-export function retrievalCancellationEnvelope(input: unknown, message: string) {
-    const first = typeof input === "object" && input !== null && "first" in input && Number.isInteger(input.first) && typeof input.first === "number" && input.first >= 0 && input.first <= 200 ? input.first : 50;
+export function retrievalCancellationEnvelope(input: unknown, message: string, defaultFirst = 50) {
+    const first = typeof input === "object" && input !== null && "first" in input && Number.isInteger(input.first) && typeof input.first === "number" && input.first >= 0 && input.first <= 200 ? input.first : defaultFirst;
     return {status: "error", edges: [], error: {code: "cancelled", message, retryable: true}, metadata: {requested_count: first, returned_count: 0, response_budget_bytes: 51_200, provider_total: null, scoped_total: null}};
 }

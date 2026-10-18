@@ -1,9 +1,9 @@
 # Provider-backed Scryfall Card Search
 
-Status: Accepted; local known-card lookup, reference catalogue discovery and confirmed-policy owned-row browsing implemented. Provider discovery/filtering and final Availability remain separate work.
+Status: Accepted; native provider discovery, local lookup, reference catalogue discovery and confirmed-policy owned-row browsing implemented. Provider Collection filtering and final Availability remain separate work.
 Refines the decision recorded in
 [Choose the agent-facing Card Query authoring contract](https://github.com/OSmall/tomekin/issues/72).
-The existing CQL2 implementation remains the current discovery behaviour until provider migration.
+Native discovery supersedes CQL2 in the normal tool surface; local CQL2 is disabled-default legacy retrieval.
 
 Tomekin will accept Scryfall search syntax through a boot-injected Card Search provider so agents can use an established
 language without Tomekin maintaining another search parser. Live Scryfall is the initial provider. One provider is
@@ -27,20 +27,19 @@ initially; bitmap filtering is a possible later optimisation.
 
 The adopted pagination refinement from [issue #29](https://github.com/OSmall/tomekin/issues/29#issuecomment-6230187644)
 uses ordinary `first`/`after` requests, complete `edges[].node` outcomes, page-level cursors and explicit success/error
-envelopes. Lookup now implements stateless next-input-occurrence positions, preserving duplicates and misses. Future
-live source positions retain provider page/next-page identity and raw provider-ID anchors for refetch; they store no
+envelopes. Lookup now implements stateless next-input-occurrence positions, preserving duplicates and misses. Live source positions retain provider page/next-page identity and raw provider-ID anchors for refetch; they store no
 result objects or cross-call buffers. Missing/ambiguous anchors must fail explicitly. Live traversal does not establish
 a frozen snapshot. `hasNextPage` means a further qualifying result exists; insufficient lookahead is a recoverable
 failure rather than a guessed successful page. Provider totals remain distinct from unknown scoped totals.
 
 The default whole compact JSON response budget is 51,200 UTF-8 bytes and scan deadline is 120 seconds including
-scheduling/local work. `first` accepts 0–200, default 50 for lookup and 175 for future search. Selected card text,
+scheduling/local work. `first` accepts 0–200, default 50 for lookup and 175 for search. Selected card text,
 faces, tags and evidence are indivisible. Exact escaped envelope sizing includes cursors, provenance and error metadata;
 error fitting rolls back to a coherent position before removed outcomes. Oversized complete outcomes fail with
 `record_too_large`, measured required/limit bytes and safe recovery, without prescribing a selection/query change.
 Self-contained cursor sizing is preflighted before execution. Failure envelopes have complete partial edges and one
 optional recovery cursor, with no normal pageInfo. No preview, spill-file recovery, saved cursor store or fixed expiry
-is adopted. Pi Worker/fallback now preserve complete lookup, tag-catalogue and Collection browse envelopes, plus complete exact location inspection; unmigrated tools retain their temporary cap.
+is adopted. Pi Worker/fallback preserve complete search, lookup, tag-catalogue and Collection browse envelopes, plus exact location inspection; unmigrated tools retain their temporary cap.
 
 The intended agent workflow is staged retrieval: request only facts needed to compare the current candidates, then
 look up additional facts for a shortlist in groups. Card details already returned can be reused in that comparison.
@@ -202,9 +201,19 @@ Implementation must preserve deterministic construction
 checks and review existing detail, name-resolution, evaluation, import, and readiness paths as well as the new search
 tool. This is not a decision to alter their persisted records.
 
-The adopted direction supersedes ADR 0012's choice of CQL2 as the normal agent-facing language after implementation.
+The adopted direction supersedes ADR 0012's choice of CQL2 as the normal agent-facing language.
 ADR 0013's compiler rationale remains relevant to the retained legacy capability. Current behaviour documentation must
 be updated alongside implementation; this ADR does not describe delivered functionality.
+
+The implemented provider owner performs actual HTTP in the host, outside disposable runtimes/Workers. It spaces actual
+starts by at least 500 ms with monotonic time, without catch-up bursts or an extra post-response interval. Detached
+HTTP still publishes 429 cooldown of at least 31 seconds or longer valid Retry-After before its lane releases.
+An enforced single active provider process per shared user/state root and minimal durable request-control metadata
+support conservative restart recovery. The [current search contract](../card-query.md#live-card-discovery) owns
+operating instructions and the limitation around longer headers not recorded before a crash. This control state
+contains no q, results or cursors. Live scoped totals stay unknown even at exhaustion; deterministic fixtures do not
+establish network throughput or a frozen provider census. Pure live search binds only local enrichment dependencies
+actually introduced, including known tag absence; it does not depend on unrelated local imports.
 
 Collection browsing now uses closed `select`, `first`/`after`, complete ordinary envelopes and import-sensitive stateless
 row positions, replacing the earlier `fields`/`limit` illustration for this tool. Core owns a reusable actual-row facts

@@ -289,6 +289,24 @@ three projections, confirm special characters render as text, verify quantities/
 and inspect layout at readable zoom. A passing render establishes no strategic quality. No renderer, live LLM or network
 is part of the default test suite.
 
+## Provider search coverage
+
+The approved common runtime/handler seam uses isolated on-disk SQLite and injected provider/time ports. Static fixtures
+exercise native passthrough, raw Printing anchors, supplied-next-page/empty-page traversal, zero-first/lookahead,
+complete UTF-8 pages and recoverable errors. Optional tag bindings retain introduced successful-import/known-absence
+dependencies; reversible presentation facts remain separate from canonical gameplay layout.
+
+Focused fake-clock owner tests cover actual starts, late timers, no post-response delay, queued/in-flight cancellation,
+detached 429, retry headers, deadline/cooldown interaction, restart reanchoring and fail-closed persistence. A real child
+process test rejects a second provider owner and recovers conservatively from interruption without network. Actual Pi
+Worker/fallback and OpenCode tests preserve complete >16k selected text and structured errors; a killed Worker cannot
+erase host cooldown. Separate changing-source fixtures illustrate accepted live drift. Matched synthetic workflow
+measurements report application/adapter bytes and fixture stages/calls, without live census, throughput or model-token claims.
+
+Run `bun run evaluate:search` for the provider fixture protocol. The committed
+[measurement evidence](./research/provider-search-evidence/README.md) records source identity counts, ordinary
+continuation call costs, complete page/adapter bytes and five warm timing samples without a live-throughput claim.
+
 ## Collection policy and chronology
 
 The public shared-runtime tests use isolated on-disk SQLite and tiny synthetic/public reference fixtures. They exercise

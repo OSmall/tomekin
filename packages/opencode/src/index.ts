@@ -1,4 +1,4 @@
-import {agentToolResultDetails, serializeAgentToolDetails, createImportFoundationServices, type LogComponent, type Logger} from "@tomekin/core";
+import {agentToolResultDetails, serializeAgentToolDetails, createImportFoundationServices, type LogComponent, type Logger, type CardSearchOptions} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolHandlers, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 
@@ -7,6 +7,7 @@ export type {LocalAgentToolHandlers, LocalAgentToolRuntime};
 export type LocalRuntimeOptions = {
     readonly databasePath?: string | undefined;
     readonly log: Logger;
+    readonly search?: CardSearchOptions;
 };
 
 export function createLocalImportFoundation(options: { readonly log: Logger }) {
@@ -24,7 +25,7 @@ export function createLocalAgentToolHandlers(options: LocalRuntimeOptions): Loca
     const dbPath = options.databasePath ?? resolveDatabasePath();
     const logger = options.log.child({component: "opencode" satisfies LogComponent, databasePath: dbPath});
   logger.info({operation: "create_agent_tool_handlers", status: "started"}, "OpenCode agent tool handlers starting");
-    const runtime = createLocalAgentToolRuntime({databasePath: dbPath, log: options.log});
+    const runtime = createLocalAgentToolRuntime({databasePath: dbPath, log: options.log, ...(options.search ? {search:options.search} : {})});
     return {
         ...runtime,
         close: () => {

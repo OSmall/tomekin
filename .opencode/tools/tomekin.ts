@@ -47,14 +47,14 @@ async function runTool<T>(toolName: string, args: unknown, fn: (handlers: Return
   const runtime = resolveAgentToolRuntime();
   const logger = runtime.log.child({component: "agent_tool" satisfies LogComponent, toolName});
   logger.info({operation: "agent_tool_call", status: "started"}, "Agent tool call started");
-  logger.debug({operation: "agent_tool_call", status: "started", args}, "Agent tool arguments");
+  if (toolName !== "search_cards") logger.debug({operation: "agent_tool_call", status: "started", args}, "Agent tool arguments");
   const local = runtime.createHandlers({...runtime.handlerOptions, log: runtime.log});
   try {
     const result = await fn(local.handlers);
     const output = resultToOpencodeOutput(result as Parameters<typeof resultToOpencodeOutput>[0]);
     const resultLike = result as {isOk?: () => boolean; isErr?: () => boolean};
     logger.info({operation: "agent_tool_call", status: resultLike.isErr?.() ? "failed" : "succeeded", durationMs: elapsedMs(startedAtMs), outputBytes: Buffer.byteLength(output, "utf8")}, "Agent tool call finished");
-    if (!["lookup_cards", "browse_collection_cards", "browse_tags"].includes(toolName)) logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
+
     return output;
   } catch (error) {
     logger.error({operation: "agent_tool_call", status: "threw", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Agent tool call threw");
@@ -79,13 +79,13 @@ export const draft_deck_building_brief = tool({
   },
 });
 
-export const query_cards = tool({
-    description: agentToolContracts.query_cards.description,
-  args: argsOf("query_cards"),
+export const legacy_query_cards = process.env.TOMEKIN_ENABLE_LEGACY_QUERY === "true" ? tool({
+    description: agentToolContracts.legacy_query_cards.description,
+  args: argsOf("legacy_query_cards"),
   async execute(args) {
-    return runTool("query_cards", args, (handlers) => handlers.queryCards(args));
+    return runTool("legacy_query_cards", args, (handlers) => handlers.legacyQueryCards(args));
   },
-});
+}) : undefined;
 
 const tagOperation = createCanonicalOpenCodeInputSchema(
     TagCatalogueOperationSchema,
@@ -95,8 +95,8 @@ const tagOperation = createCanonicalOpenCodeInputSchema(
 export const browse_tags = tool({
     description: agentToolContracts.browse_tags.description,
     args: {...argsOf("browse_tags"), operation: tagOperation},
-    async execute(args) {
-        return runTool("browse_tags", args, (handlers) => handlers.browseTags(args));
+    async execute(args, context?: {abort:AbortSignal}) {
+        return runTool("browse_tags", args, (handlers) => handlers.browseTags(args,context?.abort));
     },
 });
 
@@ -190,15 +190,21 @@ export const hypergeometric_calculator = tool({
 export const lookup_cards = tool({
     description: agentToolContracts.lookup_cards.description,
     args: {...argsOf("lookup_cards"), select: lookupSelection},
-    async execute(args) {
-        return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args));
+    async execute(args, context?: {abort: AbortSignal}) {
+        return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args, context?.abort));
     },
+});
+
+export const search_cards = tool({
+ description: agentToolContracts.search_cards.description,
+ args: {...argsOf("search_cards"), select: lookupSelection},
+ async execute(args, context?: {abort: AbortSignal}) {return runTool("search_cards",args,handlers=>handlers.searchCards(args, context?.abort));},
 });
 
 export const browse_collection_cards = tool({
     description: agentToolContracts.browse_collection_cards.description,
     args: {...argsOf("browse_collection_cards"), select: collectionSelection},
-    async execute(args) {
-        return runTool("browse_collection_cards", args, handlers => handlers.browseCollectionCards(args));
+    async execute(args, context?: {abort:AbortSignal}) {
+        return runTool("browse_collection_cards", args, handlers => handlers.browseCollectionCards(args,context?.abort));
     },
 });

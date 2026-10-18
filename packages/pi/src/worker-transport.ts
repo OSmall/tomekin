@@ -1,4 +1,13 @@
-import { agentToolMutates, retrievalCancellationEnvelope, serializeAgentToolDetails } from "@tomekin/core";
+import type {PiProviderRequest} from "./provider-protocol";
+import {getProcessCardSearchProvider} from "@tomekin/agent";
+import {
+    ProviderFailure,
+    type CardSearchProvider,
+    type Logger,
+    agentToolMutates,
+    retrievalCancellationEnvelope,
+    serializeAgentToolDetails,
+} from "@tomekin/core";
 export type PiToolOutput = {
     readonly content: readonly {
         readonly type: "text";
@@ -10,23 +19,33 @@ type WorkerRequest = Readonly<Record<string, unknown>> & {
     readonly toolCallId: string;
     readonly cancellable?: boolean;
 };
-type WorkerResponse = { readonly id: string; readonly output: PiToolOutput };
+type WorkerResponse =
+    | {
+          readonly kind?: "tool_result";
+          readonly id: string;
+          readonly output: PiToolOutput;
+      }
+    | PiProviderRequest;
 type PendingInvocation = {
     readonly resolve: (output: PiToolOutput) => void;
     readonly id: string;
     readonly mutating: boolean;
     readonly settled: Promise<void>;
     readonly toolName: string;
+    readonly started: number;
 };
 /** One session-scoped execution lane. Dispatched mutations always settle. */
 export class PiWorkerTransport {
     private worker: Worker | undefined;
     private pending: PendingInvocation | undefined;
     private closing = false;
+    private readonly providerCalls = new Map<Worker, Set<AbortController>>();
     constructor(
         private readonly options: {
             readonly workerUrl: string;
             readonly createWorker?: (url: string) => Worker;
+            readonly provider?: CardSearchProvider;
+            readonly log?: Logger;
         },
     ) {}
     invoke(request: WorkerRequest, signal: AbortSignal): Promise<PiToolOutput> {
@@ -66,7 +85,8 @@ export class PiWorkerTransport {
                 void this.terminateWorker();
                 finish(
                     cancelledOutput(
-                        "Cancelled while the approved tool was running. Reuse the last received cursor or original request.", request,
+                        "Cancelled while the approved tool was running. Reuse the last received cursor or original request.",
+                        request,
                     ),
                 );
             };
@@ -76,10 +96,11 @@ export class PiWorkerTransport {
                 mutating,
                 settled,
                 toolName,
+                started: performance.now(),
             };
-            signal.addEventListener("abort", cancel, { once: true });
+            signal.addEventListener("abort", cancel, {once: true});
             try {
-                worker.postMessage({ id: request.toolCallId, ...request });
+                worker.postMessage({id: request.toolCallId, ...request});
             } catch {
                 const pending = this.pending;
                 this.pending = undefined;
@@ -109,6 +130,10 @@ export class PiWorkerTransport {
             this.options.createWorker?.(this.options.workerUrl) ??
             new Worker(this.options.workerUrl);
         worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+            if (event.data.kind === "provider_request") {
+                void this.dispatchProvider(worker, event.data);
+                return;
+            }
             const pending = this.pending;
             if (
                 this.worker !== worker ||
@@ -124,21 +149,88 @@ export class PiWorkerTransport {
             const pending = this.pending;
             this.pending = undefined;
             this.worker = undefined;
+            for (const controller of this.providerCalls.get(worker) ?? [])
+                controller.abort();
+            this.providerCalls.delete(worker);
             if (pending) pending.resolve(unknownOrFailure(pending));
             void worker.terminate();
         };
         this.worker = worker;
         return worker;
     }
+    private async dispatchProvider(worker: Worker, request: PiProviderRequest) {
+        if (this.worker !== worker || !this.pending) return;
+        const controller = new AbortController();
+        const calls =
+            this.providerCalls.get(worker) ?? new Set<AbortController>();
+        this.providerCalls.set(worker, calls);
+        calls.add(controller);
+        try {
+            const reply = await (
+                this.options.provider ??
+                getProcessCardSearchProvider(this.options.log)
+            ).dispatch(request.url, {
+                remainingMs: Math.max(
+                    0,
+                    Math.min(
+                        request.remainingMs,
+                        (request.scanBudgetMs ?? 120000) -
+                            (performance.now() - this.pending.started),
+                    ),
+                ),
+                signal: controller.signal,
+                ...(request.correlationId
+                    ? {correlationId: request.correlationId}
+                    : {}),
+            });
+            if (this.worker === worker)
+                worker.postMessage({
+                    kind: "provider_reply",
+                    requestId: request.requestId,
+                    reply,
+                });
+        } catch (error) {
+            const problem =
+                error instanceof ProviderFailure
+                    ? error.problem
+                    : {
+                          code: "provider_error",
+                          message: "Provider transport failed.",
+                          reason: "transport_failure",
+                          retryable: true,
+                      };
+            if (this.worker === worker) {
+                try {
+                    worker.postMessage({
+                        kind: "provider_reply",
+                        requestId: request.requestId,
+                        problem,
+                    });
+                } catch {
+                    /* The owner already retained any HTTP control effects. */
+                }
+            }
+        } finally {
+            calls.delete(controller);
+            if (!calls.size) this.providerCalls.delete(worker);
+        }
+    }
     private async terminateWorker() {
         const worker = this.worker;
         this.worker = undefined;
-        if (worker) await worker.terminate();
+        if (worker) {
+            for (const controller of this.providerCalls.get(worker) ?? [])
+                controller.abort();
+            this.providerCalls.delete(worker);
+            await worker.terminate();
+        }
     }
 }
 export function createPiWorkerTransport(options: {
     readonly workerUrl: string;
     readonly createWorker?: (url: string) => Worker;
+    readonly provider?: CardSearchProvider;
+    readonly log?: Logger;
 }): PiWorkerTransport {
     return new PiWorkerTransport(options);
 }
@@ -152,15 +244,24 @@ function unknownOrFailure(pending: PendingInvocation) {
 }
 function projectOutput(details: unknown): PiToolOutput {
     return {
-        content: [
-            { type: "text", text: serializeAgentToolDetails(details) },
-        ],
+        content: [{type: "text", text: serializeAgentToolDetails(details)}],
         details,
     };
 }
 function cancelledOutput(message: string, request?: WorkerRequest) {
-    return projectOutput(request && typeof request.toolName === "string" && ["lookup_cards", "browse_collection_cards", "browse_tags"].includes(request.toolName) ? retrievalCancellationEnvelope(request.params, message) : { error: "cancelled", message });
+    return projectOutput(
+        request?.toolName === "browse_tags" ||
+        request?.toolName === "browse_collection_cards" ||
+        request?.toolName === "lookup_cards" ||
+            request?.toolName === "search_cards"
+            ? retrievalCancellationEnvelope(
+                  request.params,
+                  message,
+                  request.toolName === "search_cards" ? 175 : 50,
+              )
+            : {error: "cancelled", message},
+    );
 }
 function failureOutput(error: string, message: string) {
-    return projectOutput({ error, message });
+    return projectOutput({error, message});
 }
