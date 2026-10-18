@@ -1,8 +1,15 @@
 import {tool} from "@opencode-ai/plugin";
-import {cardFactDescriptions, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
-import {createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
+import {CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {createCanonicalOpenCodeInputSchema, createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
+
+// Keep canonical selector constraints/meanings intact across independent host/plugin Zod registries.
+const lookupSelection = createCanonicalOpenCodeInputSchema(
+    CardSelectionSchema,
+    (agentToolInputJsonSchema("lookup_cards").properties as Record<string, unknown>).select,
+    (validate) => tool.schema.custom<CardSelection>(validate),
+);
 
 type AgentToolRuntime = {
   readonly log: Logger;
@@ -171,11 +178,7 @@ export const hypergeometric_calculator = tool({
 
 export const lookup_cards = tool({
     description: agentToolContracts.lookup_cards.description,
-    // OpenCode bundles Zod 4.1 while Core uses 4.4: metadata registries differ.
-    // Build this annotated selector with the actual host schema instance, from Core's one fact list.
-    args: {...argsOf("lookup_cards"), select: tool.schema.strictObject(Object.fromEntries(
-        Object.entries(cardFactDescriptions).map(([field, description]) => [field, tool.schema.literal(true).describe(description).optional()]),
-    )).refine((value) => Object.keys(value).length > 0, "Select at least one fact.").meta({minProperties: 1})},
+    args: {...argsOf("lookup_cards"), select: lookupSelection},
     async execute(args) {
         return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args));
     },
