@@ -9,8 +9,11 @@ Use this workflow before construction when the user asks what they can build, wa
 only a broad seed such as a card, creature type, mechanic, color, or play pattern. Compose `tomekin-deck-building` for
 the Deck Building Brief and tool lifecycle. Load `query-cards` before Collection or tag searches.
 
-Discovery is a decision layer, not construction. Return a compact Deck Opportunity shortlist and wait for the user to
+Apply the shared method at opportunity-comparison fidelity: explain each activity, advantage mechanism, winning
+direction and material support risk without demanding a full candidate graph. Discovery is a decision layer, not construction. Return a compact Deck Opportunity shortlist and wait for the user to
 choose or refine a direction. Do not produce, render, or save a full decklist.
+
+Load `deck-shape-methodology` for plan, qualified coverage, whole-contribution tuning and retained reasoning.
 
 ## Establish Discovery Context
 
@@ -20,7 +23,7 @@ Require:
   missing-card tolerance, and combo tolerance. Keep Deck Opportunity ranking priorities in the confirmed working context
   because the current Brief schema has no dedicated field for them.
 - Open or seeded intent. A seed constrains discovery but does not prove that the first matching theme is viable.
-- Current reference support from `summarize_reference_support`.
+- Reference status from startup/CLI diagnostics or actionable tool readiness errors.
 - An explicit allow-list of Collection Locations when Collection evidence matters.
 
 Keep strength and pilot complexity distinct. For example, “strong casual” may be the Power Level while “approachable for
@@ -28,39 +31,39 @@ an intermediate player, with limited bookkeeping” belongs in `playExperience`.
 
 ## Resolve The Collection Allow-list Once
 
-Call `list_collection_locations` and state the exact allowed `(locationType, locationName)` pairs in the confirmed
-working context. Collection Location names are exact and case-sensitive.
+Call `list_collection_locations` and inspect its exact locations plus authoritative active import context. Confirm
+allowed sources and any protected/excluded locations, excluded identities/Printings/rows, and typed copy restrictions.
+Keep the inspectable `collectionAccessPolicy` in the Brief, or use an explicit confirmed policy before a candidate
+exists. An empty allow-list permits zero rows. Existing Deck borrowing remains visibly Committed even when allowed.
 
-Translate that allow-list into one positive Collection predicate and copy it unchanged into every Collection query:
+Use `browse_collection_cards` for actual owned-row/date discovery and exact owned-Printing restrictions. It resolves
+UUID plus type/name or exact case-sensitive type/name pairs in the bound snapshot. Repeat the fixed policy/criteria
+with `after` for complete bounded traversal; request card-level facts through batched `lookup_cards`. Ask for the user's
+changed agreement before widening sources or restrictions. A successful Collection replacement requires scope
+reconfirmation; unchanged names do not rebind permission.
 
-- Require `collection.quantity > 0`.
-- When all allowed names are unique, use `collection.locationName in [...]`.
-- When a name exists under more than one location type, preserve the intended pairs with an `or` of scoped
-  `(collection.locationType, collection.locationName)` branches.
-- Wrap complex location logic and quantity in one `withCollectionCard` so they apply to the same owned row scope.
+For recent-card inspiration follow the coordinator's Recent Source Additions workflow: independently browse unknown
+dates unless declined and preserve strict physical-copy eligibility versus wider exploratory assembly. Unknown metadata
+never proves a strict restriction. Inspect completion/undated coverage before claiming a scan is complete.
 
-The tool has no hidden active policy. A Collection query that omits the confirmed allow-list is invalid workflow usage:
-discard it and retry with the full scope. Do not widen the scope merely because a promising card exists elsewhere.
+## Discover And Qualify Directions
 
-## Discover Broad Directions
+1. State the decision being supported. Search bounded functional packages or Mana Value bands using `search_cards`,
+   native `q`, `unique: "cards"` and explicit typed `select`. Request full text immediately where fit depends on it.
+2. Inspect seed facts/tags, validate literal slugs through `browse_tags`, then complement seed/tag snowballing with
+   independent functional/Oracle-text searches. Tags and prominence suggest options; facts establish contextual fit.
+3. Reuse suitable returned facts and batch only missing shortlist facts through `lookup_cards`. Request scoped summary
+   or actual-row copies evidence for inspected examples. Representative provider Printings do not enumerate owned versions.
+4. Compare plausible repeatable activities, advantage mechanisms and winning directions, their enabling resources,
+   rewards and resilience. Use a compact comparison when useful: decisive facts/qualifications, mana, scoped ownership,
+   unresolved needs. Continue where an unresolved gap could materially change the recommendation.
 
-Use bounded searches to find clusters of Collection support without requesting all detail at once.
-
-1. Query compact Card Identity and scoped quantity results by Format, seed, color constraints, tag concept, functional
-   package, or Mana Value band. Prefer limits of 20-50 per discovery query.
-2. Resolve relevant tag IDs with `search_card_identity_tags`; use direct and Inherited Card Identity Tags as evidence,
-   not as automatic Deck Roles.
-3. Form candidate directions from repeated overlap among Format Anchors, enablers, payoffs, mana support, interaction,
-   card advantage, resilience, and credible win conditions.
-4. Fetch full tags or Collection Card rows only for high-signal cards in shortlisted directions. Do not request
-   `include.tags: true` and `include.collectionCards: true` across a broad result set.
-
-Do not equate a broad theme with a game plan. Refine each direction until it states:
-
-- how it gets ahead or survives;
-- what resource or board state it develops;
-- how it converts that state into a win; and
-- which opposing actions most directly interrupt it.
+A direction qualifies as a **Deck Opportunity** when it has a plausible repeatable plan and winning direction,
+inspected examples of important functions, scoped Collection evidence, and explicit gaps/dependencies. A full deck,
+whole-deck Availability proof or exhaustive search is unnecessary. Discovery hits remain transient; assessed options
+enter a candidate-owned Deck Card Pool only after contextual contributions are justified, and selection is separate.
+Use a useful shortlist justified by the decision and evidence. Report unexplored approaches, incomplete scans and
+coverage limits; no fixed quota or universal top-N cutoff establishes sufficiency.
 
 ## Evaluate Viability
 
@@ -80,8 +83,7 @@ win.
 
 ## Return The Shortlist
 
-Return up to three viable Deck Opportunities. When the request is open, prefer two or three genuinely distinct
-directions, but never pad the shortlist: one or zero is valid.
+Return useful compared Deck Opportunities. One or zero is valid when the evidence supports no broader shortlist.
 
 For each opportunity state:
 

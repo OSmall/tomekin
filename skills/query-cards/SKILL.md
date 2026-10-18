@@ -1,567 +1,121 @@
 ---
 name: query-cards
-description: Use when composing, fixing, or explaining filters for the `query_cards` Tomekin tool.
+description: Use for native search_cards discovery, known-card lookup_cards selections, first/after recovery, or explicitly enabled legacy_query_cards.
 ---
 
 # Query Cards
 
-Use this reference for the `query_cards` tool. Card Query is structured card retrieval over local Card Identity,
-related Card Printings, supported sanctioned Format legality, Card Identity Tags, and imported Collection rows. It is not SQL and does not
-accept arbitrary property paths.
+## Known Cards
 
-## Envelope
-
-`query_cards` accepts only these top-level fields:
-
-- `filter`: optional CQL2-inspired expression object.
-- `sortby`: optional non-empty array of `{property, direction}` where direction is `"asc"` or `"desc"`.
-- `include`: optional projection object.
-- `limit`: optional positive integer, maximum `200`, default `50`.
-
-Omitting `filter` means unconstrained Card Identity browse. `filter: {}` and explicit `null` values are invalid.
-
-## Filter Shape
-
-Every filter node uses `{op, args}`.
+Use `lookup_cards` for exact Oracle IDs, canonical whole names (including ` // `), or Printing IDs.
+Request only newly needed facts through an explicit nonempty `select` object whose properties are literal `true`.
+For pasted decklists, batch name references and select `name` or `oracle_id`; preserve duplicate input occurrences.
+Every found card includes `oracle_id`, and an exact Printing reference also includes `printing_id`.
 
 ```json
-{
-  "op": "and",
-  "args": [
-    {"op": "=", "args": [{"property": "legality.commander"}, "legal"]},
-    {"op": "contains", "args": [{"property": "identity.typeLine"}, "Creature"]}
-  ]
-}
+{"references":[{"kind":"name","value":"Sol Ring"}],"select":{"name":true,"oracle_text":true}}
 ```
 
-Boolean operators:
+Results are complete `edges[].node` outcomes: `found` with selected card facts or `not_found` with the original
+reference. A miss only describes the local reference snapshot. `oracle_text` includes complete existing ordered
+face names/text; explicit `card_faces` returns all supported face facts. `tags` returns complete direct/inherited
+associations. `unavailable_fields` distinguishes absent/incompatible optional datasets from known empty facts.
+Printing properties require Printing references throughout the original batch, including references before `after`.
 
-- `and`, `or`: `args` is a non-empty array of filter nodes.
-- `not`: allowed only inside a Printing scope, over single-valued `printing.setCode`, `printing.setType`, or
-  `printing.universesBeyond` predicates. Never use it over `printing.promoType`.
-- `withTagging`: `args` is exactly one tag-only child filter. Use when tag metadata must apply to the same Card Identity
-  Tagging row.
-- `withCollectionCard`: `args` is exactly one Collection-only child filter. Use for explicit Collection row-scope
-  grouping
-  in complex cases.
-- `withPrinting`: at least one related Card Printing must satisfy its Printing-only child filter.
-- `withoutPrinting`: no related Card Printing may satisfy its Printing-only child filter.
+For another page, repeat the fixed ordered references and `include_provenance` setting with the returned
+`pageInfo.endCursor` as `after`. `first` defaults to 50, accepts 0–200, and counts misses and duplicates.
+Selections and `first` may change. Follow `hasNextPage`; an exhausted source returns false. Failures have
+`status: "error"`, complete partial edges and a single optional `error.cursor` for an ordinary retry.
+For stale import bindings restart; after hard cancellation reuse the last delivered cursor or original request.
+The 51,200-byte compact envelope never clips selected text, faces, tags or JSON. `record_too_large` leaves its
+occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imports; tags are optional enrichment.
+It performs no network fallback or automatic hydration. Request Collection evidence explicitly as below; retrieval does not prove final joint Availability.
+Read `docs/card-query.md` for the complete field, cursor and error contract.
 
-Atomic operators:
+## Tag and Set Vocabulary
 
-- `=`, `!=`, `<`, `<=`, `>`, `>=`, `contains`, `in`, `colorIdentitySubsetOf`, `hasTagInHierarchy`.
+Use `browse_tags` with an explicit operation: `{type: "search", query: "mana ramp"}` for slug/label/alias search,
+`{type: "lookup", slugs: ["mana-rock"]}` for complete known definitions, or `{type: "list"}` for catalogue listing.
+Definitions include all aliases. Hierarchy is absent unless lookup requests `hierarchy: {}` (immediate parents,
+children and edges); explicitly request `depth: 2` or `3` for bounded deeper exploration. Repeat the operation with
+`first`/`after` until `hasNextPage` is false; recover execution stops with `error.cursor`. Successful empty search,
+known-slug `not_found`, and `reference_data_unready` have different meanings. Successful tag replacement invalidates
+old cursors. Tags support discovery; assess Deck Roles and quality from the card in its candidate context.
+`lookup_cards` selected tags still include every reachable inherited ancestor, independently of catalogue depth.
 
-## Queryables
+Use `search_card_sets` with a code/name query for existing imported Set metadata. Load no raw catalogue at startup.
+The literal `mana-rock`, `ramp` and `recursion` slugs were verified from the public 2026-10-17 Oracle Tags bulk
+snapshot; source UUIDs and snapshot provenance are recorded in `docs/card-query.md` under Tag and Set discovery.
 
-Card Identity and reference queryables:
+## Owned-row Browsing
 
-- `identity.id`
-- `identity.name`
-- `identity.typeLine`
-- `identity.oracleText`
-- `identity.manaValue`
-- `identity.colorIdentity`
-- `identity.colors`
-- `identity.gameChanger`
-- `identity.edhrecRank`
-- `legality.commander`
-- `legality.standard`
-- `legality.pioneer`
-- `legality.modern`
-- `legality.legacy`
-- `legality.vintage`
-- `legality.pauper`
-- `tag.id`
-- `tag.slug`
-- `tag.label`
-- `tag.alias`
-- `tag.weight`
+For policy-aware actual-row, source-date and exact owned-Printing discovery, use `browse_collection_cards` with an
+explicit confirmed `collectionAccessPolicy` or its candidate-owned Brief reference. Inspect `list_collection_locations`
+for the active import ID and exact locations. See `docs/card-query.md#collection-policy-and-owned-row-browsing` for
+closed policy/copy selectors and ordinary first/after recovery. Reconfirm scope after successful Collection reimport.
+For recent additions, independently browse unknown source dates unless the user declines. Legacy CQL2 predicates
+remain procedural; independent Printing and Collection predicates cannot prove that the owned Printing matches.
 
-Collection queryables:
+## Live Discovery
 
-- `collection.quantity`
-- `collection.locationName`
-- `collection.locationType`
-- `collection.finish`
-- `collection.altered`
-- `collection.misprint`
-
-Printing queryables (only inside `withPrinting` or `withoutPrinting`):
-
-- `printing.setCode`: exact `=` or `in`; input is normalized to lowercase.
-- `printing.setType`: exact `=` or `in`.
-- `printing.promoType`: exact `=` or `in`.
-- `printing.universesBeyond`: exact boolean `=`; derived from the `universesbeyond` promo type.
-
-Sortable properties:
-
-- `identity.id`
-- `identity.name`
-- `identity.manaValue`
-- `identity.colorIdentity`
-- `identity.edhrecRank`
-- `collection.quantity`
-
-## Operator Rules
-
-- `contains` works only on `identity.name`, `identity.typeLine`, and `identity.oracleText`; it is case-insensitive.
-- `<`, `<=`, `>`, `>=` work only on `identity.manaValue`, `identity.edhrecRank`, and `collection.quantity`.
-- `in` is exact list matching where `=` is valid; do not use it for booleans.
-- `colorIdentitySubsetOf` works only with `identity.colorIdentity`. It means legal within the given Commander Color
-  Identity.
-- `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `search_card_identity_tags` first.
-- For deck-building concepts such as draw, ramp, removal, recursion, protection, sacrifice, or tokens, call
-  `search_card_identity_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
-- `hasTagInHierarchy` matches the chosen tag and descendant taggings. Use it for normal concept search, especially broad
-  functional concepts represented by Inherited Card Identity Tags.
-- For multi-tag concept searches such as draw plus ramp, use independent `hasTagInHierarchy` predicates in an outer
-  `and`. Do not put both concept predicates in one `withTagging` unless one direct tagging row must satisfy both.
-- Use `withTagging` when a tag concept and tag metadata must be true of the same tagging row, such as strong draw.
-- Tag weights are exact enum values: `very_strong`, `strong`, `median`, and `weak`. Use `=` or `in`; ranked comparisons
-  such as `tag.weight >= "strong"` are not supported.
-- `!=` is rejected for `collection.*` and `tag.*` predicates.
-- Every supported `legality.*` property uses the exact values `legal`, `not_legal`, `banned`, and `restricted`.
-- `legality.casual_60` is invalid because Casual 60 deliberately bypasses Scryfall legality. Other retained Scryfall
-  Format properties are also outside the public Card Query vocabulary.
-- Color Identity values are exact WUBRG strings such as `""`, `"G"`, `"UG"`, or `"WUBRG"`.
-
-Inside `withTagging`, only these are allowed:
-
-- `tag.id`, `tag.slug`, `tag.label`, `tag.alias`, `tag.weight`.
-- `hasTagInHierarchy` over `tag.id`.
-- `and` / `or` groups over those tag predicates.
-
-Do not use `identity.*`, `legality.*`, `collection.*`, nested relationship-scope operators, or `not` inside
-`withTagging`.
-
-Inside `withCollectionCard`, only these are allowed:
-
-- `collection.quantity`, `collection.locationName`, `collection.locationType`, `collection.finish`,
-  `collection.altered`, `collection.misprint`.
-- `and` / `or` groups over those Collection predicates.
-
-Do not use `identity.*`, `legality.*`, `tag.*`, `hasTagInHierarchy`, nested relationship-scope operators, or `not`
-inside
-`withCollectionCard`.
-
-Inside a Printing scope, all child predicates refer to the same Card Printing and its one Card Set. Nested relationship
-scopes are invalid. Resolve user-facing Set names and current Secret Lair codes with `search_card_sets`; do not infer
-codes from Set type or a hardcoded list.
-
-For ordinary “no Universes Beyond” acquisition guidance, prefer an identity that has an acceptable printing:
+Use `search_cards` for native Scryfall discovery. Forward q and supplied native controls unchanged; omitted controls
+keep provider defaults. Prefer `unique: "cards"` for normal identity discovery, `prints` only for an explicit version
+need. Do not infer effective rollup from q or claim representative results enumerate every matching owned Printing.
 
 ```json
-{"filter":{"op":"withPrinting","args":[{"op":"=","args":[{"property":"printing.universesBeyond"},false]}]}}
+{"q":"t:creature o:draw","unique":"cards","select":{"name":true,"oracle_text":true},"first":175}
 ```
 
-This retains an identity with both UB and non-UB printings. Only when the user explicitly means “never printed as
-Universes Beyond” use the stricter anti-existence form:
+Choose complete facts needed for the current comparison. `oracle_text` preserves top-level text/null and all existing
+ordered face names/text; explicit `card_faces` selects the full face projection. Printing facts add Printing ID.
+`mana_value` has no cmc alias. `tags` is optional local enrichment with complete direct/inherited associations.
+Pure live discovery needs no local reference import; unavailable optional tags remain visibly unavailable.
+Use optional `collection_scope` for confirmed-policy local filtering. Pass `collection_policy` as an explicit confirmed
+policy or candidate reference; candidate permission loads the whole Brief. Match defaults to identity. Explicit printing
+matching tests only provider Printings actually returned and does not prove all-owned-version coverage. Scope locations
+use UUIDs or exact case-sensitive type/name pairs, and copy_requirements narrow the same actual row/Printing.
 
-```json
-{"filter":{"op":"withoutPrinting","args":[{"op":"=","args":[{"property":"printing.universesBeyond"},true]}]}}
-```
+Request `collection_evidence: {mode: "summary"}` for exact recorded owned/eligible/uncertain quantities, or
+`{mode: "copies", select: {location: true, finish: true}}` for complete selected matching rows. Owned quantity is
+independent of policy permission; unknown strict metadata cannot prove eligibility. With unconfirmed policy,
+eligibility is null and no copy rows are permission-proven. One Collection context exposes no/empty/ready import and
+effective policy; successful reimport requires scope reconfirmation. A row quantity is not an allocation/reservation.
+The result card's representative Printing differs from each actual owned Printing in its copy evidence.
+Repeat fixed scope, policy source and evidence mode on continuation; card/copy selection and first may change.
+Use local browse for source chronology/unknown-date discovery. Final whole-deck Availability requires its separate
+complete-demand check; per-card summaries cannot prevent double allocation.
 
-Apply the same distinction to Secret Lair. After `search_card_sets`, ordinary acquisition guidance uses
-`withPrinting(not(printing.setCode in resolvedCodes))`; “never appeared in Secret Lair” uses
-`withoutPrinting(printing.setCode in resolvedCodes)`.
+Repeat fixed q, native controls and effective include_provenance with ordinary `after`. `first` defaults to 175 and
+accepts 0–200. Selection and first may change. Success uses pageInfo; failure has complete partial edges and at most
+one `error.cursor`, with no pageInfo. Preserve returned evidence and continue from the supplied cursor when missing
+facts can materially affect the decision. A changed fixed query starts a new search.
 
-## Collection Rules
+A successful hasNextPage establishes another matching object. Empty exhausted sources return false. Live traversal
+can repeat/omit records when upstream pages change; scoped totals stay unknown even at exhaustion. Missing or
+ambiguous anchors require explicit recovery, never guessed offsets. Stale dependencies require restarting. A killed
+Worker has no delivered new progress: reuse the last received cursor or original request. No saved result buffers.
 
-Collection predicates are positive owned-row search. They cannot express missing cards, unowned cards, or “no copies in
-this location.”
+Respect retryability and retry_after_ms. The shared dispatcher enforces at least 500 ms between actual starts and at
+least 31 seconds of cooldown after 429, extended by valid longer Retry-After. Avoid immediate retry loops. One active
+provider process per shared user/state root is supported. Provider setup failures give operating guidance.
+Whole compact envelopes are bounded at 51,200 UTF-8 bytes and scans at 120 seconds including admission/lookahead.
+Never silently drop selected facts to obtain a smaller prompt or describe a partial scan as a census.
 
-- Use `collection.quantity > 0` or `collection.quantity >= 1` for owned cards.
-- Use `list_collection_locations` before exact location filters.
-- Use `collection.locationName`, not `collection.location.name`.
-- `collection.locationType` is `"binder"` or `"deck"`.
-- `collection.locationName` comparisons are exact and case-sensitive.
-- Multiple Collection predicates in the same `and` branch scope the same owned rows before quantity is summed.
-- Use simple Collection predicates for normal owned-row searches.
-- Use `withCollectionCard` when a complex query needs explicit Collection row-scope grouping.
-- `sortby: [{"property":"collection.quantity","direction":"desc"}]` sorts by matching scoped quantity where applicable.
-  It does not filter to owned cards unless the filter explicitly includes ownership, such as `collection.quantity > 0`.
-- Every result item includes `totalQuantity`, the summed `collection.quantity` for the same active Collection row scope.
-  Location, finish, altered, and misprint filters constrain this total. With no Collection predicates, it is total owned
-  quantity across the whole Collection.
+## Staged Retrieval
 
-### Canonical Collection Location Allow-list
+State the decision the evidence supports, search by meaningful function/package when useful, reuse suitable facts,
+and batch only missing shortlist facts through lookup. Combine seed/tag exploration with independent Oracle-text
+searches. Tags and prominence suggest candidates; they do not prove role adequacy or strategic strength. Discover
+Set metadata with `search_card_sets` and tag vocabulary with the currently supported tag-catalogue tool.
+Incidental material provider/local rules or legality disagreement requires explicit sync and recheck before a successful
+final validation claim; do not routinely refetch results merely to cross-check sources.
 
-Card Query is stateless: it does not remember the Deck Building Brief or a Collection Access Policy. When a
-deck-building workflow confirms allowed Collection Locations, call `list_collection_locations` once and record exact
-`(locationType, locationName)` pairs. Copy the same positive allow-list predicate into every Collection query and the
-final Availability recheck.
+Source contracts: #72 authoring, #28 projection, #29 stateless continuation, #82 request control, and #32 workflow/logging
+final resolutions. The complete implemented mechanics and operating limits are in `docs/card-query.md`.
 
-When allowed names are unique, use one explicitly scoped predicate:
+## Explicit Legacy Branch
 
-```json
-{
-  "op": "withCollectionCard",
-  "args": [
-    {
-      "op": "and",
-      "args": [
-        {
-          "op": "in",
-          "args": [
-            {
-              "property": "collection.locationName"
-            },
-            [
-              "Main Binder",
-              "Red Starter Deck"
-            ]
-          ]
-        },
-        {
-          "op": ">",
-          "args": [
-            {
-              "property": "collection.quantity"
-            },
-            0
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-Location names are unique only within a location type. If a binder and deck share a name, preserve exact pairs in
-separate branches:
-
-```json
-{
-  "op": "withCollectionCard",
-  "args": [
-    {
-      "op": "or",
-      "args": [
-        {
-          "op": "and",
-          "args": [
-            {
-              "op": "=",
-              "args": [
-                {
-                  "property": "collection.locationType"
-                },
-                "binder"
-              ]
-            },
-            {
-              "op": "=",
-              "args": [
-                {
-                  "property": "collection.locationName"
-                },
-                "Shared Name"
-              ]
-            },
-            {
-              "op": ">",
-              "args": [
-                {
-                  "property": "collection.quantity"
-                },
-                0
-              ]
-            }
-          ]
-        },
-        {
-          "op": "and",
-          "args": [
-            {
-              "op": "=",
-              "args": [
-                {
-                  "property": "collection.locationType"
-                },
-                "deck"
-              ]
-            },
-            {
-              "op": "=",
-              "args": [
-                {
-                  "property": "collection.locationName"
-                },
-                "Allowed Deck"
-              ]
-            },
-            {
-              "op": ">",
-              "args": [
-                {
-                  "property": "collection.quantity"
-                },
-                0
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-Do not simplify the second form to `locationName in [...]`; that could admit the disallowed location type. A Collection
-query that omits or widens the active allow-list is invalid workflow usage: discard its evidence and retry.
-
-For a final Deck Candidate Availability check, combine the unchanged allow-list with
-`identity.name in [final card names]`, use a limit large enough for the final distinct names, and compare each scoped
-`totalQuantity` with the required quantity.
-
-### Staged Retrieval
-
-Complete coverage does not require returning every raw field at once.
-
-- Use limits of 20-50 for broad discovery and query by functional package, tag concept, or Mana Value band.
-- Keep `include.tags` and `include.collectionCards` off during broad scans.
-- Fetch full tags for strategic shortlists and Collection Card rows for Availability or assembly evidence.
-- Do not request `include.tags: true` and `include.collectionCards: true` together across hundreds of cards.
-- Card Query has no pagination. If a result reaches its limit, narrow the filter into non-overlapping buckets rather
-  than raising the maximum or assuming the unseen tail is irrelevant.
-
-## Includes
-
-`include` changes projection only; it does not constrain matching.
-
-- `legalities` accepts `commander`, `standard`, `pioneer`, `modern`, `legacy`, `vintage`, and `pauper`. It includes the
-  requested Scryfall legality rows in results without filtering cards.
-- `legalities: ["casual_60"]` is invalid because Casual 60 has no Scryfall legality check.
-- `tags: true` includes direct and inherited Card Identity Tag summaries.
-- `collectionCards: true` includes compact owned Collection Card rows. If Collection predicates are present, these are
-  the rows that matched the Collection branch.
-- In mixed `or` queries, `include.collectionCards` is match evidence. It is not automatically all owned copies for cards
-  that matched only through a non-Collection branch.
-- In mixed `or` queries, `totalQuantity` follows the same evidence scope; a card that matched only through a
-  non-Collection branch reports `0` even if owned elsewhere.
-
-Tag projection rules:
-
-- `tags.direct` contains the card's direct Card Identity Taggings.
-- `tags.inherits` contains Inherited Card Identity Tags derived from direct taggings through the tag hierarchy.
-- Inherited Card Identity Tags are useful discovery evidence, not weaker evidence by default.
-- `tags.inherits.weight` uses the weight from the direct tagging that caused the inherited tag to apply. If multiple
-  direct taggings inherit the same Inherited Card Identity Tag with different weights, the strongest weight is kept.
-- Direct and inherited tags are sorted strongest first: `very_strong`, `strong`, `median`, `weak`, then by stable tag
-  fields.
-
-## Examples
-
-Planeswalkers in an Existing Deck:
-
-```json
-{
-  "filter": {
-    "op": "and",
-    "args": [
-      {"op": "=", "args": [{"property": "collection.locationName"}, "Simic Ramp Control"]},
-      {"op": "contains", "args": [{"property": "identity.typeLine"}, "Planeswalker"]},
-      {"op": ">", "args": [{"property": "collection.quantity"}, 0]}
-    ]
-  },
-  "include": {"collectionCards": true},
-  "sortby": [{"property": "identity.name", "direction": "asc"}],
-  "limit": 100
-}
-```
-
-Owned binder cards:
-
-```json
-{
-  "filter": {
-    "op": "and",
-    "args": [
-      {"op": "=", "args": [{"property": "collection.locationType"}, "binder"]},
-      {"op": ">", "args": [{"property": "collection.quantity"}, 0]}
-    ]
-  },
-  "include": {"collectionCards": true},
-  "limit": 50
-}
-```
-
-Commander-legal cards within Simic Color Identity:
-
-```json
-{
-  "filter": {
-    "op": "and",
-    "args": [
-      {"op": "=", "args": [{"property": "legality.commander"}, "legal"]},
-      {"op": "colorIdentitySubsetOf", "args": [{"property": "identity.colorIdentity"}, "UG"]}
-    ]
-  },
-  "include": {"legalities": ["commander"]},
-  "sortby": [{"property": "identity.edhrecRank", "direction": "asc"}],
-  "limit": 50
-}
-```
-
-Text search in Oracle text or type line:
-
-```json
-{
-  "filter": {
-    "op": "or",
-    "args": [
-      {"op": "contains", "args": [{"property": "identity.oracleText"}, "draw a card"]},
-      {"op": "contains", "args": [{"property": "identity.typeLine"}, "Artifact"]}
-    ]
-  },
-  "limit": 25
-}
-```
-
-Tag workflow:
-
-1. Call `search_card_identity_tags` for the user's concept, such as `ramp` or `recursion`.
-2. Pick the intended exact tag ID.
-3. Query with `hasTagInHierarchy`.
-
-```json
-{
-  "filter": {
-    "op": "hasTagInHierarchy",
-    "args": [{"property": "tag.id"}, "00000000-0000-0000-0000-000000000000"]
-  },
-  "include": {"tags": true},
-  "limit": 50
-}
-```
-
-Draw plus ramp as independent concepts:
-
-```json
-{
-  "filter": {
-    "op": "and",
-    "args": [
-      {
-        "op": "hasTagInHierarchy",
-        "args": [
-          {
-            "property": "tag.id"
-          },
-          "00000000-0000-0000-0000-000000000001"
-        ]
-      },
-      {
-        "op": "hasTagInHierarchy",
-        "args": [
-          {
-            "property": "tag.id"
-          },
-          "00000000-0000-0000-0000-000000000002"
-        ]
-      }
-    ]
-  },
-  "include": {
-    "tags": true
-  },
-  "limit": 50
-}
-```
-
-Strong draw, where the draw tagging itself must be strong:
-
-```json
-{
-  "filter": {
-    "op": "withTagging",
-    "args": [
-      {
-        "op": "and",
-        "args": [
-          {
-            "op": "hasTagInHierarchy",
-            "args": [
-              {
-                "property": "tag.id"
-              },
-              "00000000-0000-0000-0000-000000000001"
-            ]
-          },
-          {
-            "op": "=",
-            "args": [
-              {
-                "property": "tag.weight"
-              },
-              "strong"
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "include": {
-    "tags": true
-  },
-  "limit": 50
-}
-```
-
-Explicit Collection row-scope grouping:
-
-```json
-{
-  "filter": {
-    "op": "withCollectionCard",
-    "args": [
-      {
-        "op": "and",
-        "args": [
-          {
-            "op": "=",
-            "args": [
-              {
-                "property": "collection.locationName"
-              },
-              "Simic Ramp Control"
-            ]
-          },
-          {
-            "op": "=",
-            "args": [
-              {
-                "property": "collection.finish"
-              },
-              "foil"
-            ]
-          },
-          {
-            "op": ">",
-            "args": [
-              {
-                "property": "collection.quantity"
-              },
-              0
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "include": {
-    "collectionCards": true
-  },
-  "limit": 50
-}
-```
-
-## Validation Recovery
-
-If `query_cards` returns `validation_error`:
-
-- Read `issues[].pointer`, `code`, `message`, and `allowedValues`.
-- Fix the exact property, operator, value, or envelope field called out.
-- Do not retry with guessed property paths.
-- If a property is unsupported, choose from the queryables above.
-- If filtering by Collection Location, call `list_collection_locations` and use the exact `collection.locationName`.
+`legacy_query_cards` is disabled by default. Use it only when explicitly enabled with
+`TOMEKIN_ENABLE_LEGACY_QUERY=true`; OpenCode also requires an allow permission. Read the workspace-relative
+`skills/query-cards/legacy-query.md` only for that legacy CQL2 workflow. It covers local relationships, procedural
+Collection allow-lists and non-paginated legacy limits. Those expressions are not native search q.

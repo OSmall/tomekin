@@ -12,14 +12,9 @@ rendering, and persistence. Load `query-cards` before non-trivial tag or card qu
 Produce a reasoned Deck Change Proposal, not a claim of mathematical optimality. Keep generic Deck Tuning language
 format-extensible; these heuristics apply only to Commander/EDH.
 
-Method provenance: EDHREC's
-[Commander upgrade guide](https://edhrec.com/guides/edhrec-guide-to-upgrading-your-commander-deck) supports repairing
-structural deficits, commander-specific counts, curve review, and synergistic flexible additions; the
-[Commander Power Levels template](https://www.commanderpowerlevels.com/deckbuilding/template) supports treating role
-targets as starting points and cards as multi-role. EDHREC's
-[commander curve analysis](https://edhrec.com/articles/paradigm-shift-how-your-commanders-mana-value-alters-your-curve)
-and [Wizards' Commander Brackets update](https://magic.wizards.com/en/news/announcements/commander-brackets-beta-update-october-21-2025)
-support contextual curve and play-experience judgments rather than a universal optimum.
+Load `deck-shape-methodology` for qualified coverage, whole-contribution tuning and retained current reasoning.
+Use the adopted starting profile and contextual examples in `commander-deck-architecture`. Consume retained
+criteria and justified departures before diagnosing a deficit; use the shared method for whole-contribution swaps.
 
 ## Establish Tuning Context
 
@@ -46,11 +41,11 @@ Identify the commander, game plan, important Deck Packages and dependencies, cre
 interaction, card advantage, commander dependence, mana curve, and mana-base concerns. Identify cards that are
 redundant, inefficient, overly conditional, or off-plan.
 
-Use `commander-deck-architecture` role-density targets as adjustable starting ranges, not pass/fail rules. Give
+Use `commander-deck-architecture` starting profile as contextual guidance, not pass/fail rules. Give
 credible user-reported play patterns more weight than generic targets. Without those observations, perform static
 analysis and never claim playtesting, simulation, or goldfishing.
 
-### Infer Roles Transiently
+### Assess Contextual Roles
 
 Define useful task-specific Deck Roles and Deck Packages from the whole card context:
 
@@ -59,8 +54,8 @@ Define useful task-specific Deck Roles and Deck Packages from the whole card con
 - Required board state, commander or package dependence, and modal competition or opportunity cost.
 
 Group and count cards when it clarifies representation. A card may occupy several roles. These counts are diagnostic
-evidence, not persisted card facts: do not create a canonical role taxonomy, aliases, numeric role scores, contribution
-enums, database fields, or a role-analysis tool.
+evidence, distinct from global card facts. Retain candidate-specific reasoning through supported candidate records;
+an imported Existing Deck review remains transient. Use no global role taxonomy or numeric contribution score.
 
 ## Discover Additions
 
@@ -108,16 +103,14 @@ Keep quick reviews concise. Use these sections when relevant and omit empty ones
 The user may accept, reject, or modify individual swaps. On partial acceptance, reanalyse role representation, deck size,
 curve, and legality; explain dependency or aggregate-rationale breakage.
 
-Build a complete revised Deck Candidate only when the user explicitly asks to apply or accept a proposal. Acceptance of a
-recommendation does not authorize persistence. Before saving, show a final Change Summary with exact additions, cuts,
-quantities, any commander change, and the persistence target, then wait for confirmation of that exact set. Never save
-in the same message that first reveals the exact final change set or persistence target.
+Apply an authorized proposal only after explaining the actual resulting additions, cuts, quantities, relevant
+plan/Brief changes and persistence target. Existing explicit authorization for that result counts; otherwise obtain
+candidate-level agreement. Partial acceptance requires reassessing the aggregate result. Follow the root
+`tomekin-deck-building` skill's create/edit, concurrency and unknown-outcome contract.
 
-After confirmation, resolve the resulting list, rerun `validate_format_legality` and `evaluate_deck_candidate`, render
-the revised Deck Candidate, and save only when deterministic checks pass.
-
-- When tuning a saved Deck Candidate, update that candidate in place by passing its existing ID to
-  `save_deck_candidate`. Do not create a new candidate unless the user explicitly requests a copy, variant, or new
-  candidate.
-- When tuning an Existing Deck inferred from imported Collection data, do not mutate the Collection or source deck.
-  Save an accepted revision as a Deck Candidate because Collection write-back is unsupported.
+- For a saved Deck Candidate, use `edit_deck_candidate` with its ID and exact last-read timestamp. Preserve assessed
+  alternatives when cutting selected membership unless deliberate pool removal is part of the authorized result.
+- For an Existing Deck inferred from imported Collection data, save accepted construction with `create_deck_candidate`;
+  Collection write-back is unsupported.
+- Explicitly validate/evaluate and recheck scoped Availability before presenting a completed result. Intermediate
+  construction can be saved before those checks; a successful write establishes record integrity.

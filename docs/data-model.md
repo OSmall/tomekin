@@ -16,13 +16,16 @@ currently require a persisted-model migration.
 
 - Collection imports retain attempt summaries. Collection Locations and Collection Cards represent only the latest
   successful snapshot.
-- Scryfall imports retain attempt summaries. Each supported reference dataset is replaced independently and
-  transactionally.
+- Scryfall imports retain attempt summaries. Live sync publishes all three staged datasets, safe user-reference
+  remapping and successful application history in one transaction. Compatible local-file imports remain individually
+  transactional.
 - Deck Candidates are the only persisted deck-building result. Deck Opportunity shortlists and Deck Change Proposals
   remain transient.
 - Card Query requests and results are transient. Queries do not create saved filters or cached product records.
-- Saved Collection evidence is provenance, not current Availability. Tomekin does not persist an Availability decision,
-  Collection Pull List, candidate freshness state, or refresh result.
+- Local lookup cursors encode original reference occurrences, source position and relevant successful import IDs.
+  They contain no result objects and have no persisted search/cursor record. Failed imports do not replace bindings.
+- Latest final Collection Availability evidence belongs in candidate `check_evidence_json`, with dependency-based
+  applicability. Pull Lists derive from applicable evidence; there is no separate Availability, policy or trial store.
 
 Internal product records use UUIDv7 identifiers. Scryfall-backed records use stable source identifiers: Scryfall card
 IDs for Card Printings, Oracle IDs for Card Identities, Set IDs for Card Sets, and tag IDs for Card Identity Tags.
@@ -41,22 +44,31 @@ attempt that fails reference-data prerequisites or row validation records a fail
 previous Collection snapshot unchanged. A missing or unreadable source file fails before the import service reaches the
 repository and therefore creates no `CollectionImport` record.
 
-Current Collection rows are understood to come from the latest successful import; they do not carry a per-row import
-foreign key, and historical Collection snapshots are not retained.
+`collection_state` has one transactionally updated active-successful-import pointer. Replacement updates this pointer
+inside the same transaction as rows/locations and the success record. Import start time, UUID order and the latest
+attempt do not determine active state. Failed imports and failed replacement transactions preserve the pointer.
+Rows do not carry duplicate Identity/name columns or per-row import foreign keys; historical snapshots are not retained.
+Migration 0009 preserves existing records and integer timestamp units. Legacy snapshots without a provable pointer
+require Collection reimport rather than an inferred binding.
 
 ### CollectionLocation
 
 `CollectionLocation` stores a unique `(type, name)` pair for the current Collection snapshot. The implemented location
 types are `binder` and `deck`; a `deck` location is an Existing Deck. Each Collection Card belongs to one location.
 
-The data model does not store or enforce a structured Collection Access Policy. The agent confirms exact allowed
-location pairs procedurally and passes them to Card Query.
+The candidate-owned Brief can retain `collectionAccessPolicy`, or null while permission is unconfirmed. The policy
+binds the active import and exact location references, explicit exclusions and conjunctive typed copy requirements.
+No standalone policy/Brief store or authorization handle exists. Successful replacement regenerates imported references;
+same-looking location names do not authorize automatic policy rebinding.
 
 ### CollectionCard
 
 `CollectionCard` stores one owned row from the source CSV rather than expanding the row into individual physical
 copies. It records quantity, location, finish, optional ManaBox ID, exact Card Printing ID, misprint and altered flags,
-condition, optional purchase price and currency, optional added time, and source row number.
+condition, optional purchase price and currency, optional added time, and source row number. `added_at_exact` stores
+new reliable source instants as normalized millisecond UTC text. The existing seconds-valued `added_at` column retains
+its unit and old values. Strict policy/browse proof treats a legacy non-null date without exact text as unknown with
+`legacy_precision_lost`; the source's original fraction cannot be recovered. New imports populate both fields.
 
 The source name, Set code, collector number, and language are validation inputs rather than duplicated Collection Card
 fields. Set code, collector number, language, and finish must agree with the resolved Card Printing; a name mismatch is
@@ -70,20 +82,29 @@ a warning. Card Identity is reached through the exact Card Printing rather than 
 Import Contract Revision, status, start and completion times, optional source update time and URI, imported record
 count, warnings, and blocking errors.
 
-Each dataset uses staging and transactional full replacement. A successful import replaces that dataset and records a
-successful attempt. A failed import records diagnostics and preserves the previous usable dataset. Reference readiness
-distinguishes a missing dataset from one produced by an incompatible Import Contract Revision.
+Live sync stages Oracle Cards, All Cards and Oracle Tags before validating their incoming graph. Publication establishes
+replacement targets, remaps validated user references, replaces source dependents, removes obsolete source records and
+records all three successes atomically with foreign keys enabled. Card Identity membership exactly matches the incoming
+Oracle Cards source. A failed coordinated refresh records no new successful provenance or application history.
+Local-file failures continue recording failed import attempts. Readiness distinguishes missing datasets from
+incompatible Import Contract Revisions; current successful imports follow committed row order rather than timestamps.
 
-The default explicit sync processes `oracle_cards`, then `all_cards`, then `oracle_tags`. Local-file import and explicit
-single-dataset sync use the same replacement rules. Normal deck-building and Collection import do not perform hidden
-network refreshes.
+Every disappearing Printing or identity requires applicable official evidence, including unreferenced removals. Identity
+replacement derives from old Printing relationships and validated incoming targets. A surviving identity retains its
+candidate references. Deletes with user references, candidate collisions, ambiguous targets and incomplete evidence
+block publication. Collection row identifiers and metadata, candidate sections/quantities, options and contributions
+survive safe remapping. Affected candidates receive a new content revision; new successful reference revisions invalidate
+reference-dependent lookup/check evidence. Concurrent database changes during staging/discovery cause a safe retry.
 
-Replacement invariants include:
+`scryfall_migration_evidence` caches validated official evidence, source URI and fetch time. It contains discarded IDs
+without live-card foreign keys. Downloaded evidence is not an application checkpoint or a claim of complete history.
+`scryfall_migration_application` records the committed Oracle import, official migration, old/final Printing IDs,
+available old/replacement identity provenance and application time. It commits with publication and supports strict
+offline CSV replacement guidance. Neither table retains historical card records.
 
-- `oracle_cards` replacement is blocked when it would orphan existing Card Printings or Card Identity Taggings.
-- `all_cards` replacement is blocked when a Card Printing references a missing Card Identity, when repeated Set
-  metadata conflicts by ID or code, or when equivalent Printing IDs disagree.
-- `oracle_tags` replacement is atomic across tags, aliases, direct taggings, and hierarchy links.
+Compatible offline single-dataset imports preserve existing validation. Identity/Printing removals require coordinated
+sync; tag replacement remains atomic across tags, aliases, taggings and hierarchy. Duplicate Printing equivalence,
+Set metadata, finish/part/promo checks, supported legalities and Copy Limit Overrides remain enforced.
 
 ### CardIdentity
 
@@ -186,27 +207,46 @@ hierarchy, and the successful-attempt record. The current importer does not perf
 
 ### DeckCandidate
 
-`DeckCandidate` is a saved proposed decklist and explanation. It is separate from Collection state even when it was
-built with Collection evidence.
+One candidate owns its UUID, label, Format-discriminated Brief, optional current plan, assessed pool, selected
+memberships and optional power/play-experience fit and mana/curve adequacy assessments. The Brief is authoritative for
+Format and Format Anchor. There is no separate Brief ID, completion flag, report snapshot or candidate revision history.
 
-SQLite stores its UUID, label, Format, optional Format Anchor, validated Format-discriminated Deck Building Brief JSON,
-optional Collection import timestamp, canonical Markdown, and creation and update times. The Brief's Format is
-authoritative; the repository derives the queryable Format column from it. Commander Bracket appears only in the
-Commander Brief branch.
+Exact UTC text timestamps preserve creation/update precision. Every committed content edit advances `updated_at_exact`
+even within one clock tick; edits check the exact last-read value inside an immediate transaction. Separate selected,
+Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-only maintenance leaves selected inputs
+unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
+columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
 
-The optional Collection import timestamp records which snapshot informed the saved Markdown. The model does not derive
-or persist freshness, current Availability, Missing Cards, or a Collection Pull List from that timestamp. Ordinary
-reads return the canonical Markdown as stored. Saving an existing ID updates the candidate and transactionally replaces
-its card rows.
+`check_evidence_json` stores at most the latest `format_legality`, `deck_evaluation` and `collection_availability` records, each with complete
+findings, UTC check time and captured selected/Brief timestamps, relevant Brief fields, Oracle import/contract revision
+and validator versions. Collection Availability also records the actual complete restricted demands, active Collection
+ID/time, effective whole-Brief policy, successful Oracle/Printing dependencies, complete allocated row witnesses and
+separate ownership diagnostics. No new selected Printing/copy persistence is introduced. There is no check history. Read-time applicability compares check-specific
+dependencies; publication repeats that comparison in an immediate transaction and updates only this evidence column.
+Trial changes and initial-input findings are never persisted. Import timestamps have second precision, so tied Oracle
+imports are resolved by committed insertion order rather than UUID ordering.
 
-### DeckCandidateCard
+### Selected SectionMembership (`deck_candidate_card`)
 
-`DeckCandidateCard` stores a relational entry with Deck Candidate ID, Card Identity ID, positive quantity, canonical
-section, stable sort order, and optional note. The closed section vocabulary is `commander`, `mainboard`, and
-`sideboard`; Format validation decides which sections are legal.
+One row per candidate/Card Identity/section owns a positive integral quantity, nonnegative order and optional selected
+note. Sections are `commander`, `mainboard`, and `sideboard`; explicit Format checks determine deck-level legality.
+Names derive from global Card Identity. Membership does not choose a Printing, allocate owned copies or prove Availability.
+Cutting membership retains its assessed option and contributions. Updates preserve untouched membership IDs and fields.
 
-Card names come from Card Identity when reading or rendering the Portable Decklist. A Deck Candidate Card does not point
-to a Collection Card or choose an exact Card Printing, and it does not store an Availability classification.
+### Current plan and assessed pool
+
+`deck_candidate_plan` holds one current description per candidate. `deck_candidate_node` holds stable candidate-scoped
+roles and Win Routes with kind-specific fields and optional claim-local coverage/evidence JSON. `deck_candidate_option`
+is unique by candidate/Card Identity and owns an optional comparison note. `deck_candidate_contribution` is unique by
+candidate/option/role and owns rationale, qualifications and evidence. `deck_candidate_relationship` owns stable directed
+role relationships or one canonical unordered competition pair. Composite foreign keys prevent cross-candidate graph
+references. Inline evidence references are descriptive citations, independent of tag-import cleanup.
+
+The service validates the complete resulting state before persistence: every option has a role contribution, every
+selected identity has its option, endpoints have valid kinds, and desired zero-coverage roles have a gap assessment.
+Related removals are explicit. There is no automatic cascade that invents or discards assessments. Invalid change sets
+or database failures roll back all affected owners. JSON contains only claim-local metadata, not a second graph authority.
+Tool text limits count Unicode code points; persistence has no application-specific text-length restriction.
 
 ## Relationship Summary
 
@@ -227,9 +267,19 @@ CollectionLocation
 ScryfallBulkDataImport (attempt history per dataset)
 
 DeckCandidate
-  -> DeckCandidateCard
-       -> CardIdentity
+  -> DeckCandidateCard (authoritative selected SectionMembership) -> CardIdentity
+  -> DeckCandidatePlan -> DeckCandidateNode
+  -> DeckCandidateOption -> CardIdentity
+       -> DeckCandidateContribution -> DeckCandidateNode (role)
+  -> DeckCandidateRelationship -> DeckCandidateNode (same candidate)
 ```
 
 This shape preserves the distinctions between owned rows, exact Printings, canonical Card Identities, source-backed
 tags, and proposed deck entries without presenting transient agent analysis as persisted product state.
+
+### Generated candidate views
+
+Reports, role-grouped/deduplicated pool views and Portable Decklists derive from the records above; they add no stored
+report authority or snapshot. Canonical names are joined on read. Explicit JSON retains the complete candidate and latest
+recorded check findings/dependencies. Continuation's view fingerprint is computed transiently from included records and
+content timestamp, not persisted as a candidate revision or historical report.

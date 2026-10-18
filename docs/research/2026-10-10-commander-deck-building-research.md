@@ -17,7 +17,9 @@ GitHub Issues holds decisions and remaining work. This document holds the consol
 1. Read this document for the current qualified synthesis and evidence limits.
 2. Read the linked extraction and final methodology resolutions for their adopted scope. The methodology resolution
    governs interpretation where the reports conflict with it; operational instructions belong in the canonical
-   deck-building skills.
+   deck-building skills, beginning with [the shared method](../../skills/deck-shape-methodology/SKILL.md) and
+   [Commander profile/example](../../skills/commander-deck-architecture/SKILL.md). The [workflow demonstration](../evaluation/workflows.md) exercises the implemented integration with synthetic data;
+   live-session reasoning remains separately reviewed.
 3. Consult the supporting records below only when checking a particular attribution, example, or correction.
 
 The latest Gemini submission is the **correction file**, which contains both a correction table and a full replacement

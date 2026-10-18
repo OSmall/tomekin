@@ -51,7 +51,7 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - Failed import non-destructiveness.
 - Current Collection snapshot replacement.
 - Card Query Collection-scope quantities, exact-location filtering, and owned-row hydration.
-- Deck Candidate save, reopen, list, and transactional card-row replacement.
+- Deck Candidate create/edit, reopen, list, atomic reconciliation and retained alternatives.
 - SQLite migrations that rebuild tables referenced by foreign keys, using a populated pre-migration fixture and
   `PRAGMA foreign_key_check` assertions.
 
@@ -61,6 +61,34 @@ are translated into service calls and user-facing output. OpenCode tests also pr
 be represented as JSON Schema, because OpenCode performs that conversion during session startup. Live OpenCode execution
 and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is
 added.
+
+## Lookup Done Bar
+
+The primary seam is shared Agent Tool handlers composed with isolated on-disk SQLite and tiny public real-card
+fixtures imported through the existing import repository. It covers exact Oracle/name/Printing resolution, ordered
+misses/duplicates, closed selectors, original-batch incompatibility, core/optional readiness, null/empty distinctions,
+complete faces/tags/Printing facts, first/after including zero, relevant successful import invalidation (including same
+stored-second imports), whole escaped UTF-8 limits, oversized records/cursors and cancellation/deadline recovery.
+Synthetic tag annotations stress transport limits without publishing private session or Collection data.
+
+Thin actual OpenCode and Pi Worker/fallback tests inspect the serialized closed selector schema, complete >16k
+model-visible output, structured validation errors and Worker cancellation/replacement. Complete lookup envelopes bypass
+the old preview projectors. These tests establish card-only facts; Collection-policy evidence remains later work.
+
+## Calculator Done Bar
+
+The pure numerical seam is an explicit exception to the broader shared-handler seam: independent subset enumeration
+checks every small distribution/event, while direct factorial ratios and a linear scan verify minimum-count results,
+monotone tails and adjacent failing counts. Independently scaled exact decimal expansions check relative display error
+at most `1e-12`, including the smallest positive and dense probabilities at population 1,000. Cover strict schemas,
+zero/one, out-of-support events, exact decimal equality, target one and unattainable targets.
+
+An isolated SQLite shared-runtime test proves calculator calls work with unready reference data and do not create
+candidates. Thin OpenCode, Pi fallback and production Worker tests verify actual serialized schemas/registries,
+complete JSON-safe results and preserved validation/unattainable error types/messages. OpenCode's flat schema limitation
+is explicit: test the available structural projection and enforce conditional operation requirements at execution.
+Maximum-population workloads run in the deterministic suite; timings are evidence of the measured environment, not a
+universal latency guarantee. Contextual deck examples and agent interpretation belong in the manual workflow corpus.
 
 ## Test Layout
 
@@ -130,9 +158,10 @@ ManaBox import tests should use small package-local fixtures and must not call l
 
 Scryfall sync should have its own tested done bar before ManaBox Collection import is considered complete.
 
-Scryfall sync tests should prove successful and failed `ScryfallBulkDataImport` attempts are recorded, failed sync
-preserves the last usable dataset, `oracle_cards` imports before `all_cards`, `all_cards` rows reference existing
-`CardIdentity` rows, and operations that need card identity fail clearly when required Scryfall datasets are missing or
+Scryfall tests should prove local-file success/failure attempts are recorded and coordinated sync records all three
+successes only with committed publication. Failed coordinated attempts return diagnostics without adding successful
+history; validated fetched evidence may remain cached. Failed sync preserves the last usable dataset, coordinated live sync validates incoming `all_cards` against staged
+`CardIdentity` rows before atomic publication, and operations that need card identity fail clearly when required Scryfall datasets are missing or
 use an incompatible Import Contract Revision. Oracle Cards coverage should include required supported-Format legality
 rows and accepted and rejected Copy Limit Override wording. Repository coverage should prove equivalent duplicate Card
 Printing records import once while conflicting duplicates reject the import without replacing the previous usable
@@ -150,6 +179,22 @@ survive cleanup and migration. Fresh databases must contain no synthetic placeho
 Scryfall sync tests should use small package-local Scryfall fixtures, not real Scryfall bulk data files. Real Scryfall bulk files are too large for ordinary tests and must not be required by `bun test`.
 
 Tests must not call live Scryfall network services as part of `bun test`.
+
+Coordinated refresh coverage uses the public sync command, injected source ports and real isolated SQLite. Tiny fixtures
+exercise populated retirements and official merges, retained Collection metadata and candidate memberships/options/
+contributions, Printing-only corrections, genuine deletes, ambiguous mappings/collisions, chains, malformed evidence,
+unexplained disappearance, cache reuse, exact source membership and repeated sync. Late publication triggers compare
+logical table snapshots and foreign-key checks; concurrent edits safely reject stale plans. Generated metadata upgrades
+preserve populated prior-schema user data. Offline CSV tests retain exact metadata checks and replacement guidance.
+
+Focused tests exercise the actual HTTP adapter with a fake clock for 100 ms starts, stricter search cadence, late timers,
+independent bulk origins, 31-second and longer Retry-After cooldown, two-retry exhaustion, budgets and owner restart.
+No default test uses live services, real cooldown sleeps, full bulk files or the working-tree database. Outside the suite,
+verification on a copy of the affected populated database must establish exact incoming identity membership, preserved
+user content, successful/rejected before/after evidence and zero FK violations before closing #104/#26's merge gate.
+Automated fixture results alone do not claim that live acceptance has passed. The
+[18 October cached-source populated replay](research/scryfall-sync-evidence/2026-10-18-staging-performance.md) records
+full-source success, protected user content, exact identity membership, rejected-refresh preservation and staging timings.
 
 ## Pi Launcher Done Bar
 
@@ -181,8 +226,8 @@ Test deterministic prompt inputs, retrieved context, service outputs, and render
 
 LLM-produced recommendations are proposals until deterministic services validate card identity, Portable Decklist
 format, and Format legality and until Card Query provides scoped owned-copy evidence. The current evaluator explicitly
-does not compute final Availability; the agent applies the confirmed Collection Location allow-list to Card Query
-quantities and rows. Failed deterministic validation produces structured failures or revision requests.
+does not compute final Availability; the explicit `check_collection_availability` service jointly allocates the
+complete selected demand under the confirmed whole-Brief Collection policy. Failed deterministic validation produces structured failures or revision requests.
 
 60-card Constructed coverage remains deterministic: strict Brief and candidate schemas, the supported Format matrix,
 Mainboard and Sideboard shape, cross-section copy limits and exceptions, sanctioned legality and Casual 60, Vintage
@@ -210,3 +255,122 @@ acceptance. Across those scenarios, the current quality gate requires an explici
 paired additions and cuts, aggregate re-analysis, preserved deck size, deterministic legality validation when a
 revised Deck Candidate is built, evidence-backed explanations, and no persistence before confirmation of the exact
 final change set.
+
+The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
+profiles and retained departures, factual qualification and modal competition, whole-contribution swaps, section-aware
+selected coverage versus active alternatives, current reasoning/evidence and explicit checking boundaries. These are
+reasoning invariants, not new CI quality scores. The [deterministic four-workflow demonstration](evaluation/workflows.md) exercises the current public seams and actual
+adapter paths; live-model reasoning and human acceptance remain separate manual evidence.
+
+## Synthetic workflow baseline
+
+`bun run evaluate:workflows` executes the current synthetic discovery/construction/tuning/assembly demonstration.
+Default tests assert facts reuse, transient discovery, incomplete save/resume, partial acceptance, complete joint
+allocation and actual adapter parity. The capability audit compares actual OpenCode exports/permissions with Pi's
+registry, reads canonical files through Pi's restricted tool, and verifies OpenCode's native-skill targets resolve to
+the same files. It does not claim native model invocation. See [the demonstration and limits](evaluation/workflows.md).
+`bun run evaluate:performance` records current mutation/check timing separately. `evaluate:baseline` retains a historical
+measurement workload and `evaluate:legacy` recreates pinned old behavior; neither is current reasoning acceptance.
+
+## Structured candidate write coverage
+
+Public create/edit/get/list handlers run against migrated temporary on-disk SQLite, including reopened connections,
+linked local references, explained gaps, explicit removal/clearing, Unicode limits and same-tick stale-write conflicts.
+Focused SQLite failure injection verifies transaction rollback; direct constraint checks cover relational ownership and
+uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlement, preserved conflict context and
+inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
+legacy comparator remains pinned and does not depend on compatibility product tools.
+
+Explicit check coverage uses the same shared-handler/on-disk seam for initial inputs, saved baselines, transient
+revisions, check-specific applicability and timestamp separation. Two connections and interleaved calls exercise
+selected/pool/import races, including successful Oracle imports in one timestamp tick. Validator replacement prevents
+stale evidence reuse/publication. Actual OpenCode, Pi fallback and real Worker tests cover serialized schemas, typed
+errors, evidence persistence, post-dispatch cancellation/shutdown, unknown write outcomes and complete findings beyond
+the retired preview boundary. Current evaluation loads saved checks by candidate ID and exact timestamp; the frozen
+legacy comparator remains unchanged.
+
+## Complete candidate output coverage
+
+Migrated temporary SQLite/public-handler tests recover complete JSON beyond the old adapter preview, reconstruct the
+current records, preserve rationale/qualifications/evidence, exercise zero-first and escaped UTF-8 budget boundaries,
+reject changed view/candidate/evidence/name baselines and distinguish unchanged Brief-only continuation. Pool tests
+keep role groups, deduplicated options, alternatives and selected quantities separate. Reports retain complete recorded
+findings, honest absent/outdated statuses and missing focused judgments. Actual OpenCode schemas and Pi Worker/fallback
+outputs exercise complete envelopes and saved canonical rendering. CLI tests cover exact export arguments, missing
+candidate/plan and atomic filesystem failures preserving prior output and cleaning temporary files.
+
+Mermaid exports receive a separate manual syntax/render/readability check using an external compatible renderer.
+The public/synthetic `candidate-plan.ts` fixture covers escaped labels, cycles, multiple relationship kinds, symmetric
+competition, disconnected desired gaps, route priorities and repeated Mainboard/Sideboard quantities. Its larger
+representative variant has 24 selected identities and eight active alternatives with multi-role contributions. Check all
+three projections, confirm special characters render as text, verify quantities/alternatives remain distinguishable,
+and inspect layout at readable zoom. A passing render establishes no strategic quality. No renderer, live LLM or network
+is part of the default test suite.
+
+## Provider search coverage
+
+The approved common runtime/handler seam uses isolated on-disk SQLite and injected provider/time ports. Static fixtures
+exercise native passthrough, raw Printing anchors, supplied-next-page/empty-page traversal, zero-first/lookahead,
+complete UTF-8 pages and recoverable errors. Optional tag bindings retain introduced successful-import/known-absence
+dependencies; reversible presentation facts remain separate from canonical gameplay layout.
+
+Focused fake-clock owner tests cover actual starts, late timers, no post-response delay, queued/in-flight cancellation,
+detached 429, retry headers, deadline/cooldown interaction, restart reanchoring and fail-closed persistence. A real child
+process test rejects a second provider owner and recovers conservatively from interruption without network. Actual Pi
+Worker/fallback and OpenCode tests preserve complete >16k selected text and structured errors; a killed Worker cannot
+erase host cooldown. Separate changing-source fixtures illustrate accepted live drift. Matched synthetic workflow
+measurements report application/adapter bytes and fixture stages/calls, without live census, throughput or model-token claims.
+
+Run `bun run evaluate:search` for the provider fixture protocol. The committed
+[measurement evidence](./research/provider-search-evidence/README.md) records source identity counts, ordinary
+continuation call costs, complete page/adapter bytes and five warm timing samples without a live-throughput claim.
+
+## Collection policy and chronology
+
+The public shared-runtime tests use isolated on-disk SQLite and tiny synthetic/public reference fixtures. They exercise
+exact location collisions, empty/unconfirmed/no-import states, same-row/actual-Printing conjunctions, currency mismatch,
+unknown metadata, strict versus exploratory Brief intent, reliable source chronology, null-last ordering, closed
+selectors, byte/exhaustion boundaries, safe continuation, cancellation and successful-versus-failed import invalidation.
+Actual Pi Worker/fallback and OpenCode tests assert canonical selector metadata and complete model-visible envelopes;
+exact location inspection also survives the former preview cap. Focused SQLite exceptions establish transaction rollback,
+equal-time/out-of-order import completion and generated migration preservation of records and integer timestamp units.
+Legacy lost source precision remains an explicit unknown rather than a guessed passing date.
+
+Tag catalogue coverage uses actual shared handlers composed with isolated on-disk SQLite for slug/label/alias search,
+complete definitions, explicit misses, optional bounded hierarchy, full recoverable traversal, relevant successful
+import bindings and whole-record UTF-8 budgets. Thin actual Pi Worker/fallback and OpenCode checks assert registry
+replacement, serialized nested operation schemas across independent metadata registries, complete large definitions
+and structured errors. Default tests use deterministic local fixtures and perform no source download.
+
+## Collection retrieval evidence coverage
+
+`bun run evaluate:collection-query` repeats the four public synthetic workflow populations with confirmed binder scope,
+complete selected actual-row evidence and ordinary refetch/anchor traversal. Independent source-row expectations assert
+exact counts and Printing joins; OpenCode serialization and actual Pi Worker/fallback bytes are measured separately.
+Public real-SQLite tests cover no/empty/unconfirmed/legacy states, policy/source metadata conjunctions, >128-row complete
+copy lists, indivisible oversize/deadline recovery, concurrent replacement and successful same-tick revision invalidation.
+Failed/unrelated imports and unrelated candidate edits preserve cursors. See the
+[Collection retrieval report](research/collection-query-evidence/2026-10-18-report.md) for measured costs and limits.
+
+## Final Collection Availability coverage
+
+Public shared-runtime/isolated-SQLite fixtures exercise cross-section quantities and exact Printing overlap, residual
+reassignment, policy exclusion/protection, minimal borrowing with source-deck provenance, nullable demand/policy
+metadata, strict recent intent, no/empty/unconfirmed Collection, safe huge capacities and unsafe-total rejection.
+An independent exhaustive assignment oracle covers all 512 three-row/three-demand compatibility graphs under 27
+uncommitted/Committed/excluded row assignments (13,824 cases), checking owned/eligible/uncommitted optima, deficit
+identities and witness capacity/compatibility. The test oracle enumerates tiny fixtures; production uses capacities.
+
+Interleaved public calls cover selected/publication races, matching pool maintenance, import invalidation, same-tick
+reference replacement regardless of UUID order, trial isolation and unchanged content timestamps. Bounded witness
+recovery, oversized intact records, expired baselines and incomplete deadlines/cancellation retain truthful completion
+state. Actual Pi Worker/fallback and OpenCode tests cover schemas, registry/permission, mutation settlement and intact
+structured findings/errors. Tests use only generated temporary databases and public/synthetic reference fixtures.
+
+## Real-session parity
+
+The [matched Pi/OpenCode protocol](evaluation/real-session-parity.md) owns the separate account-holder-consented live
+gate and sanitized result format for #26. `bun run evaluate:parity:prepare` creates paired fresh temporary databases
+from committed public reference files and synthetic owned rows; it performs no live network/model/profile operation.
+Its focused test uses the approved shared-handler/isolated-SQLite seam. The small fixture supports provisional and
+shortage behavior, not a completed legal deck; positive manual corpus inputs and human review remain separate gates.

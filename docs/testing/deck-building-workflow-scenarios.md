@@ -5,9 +5,11 @@
 Use these frozen scenarios to evaluate Deck Opportunity discovery, fresh construction, and Deck Tuning without
 requiring one exact decklist. They are the manual live-model quality gate and do not run under `bun test`.
 
-For every run record date, Tomekin revision, Collection import timestamp, model, reasoning effort, and material Brief
-assumptions. Run the initial reference pass with Sol at one fixed reasoning effort. Compare Terra only at that same
-effort after Sol passes.
+For every run record date, Tomekin revision, Collection import timestamp, exact provider/model, reasoning effort, and
+material Brief assumptions. For matched Pi/OpenCode acceptance use the same model and effort in both harnesses under
+the account holder's explicit choice; record any unavailable combination as unmatched. Follow the
+[real-session parity protocol](../evaluation/real-session-parity.md) and its sanitized result template. Model comparisons
+are separate runs after the fixed reference pair; no historical model nickname selects an account or model implicitly.
 
 ## Critical Invariants
 
@@ -131,6 +133,72 @@ every proposed addition has a cut, and partial acceptance triggers deck-size, ro
 re-analysis. The agent must show the exact resulting change set and persistence target, then wait for separate
 confirmation before saving.
 
+## Methodology Foundation Expectations
+
+These human-reviewed scenarios exercise the shared reasoning skill, not deterministic deck-quality scoring. Record
+conditions and reviewer evidence using the result procedure below. Their presence is an acceptance rubric, not a claim
+that live-model runs have passed. [Foundation #98](https://github.com/OSmall/tomekin/issues/98) supplies reasoning and
+routing; [integration #64](https://github.com/OSmall/tomekin/issues/64) retains executable retrieval/edit/calculator
+examples and the final discovery, fresh-construction, Existing Deck tuning and saved-candidate tuning workflow passes.
+Use supported tools only; test durable resumption/edit/check expectations when their owning capabilities are available.
+
+### Scenario 14: Commander Profile And Resumption
+
+Ask for ordinary Commander construction, then provide a plausible reason for a specific departure from the adopted
+38 mana-access / 12 advantage / 10 ramp / 12 targeted / 6 mass / approximately 30 plan-serving starting profile.
+Resume the current reasoning in a later session.
+
+Accept when the profile is used meaningfully, the departure explains the resulting plan and accepted compromise, and
+its criteria/rationale remain with the focused owner rather than disappearing into conversation history. The later
+session consumes that reason instead of restoring generic counts. Counts overlap; MDFCs/landcyclers remain qualified
+functional access, distinct from factual land count. Commander effects do not become extra library copies. Neither a
+profile match nor a justified strategic gap waives deterministic Format failure.
+
+### Scenario 15: Facts, Modes And Whole Contributions
+
+Offer a tag-matched card that cannot perform the desired function in context, a modal card whose protection and removal
+uses compete, and a same-role swap that loses a secondary sacrifice/enabler function.
+
+Accept when relevant facts qualify or reject the tag match, modes retain costs/competition, and every material lost or
+gained contribution is reviewed. Healthy-deck swaps preserve intended function; intentional redistribution states the
+reason, compensation and resulting trade-off. Partial acceptance triggers review of only the actual resulting changes.
+No role sum becomes deck size or simultaneous resource use, and no invented strength weights certify coverage.
+
+### Scenario 16: Active Alternatives And Section Coverage
+
+Cut a selected viable option while retaining it as an assessed alternative. Leave a desired role with no selected
+contributors but one pool alternative. In a 60-card Format, include repeated Mainboard copies and a Sideboard option.
+
+Accept when the cut remains available by default, pool-only options supply zero selected coverage, the desired gap is
+explained, and repeated copies are counted once per identity/role/section at their selected quantity. Sideboard
+coverage remains separate. Explicit removal/reassignment reconciles affected reasoning; an invented role cannot rescue
+an otherwise unsuitable option. Format-owned examples stay in the applicable Format skills.
+
+### Scenario 17: Plan Review And Bounded Evidence
+
+Present a complementary multi-stage plan, a high curve with a possible ramp explanation, and a small set of human
+observations. Change relevant anchor or card-function evidence; separately remove a supporting tag without changing
+facts. Where the calculator is available, ask an at-least access question and then an exactly question.
+
+Accept when the agent connects early actions, dependencies, resources, resilience and winning direction instead of
+applying universal step/curve/redundancy ceilings. It preserves observation provenance and focuses reassessment on the
+material change; tag disappearance alone does not force cuts or erase rationale. Statistics state qualified effects,
+population, sample, event and context-specific reliability target; they establish access within assumptions rather
+than mana, execution or win rate. No source Sidisi percentages/turn guarantee, invented caption names or catalogue
+slugs enter the reasoning. No agent-run playtesting or mandatory goldfish sample is claimed.
+
+### Scenario 18: Reasoning Ownership And Checking Boundary
+
+Inspect the shared-method route from discovery, Commander and 60-card construction/tuning in both supported harnesses.
+For adopted candidate-edit workflows, save authorized incomplete progress, read it, then explicitly check the relevant
+inputs before a completed-result claim.
+
+Accept when one shared method supplies common reasoning, discovery remains a concise transient comparison, and Format
+assumptions/examples remain with their owners. Focused plan/contribution/goal reasoning remains understandable on
+resumption. Available adapters expose only implemented operations. Saves and reads do not implicitly check in the
+adopted edit workflow; evidence is reused only while applicable. The agent reviews strategy, Brief and Collection and
+uses existing authorization covering the actual result/target, seeking agreement where absent. Current create/edit and complete bounded views replace the old whole-report save lifecycle.
+
 ## Recording Results
 
 Record pass/fail per invariant and concise human notes. Do not use an LLM judge, aggregate quality score, exact-card
@@ -139,7 +207,7 @@ fixtures.
 
 ## Real-session Test Prompts
 
-Run these in fresh OpenCode sessions so prior card choices and large tool results do not anchor the model. Replace the
+Run these in fresh Pi and OpenCode sessions so prior card choices and large tool results do not anchor the model. Replace the
 bracketed values with exact Collection Location names returned by Tomekin.
 
 ### Discovery through construction
@@ -156,7 +224,7 @@ After choosing:
 ```text
 Build the [chosen opportunity] direction under the confirmed Brief. Before presenting the final candidate, explicitly
 review the curve, distinguish net card advantage from selection or looting, challenge the three weakest included
-nonlands, and recheck final Collection quantities and owned rows against the unchanged Collection Location allow-list.
+nonlands, and obtain complete joint Availability and recover the Pull List under the unchanged whole Collection Access Policy.
 ```
 
 ### Existing Deck tuning
@@ -176,3 +244,55 @@ docs/testing/deck-building-workflow-scenarios.md. Identify which failures come f
 tool Interfaces, context truncation, missing Collection evidence, or model behaviour. Report evidence and recommend the
 smallest next improvement before editing.
 ```
+
+## Batched known-card recovery
+
+In both harnesses request Sol Ring, Bala Ged Recovery // Bala Ged Sanctuary, an exact known Printing, a duplicate and
+a deliberate local miss with explicit `name`/`oracle_text` selection and a small `first`. Confirm complete face text,
+ordered outcomes and recovery by repeating the original references with `after`; request additional tags on the next
+page. Confirm missing tag data is unavailable, a successful bound import replacement requires restart, and cancellation
+reuses only delivered progress. Lookup alone establishes neither Collection permission nor final Availability.
+
+## Recent and undated Collection discovery
+
+Run in both harnesses with a tiny synthetic Collection containing identically named binder/deck locations, known source
+dates on both UTC boundaries, an unknown source date and different Printings/Finishes of the same identity. Confirm the
+exact binder and date interval in the task timezone. Inspect the effective policy and traverse small `first` pages;
+verify the excluded Existing Deck and rows failing any conjunct do not consume result slots.
+
+Ask for exploratory recent-card inspiration, then strict recent physical copies. Exploratory assembly may use other
+permitted rows. Strict intent must reject a wider policy until confirmed date restrictions agree. Independently search
+unknown dates unless declined, label them possible rather than confirmed recent additions, and report partial coverage.
+Permit an Existing Deck explicitly and confirm borrowed rows stay Committed with their source deck visible.
+
+Record a failed import and resume a delivered cursor; the active snapshot remains usable. Successfully replace the
+Collection, then verify the old policy and cursor require refreshed exact locations and scope reconfirmation. Observe
+`no_collection`, imported-empty, null policy and confirmed empty allow-list as distinct states. Do not treat browse row
+quantities as whole-deck joint allocation or physical reservations.
+
+### Tag vocabulary discovery
+
+Search `browse_tags` with `operation: {type: "search", query: "mana ramp"}`, then inspect a returned exact slug
+with `operation: {type: "lookup", slugs: ["mana-rock"]}`. Verify complete definitions/aliases with no hierarchy
+until requested. Repeat with `hierarchy: {}` and explicit `depth: 2`; distinguish immediate edges from the chosen
+exploration boundary. Traverse `operation: {type: "list"}` through `first`/`after` to exhaustion, without injecting
+the catalogue into startup context. A missing tag import is a readiness failure; a successful empty search or
+known-slug miss is not. Compare selected per-card `tags`: inherited ancestors remain complete even when catalogue
+exploration stops at one level. Keep strategic Deck Role judgments contextual. Verified example-slug source
+provenance is beside the contract in `docs/card-query.md`. This is a focused tool scenario; final executable workflow
+integration remains separate work.
+
+## Current four-workflow integration demonstration
+
+Run `bun run evaluate:workflows` before manual model sessions. Its synthetic Heroic Feast style scenario is a
+repeatable sacrifice/access/death-reward plan, with a tag-matched text mismatch, conditional multi-role contribution,
+active alternatives, interrupted construction, partially accepted tuning and overlapping assembly demands. See
+[the captured evidence and exact limits](../evaluation/workflows.md). It exercises deterministic seams, not model choices.
+
+In each harness manually assess: useful qualified Opportunities versus transient hits; both seed/tag and independent
+functional search; justified shortlist and disclosed coverage limits; meaningful contributions before pool admission;
+selection distinct from options; preserved criteria/departures on resumption; every lost secondary function reviewed;
+actual partial-acceptance aggregate; existing authorization covering the actual saved result; explicit checks and joint
+proof before completion; and context-specific sampling assumptions without casting claims. Use the Commander Meren
+and 60-card examples from their canonical Format skills rather than copying a mandatory decklist here. Record human
+observations and conditions independently. No deterministic harness run completes the live-session parity gate.

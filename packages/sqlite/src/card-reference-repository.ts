@@ -1,3 +1,5 @@
+import {readTagCatalogue} from "./tag-catalogue";
+import {readCardIdentityDetail, mapCardIdentity} from "./card-reference-detail";
 import {and, eq, inArray, like, or, sql} from "drizzle-orm";
 import {err, ok, type Result} from "neverthrow";
 import type {
@@ -23,6 +25,7 @@ import {
 
 export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardReferenceRepository {
   return {
+    async readTagCatalogue(operation, offset, limit) { return wrap(() => readTagCatalogue(db, operation, offset, limit)); },
     async searchCardIdentities(input) {
       return wrap(() => {
         const filters = buildCardFilters(input);
@@ -44,7 +47,7 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
       return wrap(() => {
         const identity = db.select().from(cardIdentity).where(or(eq(cardIdentity.id, idOrName), eq(cardIdentity.name, idOrName))).get();
         if (!identity) throw notFound(`Card Identity not found: ${idOrName}.`);
-        return getDetail(db, identity.id);
+        return readCardIdentityDetail(db, identity.id);
       });
     },
     async searchCardIdentityTags(input) {
@@ -77,7 +80,18 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
       });
     },
     async summarizeReferenceSupport() {
-        return wrap(() => summarizeReferenceImports(db.select().from(scryfallBulkDataImport).all().map((row) => ScryfallBulkDataImportSchema.parse({
+        return wrap(() => readReferenceSupport(db));
+    },
+    async listCardIdentitiesByIds(ids) {
+      return wrap(() => ids.map((id) => readCardIdentityDetail(db, id)));
+    },
+  };
+}
+
+type ReferenceStore = Pick<TomekinDatabase,"select">;
+export function readReferenceSupport(db: ReferenceStore) {
+    // The most recently committed import owns current facts, including equal timestamps and clock rollback.
+    return summarizeReferenceImports(db.select().from(scryfallBulkDataImport).orderBy(sql`rowid DESC`).all().map((row) => ScryfallBulkDataImportSchema.parse({
             id: row.id,
             bulkDataType: row.bulkDataType,
             importContractRevision: row.importContractRevision,
@@ -89,12 +103,7 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
             importedRecordCount: row.importedRecordCount,
             warnings: row.warningsJson as string[],
             blockingErrors: row.blockingErrorsJson as string[]
-        }))));
-    },
-    async listCardIdentitiesByIds(ids) {
-      return wrap(() => ids.map((id) => getDetail(db, id)));
-    },
-  };
+        })));
 }
 
 function buildCardFilters(input: SearchCardIdentitiesInput) {
@@ -107,24 +116,6 @@ function buildCardFilters(input: SearchCardIdentitiesInput) {
   return filters;
 }
 
-function getDetail(db: TomekinDatabase, id: string): CardIdentityDetail {
-  const identity = db.select().from(cardIdentity).where(eq(cardIdentity.id, id)).get();
-  if (!identity) throw notFound(`Card Identity not found: ${id}.`);
-  const tags = db.select({tagId: cardIdentityTagging.tagId, cardIdentityId: cardIdentityTagging.cardIdentityId, weight: cardIdentityTagging.weight, annotation: cardIdentityTagging.annotation, slug: cardIdentityTag.slug, label: cardIdentityTag.label}).from(cardIdentityTagging).innerJoin(cardIdentityTag, eq(cardIdentityTagging.tagId, cardIdentityTag.id)).where(eq(cardIdentityTagging.cardIdentityId, id)).all();
-  return {
-    identity: mapCardIdentity(identity),
-    parts: db.select().from(cardIdentityPart).where(eq(cardIdentityPart.cardIdentityId, id)).all(),
-    legalities: db.select().from(cardIdentityFormatLegality).where(eq(cardIdentityFormatLegality.cardIdentityId, id)).all(),
-    tags,
-  };
-}
-
-function mapCardIdentity(row: typeof cardIdentity.$inferSelect): CardIdentity {
-    const copyLimitOverride = row.copyLimitOverrideKind === "maximum"
-        ? {kind: "maximum" as const, maximum: row.copyLimitOverrideMaximum}
-        : {kind: row.copyLimitOverrideKind};
-    return CardIdentitySchema.parse({...row, copyLimitOverride, keywords: row.keywordsJson as string[]});
-}
 
 function wrap<T>(fn: () => T): Result<T, CardReferenceRepositoryError> {
   try {

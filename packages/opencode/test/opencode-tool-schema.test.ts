@@ -1,5 +1,5 @@
 import {describe, expect, test} from "bun:test";
-import {mkdtempSync, readFileSync} from "node:fs";
+import {mkdtempSync, readFileSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {createRootLogger, resolveLogConfigFromEnv} from "@tomekin/core";
@@ -22,8 +22,8 @@ describe("opencode tool schemas", () => {
         }
     });
 
-    test("exposes query_cards and Card Set discovery, but not the retired narrow Collection search", () => {
-        expect(isToolDefinition(tomekinTools.query_cards)).toBe(true);
+    test("exposes search_cards and Card Set discovery, but not the retired narrow Collection search", () => {
+        expect(isToolDefinition(tomekinTools.search_cards)).toBe(true);
         expect(isToolDefinition(tomekinTools.search_card_sets)).toBe(true);
         expect("search_collection_cards" in tomekinTools).toBe(false);
         expect("list_collection_imports" in tomekinTools).toBe(false);
@@ -86,7 +86,7 @@ describe("opencode tool schemas", () => {
             createHandlers: (options) => createLocalAgentToolHandlers({...options, databasePath: dbPath}),
         });
         try {
-            await tomekinTools.summarize_reference_support.execute({});
+            await tomekinTools.get_format_constraints.execute({format: "commander"});
         } finally {
             restoreRuntime();
         }
@@ -94,15 +94,59 @@ describe("opencode tool schemas", () => {
         const records = readFileSync(logPath, "utf8").trim().split("\n").map((line) => JSON.parse(line));
         expect(records).toContainEqual(expect.objectContaining({
             component: "agent_tool",
-            toolName: "summarize_reference_support",
+            toolName: "get_format_constraints",
             operation: "agent_tool_call",
             status: "started",
         }));
         expect(records).toContainEqual(expect.objectContaining({
             component: "agent_tool",
-            toolName: "summarize_reference_support",
+            toolName: "get_format_constraints",
             operation: "agent_tool_call",
             status: "succeeded",
         }));
     });
+});
+
+test("exposes and executes the generic calculator through OpenCode with actionable errors", async () => {
+    const definition = tomekinTools.hypergeometric_calculator;
+    expect(isToolDefinition(definition)).toBe(true);
+    const schema = tool.schema.toJSONSchema(tool.schema.object(definition.args));
+    expect(JSON.stringify(schema)).toContain("minimum_successes");
+    expect(JSON.stringify(schema)).toContain("targetProbability");
+    // OpenCode wraps a raw property shape: the root operation-dependent requirements remain runtime checks.
+    expect(schema.required).toEqual(["operation", "populationSize", "sampleSize", "event"]);
+    expect(schema.additionalProperties).toBe(false);
+    expect((schema.properties as Record<string, unknown>).populationSuccesses).toBeDefined();
+    expect((schema.properties as Record<string, unknown>).targetProbability).toBeDefined();
+    const probability = {operation: "probability" as const, populationSize: 4, populationSuccesses: 2, sampleSize: 2, event: {kind: "between" as const, lower: 1, upper: 2}};
+    const minimum = {operation: "minimum_successes" as const, populationSize: 5, sampleSize: 2, event: {kind: "at_least" as const, count: 1}, targetProbability: "0.70"};
+    expect(tool.schema.object(definition.args).safeParse(probability).success).toBe(true);
+    expect(tool.schema.object(definition.args).safeParse(minimum).success).toBe(true);
+    const directory = mkdtempSync(join(tmpdir(), "tomekin-opencode-calculator-"));
+    const databasePath = join(directory, "test.sqlite");
+    const log = createRootLogger(resolveLogConfigFromEnv({TOMEKIN_LOG_ENABLED: "false"}));
+    applySqliteMigrations(databasePath, {log});
+    const restore = tomekinTools.configureAgentToolRuntimeForTests({log, createHandlers: (options) => createLocalAgentToolHandlers({...options, databasePath})});
+    try {
+        expect(JSON.parse(await definition.execute(probability))).toMatchObject({probability: 5 / 6, eventStatus: "nontrivial"});
+        expect(JSON.parse(await definition.execute(minimum))).toMatchObject({minimumSuccesses: 2, previous: {populationSuccesses: 1}});
+        expect(JSON.parse(await definition.execute({...probability, extra: true} as never))).toMatchObject({error: "validation_error", message: expect.stringContaining("extra")});
+        const {populationSuccesses: _omitted, ...missingCount} = probability;
+        for (const invalid of [missingCount, {...minimum, populationSuccesses: 1}, {...probability, targetProbability: "0.7"}, {...minimum, event: {kind: "exactly", count: 1}}]) {
+            expect(JSON.parse(await definition.execute(invalid as never))).toMatchObject({error: "validation_error", message: expect.any(String)});
+        }
+        expect(JSON.parse(await definition.execute({...minimum, sampleSize: 0}))).toMatchObject({error: "target_unattainable", message: expect.stringContaining("sampleSize 0")});
+        const agent = readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8");
+        expect(agent).toContain('"tomekin_hypergeometric_calculator": allow');
+    } finally { restore(); rmSync(directory, {recursive: true, force: true}); }
+});
+
+test("both check tools expose saved and initial inputs in the actual OpenCode property schema",()=>{
+    for(const definition of [tomekinTools.validate_format_legality,tomekinTools.evaluate_deck_candidate]) {
+        const schema=tool.schema.toJSONSchema(tool.schema.object(definition.args));
+        expect(schema.additionalProperties).toBe(false);
+        const properties=schema.properties as Record<string,unknown>;
+        for(const field of ["candidate_id","expected_updated_at","changes","cards","brief"]) expect(properties[field]).toBeDefined();
+        expect(tool.schema.object(definition.args).safeParse({candidate_id:"11111111-1111-4111-8111-111111111111",expected_updated_at:"2026-10-18T00:00:00.000Z"}).success).toBe(true);
+    }
 });

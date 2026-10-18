@@ -1,5 +1,5 @@
 import {Type, type TSchema} from "@sinclair/typebox";
-import {agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {agentToolMutates, agentToolPreservesCompleteOutput, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
@@ -49,23 +49,25 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
         parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
-            if (signal.aborted) return cancelledOutput("Cancelled before dispatch.");
+            if (signal.aborted) return (name === "lookup_cards" || name === "search_cards" || name === "browse_collection_cards" || name === "browse_tags") ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.", name === "search_cards" ? 175 : 50)) : cancelledOutput("Cancelled before dispatch.");
             if (options.transport && options.databasePath) {
-                return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: name !== "save_deck_candidate"}, signal);
+                return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: !agentToolMutates(name)}, signal);
             }
             const runtime = options.createRuntime?.();
             if (!runtime) return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
-                const result = await handler(params) as ResultLike;
-                if (signal.aborted) return cancelledOutput("Work settled after cancellation; result discarded.");
-                const details = result.isOk() ? result.value : {error: result.error?.type ?? "error", message: result.error?.message ?? "Unknown tool error."};
-                options.log.info({component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
-                return projectOutput(details);
+                const result = await (name === "search_cards" ? runtime.handlers.searchCards(params,signal) : name === "lookup_cards" ? runtime.handlers.lookupCards(params,signal) : name === "browse_collection_cards" ? runtime.handlers.browseCollectionCards(params,signal) : name === "browse_tags" ? runtime.handlers.browseTags(params,signal) : handler(params)) as ResultLike;
+                if(signal.aborted && !["lookup_cards","search_cards","browse_collection_cards","browse_tags"].includes(name) && !agentToolMutates(name))return cancelledOutput("Work settled after cancellation; result discarded.");
+                const details = agentToolResultDetails(result);
+                const serializationStarted = performance.now();
+                const output = projectOutput(details, agentToolPreservesCompleteOutput(name));
+                options.log.info({adapterBytes: Buffer.byteLength(output.content[0]?.text ?? "", "utf8"), adapterSerializationMs: performance.now() - serializationStarted, component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
+                return output;
             } catch {
                 options.log.warn({component: "agent_tool", operation: "pi_tool_call", tool: name, status: "failed"}, "Pi tool call failed unexpectedly");
-                return failureOutput("tool_error", "The approved tool could not complete.");
+                return failureOutput(agentToolMutates(name) ? "unknown_write_outcome" : "tool_error", agentToolMutates(name) ? "The write outcome is unknown. Inspect candidate list/get and reconcile before retrying." : "The approved tool could not complete.");
             } finally {
                 runtime.close();
             }
@@ -124,7 +126,8 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-        draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", save_deck_candidate: "saveDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+    check_collection_availability: "checkCollectionAvailability",
+        browse_collection_cards: "browseCollectionCards", search_cards: "searchCards", lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", legacy_query_cards: "legacyQueryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", browse_tags: "browseTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;
 }
@@ -150,9 +153,9 @@ function truncateUtf8ToByteLimit(text: string): string {
 }
 
 /** Temporary safety cap for core tools pending their compact/recoverable output contracts. */
-function projectOutput(details: unknown) {
-    const serialized = JSON.stringify(details, null, 2) ?? "null";
-    if (serialized.length <= MAX_CORE_RESULT_CHARACTERS) return {content: [{type: "text", text: serialized}], details};
+function projectOutput(details: unknown, preserveComplete = false) {
+    const serialized = serializeAgentToolDetails(details);
+    if (preserveComplete || isRetrievalEnvelope(details) || serialized.length <= MAX_CORE_RESULT_CHARACTERS) return {content: [{type: "text", text: serialized}], details};
     let previewLength = MAX_CORE_RESULT_CHARACTERS;
     let bounded: {truncated: true; originalCharacters: number; preview: string};
     let text: string;
@@ -170,7 +173,7 @@ function failureOutput(error: string, message: string) { return projectOutput({e
 export default function registerTomekinExtension(pi: PiApi) {
     const log = createRootLogger(resolveLogConfigFromEnv(process.env));
     const databasePath = resolveDatabasePath();
-    const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href});
+    const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href,log});
     for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {transport, databasePath, log}));
     pi.registerTool(createMethodologyReadTool({workspacePath: process.cwd()}));
     const registerLaterTool = pi.registerTool.bind(pi);

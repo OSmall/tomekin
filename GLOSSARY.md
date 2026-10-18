@@ -278,6 +278,11 @@ A user-invoked update of local card reference data from Scryfall's current bulk 
 is distinct from a Scryfall Bulk Data Import because it includes explicit network fetching before local data is updated.
 _Avoid_: Import, refresh, background sync
 
+**Scryfall Card Migration**:
+A Scryfall-published correction that replaces a discarded Card Printing identifier with another identifier, or removes
+it without providing a replacement. It concerns a Card Printing identifier rather than directly specifying a Card
+Identity replacement. _Avoid_: Schema migration, card update feed
+
 **Deck Opportunity**:
 A promising deck-building direction identified from the Collection, usually combining a Format Anchor, theme, available
 support cards, expected play pattern, and likely Missing Cards. _Avoid_: Theme, idea, suggestion

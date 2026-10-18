@@ -1,4 +1,5 @@
-import type {DeckCandidate, DeckCandidateCard} from "./deck-candidate";
+import {availabilityRecords, type AvailabilityResult} from "./collection-availability";
+import {roleSelectedCopies, summarizeDeckCandidate, type DeckCandidate, type DeckCandidateCard} from "./deck-candidate";
 import type {DeckFormat} from "./deck-building-brief";
 
 export type RenderDeckCandidateInput = {
@@ -25,15 +26,13 @@ export const deckCandidateMarkdownSections = [
 export type DeckCandidateMarkdownSection = (typeof deckCandidateMarkdownSections)[number];
 
 export function renderPortableDecklist(format: DeckFormat, cards: readonly DeckCandidateCard[]): string {
-    const mainboard = renderDecklistSection("Mainboard", cards.filter((card) => card.section === "mainboard"));
-    if (format === "commander") {
-        const commander = renderDecklistSection("Commander", cards.filter((card) => card.section === "commander"));
-        return `${commander}\n\n${mainboard}`;
-    }
-    const sideboardCards = cards.filter((card) => card.section === "sideboard");
-    return sideboardCards.length === 0
-        ? mainboard
-        : `${mainboard}\n\n${renderDecklistSection("Sideboard", sideboardCards)}`;
+    const sections: string[] = [];
+    const commanders = cards.filter(card => card.section === "commander");
+    if (format === "commander" || commanders.length) sections.push(renderDecklistSection("Commander", commanders));
+    sections.push(renderDecklistSection("Mainboard", cards.filter(card => card.section === "mainboard")));
+    const sideboard = cards.filter(card => card.section === "sideboard");
+    if (sideboard.length) sections.push(renderDecklistSection("Sideboard", sideboard));
+    return sections.join("\n\n");
 }
 
 export function renderDeckCandidateMarkdown(input: RenderDeckCandidateInput): string {
@@ -50,7 +49,7 @@ export function renderDeckCandidateMarkdown(input: RenderDeckCandidateInput): st
 
 export function renderSavedDeckCandidate(candidate: DeckCandidate): {readonly markdown: string; readonly portableDecklist: string} {
   return {
-    markdown: candidate.markdown,
+    markdown: renderCandidateReportParts(candidate).join(""),
       portableDecklist: renderPortableDecklist(candidate.format, candidate.cards),
   };
 }
@@ -66,4 +65,36 @@ function defaultSectionContent(section: DeckCandidateMarkdownSection): string {
     if (section === "Collection Status") return "Collection availability was not recorded for this Deck Candidate. Check the current imported Collection before treating cards as Missing Cards.";
   if (section === "Cuts And Exclusions") return "No meaningful cuts or exclusions were recorded.";
   return "Not recorded.";
+}
+
+/** Ordered complete report fragments; join with the empty string to render Markdown. */
+export function renderCandidateReportParts(candidate: DeckCandidate): string[] {
+    const json = (value: unknown) => `\n\n\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\`\n\n`;
+    const availability=candidate.validation_evidence?.checks?.collection_availability;
+    const collectionStatus=!availability||availability.status==="absent"?"Current Availability and Collection Pull List evidence is unrecorded.":availability.status==="outdated"?"Availability evidence is outdated. Reconfirm scope and explicitly recheck before assembly.":`Availability was explicitly checked at ${availability.checked_at}. Recover complete requirements and row witnesses with the availability or collection_pull_list view. ${JSON.stringify((availability.result as import("./collection-availability").AvailabilityResult).summary)}`;
+    const checkEvidence = candidate.validation_evidence;
+    const evidenceParts: string[] = [];
+    if (!checkEvidence?.checks?.collection_availability || checkEvidence.checks.collection_availability.status === "absent") {
+        evidenceParts.push(json(checkEvidence ?? summarizeDeckCandidate(candidate).validation_evidence));
+    } else {
+        const {collection_availability, ...otherChecks} = checkEvidence.checks;
+        evidenceParts.push(json({status:checkEvidence.status,checks:otherChecks}));
+        const {availability_requirements: _requirements, ...dependencies} = collection_availability.dependencies;
+        evidenceParts.push(json({check:"collection_availability",status:collection_availability.status,checked_at:collection_availability.checked_at,dependencies,requirements_recovered_in:"requirements"}));
+        for (const record of availabilityRecords(collection_availability.result as AvailabilityResult)) {
+            evidenceParts.push(json({check:"collection_availability",...record}));
+        }
+    }
+    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", ...evidenceParts, `## Collection Status\n\n${collectionStatus} Historical contribution/source notes do not establish current owned-copy proof.\n\n`, "## Portable Decklist\n\n\`\`\`txt\n", ...renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line=>`${line}\n`), "\`\`\`\n\n", "## Selected Membership\n\n"];
+    for (const membership of candidate.memberships) parts.push(json(membership));
+    parts.push("## Roles And Win Routes\n\n");
+    for (const node of candidate.plan?.nodes ?? []) parts.push(json(node.kind === "role" ? {...node, selected_copies:roleSelectedCopies(candidate,node), assessment_status:node.coverage_assessment ? "recorded" : "unrecorded"} : node));
+    parts.push("## Relationships\n\n");
+    for (const relationship of candidate.plan?.relationships ?? []) parts.push(json(relationship));
+    parts.push("## Deck Card Pool And Contributions\n\nPool options include alternatives; only Selected Membership contributes selected quantities.\n\n");
+    for (const option of candidate.options) {
+        parts.push(json(option));
+        for (const contribution of candidate.plan?.contributions.filter(c => c.card_identity_id === option.card_identity_id) ?? []) parts.push(json(contribution));
+    }
+    return parts;
 }
