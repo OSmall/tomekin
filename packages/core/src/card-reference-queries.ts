@@ -47,6 +47,7 @@ export type SearchCardSetsInput = {
 
 export type ReferenceDataStatus = {
   readonly required: readonly ScryfallBulkDataType[];
+  /** Newest committed import first, independent of timestamps and IDs. */
   readonly imports: readonly ScryfallBulkDataImport[];
   readonly missing: readonly ScryfallBulkDataType[];
     readonly reimportRequired: readonly ScryfallBulkDataType[];
@@ -64,20 +65,28 @@ export type CardReferenceRepository = {
   listCardIdentitiesByIds(ids: readonly string[]): Promise<Result<readonly CardIdentityDetail[], CardReferenceRepositoryError>>;
 };
 
+/** Select current datasets from repository snapshots ordered newest committed import first.
+ * Wall clocks, source dates and IDs do not establish replacement authority; failed attempts never replace it.
+ */
+export function currentReferenceImports(imports: readonly ScryfallBulkDataImport[]): Map<ScryfallBulkDataType, ScryfallBulkDataImport> {
+    const current = new Map<ScryfallBulkDataType, ScryfallBulkDataImport>();
+    for (const item of imports) {
+        if (item.status === "succeeded" && !current.has(item.bulkDataType)) current.set(item.bulkDataType, item);
+    }
+    return current;
+}
+
 export function summarizeReferenceImports(imports: readonly ScryfallBulkDataImport[], now = new Date()): ReferenceDataStatus {
   const required = ["oracle_cards", "all_cards", "oracle_tags"] as const;
-    const latestSuccessful = new Map<ScryfallBulkDataType, ScryfallBulkDataImport>();
-    for (const item of imports.filter((candidate) => candidate.status === "succeeded")) {
-        const previous = latestSuccessful.get(item.bulkDataType);
-        if (!previous || importSortTimestamp(item) > importSortTimestamp(previous)) latestSuccessful.set(item.bulkDataType, item);
-    }
+    const latestSuccessful = currentReferenceImports(imports);
     const missing = required.filter((type) => !latestSuccessful.has(type));
     const reimportRequired = required.filter((type) => {
         const imported = latestSuccessful.get(type);
         return imported !== undefined && imported.importContractRevision !== requiredScryfallImportContractRevisions[type];
     });
   const warnings: string[] = [];
-  for (const item of imports.filter((candidate) => candidate.status === "succeeded" && candidate.sourceUpdatedAt !== null)) {
+  for (const item of latestSuccessful.values()) {
+    if (item.sourceUpdatedAt === null) continue;
     const ageDays = (now.getTime() - item.sourceUpdatedAt!.getTime()) / 86_400_000;
     if (ageDays > 14) warnings.push(`${item.bulkDataType} reference data is ${Math.floor(ageDays)} days old; refresh if current external facts matter.`);
   }
@@ -89,10 +98,6 @@ export function summarizeReferenceImports(imports: readonly ScryfallBulkDataImpo
         warnings,
         ready: missing.length === 0 && reimportRequired.length === 0
     };
-}
-
-function importSortTimestamp(item: ScryfallBulkDataImport): number {
-    return (item.completedAt ?? item.startedAt).getTime();
 }
 
 export function filterCardIdentities(

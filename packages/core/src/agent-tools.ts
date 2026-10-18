@@ -11,7 +11,7 @@ import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {DeckBuildingBriefSchema, DeckFormatSchema, draftDeckBuildingBrief} from "./deck-building-brief";
 import {CardQueryInputSchema, type CardQueryRepository, parseCardQueryInput} from "./card-query";
-import {type CardReferenceRepository, getFormatConstraints, type ReferenceDataStatus} from "./card-reference-queries";
+import {type CardReferenceRepository, currentReferenceImports, getFormatConstraints, type ReferenceDataStatus} from "./card-reference-queries";
 import type {CollectionQueryRepository} from "./collection-import";
 import {
     DeckCandidateCardSectionSchema,
@@ -353,14 +353,7 @@ function referenceReadiness(support:ReferenceDataStatus):Result<ReferenceDataSta
 }
 
 function latestOracleCardsSourceTimestamp(imports: readonly ScryfallBulkDataImport[]): Date | null {
-    const latest = imports
-        .filter((item) => item.bulkDataType === "oracle_cards" && item.status === "succeeded")
-        .sort((left, right) => importTimestamp(right) - importTimestamp(left))[0];
-    return latest?.sourceUpdatedAt ?? null;
-}
-
-function importTimestamp(item: ScryfallBulkDataImport): number {
-    return (item.completedAt ?? item.startedAt).getTime();
+    return currentReferenceImports(imports).get("oracle_cards")?.sourceUpdatedAt ?? null;
 }
 
 function safeSync<T>(fn: () => T): Result<T, AgentToolError> {
