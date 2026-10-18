@@ -211,3 +211,15 @@ test("copy selectors, scope validation and mandatory Collection context budget f
         expect(provenance.provenance.collection_import).toMatchObject({import_id: f.imported.id, imported_at: "2026-10-18T01:00:00.000Z"});
     } finally {runtime.close(); f.dispose();}
 });
+
+test("unsafe aggregate quantities and incidental exact-Printing identity conflicts cannot become exact ownership claims", async () => {
+    const f = await createCollectionFixture();
+    const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log, search: {provider: {id: "fixture", async dispatch() {return {status: 200, body: {object: "list", data: [card(id(2), id(999))], has_more: false}};}}}});
+    try {
+        const conflict = envelope(await runtime.handlers.searchCards({q: "fixture", select: {oracle_id: true}, collection_scope: {match: "printing"}, collection_policy: {kind: "explicit", policy: f.policy}, collection_evidence: {mode: "summary"}}));
+        expect(conflict).toMatchObject({edges: [], error: {code: "local_error", reason: "reference_identity_disagreement"}});
+        f.db.$client.prepare("UPDATE collection_card SET quantity = ?").run(Number.MAX_SAFE_INTEGER);
+        const unsafe = envelope(await f.runtime.handlers.lookupCards({references: [{kind: "name", value: "Sol Ring"}], select: {oracle_id: true}, collection_evidence: {mode: "summary"}}));
+        expect(unsafe).toMatchObject({edges: [], error: {code: "local_error", reason: "unsafe_quantity"}});
+    } finally {runtime.close(); f.dispose();}
+});

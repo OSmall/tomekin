@@ -20,7 +20,6 @@ export type CollectionEvidence = {summary: {owned_quantity: number; eligible_qua
 export type CollectionRetrievalDependencies = {repository: CollectionBrowseRepository; loadPolicy: CollectionPolicyLoader};
 export class CollectionRetrievalFailure extends Error {constructor(readonly problem: RetrievalProblem, readonly context?: CollectionRetrievalContext) {super(problem.message);}}
 const fail = (problem: RetrievalProblem): never => {throw new CollectionRetrievalFailure(problem);};
-export const collectionRevisionKeys = ["collection", "collection_policy"] as const;
 export function collectionRequestBindings(args: CollectionRetrievalArgs) {
     return {...(args.collection_scope ? {collection_scope: args.collection_scope} : {}), ...(args.collection_policy ? {collection_policy: args.collection_policy} : {}), ...(args.collection_evidence ? {collection_evidence: {mode: args.collection_evidence.mode}} : {})};
 }
@@ -87,6 +86,10 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
         if (match === "printing" && !printingId) return fail({code: "invalid_request", reason: "incompatible_reference_kind", message: "Printing matching requires exact Printing references throughout the lookup batch.", retryable: false});
         let owned = 0, eligible = 0, uncertain = 0, offset = 0;
         const copies: NonNullable<CollectionEvidence["copies"]> = [];
+        const add = (total: number, quantity: number) => {
+            if (!Number.isSafeInteger(quantity) || quantity < 0 || !Number.isSafeInteger(total + quantity)) return fail({code: "local_error", reason: "unsafe_quantity", message: "Recorded Collection quantities cannot be represented exactly.", retryable: false});
+            return total + quantity;
+        };
         if (snapshot.activeImport) for (;;) {
             check();
             const batch = await repository.readOwnedRows({offset, first: 128, order: "source_order", ...(match === "printing" ? {printing_ids: [printingId!]} : {oracle_ids: [node.card.oracle_id]})});
@@ -95,14 +98,15 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
             if (!batch.value.length) break;
             for (const row of batch.value) {
                 check(); offset++;
+                if (match === "printing" && row.oracle_id !== node.card.oracle_id) return fail({code: "local_error", reason: "reference_identity_disagreement", message: "The returned Printing identity disagrees with the owned local Printing relationship. Explicitly sync reference data and recheck before making an ownership claim.", retryable: false});
                 if (locations && !locations.some(location => location.id === row.location.id)) continue;
                 const criteria = evaluateCopyRequirements(args.collection_scope?.copy_requirements ?? {}, row);
-                if (criteria.decision === "eligible") owned += row.quantity;
+                if (criteria.decision === "eligible") owned = add(owned, row.quantity);
                 const permission = policy ? evaluateOwnedRow(policy, row) : null;
                 const excluded = criteria.decision === "excluded" || permission?.decision === "excluded";
-                if (!excluded && (criteria.decision === "uncertain" || permission?.decision === "uncertain")) uncertain += row.quantity;
+                if (!excluded && (criteria.decision === "uncertain" || permission?.decision === "uncertain")) uncertain = add(uncertain, row.quantity);
                 if (criteria.decision !== "eligible" || permission?.decision !== "eligible") continue;
-                eligible += row.quantity;
+                eligible = add(eligible, row.quantity);
                 if (args.collection_evidence?.mode === "copies") {
                     const copy: NonNullable<CollectionEvidence["copies"]>[number] = {collection_card_id: row.collection_card_id, printing_id: row.printing_id, quantity: row.quantity};
                     if (row.location.type === "deck") {copy.committed = true; copy.location = row.location;}
