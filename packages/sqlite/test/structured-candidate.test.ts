@@ -1245,3 +1245,51 @@ test("Brief Format switches retain shared preferences and require the new branch
         app.dispose();
     }
 });
+
+test("complete candidate reasoning is recoverable through baseline-bound views beyond the old adapter preview", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        const description = "Complete strategic uncertainty. ".repeat(1400);
+        const changed = unwrap(await app.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: created.updated_at, changes: {plan: {schema_version: 1, description}}}));
+        const first = unwrap(await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", first: 2}));
+        expect(first.status).toBe("ok");
+        expect(first.pageInfo.hasNextPage).toBe(true);
+        const records = [...first.edges];
+        let cursor = first.pageInfo.endCursor;
+        while (cursor) {
+            const page = unwrap(await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", first: 2, after: cursor}));
+            records.push(...page.edges);
+            cursor = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
+        }
+        expect(records.find((e: any) => e.node.path.join(".") === "plan.description").node.value).toBe(description);
+        expect(records.find((e: any) => e.node.path.join(".") === "plan.contributions.0").node.value).toMatchObject({rationale: "Reliable repeatable mana", qualifications: ["One activation each turn"], evidence: [{reference: "Card facts", note: "A mana ability"}]});
+        const wrongView = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "pool", after: first.pageInfo.endCursor});
+        expect(wrongView.isErr()).toBe(true);
+        await app.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: changed.updated_at, changes: {label: "New baseline"}});
+        const stale = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", after: first.pageInfo.endCursor});
+        expect(stale.isErr()).toBe(true);
+        expect(stale.error.envelope.error.code).toBe("stale_cursor");
+    } finally { app.dispose(); }
+});
+
+test("on-demand pool and generated output keep alternatives distinct from selected canonical membership", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{options:[{action:"add",card_identity_id:draw,comparison_note:"Assessed alternative"}],contributions:[{action:"add",contribution:{card_identity_id:draw,role_id:created.created_ids.mana,rationale:"Fallback resource"}}]}}));
+        const pool = unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"pool"}));
+        expect(pool.edges.filter((e:any)=>e.node.path[0]==="options" && e.node.path.length===2)).toHaveLength(2);
+        const alternative = pool.edges.find((e:any)=>e.node.path[0]==="options" && e.node.path.length===2 && e.node.value.card_identity_id===draw).node.value;
+        expect(alternative).toMatchObject({card_name:"Another Forest",comparison_note:"Assessed alternative",memberships:[],contributions:[{rationale:"Fallback resource"}]});
+        const role = pool.edges.find((e:any)=>e.node.path.join(".")==="roles.0").node.value;
+        expect(role.option_ids).toHaveLength(2);
+        expect(role.selected_copies).toBe(31);
+        const rendered = unwrap(await app.handlers.renderDeckCandidate({candidate_id:created.candidate_id,output:"portable_decklist"}));
+        const text = rendered.edges.map((e:any)=>typeof e.node.value === "string" ? e.node.value : "").join("");
+        expect(text).toBe("Mainboard\n30 Forest\n\nSideboard\n1 Forest\n");
+        expect(text).not.toContain("Another Forest");
+        const forbidden = await app.handlers.renderDeckCandidate({label:"Forged report",format:"casual_60",cards:[{cardName:"Forged",cardIdentityId:forest,quantity:1,section:"mainboard"}]});
+        expect(forbidden.isErr()).toBe(true);
+    } finally {app.dispose();}
+});

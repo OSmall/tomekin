@@ -1,4 +1,4 @@
-import type {DeckCandidate, DeckCandidateCard} from "./deck-candidate";
+import {summarizeDeckCandidate, type DeckCandidate, type DeckCandidateCard} from "./deck-candidate";
 import type {DeckFormat} from "./deck-building-brief";
 
 export type RenderDeckCandidateInput = {
@@ -50,7 +50,7 @@ export function renderDeckCandidateMarkdown(input: RenderDeckCandidateInput): st
 
 export function renderSavedDeckCandidate(candidate: DeckCandidate): {readonly markdown: string; readonly portableDecklist: string} {
   return {
-    markdown: renderDeckCandidateMarkdown({label:candidate.label,format:candidate.format,cards:candidate.cards,sections:{"Game Plan":candidate.plan?.description??"Not recorded."}}),
+    markdown: renderCandidateReportParts(candidate).join(""),
       portableDecklist: renderPortableDecklist(candidate.format, candidate.cards),
   };
 }
@@ -66,4 +66,21 @@ function defaultSectionContent(section: DeckCandidateMarkdownSection): string {
     if (section === "Collection Status") return "Collection availability was not recorded for this Deck Candidate. Check the current imported Collection before treating cards as Missing Cards.";
   if (section === "Cuts And Exclusions") return "No meaningful cuts or exclusions were recorded.";
   return "Not recorded.";
+}
+
+/** Ordered complete report fragments; join with the empty string to render Markdown. */
+export function renderCandidateReportParts(candidate: DeckCandidate): string[] {
+    const json = (value: unknown) => `\n\n\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\`\n\n`;
+    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", json(summarizeDeckCandidate(candidate).validation_evidence), "## Collection Status\n\nCurrent Availability and Collection Pull List evidence is unrecorded. Historical contribution/source notes do not establish current owned-copy proof.\n\n", "## Portable Decklist\n\n\`\`\`txt\n", renderPortableDecklist(candidate.format, candidate.cards), "\n\`\`\`\n\n", "## Selected Membership\n\n"];
+    for (const membership of candidate.memberships) parts.push(json(membership));
+    parts.push("## Roles And Win Routes\n\n");
+    for (const node of candidate.plan?.nodes ?? []) parts.push(json(node));
+    parts.push("## Relationships\n\n");
+    for (const relationship of candidate.plan?.relationships ?? []) parts.push(json(relationship));
+    parts.push("## Deck Card Pool And Contributions\n\nPool options include alternatives; only Selected Membership contributes selected quantities.\n\n");
+    for (const option of candidate.options) {
+        parts.push(json(option));
+        for (const contribution of candidate.plan?.contributions.filter(c => c.card_identity_id === option.card_identity_id) ?? []) parts.push(json(contribution));
+    }
+    return parts;
 }
