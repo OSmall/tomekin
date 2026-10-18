@@ -10,8 +10,7 @@ import type {CollectionQueryRepository} from "./collection-import";
 import {
     DeckCandidateCardSectionSchema,
     type DeckCandidateRepository,
-    normalizeDeckCandidateForSave,
-    SaveDeckCandidateInputSchema
+    CreateDeckCandidateInputSchema, EditDeckCandidateInputSchema, summarizeDeckCandidate
 } from "./deck-candidate";
 import {renderDeckCandidateMarkdown, renderPortableDecklist} from "./deck-candidate-rendering";
 import {assessDeckLegality, type DeckLegalityCard} from "./format-legality";
@@ -31,7 +30,8 @@ export const AgentToolNameSchema = z.enum([
   "validate_format_legality",
   "evaluate_deck_candidate",
   "render_deck_candidate",
-  "save_deck_candidate",
+  "create_deck_candidate",
+  "edit_deck_candidate",
   "get_deck_candidate",
   "list_deck_candidates",
   "list_collection_locations",
@@ -63,12 +63,9 @@ export const RenderDeckCandidateArgsSchema = z.strictObject({
     })).min(1),
     sections: z.record(z.string(), z.string()).optional()
 });
-export const SaveDeckCandidateArgsSchema = SaveDeckCandidateInputSchema;
-/** JSON transport preserves the public ISO timestamp form accepted by the save normalizer. */
-export const SaveDeckCandidateTransportArgsSchema = SaveDeckCandidateInputSchema.extend({
-    collectionImportTimestamp: z.string().datetime({offset: true}).nullable().default(null),
-});
-export const GetDeckCandidateArgsSchema = z.object({id: z.uuid()});
+export const CreateDeckCandidateArgsSchema = CreateDeckCandidateInputSchema;
+export const EditDeckCandidateArgsSchema = EditDeckCandidateInputSchema;
+export const GetDeckCandidateArgsSchema = z.strictObject({id:z.uuid(),view:z.enum(["summary","state"]).default("summary")});
 export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema}).strict();
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
@@ -86,7 +83,8 @@ export const agentToolContracts = {
     validate_format_legality: {description: "Validate deterministic Format construction and legality.", inputSchema: ValidateDeckCandidateArgsSchema},
     evaluate_deck_candidate: {description: "Evaluate a candidate's legality, power context, mana curve, and land count.", inputSchema: ValidateDeckCandidateArgsSchema},
     render_deck_candidate: {description: "Render stable Deck Candidate Markdown and a Portable Decklist.", inputSchema: RenderDeckCandidateArgsSchema},
-    save_deck_candidate: {description: "Persist a final Deck Candidate.", inputSchema: SaveDeckCandidateTransportArgsSchema},
+    create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
+    edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
     get_deck_candidate: {description: "Retrieve a saved Deck Candidate.", inputSchema: GetDeckCandidateArgsSchema},
     list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
     list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
@@ -230,18 +228,24 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
             };
         });
     },
-      async saveDeckCandidate(input: unknown) {
-          const candidate = normalizeDeckCandidateForSave(SaveDeckCandidateArgsSchema.parse(input));
-          const ready = await requireReferenceData(repositories.cardReference);
-          if (ready.isErr()) return ready;
-          return repositories.deckCandidates.saveDeckCandidate(candidate);
+    async createDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => CreateDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        return repositories.deckCandidates.createDeckCandidate(parsed.value);
     },
-    getDeckCandidate(input: unknown) {
-      const args = GetDeckCandidateArgsSchema.parse(input);
-      return repositories.deckCandidates.getDeckCandidate(args.id);
+    async editDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => EditDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        return repositories.deckCandidates.editDeckCandidate(parsed.value);
+    },
+    async getDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => GetDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        const result = await repositories.deckCandidates.getDeckCandidate(parsed.value.id);
+        return result.map(candidate => parsed.value.view === "state" ? candidate : summarizeDeckCandidate(candidate));
     },
     listDeckCandidates() {
-      return repositories.deckCandidates.listDeckCandidates();
+        return repositories.deckCandidates.listDeckCandidates();
     },
     listCollectionLocations() {
       return repositories.collection.listCollectionLocations();
@@ -311,4 +315,14 @@ function safeSync<T>(fn: () => T): Result<T, AgentToolError> {
   } catch (error) {
     return err({type: "validation_error", message: error instanceof Error ? error.message : String(error)});
   }
+}
+
+/** These tools must settle once dispatched, including future check-evidence publication. */
+export function agentToolMutates(name: string): boolean {
+    return [
+        "create_deck_candidate",
+        "edit_deck_candidate",
+        "validate_format_legality",
+        "evaluate_deck_candidate",
+    ].includes(name);
 }

@@ -295,7 +295,8 @@ function repositoriesWithCards(cards: readonly CardIdentity[]): AgentToolReposit
             listCollectionImports: async () => ok([]),
         },
         deckCandidates: {
-            saveDeckCandidate: async () => err({type: "repository_error", message: "Not used by this test."}),
+            createDeckCandidate: async () => err({type: "repository_error", message: "Not used by this test."}),
+            editDeckCandidate: async () => err({type: "repository_error", message: "Not used by this test."}),
             getDeckCandidate: async () => err({type: "not_found", message: "Not used by this test."}),
             listDeckCandidates: async () => ok([]),
         },

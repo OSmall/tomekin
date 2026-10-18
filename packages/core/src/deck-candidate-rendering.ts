@@ -50,7 +50,7 @@ export function renderDeckCandidateMarkdown(input: RenderDeckCandidateInput): st
 
 export function renderSavedDeckCandidate(candidate: DeckCandidate): {readonly markdown: string; readonly portableDecklist: string} {
   return {
-    markdown: candidate.markdown,
+    markdown: renderDeckCandidateMarkdown({label:candidate.label,format:candidate.format,cards:candidate.cards,sections:{"Game Plan":candidate.plan?.description??"Not recorded."}}),
       portableDecklist: renderPortableDecklist(candidate.format, candidate.cards),
   };
 }

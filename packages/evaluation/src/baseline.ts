@@ -62,15 +62,17 @@ async function runWorkflow(name: WorkflowName) {
         const initialIds = Array.from({length: selectedRows}, (_, index) => id(index + 1));
         const finalIds = name === "tuning" ? [...initialIds.slice(0, 9), id(13), id(14), id(15)] : initialIds;
         const cards = (ids: string[]) => ids.map((cardIdentityId, index) => ({cardIdentityId, quantity: selectedRows === 12 ? 5 : 3, section: "mainboard" as const, sortOrder: index, note: null}));
-        const save = (ids: string[]) => ({id: id(800), label: "Synthetic candidate", brief, markdown: "# Synthetic candidate", cards: cards(ids)});
+        const initialInput = candidateCreateInput(initialIds, "Synthetic candidate", () => selectedRows === 12 ? 5 : 3);
         let threeCardSave: {beforeRows: number; afterRows: number; quantity: number; added: number; removed: number} | null = null;
         let legality: unknown = null;
         let selected: {rows: number; copies: number} | null = null;
         let candidatePayload: {fullPayloads: number; inputBytes: number; repeatedBriefBytes: number; repeatedUnchangedCardRows: number} | null = null;
         if (name !== "discovery") {
-            await stage("initialSaveHandler", () => runtime.handlers.saveDeckCandidate(save(initialIds)).then(unwrap));
-            const candidate = await stage("replacementSaveHandler", () => runtime.handlers.saveDeckCandidate(save(finalIds)).then(unwrap));
-            const read = unwrap(await stage("candidateReadHandler", () => runtime.handlers.getDeckCandidate({id: candidate.id})));
+            const candidate = await stage("candidateCreateHandler", () => runtime.handlers.createDeckCandidate(initialInput).then(unwrap));
+            const editInput = candidateRevisionInput(candidate, initialIds, finalIds, () => selectedRows === 12 ? 5 : 3);
+            await stage("candidateEditHandler", () => runtime.handlers.editDeckCandidate(editInput).then(unwrap));
+            const read = unwrap(await stage("candidateReadHandler", () => runtime.handlers.getDeckCandidate({id: candidate.candidate_id, view: "state"})));
+            if (!("cards" in read)) throw new Error("Expected explicit candidate state");
             const savedIds = read.cards.map((card) => card.cardIdentityId);
             if (coverage(finalIds, savedIds).missing.length || savedIds.length !== selectedRows) throw new Error("Saved candidate coverage mismatch");
             selected = {rows: read.cards.length, copies: read.cards.reduce((total, card) => total + card.quantity, 0)};
@@ -80,7 +82,7 @@ async function runWorkflow(name: WorkflowName) {
             legality = validation;
             await stage("explicitEvaluationHandler", () => runtime.handlers.evaluateDeckCandidate(check).then(unwrap));
             await stage("explicitRenderingHandler", () => runtime.handlers.renderDeckCandidate({label: "Synthetic candidate", format: "casual_60", cards: read.cards}));
-            candidatePayload = {fullPayloads: 2, inputBytes: utf8Bytes(JSON.stringify(save(initialIds))) + utf8Bytes(JSON.stringify(save(finalIds))), repeatedBriefBytes: utf8Bytes(JSON.stringify(brief)), repeatedUnchangedCardRows: name === "tuning" ? 9 : 20};
+            candidatePayload = {fullPayloads: 1, inputBytes: utf8Bytes(JSON.stringify(initialInput)) + utf8Bytes(JSON.stringify(editInput)), repeatedBriefBytes: 0, repeatedUnchangedCardRows: 0};
         }
         return {name, boundedTraversal: {requested: 3, returned: bounded.items.length, missing: coverage(expected, bounded.items.map((item) => item.id)).missing.length, recovery: "unsupported"},
             factCompleteness: {longTextSourceCharacters: 1300, longTextReturnedCharacters: query.items.find((item) => item.id === id(1))?.oracleText?.length ?? null, complete: name === "tuning" ? null : query.items.find((item) => item.id === id(1))?.oracleText === "Draw a card. ".repeat(100), multipart: unknown("This pre-migration corpus has no multipart facts; later projection fixtures must add their acceptance oracle")},
@@ -113,13 +115,101 @@ async function runCommanderSizeSave() {
     try {
         const initial = Array.from({length: 69}, (_, index) => id(index + 1));
         const final = [...initial.slice(0, 66), id(70), id(71), id(72)];
-        const input = (ids: string[]) => ({id: id(800), label: "Synthetic 100-copy size probe", brief, markdown: "# Synthetic size probe", cards: ids.map((cardIdentityId, index) => ({cardIdentityId, quantity: index === 0 ? 32 : 1, section: "mainboard", sortOrder: index, note: null}))});
-        unwrap(await runtime.handlers.saveDeckCandidate(input(initial)));
+        const input = candidateCreateInput(initial, "Synthetic 100-copy size probe", index => index === 0 ? 32 : 1);
+        const created = unwrap(await runtime.handlers.createDeckCandidate(input));
+        const editInput = candidateRevisionInput(created, initial, final, index => index === 0 ? 32 : 1);
         const start = performance.now();
-        const result = unwrap(await runtime.handlers.saveDeckCandidate(input(final)));
+        const edited = unwrap(await runtime.handlers.editDeckCandidate(editInput));
+        const result = unwrap(await runtime.handlers.getDeckCandidate({id: created.candidate_id, view: "state"}));
+        if (!("cards" in result)) throw new Error("Expected explicit candidate state");
         const timingsMs = performance.now() - start;
-        return {beforeRows: 69, afterRows: result.cards.length, quantity: result.cards.reduce((sum, card) => sum + card.quantity, 0), added: coverage(initial, final).unexpected.length, removed: coverage(initial, final).missing.length, timingsMs, inputBytes: utf8Bytes(JSON.stringify(input(final))), outputBytes: utf8Bytes(JSON.stringify(result)), shape: "Commander-sized only; synthetic Casual 60 save, no legality or strategic claim"};
+        return {beforeRows: 69, afterRows: result.cards.length, quantity: result.cards.reduce((sum, card) => sum + card.quantity, 0), added: coverage(initial, final).unexpected.length, removed: coverage(initial, final).missing.length, timingsMs, inputBytes: utf8Bytes(JSON.stringify(editInput)), outputBytes: utf8Bytes(JSON.stringify(edited)), shape: "Commander-sized only; synthetic Casual 60 create/edit, no legality or strategic claim"};
     } finally {runtime.close(); fixture.dispose();}
+}
+function candidateCreateInput(
+    ids: string[],
+    label: string,
+    quantity: (index: number) => number,
+) {
+    return {
+        label,
+        brief,
+        plan: {
+            schema_version: 1,
+            description:
+                "Synthetic fixture selection; no strategic-quality claim.",
+            nodes: [
+                {
+                    ref: "selection",
+                    kind: "role",
+                    label: "Synthetic selection",
+                    description: "Retain fixture options for measurement",
+                },
+            ],
+            contributions: ids.map((card_identity_id) => ({
+                card_identity_id,
+                role_ref: "selection",
+                rationale:
+                    "Synthetic fixture contribution for persistence measurement",
+            })),
+        },
+        options: ids.map((card_identity_id) => ({ card_identity_id })),
+        memberships: ids.map((card_identity_id, index) => ({
+            card_identity_id,
+            section: "mainboard",
+            quantity: quantity(index),
+            sort_order: index,
+        })),
+    };
+}
+function candidateRevisionInput(
+    created: {
+        candidate_id: string;
+        updated_at: string;
+        created_ids: Record<string, string>;
+    },
+    before: string[],
+    after: string[],
+    quantity: (index: number) => number,
+) {
+    const added = after.filter((id) => !before.includes(id)),
+        removed = before.filter((id) => !after.includes(id));
+    return {
+        candidate_id: created.candidate_id,
+        expected_updated_at: created.updated_at,
+        changes: {
+            options: added.map((card_identity_id) => ({
+                action: "add",
+                card_identity_id,
+            })),
+            contributions: added.map((card_identity_id) => ({
+                action: "add",
+                contribution: {
+                    card_identity_id,
+                    role_id: created.created_ids.selection,
+                    rationale:
+                        "Synthetic fixture contribution for persistence measurement",
+                },
+            })),
+            memberships: [
+                ...removed.map((card_identity_id) => ({
+                    action: "remove",
+                    card_identity_id,
+                    section: "mainboard",
+                })),
+                ...added.map((card_identity_id) => {
+                    const index = after.indexOf(card_identity_id);
+                    return {
+                        action: "set",
+                        card_identity_id,
+                        section: "mainboard",
+                        quantity: quantity(index),
+                        sort_order: index,
+                    };
+                }),
+            ],
+        },
+    };
 }
 if (import.meta.main) {
     const report = await runBaseline();

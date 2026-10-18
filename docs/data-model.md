@@ -188,27 +188,37 @@ hierarchy, and the successful-attempt record. The current importer does not perf
 
 ### DeckCandidate
 
-`DeckCandidate` is a saved proposed decklist and explanation. It is separate from Collection state even when it was
-built with Collection evidence.
+One candidate owns its UUID, label, Format-discriminated Brief, optional current plan, assessed pool, selected
+memberships and optional power/play-experience fit and mana/curve adequacy assessments. The Brief is authoritative for
+Format and Format Anchor. There is no separate Brief ID, completion flag, report snapshot or candidate revision history.
 
-SQLite stores its UUID, label, Format, optional Format Anchor, validated Format-discriminated Deck Building Brief JSON,
-optional Collection import timestamp, canonical Markdown, and creation and update times. The Brief's Format is
-authoritative; the repository derives the queryable Format column from it. Commander Bracket appears only in the
-Commander Brief branch.
+Exact UTC text timestamps preserve creation/update precision. Every committed content edit advances `updated_at_exact`
+even within one clock tick; edits check the exact last-read value inside an immediate transaction. Separate selected,
+Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-only maintenance leaves selected inputs
+unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
+columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
 
-The optional Collection import timestamp records which snapshot informed the saved Markdown. The model does not derive
-or persist freshness, current Availability, Missing Cards, or a Collection Pull List from that timestamp. Ordinary
-reads return the canonical Markdown as stored. Saving an existing ID updates the candidate and transactionally replaces
-its card rows.
+### Selected SectionMembership (`deck_candidate_card`)
 
-### DeckCandidateCard
+One row per candidate/Card Identity/section owns a positive integral quantity, nonnegative order and optional selected
+note. Sections are `commander`, `mainboard`, and `sideboard`; explicit Format checks determine deck-level legality.
+Names derive from global Card Identity. Membership does not choose a Printing, allocate owned copies or prove Availability.
+Cutting membership retains its assessed option and contributions. Updates preserve untouched membership IDs and fields.
 
-`DeckCandidateCard` stores a relational entry with Deck Candidate ID, Card Identity ID, positive quantity, canonical
-section, stable sort order, and optional note. The closed section vocabulary is `commander`, `mainboard`, and
-`sideboard`; Format validation decides which sections are legal.
+### Current plan and assessed pool
 
-Card names come from Card Identity when reading or rendering the Portable Decklist. A Deck Candidate Card does not point
-to a Collection Card or choose an exact Card Printing, and it does not store an Availability classification.
+`deck_candidate_plan` holds one current description per candidate. `deck_candidate_node` holds stable candidate-scoped
+roles and Win Routes with kind-specific fields and optional claim-local coverage/evidence JSON. `deck_candidate_option`
+is unique by candidate/Card Identity and owns an optional comparison note. `deck_candidate_contribution` is unique by
+candidate/option/role and owns rationale, qualifications and evidence. `deck_candidate_relationship` owns stable directed
+role relationships or one canonical unordered competition pair. Composite foreign keys prevent cross-candidate graph
+references. Inline evidence references are descriptive citations, independent of tag-import cleanup.
+
+The service validates the complete resulting state before persistence: every option has a role contribution, every
+selected identity has its option, endpoints have valid kinds, and desired zero-coverage roles have a gap assessment.
+Related removals are explicit. There is no automatic cascade that invents or discards assessments. Invalid change sets
+or database failures roll back all affected owners. JSON contains only claim-local metadata, not a second graph authority.
+Tool text limits count Unicode code points; persistence has no application-specific text-length restriction.
 
 ## Relationship Summary
 
@@ -229,8 +239,11 @@ CollectionLocation
 ScryfallBulkDataImport (attempt history per dataset)
 
 DeckCandidate
-  -> DeckCandidateCard
-       -> CardIdentity
+  -> DeckCandidateCard (authoritative selected SectionMembership) -> CardIdentity
+  -> DeckCandidatePlan -> DeckCandidateNode
+  -> DeckCandidateOption -> CardIdentity
+       -> DeckCandidateContribution -> DeckCandidateNode (role)
+  -> DeckCandidateRelationship -> DeckCandidateNode (same candidate)
 ```
 
 This shape preserves the distinctions between owned rows, exact Printings, canonical Card Identities, source-backed
