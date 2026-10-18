@@ -204,14 +204,12 @@ Availability proof.
 
 ## Validation, Rendering, and Persistence
 
-Before rendering a final Deck Candidate, Tomekin:
-
-1. resolves every card name to a local Card Identity;
-2. validates Format construction and legality against the confirmed Brief;
-3. performs the final scoped Collection evidence check when applicable;
-4. evaluates Format-appropriate power context, Mainboard land count, and Mana Value distribution; and
-5. performs at most three complete evaluate-and-revise passes before presenting the best candidate with any unresolved
-   caveats.
+Before presenting a completed Deck Candidate, the agent reads the actual selected membership, resolves missing facts
+through batched local lookup, explicitly checks Format legality and evaluation, and obtains complete joint Collection
+Availability under the whole confirmed Brief policy. It reviews strategy, Brief and practical constraints, reusing only
+applicable evidence. Transient trial checks cannot stand in for checks of a different accepted result. Save authorized
+incomplete progress with create/edit throughout; ordinary writes, reads and exports do not trigger checks. Reports,
+selected Portable Decklists and Collection Pull Lists are generated through complete bounded path/value views.
 
 The evaluator is not a deterministic deck-quality oracle. Strategy, roles, packages, Synergy, and tuning judgments are
 agent reasoning backed by local facts and skills.

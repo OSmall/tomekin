@@ -195,8 +195,7 @@ Accept when one shared method supplies common reasoning, discovery remains a con
 assumptions/examples remain with their owners. Focused plan/contribution/goal reasoning remains understandable on
 resumption. Available adapters expose only implemented operations. Saves and reads do not implicitly check in the
 adopted edit workflow; evidence is reused only while applicable. The agent reviews strategy, Brief and Collection and
-uses existing authorization covering the actual result/target, seeking agreement where absent. Existing whole-report
-persistence paths remain governed by their supported lifecycle until the integration migration replaces them.
+uses existing authorization covering the actual result/target, seeking agreement where absent. Current create/edit and complete bounded views replace the old whole-report save lifecycle.
 
 ## Recording Results
 
@@ -206,7 +205,7 @@ fixtures.
 
 ## Real-session Test Prompts
 
-Run these in fresh OpenCode sessions so prior card choices and large tool results do not anchor the model. Replace the
+Run these in fresh Pi and OpenCode sessions so prior card choices and large tool results do not anchor the model. Replace the
 bracketed values with exact Collection Location names returned by Tomekin.
 
 ### Discovery through construction
@@ -223,7 +222,7 @@ After choosing:
 ```text
 Build the [chosen opportunity] direction under the confirmed Brief. Before presenting the final candidate, explicitly
 review the curve, distinguish net card advantage from selection or looting, challenge the three weakest included
-nonlands, and recheck final Collection quantities and owned rows against the unchanged Collection Location allow-list.
+nonlands, and obtain complete joint Availability and recover the Pull List under the unchanged whole Collection Access Policy.
 ```
 
 ### Existing Deck tuning
@@ -280,3 +279,18 @@ known-slug miss is not. Compare selected per-card `tags`: inherited ancestors re
 exploration stops at one level. Keep strategic Deck Role judgments contextual. Verified example-slug source
 provenance is beside the contract in `docs/card-query.md`. This is a focused tool scenario; final executable workflow
 integration remains separate work.
+
+## Current four-workflow integration demonstration
+
+Run `bun run evaluate:workflows` before manual model sessions. Its synthetic Heroic Feast style scenario is a
+repeatable sacrifice/access/death-reward plan, with a tag-matched text mismatch, conditional multi-role contribution,
+active alternatives, interrupted construction, partially accepted tuning and overlapping assembly demands. See
+[the captured evidence and exact limits](../evaluation/workflows.md). It exercises deterministic seams, not model choices.
+
+In each harness manually assess: useful qualified Opportunities versus transient hits; both seed/tag and independent
+functional search; justified shortlist and disclosed coverage limits; meaningful contributions before pool admission;
+selection distinct from options; preserved criteria/departures on resumption; every lost secondary function reviewed;
+actual partial-acceptance aggregate; existing authorization covering the actual saved result; explicit checks and joint
+proof before completion; and context-specific sampling assumptions without casting claims. Use the Commander Meren
+and 60-card examples from their canonical Format skills rather than copying a mandatory decklist here. Record human
+observations and conditions independently. No deterministic harness run completes the live-session parity gate.

@@ -11,8 +11,7 @@ retrieval mechanics. This skill owns Commander assumptions, counting guidance an
 skill owns supported tools, deterministic validation, rendering and persistence.
 
 When discovery hands off a direction, preserve its anchor, activity, winning direction, Collection support and caveats.
-Preserve the confirmed `(locationType, locationName)` Collection allow-list unchanged in every Collection query and
-the final Availability recheck. Research and refine the selected direction; agree a materially different identity
+Preserve the whole confirmed Collection Access Policy through retrieval and final joint Availability. Research and refine the selected direction; agree a materially different identity
 before building it.
 
 ## Commander Access And Table Context
@@ -117,9 +116,15 @@ confirmation rather than implied approval from the Brief.
 **Bounded probability question:** for a context-specific access target, ask whether at least one of twelve independently
 qualified Mainboard identities appears in nine cards sampled without replacement from the 99. Exclude the commander,
 assume no mulligan, search, extra draws or prior known cards, and distinguish this from exactly one. This supports only
-seeing an identity; it does not establish mana, fodder, casting or execution. The final calculator invocation/output and
-an executable example are owned by [#64](https://github.com/OSmall/tomekin/issues/64) after the calculator contract/tool
-lands; no executable API is supplied by this example.
+seeing an identity; it does not establish mana, fodder, casting or execution. Invoke the supported tool:
+
+```json
+{"operation":"probability","populationSize":99,"populationSuccesses":12,"sampleSize":9,"event":{"kind":"at_least","count":1}}
+```
+
+The probability is approximately 0.7036929 (70.37%). This meets an illustrative chosen 70% access target under these
+assumptions; that target is contextual, not universal. The executable workflow harness checks this independent
+uniform-subset result. Twelve qualified copies, not twelve role labels, define the modeled successes.
 
 **Later session:** read the current role criteria, the four-mass-disruption departure, conditional contributions,
 accepted swaps and retained options before tuning. Explain why the current configuration differs from the template.
@@ -139,7 +144,7 @@ These facts support the local contribution examples, not source-report certifica
 ## Return To The Lifecycle
 
 Resolve final names and explicitly run applicable deterministic checks through `tomekin-deck-building` before claiming
-a completed deck result. Recheck final Availability with the same confirmed Collection Location allow-list.
+a completed deck result. Obtain final joint Availability under the whole confirmed Collection Access Policy.
 Explain plan, Commander Bracket/play experience, qualified selected coverage, template departures, mana/curve,
-commander dependence, meaningful inclusions/exclusions, practical constraints and uncertainty. Use supported current
-persistence operations; the shared method does not introduce future edit tools or automatic validation on save.
+commander dependence, meaningful inclusions/exclusions, practical constraints and uncertainty. Save authorized incomplete construction through create/edit; explicitly check the actual accepted result and recover
+complete joint Availability and Pull List evidence through the root lifecycle.

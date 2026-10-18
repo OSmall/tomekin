@@ -1,0 +1,63 @@
+{
+  "kind": "integrated-workflows-v1",
+  "discovery": {
+    "persistedCandidates": 0,
+    "inspected": 5,
+    "qualifiedDirections": 1,
+    "rejectedTagOnlyHit": true,
+    "independentFunctionalSearch": true
+  },
+  "construction": {
+    "incompleteSelection": 0,
+    "resumedOptions": 6,
+    "implicitEvidence": "absent",
+    "selectedCopies": 60
+  },
+  "tuning": {
+    "selectedCopies": 60,
+    "sacrificeCopies": 7,
+    "cutOptionRetained": true,
+    "rejectedCompensationApplied": false
+  },
+  "assembly": {
+    "required": 60,
+    "owned": 60,
+    "eligible": 60,
+    "missing_owned": 0,
+    "policy_shortfall": 0,
+    "committed": 0,
+    "sufficient": true,
+    "metadata_uncertain": false,
+    "possession_scope": "recorded_collection_only",
+    "recoveredAllocatedCopies": 60,
+    "overlapShortage": 1,
+    "poolAlternativeExported": false
+  },
+  "adapters": {
+    "piWorker": true,
+    "piFallback": true,
+    "openCode": true
+  },
+  "statistics": {
+    "commander": 0.703692876224591,
+    "sixtyCard": 0.3994996257446656,
+    "minimumCopies": 7
+  },
+  "limits": "Synthetic rules and deterministic decisions; no live model, source coverage, actual gameplay, castability, win rate or human/account acceptance claim.",
+  "audit": {
+    "capabilitiesMatch": true,
+    "legacyDisabled": true,
+    "retiredNormalCapabilities": [],
+    "loadedCanonicalSkills": [
+      "query-cards",
+      "commander-deck-tuning",
+      "commander-deck-architecture",
+      "tomekin-deck-building",
+      "collection-opportunity-discovery",
+      "sixty-card-constructed-deck-tuning",
+      "sixty-card-constructed-deck-architecture",
+      "deck-shape-methodology"
+    ],
+    "limits": "Actual Pi constrained reads and OpenCode exports, permissions and canonical skill targets; no live native-model skill invocation or reasoning-quality claim."
+  }
+}

@@ -56,7 +56,7 @@ Use local Oracle text, Card Identity properties, direct and Inherited Card Ident
 to build coherent Deck Packages. Define task-specific Deck Roles such as early pressure, enabler, payoff, selection,
 true card advantage, interaction, protection, sweeper, recursion, ramp, and closer.
 
-- Prefer cards that overlap several package needs or reinforce multiple other cards.
+- Compare contextual contributions and competing uses; several role labels do not automatically improve an option.
 - Include enough enablers for payoffs and enough functional redundancy to execute the plan consistently.
 - Treat Card Identity Tags as evidence, not infallible or persisted Deck Roles.
 - Use EDHREC rank only for discovery or a weak tie-breaker, never as proof of deck-specific quality.
@@ -134,23 +134,30 @@ copies to their respective contextual roles. An assessed pool-only replacement s
 Sideboard copy, if requested, remains outside active Mainboard coverage; quantities across sections still obey
 applicable Format/copy rules. Explain why multiples help or compete rather than importing Commander singleton counts
 or its starting profile. For a supported access calculation, use the actual 60-card population, relevant qualifying
-selected copies and stated sample/event, excluding Sideboard cards from the initial Mainboard population. Access alone
-does not establish castability. Executable tool examples remain with [#64](https://github.com/OSmall/tomekin/issues/64).
+selected copies and stated sample/event, excluding Sideboard cards from the initial Mainboard population. Access alone does not establish castability. For four qualifying copies in 60, a seven-card uniform opening sample:
+
+```json
+{"operation":"probability","populationSize":60,"populationSuccesses":4,"sampleSize":7,"event":{"kind":"at_least","count":1}}
+```
+
+This returns approximately 0.3994996 (39.95%). Assume no mulligans, search, extra draws or known cards. A requested
+Sideboard copy is excluded. If a contextual 60% access target is chosen for that same sample, use:
+
+```json
+{"operation":"minimum_successes","populationSize":60,"sampleSize":7,"event":{"kind":"at_least","count":1},"targetProbability":"0.60"}
+```
+
+The minimum is seven qualifying Mainboard copies across compatible effects, subject to actual copy limits. This is
+access mathematics, not a recommendation to violate the four-copy default or proof of casting/sequencing.
 
 ## 7. Validate, Recheck Availability, And Hand Back
 
 Return the candidate to `tomekin-deck-building`:
 
-1. Resolve final names with `resolve_decklist_cards`.
-2. Run `validate_format_legality` with the confirmed Brief.
-3. When a non-empty Collection scope is active, requery every final card under the unchanged allow-list and compare
-   scoped quantities with required quantities before calling copies Available, Committed, or Missing. With an empty
-   Collection, treat every copy as Missing without inventing a Collection Pull List.
-4. Run `evaluate_deck_candidate` for aggregate legality, power/play-experience context, land count, and Mana Value
-   distribution; do not mistake it for a deck-quality verdict.
-5. Revise for at most three complete construction/review passes.
-6. Render canonical `Mainboard` and optional populated `Sideboard` sections.
-7. Save only after deterministic checks pass and assumptions, Collection status, and caveats are represented.
+Save authorized structurally sound construction as it progresses, including gaps and alternatives. Follow the root
+lifecycle to read the actual selection, explicitly check legality/evaluation, obtain complete joint Availability under
+the whole confirmed policy, then generate report, selected Portable Decklist and evidence-backed Pull List. Review
+strategy and Brief before a completed-result claim. Keep shortages and limitations visible.
 
 The final explanation states the plan, Power Level and pilot-complexity fit, important package/role densities, curve
 decision, land and colored-source reasoning, card-advantage evidence, weakest-card decisions, Collection trade-offs,

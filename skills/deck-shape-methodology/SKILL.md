@@ -111,14 +111,11 @@ from at-least events. There is no universal 70% threshold. Seeing a card does no
 sequencing, opponent cooperation or winning. Exclude the report's inconsistent Sidisi percentages and turn guarantee
 from operational evidence. Preserve the evaluator's factual land count and Mana Value summary alongside agent judgment.
 
-This foundation supplies tool-independent reasoning. Use only tools actually exposed by the active adapter; it adds no
-calculator API, candidate-edit API or automatic checks. The executable retrieval/edit/check/calculator examples and
-four-workflow acceptance remain with [the integration request #64](https://github.com/OSmall/tomekin/issues/64).
-Current lifecycle instructions govern available persistence; reasoning intended for focused records must not be
-represented as already persisted when those operations are unavailable. In the adopted targeted-edit workflow,
-authorized structural progress may save incomplete; checking is explicit and evidence reusable only while applicable.
-Before claiming a completed deck result, perform applicable deterministic checks plus strategic, Brief and Collection
-review. A strategic gap can be explained; applicable deterministic failure cannot be waived by prose.
+Use the root lifecycle's implemented create/edit, bounded read, explicit check and joint Availability tools. Authorized
+structural progress may save incomplete. Before claiming a completed result, perform applicable deterministic checks
+plus strategic, Brief and Collection review. A strategic gap can be explained; deterministic failures remain visible.
+Format-owned executable calculator examples are in the architecture skills; the reproducible four-workflow demonstration
+is documented in `docs/evaluation/workflows.md`. Static deterministic evidence does not establish live-agent reasoning.
 
 Use authorization covering the actual result and target, explain material changes, and obtain agreement when it is
 missing. A confirmed Brief alone does not authorize arbitrary swaps. Confirmation belongs to the lifecycle, without

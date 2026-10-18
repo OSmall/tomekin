@@ -90,7 +90,9 @@ Brief, current plan, assessed options/contributions and selected memberships in 
 Every retained option needs a reasoned role contribution; a desired role with zero selected contributors needs a gap
 assessment. Repeated copies use membership quantities. Cuts retain assessed options unless explicitly removed.
 
-Read `get_deck_candidate` for a compact summary or `view: "state"` for full current reasoning. Use `edit_deck_candidate`
+Read `get_deck_candidate` for a compact summary. Recover complete focused `brief`, `selected`, `options`, `pool`,
+`plan`, `assessments`, `json`, `availability` or `collection_pull_list` views with `first`/`after`. Repeat `id` and
+`view`, apply ordered path/value records, and concatenate report/decklist strings. A changed baseline requires restart. Use `edit_deck_candidate`
 with `candidate_id`, the exact last-read `expected_updated_at`, and typed `changes`. Quantities are absolute; omissions
 preserve stored values and optional fields can explicitly clear with `null`. Coordinate related additions/removals in one
 edit. The tools enforce record integrity without implicitly checking legality, evaluation or Availability.
@@ -104,16 +106,22 @@ inspection before another create. See [the public write contract](../../docs/pro
 
 ## Validate And Finish A Deck Candidate
 
-1. Resolve final names with batched `lookup_cards` name references and `select: {name: true}`. Check every ordered
-   outcome across pages and resolve any local miss before validation.
-2. Validate deterministic Format construction with `validate_format_legality`.
-3. When a non-empty Collection scope is active, requery all final card names with the unchanged allow-list. Compare
-   scoped `totalQuantity` with required quantities and classify Available, Committed, and Missing cards before
-   rendering. With an empty Collection, classify every copy as Missing without a Collection Pull List.
-4. Run `evaluate_deck_candidate` for legality, Format-appropriate power context, Mana Value distribution, Mainboard land
-   count, and Collection caveats. It is not a deterministic deck-quality verdict.
-5. Follow the active skill's static quality review and revise for at most three complete passes.
-6. Render Markdown and Portable Decklist with `render_deck_candidate`.
-7. Persist the authorized result through create/edit as needed and report the actual save result. Keep explicit check
-   findings and the remaining strategic/Brief/Collection review distinct from structural save success. A saved provisional
-   candidate is not a completed deck merely because its records are sound.
+1. Read the actual final selected identities, quantities and sections. Reuse known facts; batch only missing facts with
+   `lookup_cards`. Resolve local misses and material rules/legality discrepancies through explicit sync/recheck before
+   a successful final claim. Pool-only alternatives supply no selected demand or coverage.
+2. Explicitly call `validate_format_legality` and `evaluate_deck_candidate` using `candidate_id` and the exact
+   `expected_updated_at`. Initial `brief`/`cards` checks and optional `changes` are transient trials. Trial findings
+   apply only to that trial; inspect the saved result after acceptance and check the actual result.
+3. Run `check_collection_availability` with the saved candidate ID/timestamp and its whole confirmed Brief policy.
+   Optional typed `requirements` must cover every selected section/quantity and may only narrow copies. Recover all
+   witness pages. Per-card search summaries cannot replace this joint proof or prevent double allocation. Distinguish
+   Missing-owned, Policy Shortfall, metadata uncertainty and permitted Committed borrowing with its source deck.
+4. Review strategy, Brief, qualified selected coverage, curve, dependencies and practical constraints. Reuse check
+   evidence only while applicable; relevant selection/policy/reference/import changes require recomputation. A saved
+   or legal candidate is not automatically strategically adequate or assemblable. Report genuine gaps honestly.
+5. Generate `render_deck_candidate` with `candidate_id` and `output: "report"`, `"portable_decklist"` or
+   `"collection_pull_list"`; recover complete `first`/`after` records. The Portable Decklist contains selected cards
+   only. The Pull List consumes applicable explicit Availability evidence; it is neither a reservation nor a move.
+   The user chooses physical copies.
+6. Explain the actual saved result, applicable checks, remaining deficits, intentional compromises and search limits.
+   Save authorized progress with create/edit as work proceeds; writes, reads and outputs never imply checks or approval.
