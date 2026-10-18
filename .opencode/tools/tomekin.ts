@@ -139,7 +139,7 @@ export const evaluate_deck_candidate = tool({
 });
 
 export const render_deck_candidate = tool({
-    description: "Render stable Deck Candidate Markdown and a strict Format-aware Portable Decklist from resolved cards.",
+    description: agentToolContracts.render_deck_candidate.description,
   args: argsOf("render_deck_candidate"),
   async execute(args) {
     return runTool("render_deck_candidate", args, (handlers) => handlers.renderDeckCandidate(args));
@@ -162,7 +162,7 @@ export const edit_deck_candidate = tool({
 });
 
 export const get_deck_candidate = tool({
-  description: "Retrieve a saved Deck Candidate as structured data.",
+  description: agentToolContracts.get_deck_candidate.description,
   args: argsOf("get_deck_candidate"),
   async execute(args) {
     return runTool("get_deck_candidate", args, (handlers) => handlers.getDeckCandidate(args));
