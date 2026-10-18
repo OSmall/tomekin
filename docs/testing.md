@@ -209,8 +209,8 @@ Test deterministic prompt inputs, retrieved context, service outputs, and render
 
 LLM-produced recommendations are proposals until deterministic services validate card identity, Portable Decklist
 format, and Format legality and until Card Query provides scoped owned-copy evidence. The current evaluator explicitly
-does not compute final Availability; the agent applies the confirmed Collection Location allow-list to Card Query
-quantities and rows. Failed deterministic validation produces structured failures or revision requests.
+does not compute final Availability; the explicit `check_collection_availability` service jointly allocates the
+complete selected demand under the confirmed whole-Brief Collection policy. Failed deterministic validation produces structured failures or revision requests.
 
 60-card Constructed coverage remains deterministic: strict Brief and candidate schemas, the supported Format matrix,
 Mainboard and Sideboard shape, cross-section copy limits and exceptions, sanctioned legality and Casual 60, Vintage
@@ -333,3 +333,18 @@ Public real-SQLite tests cover no/empty/unconfirmed/legacy states, policy/source
 copy lists, indivisible oversize/deadline recovery, concurrent replacement and successful same-tick revision invalidation.
 Failed/unrelated imports and unrelated candidate edits preserve cursors. See the
 [Collection retrieval report](research/collection-query-evidence/2026-10-18-report.md) for measured costs and limits.
+
+## Final Collection Availability coverage
+
+Public shared-runtime/isolated-SQLite fixtures exercise cross-section quantities and exact Printing overlap, residual
+reassignment, policy exclusion/protection, minimal borrowing with source-deck provenance, nullable demand/policy
+metadata, strict recent intent, no/empty/unconfirmed Collection, safe huge capacities and unsafe-total rejection.
+An independent exhaustive assignment oracle covers all 512 three-row/three-demand compatibility graphs under 27
+uncommitted/Committed/excluded row assignments (13,824 cases), checking owned/eligible/uncommitted optima, deficit
+identities and witness capacity/compatibility. The test oracle enumerates tiny fixtures; production uses capacities.
+
+Interleaved public calls cover selected/publication races, matching pool maintenance, import invalidation, same-tick
+reference replacement regardless of UUID order, trial isolation and unchanged content timestamps. Bounded witness
+recovery, oversized intact records, expired baselines and incomplete deadlines/cancellation retain truthful completion
+state. Actual Pi Worker/fallback and OpenCode tests cover schemas, registry/permission, mutation settlement and intact
+structured findings/errors. Tests use only generated temporary databases and public/synthetic reference fixtures.

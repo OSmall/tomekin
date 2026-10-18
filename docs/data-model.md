@@ -23,8 +23,8 @@ currently require a persisted-model migration.
 - Card Query requests and results are transient. Queries do not create saved filters or cached product records.
 - Local lookup cursors encode original reference occurrences, source position and relevant successful import IDs.
   They contain no result objects and have no persisted search/cursor record. Failed imports do not replace bindings.
-- Saved Collection evidence is provenance, not current Availability. Tomekin does not persist an Availability decision,
-  Collection Pull List, candidate freshness state, or refresh result.
+- Latest final Collection Availability evidence belongs in candidate `check_evidence_json`, with dependency-based
+  applicability. Pull Lists derive from applicable evidence; there is no separate Availability, policy or trial store.
 
 Internal product records use UUIDv7 identifiers. Scryfall-backed records use stable source identifiers: Scryfall card
 IDs for Card Printings, Oracle IDs for Card Identities, Set IDs for Card Sets, and tag IDs for Card Identity Tags.
@@ -207,9 +207,11 @@ Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-
 unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
 columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
 
-`check_evidence_json` stores at most the latest `format_legality` and `deck_evaluation` records, each with complete
+`check_evidence_json` stores at most the latest `format_legality`, `deck_evaluation` and `collection_availability` records, each with complete
 findings, UTC check time and captured selected/Brief timestamps, relevant Brief fields, Oracle import/contract revision
-and validator versions. There is no check history or fingerprint. Read-time applicability compares check-specific
+and validator versions. Collection Availability also records the actual complete restricted demands, active Collection
+ID/time, effective whole-Brief policy, successful Oracle/Printing dependencies, complete allocated row witnesses and
+separate ownership diagnostics. No new selected Printing/copy persistence is introduced. There is no check history. Read-time applicability compares check-specific
 dependencies; publication repeats that comparison in an immediate transaction and updates only this evidence column.
 Trial changes and initial-input findings are never persisted. Import timestamps have second precision, so tied Oracle
 imports are resolved by committed insertion order rather than UUID ordering.

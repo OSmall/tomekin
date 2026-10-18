@@ -49,6 +49,15 @@ A separate immediate transaction publishes latest candidate-owned evidence only 
 reference/validator dependencies still match. Read-time applicability is a dependency comparison, never an implicit
 validator run. Evidence writes leave content timestamps unchanged; transient trials have no persistent identity.
 
+Final Collection Availability reuses that evidence lifecycle, whole-Brief policy resolution and the actual-row
+Collection repository/evaluator. Core computes capacitated bipartite min-cost maximum flow across every selected
+section, with lexicographic row costs for policy exclusion and permitted commitment. Residual reverse edges support
+broad/narrow demand reassignment; quantities never expand into physical-copy vertices. One final flow owns both
+Missing-owned and Policy Shortfall attribution. Bounded internal reads and final import checks protect a coherent
+baseline; publication repeats candidate/Collection/reference dependency checks transactionally. Complete witnesses
+and derived Pull Lists recover with existing path/value views and stateless baseline positions, without a separate
+Availability/trial/result store or Collection writeback.
+
 The hypergeometric service is pure and independent of repository ports/reference readiness. It sums exact BigInt
 combinatorial weights, uses exact decimal fractions and a monotone lower-bound search for minimum qualifying counts,
 and determines event status before approximate display conversion. With the 1,000 population limit, every numerator

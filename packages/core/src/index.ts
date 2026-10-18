@@ -32,3 +32,4 @@ export * from "./collection-policy";
 export * from "./collection-browse";
 
 export * from "./collection-retrieval";
+export * from "./collection-availability";

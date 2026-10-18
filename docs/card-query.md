@@ -560,3 +560,13 @@ The compiler currently carries logical Collection scopes through generated subqu
 and returned results, but complex allow-lists may still duplicate a logical scope and produce excessive SQL work. The
 semantics in this document remain fixed while [issue #40](https://github.com/OSmall/tomekin/issues/40) owns compiling
 each logical Collection scope once and proving linear query growth.
+
+
+## Final Collection Availability
+
+Retrieval and browsing describe individual matching quantities. `check_collection_availability` separately evaluates
+all selected candidate demands jointly under the whole Brief policy, including optional exact Printing/copy requirements
+that cover the complete selected set. Its complete bounded witnesses and candidate-owned evidence are described in
+[Product Behavior](./product-behavior.md#final-availability-and-collection-pull-lists). Neither ordinary retrieval rows
+nor pooled alternatives establish final assembly sufficiency. `collection_pull_list` rendering consumes only applicable
+saved evidence; it performs no implicit check or reservation.
