@@ -1,4 +1,4 @@
-import {collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies} from "./collection-retrieval";
+import {collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies, type CollectionRetrievalContext} from "./collection-retrieval";
 import {err, ok, type Result} from "neverthrow";
 import {requiredScryfallImportContractRevisions, type ScryfallBulkDataImport} from "./scryfall-sync";
 import {LookupCardsArgsSchema, compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, printingFacts, projectLocalCard, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type CardLookupRepository, type CardReference, type CardFact, type LookupOutcome, type RetrievalEnvelope, type RetrievalFailure, type RetrievalMetadata, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError, type RetrievalCursor, type RetrievalIssue} from "./card-retrieval";
@@ -21,10 +21,11 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
     const inputCount = parsed.success ? parsed.data.references.length : 0;
     let start = 0;
     let collection: CollectionRetrievalSession | undefined;
+    let collectionErrorContext: CollectionRetrievalContext | undefined;
     let provenance: RetrievalEnvelope<LookupOutcome>["provenance"];
     let edges: {node: LookupOutcome}[] = [];
     const metadata = (next = start + edges.length): RetrievalMetadata => ({requested_count: first, returned_count: edges.length, response_budget_bytes: budget, provider_total: null, scoped_total: null, lookup: {input_count: inputCount, start_index: start, next_index: next}});
-    const failure = (problem: RetrievalProblem, next = start + edges.length): RetrievalFailure<LookupOutcome> => ({status: "error", edges: [...edges], error: problem, metadata: metadata(next), ...(provenance ? {provenance} : {}), ...(collection ? {collection_context: collection.context} : {})});
+    const failure = (problem: RetrievalProblem, next = start + edges.length): RetrievalFailure<LookupOutcome> => ({status: "error", edges: [...edges], error: problem, metadata: metadata(next), ...(provenance ? {provenance} : {}), ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {})});
     const finish = (envelope: RetrievalEnvelope<LookupOutcome>) => {
         const serializationStarted = performance.now();
         let bytes = compactJsonBytes(envelope);
@@ -62,7 +63,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
         start = pos.next_index as number;
     }
     if (args.collection_scope?.match === "printing" && incompatible.length) return finish(failure({code: "invalid_request", reason: "incompatible_reference_kind", message: "Printing matching requires exact Printing references throughout the original lookup batch.", retryable: false}));
-    try {collection = await prepareCollectionRetrieval(args, options.collection, incoming?.revisions);} catch (e) {if (e instanceof CollectionRetrievalFailure) return finish(failure(e.problem)); throw e;}
+    try {collection = await prepareCollectionRetrieval(args, options.collection, incoming?.revisions);} catch (e) {if (e instanceof CollectionRetrievalFailure) {collectionErrorContext = e.context; return finish(failure(e.problem));} throw e;}
     const snapshot = await readSnapshot([], false);
     if (snapshot.isErr()) return finish(failure({code: "local_error", message: snapshot.error.message, retryable: false}));
     const imports = latestSuccessful(snapshot.value.imports);
@@ -71,6 +72,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
     const incompatibleImports = core.filter((dataset) => imports.has(dataset) && imports.get(dataset)!.importContractRevision !== requiredScryfallImportContractRevisions[dataset]);
     if (missing.length || incompatibleImports.length) return finish(failure({code: "reference_data_unready", message: "Local lookup requires compatible Oracle Cards and All Cards imports. Run bun run sync:scryfall.", retryable: false, missing_datasets: missing, reimport_required_datasets: incompatibleImports}));
     const revisions: Record<string, string | null> = {...incoming?.revisions};
+    if (!collection && ["collection", "collection_policy"].some(key => key in revisions)) return finish(failure({code: "invalid_cursor", reason: "malformed", message: "Unexpected Collection cursor dependencies.", retryable: false}));
     Object.assign(revisions, collection?.revisions);
     for (const [dataset, revision] of Object.entries(revisions).filter(([key]) => !["collection", "collection_policy"].includes(key))) {
         if (!["oracle_cards", "all_cards", "oracle_tags"].includes(dataset)) return finish(failure({code: "invalid_cursor", message: "Unknown cursor dependency.", reason: "malformed", retryable: false}));
@@ -84,7 +86,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
     const used = Object.keys(revisions).flatMap((dataset) => imports.get(dataset) ? [imports.get(dataset)!] : []);
     if (args.include_provenance) provenance = {reference_imports: used.map((item) => ({dataset: item.bulkDataType, import_id: item.id, completed_at: item.completedAt?.toISOString() ?? null, source_updated_at: item.sourceUpdatedAt?.toISOString() ?? null}))};
     const cursor = (next: number) => encodeRetrievalCursor({version: 1, tool: "lookup_cards", source: "local_reference", bindings, revisions, position: {next_index: next}});
-    const page = (stop: RetrievalSuccess<LookupOutcome>["stop_reason"]): RetrievalSuccess<LookupOutcome> => ({status: "ok", edges: [...edges], pageInfo: {startCursor: edges.length ? cursor(start + 1) : null, endCursor: edges.length ? cursor(start + edges.length) : null, hasNextPage: start + edges.length < inputCount, hasPreviousPage: start > 0}, stop_reason: stop, metadata: metadata(), ...(provenance ? {provenance} : {}), ...(collection ? {collection_context: collection.context} : {})});
+    const page = (stop: RetrievalSuccess<LookupOutcome>["stop_reason"]): RetrievalSuccess<LookupOutcome> => ({status: "ok", edges: [...edges], pageInfo: {startCursor: edges.length ? cursor(start + 1) : null, endCursor: edges.length ? cursor(start + edges.length) : null, hasNextPage: start + edges.length < inputCount, hasPreviousPage: start > 0}, stop_reason: stop, metadata: metadata(), ...(provenance ? {provenance} : {}), ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {})});
     const recover = (problem: RetrievalProblem) => {
         let envelope = failure({...problem, cursor: cursor(start + edges.length)});
         while (compactJsonBytes(envelope) > budget && edges.length) { edges.pop(); envelope = failure({...problem, cursor: cursor(start + edges.length)}); }
@@ -125,6 +127,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
             if (current.isErr()) throw new CollectionRetrievalFailure({code: "local_error", message: current.error.message, retryable: false});
             const imports = latestSuccessful(current.value.imports);
             if (Object.entries(revisions).filter(([key]) => !["collection", "collection_policy"].includes(key)).some(([key, value]) => (imports.get(key)?.id ?? null) !== value)) throw new CollectionRetrievalFailure({code: "stale_cursor", reason: "reference_import_changed", message: "A bound reference import changed during lookup.", retryable: false, recovery: "restart"});
+            if (collection && response.status === "ok") {try {check();} catch (e) {if (!(e instanceof CollectionRetrievalFailure)) throw e; return finish(recover(e.problem));}}
             return finish(response);
         } catch (e) {if (!(e instanceof CollectionRetrievalFailure)) throw e; edges = []; return finish(failure(e.problem));}
     };

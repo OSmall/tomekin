@@ -1,4 +1,4 @@
-import {collectionRetrievalShape, collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies} from "./collection-retrieval";
+import {collectionRetrievalShape, collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies, type CollectionRetrievalContext} from "./collection-retrieval";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {
@@ -166,6 +166,7 @@ export async function searchCards(
         projectionMs = 0,
         localMs = 0;
     let collection: CollectionRetrievalSession | undefined;
+    let collectionErrorContext: CollectionRetrievalContext | undefined;
     let revisions: Record<string, string | null> = {},
         provenance: RetrievalEnvelope<CardResult>["provenance"];
     let safe: Position = {
@@ -201,7 +202,7 @@ export async function searchCards(
         error,
         metadata: metadata(),
         ...(provenance ? {provenance} : {}),
-        ...(collection ? {collection_context: collection.context} : {}),
+        ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {}),
     });
     const minimumPositionBytes = (pos: Position) =>
         compactJsonBytes({
@@ -255,7 +256,7 @@ export async function searchCards(
         stop_reason: reason,
         metadata: metadata(),
         ...(provenance ? {provenance} : {}),
-        ...(collection ? {collection_context: collection.context} : {}),
+        ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {}),
     });
     const recover = (
         problem: RetrievalProblem,
@@ -416,9 +417,10 @@ export async function searchCards(
     }
     try {
         collection = await prepareCollectionRetrieval(args, options.collection, args.after ? revisions : undefined);
+        if (!collection && ["collection", "collection_policy"].some(key => key in revisions)) return finish(failure({code: "invalid_cursor", reason: "malformed", message: "Unexpected Collection cursor dependencies.", retryable: false}));
         Object.assign(revisions, collection?.revisions);
     } catch (e) {
-        if (e instanceof CollectionRetrievalFailure) return finish(failure(e.problem));
+        if (e instanceof CollectionRetrievalFailure) {collectionErrorContext = e.context; return finish(failure(e.problem));}
         throw e;
     }
     const localSnapshot = async (ids: string[]) => {
@@ -660,6 +662,7 @@ export async function searchCards(
                 const prior = {...safe};
                 const projectionStart = now();
                 const node = projectProviderCard(raw, args.select);
+                if (collection?.context.match === "printing") node.card.printing_id = raw.id as string;
                 projectionMs += now() - projectionStart;
                 check();
                 if (args.select.tags && !tagUnavailable) {

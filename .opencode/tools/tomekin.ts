@@ -1,5 +1,5 @@
 import {tool} from "@opencode-ai/plugin";
-import {TagCatalogueOperationSchema, type BrowseTagsArgs, CollectionCopySelectionSchema, type CollectionCopySelection, CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {CollectionEvidenceInputSchema, type CollectionRetrievalArgs, TagCatalogueOperationSchema, type BrowseTagsArgs, CollectionCopySelectionSchema, type CollectionCopySelection, CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createCanonicalOpenCodeInputSchema, createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
@@ -9,6 +9,12 @@ const lookupSelection = createCanonicalOpenCodeInputSchema(
     CardSelectionSchema,
     (agentToolInputJsonSchema("lookup_cards").properties as Record<string, unknown>).select,
     (validate) => tool.schema.custom<CardSelection>(validate),
+);
+
+const collectionEvidence = createCanonicalOpenCodeInputSchema(
+    CollectionEvidenceInputSchema.optional(),
+    (agentToolInputJsonSchema("lookup_cards").properties as Record<string, unknown>).collection_evidence,
+    (validate) => tool.schema.custom<CollectionRetrievalArgs["collection_evidence"]>(validate),
 );
 
 const collectionSelection = createCanonicalOpenCodeInputSchema(
@@ -189,7 +195,7 @@ export const hypergeometric_calculator = tool({
 
 export const lookup_cards = tool({
     description: agentToolContracts.lookup_cards.description,
-    args: {...argsOf("lookup_cards"), select: lookupSelection},
+    args: {...argsOf("lookup_cards"), select: lookupSelection, collection_evidence: collectionEvidence},
     async execute(args, context?: {abort: AbortSignal}) {
         return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args, context?.abort));
     },
@@ -197,7 +203,7 @@ export const lookup_cards = tool({
 
 export const search_cards = tool({
  description: agentToolContracts.search_cards.description,
- args: {...argsOf("search_cards"), select: lookupSelection},
+ args: {...argsOf("search_cards"), select: lookupSelection, collection_evidence: collectionEvidence},
  async execute(args, context?: {abort: AbortSignal}) {return runTool("search_cards",args,handlers=>handlers.searchCards(args, context?.abort));},
 });
 
