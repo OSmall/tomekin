@@ -33,3 +33,7 @@ quality, source completeness, opportunity recall, authorization dialogue, gamepl
 Pi parity. Review those separately with the [manual corpus](../testing/deck-building-workflow-scenarios.md). No LLM judge,
 golden deck, strategic score, provider/model CI call or account acceptance claim is introduced. Timing comparisons remain
 with `evaluate:performance`; this correctness artifact supplies no latency claim.
+
+For separately consented matched live sessions, use the [real-session parity protocol](real-session-parity.md) and
+[result template](real-session-parity-results-template.md). Fixture preparation and deterministic integration evidence
+do not establish model/account acceptance.

@@ -349,3 +349,11 @@ reference replacement regardless of UUID order, trial isolation and unchanged co
 recovery, oversized intact records, expired baselines and incomplete deadlines/cancellation retain truthful completion
 state. Actual Pi Worker/fallback and OpenCode tests cover schemas, registry/permission, mutation settlement and intact
 structured findings/errors. Tests use only generated temporary databases and public/synthetic reference fixtures.
+
+## Real-session parity
+
+The [matched Pi/OpenCode protocol](evaluation/real-session-parity.md) owns the separate account-holder-consented live
+gate and sanitized result format for #26. `bun run evaluate:parity:prepare` creates paired fresh temporary databases
+from committed public reference files and synthetic owned rows; it performs no live network/model/profile operation.
+Its focused test uses the approved shared-handler/isolated-SQLite seam. The small fixture supports provisional and
+shortage behavior, not a completed legal deck; positive manual corpus inputs and human review remain separate gates.

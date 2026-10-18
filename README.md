@@ -77,7 +77,9 @@ explicit decimal target. It works without imported card data and does not save r
 
 The separate account-holder-consented manual acceptance check covers authentication, one harmless request, a successful
 and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout, and clean shutdown without exposing
-tokens. OpenCode remains supported. The profile and database remain intact after each run.
+tokens. OpenCode remains supported. The profile and database remain intact after each run. Follow the [matched real-session parity protocol](docs/evaluation/real-session-parity.md)
+for controlled inputs, exact new-path gates and sanitized results; `bun run evaluate:parity:prepare` prepares isolated
+public-reference/synthetic-owned fixtures without running a model or accessing an account.
 
 For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
 `tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `search_cards` call after
