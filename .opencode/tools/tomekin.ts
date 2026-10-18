@@ -1,5 +1,5 @@
 import {tool} from "@opencode-ai/plugin";
-import {agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {cardFactDescriptions, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
@@ -40,8 +40,8 @@ async function runTool<T>(toolName: string, args: unknown, fn: (handlers: Return
     const result = await fn(local.handlers);
     const output = resultToOpencodeOutput(result as Parameters<typeof resultToOpencodeOutput>[0]);
     const resultLike = result as {isOk?: () => boolean; isErr?: () => boolean};
-    logger.info({operation: "agent_tool_call", status: resultLike.isErr?.() ? "failed" : "succeeded", durationMs: elapsedMs(startedAtMs), outputBytes: output.length}, "Agent tool call finished");
-    logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
+    logger.info({operation: "agent_tool_call", status: resultLike.isErr?.() ? "failed" : "succeeded", durationMs: elapsedMs(startedAtMs), outputBytes: Buffer.byteLength(output, "utf8")}, "Agent tool call finished");
+    if (toolName !== "lookup_cards") logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
     return output;
   } catch (error) {
     logger.error({operation: "agent_tool_call", status: "threw", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Agent tool call threw");
@@ -74,14 +74,6 @@ export const query_cards = tool({
   },
 });
 
-export const get_card_identity = tool({
-    description: "Get one local Card Identity with parts, Format legality rows, tags, EDHREC rank, Game Changer flag, and source URI.",
-  args: argsOf("get_card_identity"),
-  async execute(args) {
-    return runTool("get_card_identity", args, (handlers) => handlers.getCardIdentity(args));
-  },
-});
-
 export const search_card_identity_tags = tool({
   description: "Search local Scryfall Oracle Tags by slug, label, or alias.",
   args: argsOf("search_card_identity_tags"),
@@ -98,27 +90,11 @@ export const search_card_sets = tool({
   },
 });
 
-export const summarize_reference_support = tool({
-  description: "Report local Scryfall reference-data readiness for oracle_cards, all_cards, and oracle_tags.",
-  args: argsOf("summarize_reference_support"),
-  async execute() {
-    return runTool("summarize_reference_support", {}, (handlers) => handlers.summarizeReferenceSupport());
-  },
-});
-
 export const get_format_constraints = tool({
     description: "Return deterministic construction constraints and supported local validation mechanics for a Deck Format.",
     args: argsOf("get_format_constraints"),
   async execute(args) {
     return runTool("get_format_constraints", args, (handlers) => handlers.getFormatConstraints(args));
-  },
-});
-
-export const resolve_decklist_cards = tool({
-  description: "Resolve proposed card names to exact local Card Identity records before validation or persistence.",
-  args: argsOf("resolve_decklist_cards"),
-  async execute(args) {
-    return runTool("resolve_decklist_cards", args, (handlers) => handlers.resolveDecklistCards(args));
   },
 });
 
@@ -190,5 +166,17 @@ export const hypergeometric_calculator = tool({
     args: argsOf("hypergeometric_calculator"),
     async execute(args) {
         return runTool("hypergeometric_calculator", args, (handlers) => handlers.hypergeometricCalculator(args));
+    },
+});
+
+export const lookup_cards = tool({
+    description: agentToolContracts.lookup_cards.description,
+    // OpenCode bundles Zod 4.1 while Core uses 4.4: metadata registries differ.
+    // Build this annotated selector with the actual host schema instance, from Core's one fact list.
+    args: {...argsOf("lookup_cards"), select: tool.schema.strictObject(Object.fromEntries(
+        Object.entries(cardFactDescriptions).map(([field, description]) => [field, tool.schema.literal(true).describe(description).optional()]),
+    )).refine((value) => Object.keys(value).length > 0, "Select at least one fact.").meta({minProperties: 1})},
+    async execute(args) {
+        return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args));
     },
 });

@@ -86,7 +86,7 @@ describe("opencode tool schemas", () => {
             createHandlers: (options) => createLocalAgentToolHandlers({...options, databasePath: dbPath}),
         });
         try {
-            await tomekinTools.summarize_reference_support.execute({});
+            await tomekinTools.get_format_constraints.execute({format: "commander"});
         } finally {
             restoreRuntime();
         }
@@ -94,13 +94,13 @@ describe("opencode tool schemas", () => {
         const records = readFileSync(logPath, "utf8").trim().split("\n").map((line) => JSON.parse(line));
         expect(records).toContainEqual(expect.objectContaining({
             component: "agent_tool",
-            toolName: "summarize_reference_support",
+            toolName: "get_format_constraints",
             operation: "agent_tool_call",
             status: "started",
         }));
         expect(records).toContainEqual(expect.objectContaining({
             component: "agent_tool",
-            toolName: "summarize_reference_support",
+            toolName: "get_format_constraints",
             operation: "agent_tool_call",
             status: "succeeded",
         }));

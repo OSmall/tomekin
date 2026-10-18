@@ -55,3 +55,14 @@ and deletes the temporary checkout. It never changes the current checkout. The i
 contain the pinned lockfile packages (a normal install at the pinned revision populates it). This deliberately separate
 CLI is the legacy comparator, not a normal Agent Tool. Compare its artifact with a migrated runner using matched runtime,
 fixture hashes, budgets and required facts; report both coverage and byte/latency differences.
+
+## Local lookup slice
+
+`bun run evaluate:lookup` runs the new local lookup path against the same four synthetic source fixtures. It measures
+three-outcome ordinary pages through exhaustion, complete 1,300-character source Oracle text, a follow-up requesting
+only new tag facts, compact application JSON, actual Pi Worker/fallback and OpenCode serialization. Every adapter
+must retain the exact complete envelope and every expected input occurrence. Token values remain explicit estimates.
+Cold, unmeasured warm-up and five warm observations retain the same timing protocol. `local-lookup-v1.json` records
+this slice. Its synthetic names/facts are matched measurement inputs, not legal decks or live strategic evidence.
+Provider discovery, Collection-policy evidence, candidate editing and final whole-deck Availability remain unmeasured
+by this lookup-only artifact. The frozen pre-migration artifact and `evaluate:legacy` source remain unchanged.

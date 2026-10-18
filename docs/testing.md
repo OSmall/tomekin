@@ -62,6 +62,19 @@ be represented as JSON Schema, because OpenCode performs that conversion during 
 and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is
 added.
 
+## Lookup Done Bar
+
+The primary seam is shared Agent Tool handlers composed with isolated on-disk SQLite and tiny public real-card
+fixtures imported through the existing import repository. It covers exact Oracle/name/Printing resolution, ordered
+misses/duplicates, closed selectors, original-batch incompatibility, core/optional readiness, null/empty distinctions,
+complete faces/tags/Printing facts, first/after including zero, relevant successful import invalidation (including same
+stored-second imports), whole escaped UTF-8 limits, oversized records/cursors and cancellation/deadline recovery.
+Synthetic tag annotations stress transport limits without publishing private session or Collection data.
+
+Thin actual OpenCode and Pi Worker/fallback tests inspect the serialized closed selector schema, complete >16k
+model-visible output, structured validation errors and Worker cancellation/replacement. Complete lookup envelopes bypass
+the old preview projectors. These tests establish card-only facts; Collection-policy evidence remains later work.
+
 ## Calculator Done Bar
 
 The pure numerical seam is an explicit exception to the broader shared-handler seam: independent subset enumeration

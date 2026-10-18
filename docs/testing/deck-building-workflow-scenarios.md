@@ -243,3 +243,11 @@ docs/testing/deck-building-workflow-scenarios.md. Identify which failures come f
 tool Interfaces, context truncation, missing Collection evidence, or model behaviour. Report evidence and recommend the
 smallest next improvement before editing.
 ```
+
+## Batched known-card recovery
+
+In both harnesses request Sol Ring, Bala Ged Recovery // Bala Ged Sanctuary, an exact known Printing, a duplicate and
+a deliberate local miss with explicit `name`/`oracle_text` selection and a small `first`. Confirm complete face text,
+ordered outcomes and recovery by repeating the original references with `after`; request additional tags on the next
+page. Confirm missing tag data is unavailable, a successful bound import replacement requires restart, and cancellation
+reuses only delivered progress. Lookup alone establishes neither Collection permission nor final Availability.

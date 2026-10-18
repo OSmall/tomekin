@@ -1,4 +1,4 @@
-import { agentToolMutates } from "@tomekin/core";
+import { agentToolMutates, retrievalCancellationEnvelope, serializeAgentToolDetails } from "@tomekin/core";
 export type PiToolOutput = {
     readonly content: readonly {
         readonly type: "text";
@@ -32,7 +32,7 @@ export class PiWorkerTransport {
     invoke(request: WorkerRequest, signal: AbortSignal): Promise<PiToolOutput> {
         if (signal.aborted)
             return Promise.resolve(
-                cancelledOutput("Cancelled before dispatch."),
+                cancelledOutput("Cancelled before dispatch.", request),
             );
         if (this.closing)
             return Promise.resolve(
@@ -66,7 +66,7 @@ export class PiWorkerTransport {
                 void this.terminateWorker();
                 finish(
                     cancelledOutput(
-                        "Cancelled while the approved tool was running.",
+                        "Cancelled while the approved tool was running. Reuse the last received cursor or original request.", request,
                     ),
                 );
             };
@@ -153,13 +153,13 @@ function unknownOrFailure(pending: PendingInvocation) {
 function projectOutput(details: unknown): PiToolOutput {
     return {
         content: [
-            { type: "text", text: JSON.stringify(details, null, 2) ?? "null" },
+            { type: "text", text: serializeAgentToolDetails(details) },
         ],
         details,
     };
 }
-function cancelledOutput(message: string) {
-    return projectOutput({ error: "cancelled", message });
+function cancelledOutput(message: string, request?: WorkerRequest) {
+    return projectOutput(request?.toolName === "lookup_cards" ? retrievalCancellationEnvelope(request.params, message) : { error: "cancelled", message });
 }
 function failureOutput(error: string, message: string) {
     return projectOutput({ error, message });

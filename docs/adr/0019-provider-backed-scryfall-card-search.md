@@ -1,8 +1,9 @@
 # Provider-backed Scryfall Card Search
 
-Status: Accepted design; not implemented. Refines the decision recorded in
+Status: Accepted; local known-card lookup implemented. Provider discovery and Collection evidence remain pending.
+Refines the decision recorded in
 [Choose the agent-facing Card Query authoring contract](https://github.com/OSmall/tomekin/issues/72).
-The existing CQL2 implementation remains the current behaviour until migration.
+The existing CQL2 implementation remains the current discovery behaviour until provider migration.
 
 Tomekin will accept Scryfall search syntax through a boot-injected Card Search provider so agents can use an established
 language without Tomekin maintaining another search parser. Live Scryfall is the initial provider. One provider is
@@ -25,29 +26,22 @@ fetches provider pages and filters them locally until the requested result count
 a scan budget is reached. It does not send Collection identifiers to Scryfall. In-memory identifier sets suffice
 initially; bitmap filtering is a possible later optimisation.
 
-The initial live provider follows Scryfall's numbered pages and next-page URLs without claiming a frozen search
-snapshot.
-Tomekin continuation retains upstream position and buffered matches, but upstream changes between page requests may
-still repeat or omit records. `can_continue` means more search work is available, not that another owned match is
-already
-known to exist. Result metadata distinguishes a filled page, an exhausted source, and a scan stopped by its budget.
+The adopted pagination refinement from [issue #29](https://github.com/OSmall/tomekin/issues/29#issuecomment-6230187644)
+uses ordinary `first`/`after` requests, complete `edges[].node` outcomes, page-level cursors and explicit success/error
+envelopes. Lookup now implements stateless next-input-occurrence positions, preserving duplicates and misses. Future
+live source positions retain provider page/next-page identity and raw provider-ID anchors for refetch; they store no
+result objects or cross-call buffers. Missing/ambiguous anchors must fail explicitly. Live traversal does not establish
+a frozen snapshot. `hasNextPage` means a further qualifying result exists; insufficient lookahead is a recoverable
+failure rather than a guessed successful page. Provider totals remain distinct from unknown scoped totals.
 
-If a scan stops after useful progress, the tool returns the collected matches, a continuation when further work remains,
-and an explicit stop reason. Rate limiting also reports retry guidance. Partial progress is not discarded as an ordinary
-failure. A successfully exhausted search with no matches is a normal empty result; invalid requests and failures before
-progress are distinct errors. Public examples and the eventual tool contract use consistent snake_case field names,
-including `collection_evidence`, rather than mixing casing styles with Scryfall parameters.
-
-The initial scan time budget is approximately ten seconds per call, including rate-limit scheduling delays; measurements
-may justify adjusting it. Provider result totals are labelled separately from Collection totals. Tomekin does not report
-an exact Collection total before exhaustive filtering and need not perform extra scans merely to calculate one.
-Returned page counts are explicit, and an unknown Collection total is represented as unknown rather than zero.
-
-Agent-visible responses use a configurable size budget chosen through representative measurements. A response stops
-before the next complete record would exceed its budget and exposes a continuation; it does not cut serialized JSON,
-rules text, or face data into previews. A single record that exceeds the budget produces actionable guidance to narrow
-the requested fields or Collection evidence. The current adapter's 16,000-character preview limit is a temporary
-implementation detail, not the adopted contract.
+The default whole compact JSON response budget is 51,200 UTF-8 bytes and scan deadline is 120 seconds including
+scheduling/local work. `first` accepts 0–200, default 50 for lookup and 175 for future search. Selected card text,
+faces, tags and evidence are indivisible. Exact escaped envelope sizing includes cursors, provenance and error metadata;
+error fitting rolls back to a coherent position before removed outcomes. Oversized complete outcomes fail with
+`record_too_large`, measured required/limit bytes and safe recovery, without prescribing a selection/query change.
+Self-contained cursor sizing is preflighted before execution. Failure envelopes have complete partial edges and one
+optional recovery cursor, with no normal pageInfo. No preview, spill-file recovery, saved cursor store or fixed expiry
+is adopted. Pi Worker/fallback now preserve complete lookup envelopes; unmigrated tools retain their temporary cap.
 
 The intended agent workflow is staged retrieval: request only facts needed to compare the current candidates, then
 look up additional facts for a shortlist in groups. Card details already returned can be reused in that comparison.
@@ -55,13 +49,13 @@ The objective is low total agent-context use, including avoidable follow-up call
 response. Fields that the current decision depends on should be requested together; no universal field bundle or
 fixed per-card sequence is prescribed. Return of per-card tags remains a separate requirement from tag-term discovery.
 
-Confirmed Collection scopes and saved search continuations are tied to the successful Collection import that established
+Confirmed Collection scopes and stateless search continuations are tied to the successful Collection import that established
 them. After reimport, old location UUIDs and continuations are rejected with actionable guidance to list locations again
 and refresh Collection evidence. The import record identifies the snapshot and its timestamp provides human-readable
 provenance. This also applies when an earlier agent session resumes; it does not require historical Collection storage.
 
-Saved search continuations also identify successful local reference imports on which they depend. A replacement of
-those imports invalidates the continuation and produces guidance to restart the search; buffered results must not
+Stateless search continuations also identify successful local reference imports on which they depend. A replacement of
+those imports invalidates the continuation and produces guidance to restart the search; results must not
 silently mix local reference revisions. Existing import-attempt identifiers provide the revision evidence without
 historical card storage. This does not freeze the provider's upstream search snapshot.
 
@@ -97,7 +91,8 @@ align. One deliberate terminology exception is `mana_value`: provider `cmc` and 
 public field. Do not expose a second `cmc` response alias. `oracle_id` and `oracle_text` retain their familiar names.
 Public field naming is a deliberate interface decision open to user review, not an automatic mirror of every upstream
 property. Record the approved source-to-response mapping explicitly as the supported field list is finalised.
-Both search and lookup require an explicit nonempty `fields` selection; omission is a request-validation error and
+Both search and lookup require an explicit nonempty closed typed `select` object; each named property is literal true.
+Omission is a request-validation error and
 does not trigger a default card-field bundle. Identifier-only retrieval is supported. Agent guidance encourages reuse
 of returned facts and selection of only the additional facts needed for the current task.
 Every card result includes `oracle_id`; exact-Printing results also include `printing_id`, regardless of requested
