@@ -21,7 +21,8 @@
     "evaluate:lookup": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/lookup.ts",
     "evaluate:search": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/search.ts",
     "evaluate:collection-query": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/collection-query.ts",
-    "evaluate:workflows": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/workflows.ts"
+    "evaluate:workflows": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/workflows.ts",
+    "evaluate:performance": "TOMEKIN_LOG_ENABLED=false bun packages/evaluation/src/performance.ts"
   },
   "devDependencies": {
     "@opencode-ai/plugin": "1.18.13",
