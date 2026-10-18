@@ -923,7 +923,7 @@ export function projectProviderCard(
                 : field === "legalities"
                   ? typeof value === "object" &&
                     !Array.isArray(value) &&
-                    Object.values(value).every(
+                    Object.values(value!).every(
                         (item) => typeof item === "string",
                     )
                   : typeof value === "string";
