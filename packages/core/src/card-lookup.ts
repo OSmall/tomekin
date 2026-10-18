@@ -56,7 +56,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return finish(failure(decoded.problem));
         incoming = decoded.cursor!;
-        const reason = incoming.tool !== "lookup_cards" ? "tool_mismatch" : incoming.source !== "local_reference" ? "source_mismatch" : JSON.stringify(incoming.bindings) !== JSON.stringify(bindings) ? "query_mismatch" : null;
+        const reason = incoming.tool !== "lookup_cards" ? "tool_mismatch" : incoming.source !== "local_reference" ? "source_mismatch" : JSON.stringify(incoming.bindings) !== JSON.stringify(bindings) ? JSON.stringify(collectionRequestBindings((incoming.bindings ?? {}) as typeof args)) !== JSON.stringify(collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch" : null;
         if (reason) return finish(failure({code: "invalid_cursor", message: "Cursor does not match this lookup request.", reason, retryable: false}));
         const pos = incoming.position as {next_index?: unknown} | null;
         if (!pos || Object.keys(pos).length !== 1 || !Number.isInteger(pos.next_index) || (pos.next_index as number) < 0 || (pos.next_index as number) > inputCount) return finish(failure({code: "invalid_cursor", message: "Malformed lookup position.", reason: "malformed", retryable: false}));
@@ -84,7 +84,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
     const tagsImport = imports.get("oracle_tags");
     const tagUnavailable = !tagsImport ? "dataset_not_imported" : tagsImport.importContractRevision !== requiredScryfallImportContractRevisions.oracle_tags ? "dataset_incompatible" : undefined;
     const used = Object.keys(revisions).flatMap((dataset) => imports.get(dataset) ? [imports.get(dataset)!] : []);
-    if (args.include_provenance) provenance = {reference_imports: used.map((item) => ({dataset: item.bulkDataType, import_id: item.id, completed_at: item.completedAt?.toISOString() ?? null, source_updated_at: item.sourceUpdatedAt?.toISOString() ?? null}))};
+    if (args.include_provenance) provenance = {...collection?.provenance, reference_imports: used.map((item) => ({dataset: item.bulkDataType, import_id: item.id, completed_at: item.completedAt?.toISOString() ?? null, source_updated_at: item.sourceUpdatedAt?.toISOString() ?? null}))};
     const cursor = (next: number) => encodeRetrievalCursor({version: 1, tool: "lookup_cards", source: "local_reference", bindings, revisions, position: {next_index: next}});
     const page = (stop: RetrievalSuccess<LookupOutcome>["stop_reason"]): RetrievalSuccess<LookupOutcome> => ({status: "ok", edges: [...edges], pageInfo: {startCursor: edges.length ? cursor(start + 1) : null, endCursor: edges.length ? cursor(start + edges.length) : null, hasNextPage: start + edges.length < inputCount, hasPreviousPage: start > 0}, stop_reason: stop, metadata: metadata(), ...(provenance ? {provenance} : {}), ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {})});
     const recover = (problem: RetrievalProblem) => {
@@ -172,7 +172,7 @@ function latestSuccessful(imports: readonly ScryfallBulkDataImport[]) {
     const latest = new Map<string, ScryfallBulkDataImport>();
     for (const item of imports) if (item.status === "succeeded") {
         const previous = latest.get(item.bulkDataType);
-        if (!previous || (item.completedAt ?? item.startedAt).getTime() > (previous.completedAt ?? previous.startedAt).getTime() || ((item.completedAt ?? item.startedAt).getTime() === (previous.completedAt ?? previous.startedAt).getTime() && item.id > previous.id)) latest.set(item.bulkDataType, item);
+        if (!previous || (item.completedAt ?? item.startedAt).getTime() > (previous.completedAt ?? previous.startedAt).getTime()) latest.set(item.bulkDataType, item);
     }
     return latest;
 }

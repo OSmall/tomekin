@@ -31,7 +31,8 @@ occurrence, including duplicates and explicit local misses. Select complete fact
 present and exact Printing references also retain Printing identity. Selected multipart Oracle text includes all existing
 ordered face text. Complete direct/inherited tags are optional local enrichment. Compatible Oracle Cards and All Cards
 imports are required; missing optional tags are unavailable rather than false empty associations. Lookup does not fetch
-from a provider or establish ownership/Availability. Its [contract](./card-query.md#known-card-lookup) specifies selectors,
+from a provider. Explicit Collection summaries/copies establish recorded compatible ownership and policy eligibility
+through complete same-row evaluation; final whole-deck Availability remains a separate check. Its [contract](./card-query.md#known-card-lookup) specifies selectors,
 whole-envelope byte limits, positional cursors, readiness, invalidation and complete error recovery.
 
 The default adapters consolidate `get_card_identity` and `resolve_decklist_cards` into this tool and remove the normal

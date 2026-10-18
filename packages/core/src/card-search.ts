@@ -215,6 +215,7 @@ export async function searchCards(
                 cursor: token(pos),
             },
             metadata: {...metadata(), returned_count: 0},
+            ...(collection ? {collection_context: collection.context} : {}),
             ...(parsed.success && parsed.data.include_provenance
                 ? {
                       provenance: {
@@ -282,12 +283,14 @@ export async function searchCards(
         return response;
     };
     const finish = (response: RetrievalEnvelope<CardResult>) => {
-        const serialization = now(),
+        const serialization = now();
+        let bytes = compactJsonBytes(response);
+        if (bytes > budget) {
+            if (response.edges.length || (response.status === "error" && response.error.cursor)) throw new Error("Cannot carry a coherent search recovery envelope.");
+            response = {status: "error", edges: [], error: {code: "response_budget_too_small", message: "Mandatory response context exceeds the response budget.", retryable: false, limit_bytes: budget}, metadata: {...metadata(), returned_count: 0}};
             bytes = compactJsonBytes(response);
-        if (bytes > budget)
-            throw new Error(
-                "Adapter capacity cannot carry a minimal structured search error.",
-            );
+            if (bytes > budget) throw new Error("Adapter capacity cannot carry a minimal structured search error.");
+        }
         log?.info(
             {
                 operation: "search_cards",
@@ -375,7 +378,7 @@ export async function searchCards(
                     : c.source !== options.provider.id
                       ? "provider_mismatch"
                       : JSON.stringify(c.bindings) !== JSON.stringify(bindings)
-                        ? "query_mismatch"
+                        ? JSON.stringify(collectionRequestBindings((c.bindings ?? {}) as typeof args)) !== JSON.stringify(collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch"
                         : null;
         if (reason)
             return finish(
@@ -419,6 +422,7 @@ export async function searchCards(
         collection = await prepareCollectionRetrieval(args, options.collection, args.after ? revisions : undefined);
         if (!collection && ["collection", "collection_policy"].some(key => key in revisions)) return finish(failure({code: "invalid_cursor", reason: "malformed", message: "Unexpected Collection cursor dependencies.", retryable: false}));
         Object.assign(revisions, collection?.revisions);
+        if (args.include_provenance && collection) provenance = {...collection.provenance, reference_imports: []};
     } catch (e) {
         if (e instanceof CollectionRetrievalFailure) {collectionErrorContext = e.context; return finish(failure(e.problem));}
         throw e;
@@ -447,15 +451,12 @@ export async function searchCards(
             string,
             (typeof snapshot.value.imports)[number]
         >();
-        for (const item of [...snapshot.value.imports]
-            .filter((i) => i.status === "succeeded")
-            .sort(
-                (a, b) =>
-                    (a.completedAt ?? a.startedAt).getTime() -
-                        (b.completedAt ?? b.startedAt).getTime() ||
-                    a.id.localeCompare(b.id),
-            ))
-            imports.set(item.bulkDataType, item);
+        // Repository order breaks same-tick ties by committed insertion order.
+        for (const item of snapshot.value.imports) {
+            if (item.status !== "succeeded") continue;
+            const old = imports.get(item.bulkDataType);
+            if (!old || (item.completedAt ?? item.startedAt).getTime() > (old.completedAt ?? old.startedAt).getTime()) imports.set(item.bulkDataType, item);
+        }
         for (const [dataset, revision] of Object.entries(revisions).filter(([key]) => !["collection", "collection_policy"].includes(key)))
             if (revision !== (imports.get(dataset)?.id ?? null))
                 throw new ProviderFailure({
@@ -512,6 +513,10 @@ export async function searchCards(
             await readRevisions();
     } catch (e) {
         return finish(failure((e as ProviderFailure).problem));
+    }
+    if (compactJsonBytes(page(false, "source_exhausted")) > budget) {
+        collectionErrorContext = undefined; collection = undefined; provenance = undefined;
+        return finish(failure({code: "response_budget_too_small", message: "Mandatory Collection context exceeds the response budget.", retryable: false, limit_bytes: budget}));
     }
     if (minimumPositionBytes(safe) > budget)
         return finish(

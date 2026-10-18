@@ -2,7 +2,7 @@ import {err, ok} from "neverthrow";
 import {ScryfallBulkDataImportSchema, type CollectionBrowseRepository, type OwnedRowFacts} from "@tomekin/core";
 import type {TomekinDatabase} from "./database";
 import {collectionImport, collectionLocation, collectionState, scryfallBulkDataImport} from "./schema";
-import {eq} from "drizzle-orm";
+import {eq, sql} from "drizzle-orm";
 
 export function createSqliteCollectionBrowseRepository(db: TomekinDatabase): CollectionBrowseRepository {
     return {
@@ -12,7 +12,7 @@ export function createSqliteCollectionBrowseRepository(db: TomekinDatabase): Col
                     const state = db.select().from(collectionState).get();
                     const active = state ? db.select().from(collectionImport).where(eq(collectionImport.id, state.activeImportId)).get() : undefined;
                     if (state && (!active || active.status !== "succeeded")) throw new Error("Active Collection snapshot is not a successful import.");
-                    return {activeImport: active ? {id: active.id, imported_at: active.importedAt.toISOString()} : null, legacySnapshot: !state && !!db.select().from(collectionImport).where(eq(collectionImport.status, "succeeded")).get(), locations: db.select().from(collectionLocation).all(), referenceImports: db.select().from(scryfallBulkDataImport).all().map(row => ScryfallBulkDataImportSchema.parse({...row, warnings: row.warningsJson, blockingErrors: row.blockingErrorsJson}))};
+                    return {activeImport: active ? {id: active.id, imported_at: active.importedAt.toISOString()} : null, legacySnapshot: !state && !!db.select().from(collectionImport).where(eq(collectionImport.status, "succeeded")).get(), locations: db.select().from(collectionLocation).all(), referenceImports: db.select().from(scryfallBulkDataImport).orderBy(sql`rowid DESC`).all().map(row => ScryfallBulkDataImportSchema.parse({...row, warnings: row.warningsJson, blockingErrors: row.blockingErrorsJson}))};
                 }));
             } catch (error) {return err(repositoryError(error));}
         },

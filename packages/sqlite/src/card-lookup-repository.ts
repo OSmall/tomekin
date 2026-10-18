@@ -1,4 +1,4 @@
-import {eq} from "drizzle-orm";
+import {eq, sql} from "drizzle-orm";
 import {err, ok} from "neverthrow";
 import {CardPrintingSchema, ScryfallBulkDataImportSchema, type CardLookupRepository, type CardTags, type LocalLookupRecord} from "@tomekin/core";
 import type {TomekinDatabase} from "./database";
@@ -9,7 +9,7 @@ export function createSqliteCardLookupRepository(db: TomekinDatabase): CardLooku
         try {
             // Synchronous transaction establishes one local read view including successful-import revisions.
             const snapshot = db.transaction(() => {
-                const imports = db.select().from(scryfallBulkDataImport).all().map((row) => ScryfallBulkDataImportSchema.parse({...row, warnings: row.warningsJson, blockingErrors: row.blockingErrorsJson}));
+                const imports = db.select().from(scryfallBulkDataImport).orderBy(sql`rowid DESC`).all().map((row) => ScryfallBulkDataImportSchema.parse({...row, warnings: row.warningsJson, blockingErrors: row.blockingErrorsJson}));
                 const records = references.map((reference): LocalLookupRecord | null => {
                     const printing = reference.kind === "printing_id" ? db.select().from(cardPrinting).where(eq(cardPrinting.id, reference.value)).get() : undefined;
                     if (reference.kind === "printing_id" && !printing) return null;

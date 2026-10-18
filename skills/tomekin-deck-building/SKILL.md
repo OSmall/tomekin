@@ -57,8 +57,10 @@ skill preserves the lifecycle and authority constraints.
 
 - Load `query-cards` before non-trivial filters or after any validation error.
 - Use native `search_cards`, `browse_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
-- Native search currently returns card facts and optional tags, without Collection-policy filtering or owned-row evidence.
-  Earlier local Collection examples belong to explicitly enabled `legacy_query_cards`; consult its disclosed reference before use.
+- Request `collection_scope` for locally filtered eligible provider discovery and pass confirmed `collection_policy`
+  explicitly or through the candidate Brief. Optional summary/copies evidence reports complete matching actual rows,
+  separate from representative Printing facts. Repeat fixed scope/policy/evidence mode with ordinary after cursors.
+  Use query-cards for the exact selectors and recovery contract; retrieval summaries do not replace final joint proof.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
   cards.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.

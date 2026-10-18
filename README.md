@@ -64,7 +64,7 @@ and recoverable catalogue listing. `search_card_sets` discovers codes/names from
 `lookup_cards` retrieves ordered local Oracle/name/Printing batches with explicitly selected complete facts,
 including multipart text and direct/inherited tags. Complete bounded envelopes support `first`/`after` recovery in
 OpenCode and both Pi execution paths. Local misses remain explicit, and optional unavailable tags do not block core
-lookup. It performs no network fallback or ownership evaluation. See the [lookup contract](docs/card-query.md#known-card-lookup).
+lookup. It performs no network fallback; opt-in Collection summaries/copies evaluate the same-row confirmed policy. See the [lookup contract](docs/card-query.md#known-card-lookup).
 
 `list_collection_locations` exposes exact locations and the authoritative active Collection import ID.
 `browse_collection_cards` reads bounded actual owned rows under an explicit confirmed policy or a candidate's Brief,
@@ -215,7 +215,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Collection-aware deck-building depends on an imported ManaBox CSV snapshot; there is no collection write-back.
 - Discovery uses live Scryfall search. Known-card lookup and deterministic checks use explicit local imports; no automatic corpus hydration occurs.
 - One active provider process per shared user/state root is supported. A second active Pi/OpenCode process must wait for the owner to exit. See [provider operating rules](docs/card-query.md#live-card-discovery).
-- Native search currently returns card facts and optional local tags; Collection-policy filtering/evidence is separate work.
+- Native search supports local confirmed-policy Collection scope and opt-in exact same-row ownership evidence.
+  Representative Printings do not establish all-owned-version coverage; retrieval summaries are not final whole-deck proof.
 - Normal 60-card deck-building has no live metagame feed; Sideboard recommendations depend on user-supplied context or
   clearly stated general-purpose assumptions.
 - No npm package, installer, hosted UI, or plugin marketplace packaging is provided in this alpha.
@@ -224,7 +225,7 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
   purchase recommendations are not yet supported.
 - Deck Opportunity shortlists are transient in the current agent workflow; durable Deck Opportunity persistence remains
   future work.
-- Confirmed Collection Access Policy is enforced by `browse_collection_cards`. Legacy `legacy_query_cards` still needs
+- Confirmed Collection Access Policy is enforced by Collection-scoped search, selected retrieval evidence and `browse_collection_cards`. Legacy `legacy_query_cards` still needs
   explicit scoped predicates and does not prove the new policy or actual owned-Printing restrictions.
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.

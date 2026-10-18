@@ -29,7 +29,7 @@ Selections and `first` may change. Follow `hasNextPage`; an exhausted source ret
 For stale import bindings restart; after hard cancellation reuse the last delivered cursor or original request.
 The 51,200-byte compact envelope never clips selected text, faces, tags or JSON. `record_too_large` leaves its
 occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imports; tags are optional enrichment.
-It performs no network fallback, automatic hydration, ownership lookup or final Availability proof.
+It performs no network fallback or automatic hydration. Request Collection evidence explicitly as below; retrieval does not prove final joint Availability.
 Read `docs/card-query.md` for the complete field, cursor and error contract.
 
 ## Tag and Set Vocabulary
@@ -70,8 +70,20 @@ Choose complete facts needed for the current comparison. `oracle_text` preserves
 ordered face names/text; explicit `card_faces` selects the full face projection. Printing facts add Printing ID.
 `mana_value` has no cmc alias. `tags` is optional local enrichment with complete direct/inherited associations.
 Pure live discovery needs no local reference import; unavailable optional tags remain visibly unavailable.
-Search currently returns card facts rather than Collection filtering, policy eligibility, quantities or owned-row evidence.
-Use `browse_collection_cards` for policy-aware owned-row evidence; live hits cannot prove ownership or final Availability.
+Use optional `collection_scope` for confirmed-policy local filtering. Pass `collection_policy` as an explicit confirmed
+policy or candidate reference; candidate permission loads the whole Brief. Match defaults to identity. Explicit printing
+matching tests only provider Printings actually returned and does not prove all-owned-version coverage. Scope locations
+use UUIDs or exact case-sensitive type/name pairs, and copy_requirements narrow the same actual row/Printing.
+
+Request `collection_evidence: {mode: "summary"}` for exact recorded owned/eligible/uncertain quantities, or
+`{mode: "copies", select: {location: true, finish: true}}` for complete selected matching rows. Owned quantity is
+independent of policy permission; unknown strict metadata cannot prove eligibility. With unconfirmed policy,
+eligibility is null and no copy rows are permission-proven. One Collection context exposes no/empty/ready import and
+effective policy; successful reimport requires scope reconfirmation. A row quantity is not an allocation/reservation.
+The result card's representative Printing differs from each actual owned Printing in its copy evidence.
+Repeat fixed scope, policy source and evidence mode on continuation; card/copy selection and first may change.
+Use local browse for source chronology/unknown-date discovery. Final whole-deck Availability requires its separate
+complete-demand check; per-card summaries cannot prevent double allocation.
 
 Repeat fixed q, native controls and effective include_provenance with ordinary `after`. `first` defaults to 175 and
 accepts 0–200. Selection and first may change. Success uses pageInfo; failure has complete partial edges and at most

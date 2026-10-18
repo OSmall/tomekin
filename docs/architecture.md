@@ -13,7 +13,9 @@ in [Data Model](./data-model.md), structured retrieval in [Card Query](./card-qu
 [ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) is implemented for provider discovery and local lookup.
 Core owns native request bindings, selected projections, bounded envelopes, stateless source-position traversal and
 admission policy. The common runtime injects one provider and retains SQLite for local lookup/enrichment, Collection
-import and deterministic checks. Confirmed-policy owned-row browsing is implemented; provider Collection filtering/evidence remains separate work. No retrieval-only corpus migration or
+import and deterministic checks. Confirmed-policy owned-row browsing and local provider-result Collection scope/evidence share actual-row facts and
+the pure policy evaluator. Retrieval evaluates complete quantities/copy lists before emitting each card and checks
+successful import/effective-policy revisions before final delivery. No retrieval-only corpus migration or
 result/search store is introduced.
 
 The process-lifetime provider owner performs HTTP outside disposable runtimes/Workers. Pi brokers transient provider

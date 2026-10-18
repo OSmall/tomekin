@@ -166,3 +166,48 @@ test("unfinished local copy evaluation emits no partial quantities and deadline 
         expect(recovered).toMatchObject({status: "ok", edges: [{node: {collection_evidence: {summary: {owned_quantity: 6}}}}]});
     } finally {runtime.close(); f.dispose();}
 });
+
+test("same-tick successful reference replacement stales search and lookup evidence independent of UUID lexical order", async () => {
+    const f = await createCollectionFixture();
+    const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log, search: {provider: {id: "fixture", async dispatch() {return {status: 200, body: {object: "list", data: [card(), card(id(201))], has_more: false}};}}}});
+    try {
+        const common = {select: {oracle_id: true}, collection_evidence: {mode: "summary"}, first: 1};
+        const lookupInput = {references: [{kind: "name", value: "Sol Ring"}, {kind: "name", value: "Sol Ring"}], ...common};
+        const searchInput = {q: "f:commander", ...common};
+        const lookup = envelope(await runtime.handlers.lookupCards(lookupInput));
+        const search = envelope(await runtime.handlers.searchCards(searchInput));
+        const old = f.db.$client.prepare("SELECT id, started_at, completed_at FROM scryfall_bulk_data_import WHERE bulk_data_type = 'oracle_cards' AND status = 'succeeded' ORDER BY rowid DESC LIMIT 1").get() as {id: string; started_at: number; completed_at: number};
+        await f.reimportOracle();
+        // Synthetic same-tick successful replacement with a UUID below the prior import. Row order remains authoritative.
+        f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ?, started_at = ?, completed_at = ? WHERE bulk_data_type = 'oracle_cards' AND id != ?").run(id(0), old.started_at, old.completed_at, old.id);
+        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, lookup.pageInfo.endCursor], [runtime.handlers.searchCards, searchInput, search.pageInfo.endCursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed", recovery: "restart"}});
+    } finally {runtime.close(); f.dispose();}
+});
+
+test("exact UUID locations and permitted deck borrowing stay inspectable; legacy snapshots require explicit reimport", async () => {
+    const f = await createCollectionFixture();
+    try {
+        const args = {references: [{kind: "printing_id", value: id(2)}], select: {oracle_id: true}, collection_scope: {locations: [{id: id(101)}]}, collection_policy: {kind: "explicit", policy: {...f.policy, allowed_locations: [{type: "deck", name: "Shared"}], copy_requirements: {}}}, collection_evidence: {mode: "copies", select: {quantity: true}}};
+        const result = envelope(await f.runtime.handlers.lookupCards(args));
+        expect(result.edges[0].node.collection_evidence).toMatchObject({summary: {owned_quantity: 2, eligible_quantity: 2}, copies: [{collection_card_id: id(112), committed: true, location: {id: id(101), type: "deck", name: "Shared"}}]});
+        f.db.$client.prepare("DELETE FROM collection_state").run();
+        const legacy = envelope(await f.runtime.handlers.lookupCards({references: args.references, select: args.select, collection_evidence: {mode: "summary"}}));
+        expect(legacy).toMatchObject({edges: [], error: {code: "reference_data_unready", reason: "collection_reimport_required"}, collection_context: {state: "reimport_required", collection_import_id: null}});
+    } finally {f.dispose();}
+});
+
+test("copy selectors, scope validation and mandatory Collection context budget fail explicitly before provider work", async () => {
+    const f = await createCollectionFixture();
+    let dispatched = 0;
+    const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log, search: {responseBudgetBytes: 500, provider: {id: "fixture", async dispatch() {dispatched++; return {status: 200, body: {object: "list", data: [], has_more: false}};}}}});
+    try {
+        const base = {q: "f:commander", select: {oracle_id: true}, collection_policy: {kind: "explicit", policy: f.policy}, collection_evidence: {mode: "summary"}};
+        expect(envelope(await runtime.handlers.searchCards(base))).toMatchObject({edges: [], error: {code: "response_budget_too_small"}});
+        expect(dispatched).toBe(0);
+        const input = {references: [{kind: "name", value: "Sol Ring"}], select: {oracle_id: true}};
+        for (const select of [{}, {finish: false}, {finish: "true"}, {oracle_id: true}, {date_reliability: true}, {extra: true}]) expect(envelope(await f.runtime.handlers.lookupCards({...input, collection_evidence: {mode: "copies", select}})).error.code).toBe("invalid_request");
+        for (const locations of [[{name: "Shared"}], [{type: "binder", name: "shared"}], [{id: id(999)}]]) expect(envelope(await f.runtime.handlers.lookupCards({...input, collection_scope: {locations}, collection_policy: base.collection_policy})).error.code).toBe("invalid_request");
+        const provenance = envelope(await f.runtime.handlers.lookupCards({...input, collection_evidence: {mode: "summary"}, include_provenance: true}));
+        expect(provenance.provenance.collection_import).toMatchObject({import_id: f.imported.id, imported_at: "2026-10-18T01:00:00.000Z"});
+    } finally {runtime.close(); f.dispose();}
+});

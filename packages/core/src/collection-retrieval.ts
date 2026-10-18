@@ -26,7 +26,7 @@ export function collectionRequestBindings(args: CollectionRetrievalArgs) {
 }
 function latest(snapshot: CollectionPolicySnapshot) {
     const result = new Map<string, CollectionPolicySnapshot["referenceImports"][number]>();
-    for (const item of snapshot.referenceImports) if (item.status === "succeeded") {const old = result.get(item.bulkDataType); if (!old || (item.completedAt ?? item.startedAt).getTime() > (old.completedAt ?? old.startedAt).getTime() || ((item.completedAt ?? item.startedAt).getTime() === (old.completedAt ?? old.startedAt).getTime() && item.id > old.id)) result.set(item.bulkDataType, item);}
+    for (const item of snapshot.referenceImports) if (item.status === "succeeded") {const old = result.get(item.bulkDataType); if (!old || (item.completedAt ?? item.startedAt).getTime() > (old.completedAt ?? old.startedAt).getTime()) result.set(item.bulkDataType, item);}
     return result;
 }
 /** Local evaluation is complete per source card, transient, and bound before anything is emitted. */
@@ -83,7 +83,7 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
         for (const dataset of ["oracle_cards", "all_cards"]) if (dataset in revisions) currentRevisions[dataset] = current.imports.get(dataset)?.id ?? null;
         compare(currentRevisions, revisions);
     };
-    return {context, revisions, assertCurrent, async evaluate(node: CardResult, printingId: string | undefined, check: () => void) {
+    return {context, revisions, provenance: snapshot.activeImport ? {collection_import: {import_id: snapshot.activeImport.id, imported_at: snapshot.activeImport.imported_at}} : {}, assertCurrent, async evaluate(node: CardResult, printingId: string | undefined, check: () => void) {
         if (match === "printing" && !printingId) return fail({code: "invalid_request", reason: "incompatible_reference_kind", message: "Printing matching requires exact Printing references throughout the lookup batch.", retryable: false});
         let owned = 0, eligible = 0, uncertain = 0, offset = 0;
         const copies: NonNullable<CollectionEvidence["copies"]> = [];
