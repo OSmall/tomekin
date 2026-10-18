@@ -1,5 +1,5 @@
 import {Type, type TSchema} from "@sinclair/typebox";
-import {agentToolMutates, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {agentToolMutates, agentToolPreservesCompleteOutput, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
@@ -62,7 +62,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
                 if (signal.aborted && name !== "lookup_cards" && name !== "search_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
                 const details = agentToolResultDetails(result);
                 const serializationStarted = performance.now();
-                const output = projectOutput(details, name.includes("deck_candidate"));
+                const output = projectOutput(details, agentToolPreservesCompleteOutput(name));
                 options.log.info({adapterBytes: Buffer.byteLength(output.content[0]?.text ?? "", "utf8"), adapterSerializationMs: performance.now() - serializationStarted, component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
                 return output;
             } catch {

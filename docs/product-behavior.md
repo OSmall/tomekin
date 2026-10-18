@@ -190,24 +190,17 @@ Before rendering a final Deck Candidate, Tomekin:
 The evaluator is not a deterministic deck-quality oracle. Strategy, roles, packages, Synergy, and tuning judgments are
 agent reasoning backed by local facts and skills.
 
-Every rendered Deck Candidate uses these stable Markdown sections in order:
-
-1. Game Plan
-2. Power And Experience
-3. Legality Assessment
-4. Deck Structure
-5. Portable Decklist
-6. Collection Status
-7. Key Synergies
-8. Interaction And Protection
-9. Mana And Curve
-10. Optional Upgrades
-11. Cuts And Exclusions
-12. Assumptions And Caveats
+Generated reports derive the current Brief, selected memberships, Deck Plan nodes/relationships, assessed options and
+contributions, focused judgments and latest explicit check evidence. Missing focused judgments are `Unrecorded`;
+recorded checks keep their `absent`, `applicable` or `outdated` labels and complete findings. Rendering never computes
+a check or manufactures current Collection Availability. Reports are generated output, with no separately editable
+report authority or report history. Existing low-level template rendering utilities are not the Agent Tool input contract.
 
 The Portable Decklist is an importable card-name list without prices, Collection Locations, printing selection, or
-explanations. Commander/EDH renders `Commander` followed by `Mainboard` and never adds a Sideboard. A 60-card candidate
-renders `Mainboard`, followed by `Sideboard` only when Sideboard cards exist. Tomekin creates no 60-card Sideboard by
+explanations. Commander/EDH ordinarily renders `Commander` followed by `Mainboard`. A 60-card candidate ordinarily
+renders `Mainboard`, followed by `Sideboard` only when Sideboard cards exist. Rendering incomplete saved progress exposes
+every populated selected section, even a section that a later explicit Format check will reject; it never silently
+drops selected copies. Tomekin creates no 60-card Sideboard by
 default; it does so only when requested, using user-supplied matchup context or clearly labelled general-purpose
 assumptions.
 
@@ -236,9 +229,69 @@ returned reasoning is never silently truncated.
 The exact UTC `updated_at` is candidate-wide. A stale edit returns `conflict`, with candidate ID and expected/current
 timestamps. Reload and reconcile rather than silently rebasing. Success returns compact actual-change context and stable
 ID mappings. `get_deck_candidate({id})` and `list_deck_candidates` return summaries with Format/anchor, timestamps, selected
-section quantities, pool size and concise role/gap information. Explicit `get_deck_candidate({id, view: "state"})` exposes
-current authoritative records for resumption. Ordinary reads do not invoke checks; the write foundation currently reports
-validation evidence as absent. Saved-input reusable check evidence and complete generated views have separate ownership.
+section quantities, pool size and concise role/gap information. Summaries expose each recorded check's applicability and
+check time. Ordinary reads do not invoke checks.
+
+### Complete views and generated output
+
+`get_deck_candidate({id, view, first?, after?})` supports `brief`, `selected`, `options`, `pool`, `plan`, `assessments`,
+`json`, `report` and `portable_decklist`, plus the default compact `summary`. There is no public unbounded `state` view.
+Options include canonical names, comparison notes, selected memberships and complete contribution rationale,
+qualifications and evidence. The pool view has one deduplicated `options` array and role groups referring to those
+options by Card Identity; section-aware selected quantities come only from memberships.
+
+Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
+JSON bytes, complete `edges[].node`, `pageInfo` and stop reason. Each node is `{path, value}` in `path_value_v1` format.
+Apply records in order: an empty path sets the root; other paths assign an object key or array index. Explicit empty
+containers preserve empty objects/arrays. Array entities retain complete local reasoning. For `json`, this reconstructs
+the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
+the ordered string values. Repeat `id` and `view` with `after`; `first` may change. A view's transient hash binds its
+content timestamp and all included records, so changed canonical names, evidence publication or evidence applicability
+reject affected continuation even when candidate content timestamps stay unchanged. Unrelated data does not stale an
+unchanged Brief-only view. There is no persisted cursor/result store. An oversized indivisible record fails explicitly;
+there is no truncated rationale or serialized preview.
+
+`render_deck_candidate({candidate_id, output: "report" | "portable_decklist", first?, after?})` uses the same recoverable
+output contract and loads saved records. It accepts no authored report sections, names or independent decklist.
+Only selected membership and canonical names feed the Portable Decklist. Pool alternatives are never selected copies.
+
+Developer inspection uses:
+
+```sh
+bun run tomekin deck-candidate export-plan <id> --format json --projection strategy --output plan.json
+bun run tomekin deck-candidate export-plan <id> --format mermaid --projection pool --output plan.mmd
+```
+
+`strategy` is the default projection; `selected` adds selected contributors and quantities by section; `pool` also shows
+active alternatives. Mermaid shows desired gaps, route priorities, directed influence and symmetric competition, with
+deterministic identifiers/order, escaped labels, candidate/update context and a legend. It is inspection, not strategic
+validation. JSON always preserves the complete authoritative candidate regardless of diagram projection. Exports run
+no checks. Missing candidates/plans, invalid arguments and output failures are actionable failures. Same-directory
+atomic publication preserves previous artifacts on failure. Tomekin produces Mermaid source, with no SVG renderer or
+graph frontend dependency.
+
+### Explicit saved and transient checks
+
+`validate_format_legality` and `evaluate_deck_candidate` accept either `{candidate_id, expected_updated_at, changes?}`
+or initial `{cards, brief}`. A saved baseline must match the exact last-read content timestamp. Optional typed `changes`
+apply to a transient resulting state; revised selected memberships are hydrated with canonical card facts before checking.
+Initial inputs and trials return complete findings without creating candidates or overwriting saved evidence.
+
+An explicit saved check captures the Brief, selected memberships, Oracle facts and successful Oracle import dependency
+in one database snapshot. Its latest candidate-owned findings publish only while the check's selected inputs, relevant
+Brief fields, Oracle import/contract revision and validator versions still match. Concurrent relevant changes return
+the captured findings as `outdated` without replacing evidence for newer inputs. Publication does not change candidate
+content timestamps or invalidate an existing edit precondition.
+
+Evidence reads distinguish `absent`, `applicable` and `outdated` separately for `format_legality` and `deck_evaluation`.
+Applicability describes checked inputs, including illegal results; it is not a completion flag. Pool/plan maintenance,
+selected notes/order and unrelated Brief changes preserve selected legality. Evaluation power/play-experience changes
+stale evaluation while preserving legality. Selected identity/quantity/section changes affect both. Oracle imports and
+validator changes stale the checks that use them; unused Printing/tag imports do not. These checks need current Oracle
+reference data, independently of Printing/tag import readiness. Collection Availability remains a separate capability.
+
+Create, edit, read and rendering operations never invoke these checks. Pi preserves their complete findings beyond its
+old preview boundary, classifies both as possible evidence writes and settles dispatched calls after cancellation.
 
 After an unknown Worker write outcome, inspect before retrying. For edits, compare saved records and timestamps with the
 intended result. For creates, use list/get to inspect possible matches by label, Format/anchor, times and contents; labels

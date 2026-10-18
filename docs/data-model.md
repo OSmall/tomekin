@@ -198,6 +198,13 @@ Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-
 unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
 columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
 
+`check_evidence_json` stores at most the latest `format_legality` and `deck_evaluation` records, each with complete
+findings, UTC check time and captured selected/Brief timestamps, relevant Brief fields, Oracle import/contract revision
+and validator versions. There is no check history or fingerprint. Read-time applicability compares check-specific
+dependencies; publication repeats that comparison in an immediate transaction and updates only this evidence column.
+Trial changes and initial-input findings are never persisted. Import timestamps have second precision, so tied Oracle
+imports are resolved by committed insertion order rather than UUID ordering.
+
 ### Selected SectionMembership (`deck_candidate_card`)
 
 One row per candidate/Card Identity/section owns a positive integral quantity, nonnegative order and optional selected
@@ -248,3 +255,10 @@ DeckCandidate
 
 This shape preserves the distinctions between owned rows, exact Printings, canonical Card Identities, source-backed
 tags, and proposed deck entries without presenting transient agent analysis as persisted product state.
+
+### Generated candidate views
+
+Reports, role-grouped/deduplicated pool views and Portable Decklists derive from the records above; they add no stored
+report authority or snapshot. Canonical names are joined on read. Explicit JSON retains the complete candidate and latest
+recorded check findings/dependencies. Continuation's view fingerprint is computed transiently from included records and
+content timestamp, not persisted as a candidate revision or historical report.

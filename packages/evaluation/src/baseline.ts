@@ -2,6 +2,7 @@ import {execFileSync} from "node:child_process";
 import {readFileSync} from "node:fs";
 import {cpus} from "node:os";
 import {createHash} from "node:crypto";
+import type {DeckCandidate} from "@tomekin/core";
 import {createLocalAgentToolRuntime} from "@tomekin/agent";
 import {createCoreTool, createPiWorkerTransport, type PiToolOutput} from "@tomekin/pi";
 import {resultToOpencodeOutput} from "@tomekin/opencode";
@@ -61,7 +62,6 @@ async function runWorkflow(name: WorkflowName) {
         const selectedRows = name === "tuning" ? 12 : 20;
         const initialIds = Array.from({length: selectedRows}, (_, index) => id(index + 1));
         const finalIds = name === "tuning" ? [...initialIds.slice(0, 9), id(13), id(14), id(15)] : initialIds;
-        const cards = (ids: string[]) => ids.map((cardIdentityId, index) => ({cardIdentityId, quantity: selectedRows === 12 ? 5 : 3, section: "mainboard" as const, sortOrder: index, note: null}));
         const initialInput = candidateCreateInput(initialIds, "Synthetic candidate", () => selectedRows === 12 ? 5 : 3);
         let threeCardSave: {beforeRows: number; afterRows: number; quantity: number; added: number; removed: number} | null = null;
         let legality: unknown = null;
@@ -71,17 +71,17 @@ async function runWorkflow(name: WorkflowName) {
             const candidate = await stage("candidateCreateHandler", () => runtime.handlers.createDeckCandidate(initialInput).then(unwrap));
             const editInput = candidateRevisionInput(candidate, initialIds, finalIds, () => selectedRows === 12 ? 5 : 3);
             await stage("candidateEditHandler", () => runtime.handlers.editDeckCandidate(editInput).then(unwrap));
-            const read = unwrap(await stage("candidateReadHandler", () => runtime.handlers.getDeckCandidate({id: candidate.candidate_id, view: "state"})));
+            const read = await stage("candidateReadHandler", () => readCandidateJson(runtime,candidate.candidate_id));
             if (!("cards" in read)) throw new Error("Expected explicit candidate state");
             const savedIds = read.cards.map((card) => card.cardIdentityId);
             if (coverage(finalIds, savedIds).missing.length || savedIds.length !== selectedRows) throw new Error("Saved candidate coverage mismatch");
             selected = {rows: read.cards.length, copies: read.cards.reduce((total, card) => total + card.quantity, 0)};
             if (name === "tuning") threeCardSave = {beforeRows: initialIds.length, afterRows: read.cards.length, quantity: selected.copies, added: 3, removed: 3};
-            const check = {cards: cards(finalIds), brief};
+            const check = {candidate_id:read.id,expected_updated_at:read.updatedAt};
             const validation = await stage("explicitValidationHandler", () => runtime.handlers.validateFormatLegality(check).then(unwrap));
             legality = validation;
             await stage("explicitEvaluationHandler", () => runtime.handlers.evaluateDeckCandidate(check).then(unwrap));
-            await stage("explicitRenderingHandler", () => runtime.handlers.renderDeckCandidate({label: "Synthetic candidate", format: "casual_60", cards: read.cards}));
+            await stage("explicitRenderingHandler", () => runtime.handlers.renderDeckCandidate({candidate_id:candidate.candidate_id, output:"report"}));
             candidatePayload = {fullPayloads: 1, inputBytes: utf8Bytes(JSON.stringify(initialInput)) + utf8Bytes(JSON.stringify(editInput)), repeatedBriefBytes: 0, repeatedUnchangedCardRows: 0};
         }
         return {name, boundedTraversal: {requested: 3, returned: bounded.items.length, missing: coverage(expected, bounded.items.map((item) => item.id)).missing.length, recovery: "unsupported"},
@@ -120,7 +120,7 @@ async function runCommanderSizeSave() {
         const editInput = candidateRevisionInput(created, initial, final, index => index === 0 ? 32 : 1);
         const start = performance.now();
         const edited = unwrap(await runtime.handlers.editDeckCandidate(editInput));
-        const result = unwrap(await runtime.handlers.getDeckCandidate({id: created.candidate_id, view: "state"}));
+        const result = await readCandidateJson(runtime,created.candidate_id);
         if (!("cards" in result)) throw new Error("Expected explicit candidate state");
         const timingsMs = performance.now() - start;
         return {beforeRows: 69, afterRows: result.cards.length, quantity: result.cards.reduce((sum, card) => sum + card.quantity, 0), added: coverage(initial, final).unexpected.length, removed: coverage(initial, final).missing.length, timingsMs, inputBytes: utf8Bytes(JSON.stringify(editInput)), outputBytes: utf8Bytes(JSON.stringify(edited)), shape: "Commander-sized only; synthetic Casual 60 create/edit, no legality or strategic claim"};
@@ -214,4 +214,22 @@ function candidateRevisionInput(
 if (import.meta.main) {
     const report = await runBaseline();
     console.log(JSON.stringify(report, null, 2));
+}
+
+async function readCandidateJson(runtime: ReturnType<typeof createLocalAgentToolRuntime>,id:string):Promise<DeckCandidate> {
+    let restored: any,after:string|undefined;
+    do {
+        const result=await runtime.handlers.getDeckCandidate({id,view:"json",first:200,...after?{after}:{}});
+        if(result.isErr())throw new Error(JSON.stringify(result.error));
+        if(!("edges" in result.value))throw new Error("Expected bounded candidate JSON records");
+        const page=result.value;
+        for(const {node:{path,value}} of page.edges){
+            if(!path.length){restored=value;continue;}
+            let parent=restored;
+            for(const key of path.slice(0,-1))parent=parent[key];
+            parent[path.at(-1)!]=value;
+        }
+        after=page.pageInfo.hasNextPage?page.pageInfo.endCursor:undefined;
+    }while(after);
+    return restored as DeckCandidate;
 }

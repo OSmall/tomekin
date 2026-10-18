@@ -1,0 +1,723 @@
+{
+  "kind": "provider-search-v1",
+  "runtime": {
+    "bun": "1.3.14",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "sourceCommit": "538b041d22310c0ed3657fd5190a622db329b2ef",
+  "fixtureSha256": "43457ceb152e0a3c15e9dfe9f89d7c203478898bc076b47e1bda980133fa00ba",
+  "protocol": {
+    "cold": 1,
+    "unmeasuredWarmup": 1,
+    "warmRuns": 5,
+    "comparison": "Same public synthetic workflow identities/names/complete Oracle text. No Collection filtering or live model/network comparison.",
+    "openCode": "Actual result serializer; actual tool-loader/schema execution has separate adapter integration tests."
+  },
+  "workflows": [
+    {
+      "name": "discovery",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "sourceCount": 12,
+      "returnedCount": 12,
+      "providerCalls": 6,
+      "adapterProviderCalls": 2,
+      "pages": 4,
+      "pageBytes": [
+        2831,
+        1654,
+        1562,
+        1572
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeOracleText": true,
+      "scopedTotal": null,
+      "application": {
+        "utf8Bytes": 2831,
+        "estimatedTokens": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 708
+        }
+      },
+      "adapters": {
+        "openCodeSerialization": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        },
+        "piWorker": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        }
+      },
+      "timingsMs": {
+        "firstSearchHandler": 10.165083000000038,
+        "ordinaryContinuation": 2.207540999999992,
+        "applicationSerialization": 0.015207999999972799,
+        "openCodeSerialization": 0.12387499999999818,
+        "piFallbackIncludingRuntime": 8.239332999999988,
+        "piWorkerIncludingStartupRuntime": 159.787667
+      },
+      "fixtureAdmission": {
+        "clock": "synthetic monotonic clock; no live timing claim",
+        "actualStartOffsetsMs": [
+          0,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          3500
+        ]
+      },
+      "limits": {
+        "collection": "Unfiltered card facts; no Collection eligibility or Availability evidence.",
+        "network": "Injected synthetic provider; no live network, census or throughput claim.",
+        "models": "No LLM run; tokens are estimates."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstSearchHandler": 10.165083000000038,
+          "ordinaryContinuation": 2.207540999999992,
+          "applicationSerialization": 0.015207999999972799,
+          "openCodeSerialization": 0.12387499999999818,
+          "piFallbackIncludingRuntime": 8.239332999999988,
+          "piWorkerIncludingStartupRuntime": 159.787667
+        },
+        "warm": {
+          "firstSearchHandler": {
+            "samplesMs": [
+              0.4797919999999749,
+              0.5598750000000337,
+              0.37354199999981574,
+              0.3639579999999114,
+              0.3394590000000335
+            ],
+            "medianMs": 0.37354199999981574,
+            "minMs": 0.3394590000000335,
+            "maxMs": 0.5598750000000337
+          },
+          "ordinaryContinuation": {
+            "samplesMs": [
+              1.0652079999999842,
+              1.0126660000000811,
+              1.2646240000001399,
+              0.7931249999999181,
+              0.6267920000000231
+            ],
+            "medianMs": 1.0126660000000811,
+            "minMs": 0.6267920000000231,
+            "maxMs": 1.2646240000001399
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.012417000000027656,
+              0.0024580000000469227,
+              0.005666999999903055,
+              0.0037500000000818545,
+              0.0072079999999914435
+            ],
+            "medianMs": 0.005666999999903055,
+            "minMs": 0.0024580000000469227,
+            "maxMs": 0.012417000000027656
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.005333000000064203,
+              0.003708999999957996,
+              0.006333000000040556,
+              0.0039999999999054126,
+              0.009000000000014552
+            ],
+            "medianMs": 0.005333000000064203,
+            "minMs": 0.003708999999957996,
+            "maxMs": 0.009000000000014552
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.1902919999999995,
+              1.615583000000015,
+              2.498499999999922,
+              4.7681669999999485,
+              3.367374999999811
+            ],
+            "medianMs": 2.498499999999922,
+            "minMs": 1.615583000000015,
+            "maxMs": 4.7681669999999485
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              171.78508399999998,
+              155.77883399999996,
+              125.47158300000001,
+              268.99125000000004,
+              189.6824999999999
+            ],
+            "medianMs": 171.78508399999998,
+            "minMs": 125.47158300000001,
+            "maxMs": 268.99125000000004
+          }
+        }
+      }
+    },
+    {
+      "name": "construction",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "sourceCount": 26,
+      "returnedCount": 26,
+      "providerCalls": 15,
+      "adapterProviderCalls": 2,
+      "pages": 9,
+      "pageBytes": [
+        2831,
+        1654,
+        1562,
+        1663,
+        1562,
+        1663,
+        1562,
+        1663,
+        1442
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeOracleText": true,
+      "scopedTotal": null,
+      "application": {
+        "utf8Bytes": 2831,
+        "estimatedTokens": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 708
+        }
+      },
+      "adapters": {
+        "openCodeSerialization": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        },
+        "piWorker": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        }
+      },
+      "timingsMs": {
+        "firstSearchHandler": 0.5882919999999103,
+        "ordinaryContinuation": 2.824665999999752,
+        "applicationSerialization": 0.004457999999885942,
+        "openCodeSerialization": 0.004625000000032742,
+        "piFallbackIncludingRuntime": 3.20900000000006,
+        "piWorkerIncludingStartupRuntime": 123.28087499999992
+      },
+      "fixtureAdmission": {
+        "clock": "synthetic monotonic clock; no live timing claim",
+        "actualStartOffsetsMs": [
+          0,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          3500,
+          4000,
+          4500,
+          5000,
+          5500,
+          6000,
+          6500,
+          7000,
+          7500,
+          8000
+        ]
+      },
+      "limits": {
+        "collection": "Unfiltered card facts; no Collection eligibility or Availability evidence.",
+        "network": "Injected synthetic provider; no live network, census or throughput claim.",
+        "models": "No LLM run; tokens are estimates."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstSearchHandler": 0.5882919999999103,
+          "ordinaryContinuation": 2.824665999999752,
+          "applicationSerialization": 0.004457999999885942,
+          "openCodeSerialization": 0.004625000000032742,
+          "piFallbackIncludingRuntime": 3.20900000000006,
+          "piWorkerIncludingStartupRuntime": 123.28087499999992
+        },
+        "warm": {
+          "firstSearchHandler": {
+            "samplesMs": [
+              0.2895829999997659,
+              0.5981669999996484,
+              0.34220900000036636,
+              0.8556250000001455,
+              0.4453330000001188
+            ],
+            "medianMs": 0.4453330000001188,
+            "minMs": 0.2895829999997659,
+            "maxMs": 0.8556250000001455
+          },
+          "ordinaryContinuation": {
+            "samplesMs": [
+              1.6364559999997255,
+              0.9051679999997759,
+              1.0645410000001903,
+              3.879084000000148,
+              1.5716670000001614
+            ],
+            "medianMs": 1.5716670000001614,
+            "minMs": 0.9051679999997759,
+            "maxMs": 3.879084000000148
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.017334000000118976,
+              0.0047920000001795415,
+              0.0040829999998095445,
+              0.005542000000332337,
+              0.004625000000032742
+            ],
+            "medianMs": 0.0047920000001795415,
+            "minMs": 0.0040829999998095445,
+            "maxMs": 0.017334000000118976
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.006542000000081316,
+              0.003416999999899417,
+              0.005415999999968335,
+              0.004707999999936874,
+              0.007250000000112777
+            ],
+            "medianMs": 0.005415999999968335,
+            "minMs": 0.003416999999899417,
+            "maxMs": 0.007250000000112777
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              1.7272909999996955,
+              1.9853330000000824,
+              2.075333000000228,
+              2.5914999999999964,
+              2.6060419999998885
+            ],
+            "medianMs": 2.075333000000228,
+            "minMs": 1.7272909999996955,
+            "maxMs": 2.6060419999998885
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              124.30120799999986,
+              123.07554100000016,
+              135.92125000000033,
+              224.7272079999998,
+              183.53662499999973
+            ],
+            "medianMs": 135.92125000000033,
+            "minMs": 123.07554100000016,
+            "maxMs": 224.7272079999998
+          }
+        }
+      }
+    },
+    {
+      "name": "tuning",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "sourceCount": 20,
+      "returnedCount": 20,
+      "providerCalls": 11,
+      "adapterProviderCalls": 2,
+      "pages": 7,
+      "pageBytes": [
+        2831,
+        1654,
+        1562,
+        1663,
+        1562,
+        1663,
+        1442
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeOracleText": true,
+      "scopedTotal": null,
+      "application": {
+        "utf8Bytes": 2831,
+        "estimatedTokens": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 708
+        }
+      },
+      "adapters": {
+        "openCodeSerialization": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        },
+        "piWorker": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        }
+      },
+      "timingsMs": {
+        "firstSearchHandler": 0.33104099999991377,
+        "ordinaryContinuation": 0.8416250000009313,
+        "applicationSerialization": 0.0032920000003286987,
+        "openCodeSerialization": 0.0038749999998799467,
+        "piFallbackIncludingRuntime": 1.2897500000003674,
+        "piWorkerIncludingStartupRuntime": 111.12762500000008
+      },
+      "fixtureAdmission": {
+        "clock": "synthetic monotonic clock; no live timing claim",
+        "actualStartOffsetsMs": [
+          0,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          3500,
+          4000,
+          4500,
+          5000,
+          5500,
+          6000
+        ]
+      },
+      "limits": {
+        "collection": "Unfiltered card facts; no Collection eligibility or Availability evidence.",
+        "network": "Injected synthetic provider; no live network, census or throughput claim.",
+        "models": "No LLM run; tokens are estimates."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstSearchHandler": 0.33104099999991377,
+          "ordinaryContinuation": 0.8416250000009313,
+          "applicationSerialization": 0.0032920000003286987,
+          "openCodeSerialization": 0.0038749999998799467,
+          "piFallbackIncludingRuntime": 1.2897500000003674,
+          "piWorkerIncludingStartupRuntime": 111.12762500000008
+        },
+        "warm": {
+          "firstSearchHandler": {
+            "samplesMs": [
+              0.27220900000020265,
+              0.4284170000000813,
+              0.4443749999991269,
+              0.2327079999995476,
+              0.2923339999997552
+            ],
+            "medianMs": 0.2923339999997552,
+            "minMs": 0.2327079999995476,
+            "maxMs": 0.4443749999991269
+          },
+          "ordinaryContinuation": {
+            "samplesMs": [
+              0.629207999999835,
+              0.9617920000000595,
+              0.9115830000009737,
+              0.589958999999908,
+              0.7931670000016311
+            ],
+            "medianMs": 0.7931670000016311,
+            "minMs": 0.589958999999908,
+            "maxMs": 0.9617920000000595
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.003125000000181899,
+              0.00466599999981554,
+              0.0032920000003286987,
+              0.0066660000002229935,
+              0.003208000000086031
+            ],
+            "medianMs": 0.0032920000003286987,
+            "minMs": 0.003125000000181899,
+            "maxMs": 0.0066660000002229935
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.003167000000303233,
+              0.006250000000363798,
+              0.008916999999200925,
+              0.0037079999992783996,
+              0.00466599999981554
+            ],
+            "medianMs": 0.00466599999981554,
+            "minMs": 0.003167000000303233,
+            "maxMs": 0.008916999999200925
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.00845900000013,
+              2.1233329999995476,
+              1.2469590000000608,
+              1.4600420000006125,
+              1.337666999999783
+            ],
+            "medianMs": 1.4600420000006125,
+            "minMs": 1.2469590000000608,
+            "maxMs": 2.1233329999995476
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              123.6732920000004,
+              135.97141699999975,
+              118.19133299999976,
+              115.87687499999993,
+              133.35649999999987
+            ],
+            "medianMs": 123.6732920000004,
+            "minMs": 115.87687499999993,
+            "maxMs": 135.97141699999975
+          }
+        }
+      }
+    },
+    {
+      "name": "assembly",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "sourceCount": 26,
+      "returnedCount": 26,
+      "providerCalls": 15,
+      "adapterProviderCalls": 2,
+      "pages": 9,
+      "pageBytes": [
+        2831,
+        1654,
+        1562,
+        1663,
+        1562,
+        1663,
+        1562,
+        1663,
+        1442
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeOracleText": true,
+      "scopedTotal": null,
+      "application": {
+        "utf8Bytes": 2831,
+        "estimatedTokens": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 708
+        }
+      },
+      "adapters": {
+        "openCodeSerialization": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        },
+        "piWorker": {
+          "utf8Bytes": 2831,
+          "estimatedTokens": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 708
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3
+        }
+      },
+      "timingsMs": {
+        "firstSearchHandler": 0.2767920000005688,
+        "ordinaryContinuation": 0.7380000000002838,
+        "applicationSerialization": 0.002207999999882304,
+        "openCodeSerialization": 0.0035419999994701357,
+        "piFallbackIncludingRuntime": 1.1004579999998896,
+        "piWorkerIncludingStartupRuntime": 107.40883300000041
+      },
+      "fixtureAdmission": {
+        "clock": "synthetic monotonic clock; no live timing claim",
+        "actualStartOffsetsMs": [
+          0,
+          500,
+          1000,
+          1500,
+          2000,
+          2500,
+          3000,
+          3500,
+          4000,
+          4500,
+          5000,
+          5500,
+          6000,
+          6500,
+          7000,
+          7500,
+          8000
+        ]
+      },
+      "limits": {
+        "collection": "Unfiltered card facts; no Collection eligibility or Availability evidence.",
+        "network": "Injected synthetic provider; no live network, census or throughput claim.",
+        "models": "No LLM run; tokens are estimates."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstSearchHandler": 0.2767920000005688,
+          "ordinaryContinuation": 0.7380000000002838,
+          "applicationSerialization": 0.002207999999882304,
+          "openCodeSerialization": 0.0035419999994701357,
+          "piFallbackIncludingRuntime": 1.1004579999998896,
+          "piWorkerIncludingStartupRuntime": 107.40883300000041
+        },
+        "warm": {
+          "firstSearchHandler": {
+            "samplesMs": [
+              0.24370799999996962,
+              0.4937500000005457,
+              0.34012499999971624,
+              0.3209580000002461,
+              0.30529200000000856
+            ],
+            "medianMs": 0.3209580000002461,
+            "minMs": 0.24370799999996962,
+            "maxMs": 0.4937500000005457
+          },
+          "ordinaryContinuation": {
+            "samplesMs": [
+              0.8475819999985106,
+              1.3337489999994432,
+              1.5195829999993293,
+              1.0592900000001464,
+              1.0997910000005504
+            ],
+            "medianMs": 1.0997910000005504,
+            "minMs": 0.8475819999985106,
+            "maxMs": 1.5195829999993293
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.004332999999860476,
+              0.0044580000003406894,
+              0.009040999999342603,
+              0.004708999999820662,
+              0.004167000000052212
+            ],
+            "medianMs": 0.0044580000003406894,
+            "minMs": 0.004167000000052212,
+            "maxMs": 0.009040999999342603
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.00408400000014808,
+              0.004249999999956344,
+              0.011666999999761174,
+              0.00766600000042672,
+              0.004750000000058208
+            ],
+            "medianMs": 0.004750000000058208,
+            "minMs": 0.00408400000014808,
+            "maxMs": 0.011666999999761174
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              1.499166999999943,
+              1.3748750000004293,
+              2.0326670000004015,
+              2.451665999999932,
+              2.25683300000037
+            ],
+            "medianMs": 2.0326670000004015,
+            "minMs": 1.3748750000004293,
+            "maxMs": 2.451665999999932
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              115.7852499999999,
+              123.9257090000001,
+              129.69929200000024,
+              6.786250000000109,
+              4.430916000000252
+            ],
+            "medianMs": 115.7852499999999,
+            "minMs": 4.430916000000252,
+            "maxMs": 129.69929200000024
+          }
+        }
+      }
+    }
+  ]
+}

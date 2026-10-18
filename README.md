@@ -185,6 +185,10 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Local SQLite persistence for Scryfall reference data, Collection snapshots, and saved Deck Candidates.
 - Structured candidate create/edit with provisional plans, assessed options, selected memberships and exact timestamp
   concurrency checks. Saves and reads do not automatically validate a deck.
+- Explicit saved-candidate legality/evaluation by ID and last-read timestamp, isolated transient trials, and latest
+  check-specific evidence with absent/applicable/outdated reads. Evidence publication preserves content timestamps.
+- Compact candidate summaries and complete paged Brief/selection/pool/plan/reasoning/report views. Saved rendering uses
+  selected canonical names; developer JSON/Mermaid exports preserve current reasoning without running checks.
 - Explicit Scryfall bulk sync for `oracle_cards`, `all_cards`, and `oracle_tags`.
 - Local Card Set discovery. Retained local CQL2 filters require explicit `TOMEKIN_ENABLE_LEGACY_QUERY=true` and the `legacy_query_cards` capability (OpenCode also requires an allow permission).
 - ManaBox Collection CSV import with blocking validation and non-destructive failed imports.
@@ -263,3 +267,15 @@ the same portable core. They are possibilities rather than alpha promises; see
 
 For reproducible synthetic workflow and pre-migration candidate measurements, run `bun run evaluate:baseline`.
 [The evaluation protocol](docs/evaluation/README.md) describes the recorded artifact, limitations and legacy comparator.
+
+### Inspect a saved Deck Plan
+
+```sh
+bun run tomekin deck-candidate export-plan <candidate-id> --format json --projection strategy --output plan.json
+bun run tomekin deck-candidate export-plan <candidate-id> --format mermaid --projection pool --output plan.mmd
+```
+
+The default projection is `strategy`; `selected` adds selected quantities/sections and `pool` includes alternatives.
+JSON always retains the complete candidate reasoning. Mermaid source can be rendered by an external compatible viewer;
+Tomekin has no production SVG/rendering dependency. Reports expose missing judgments and outdated evidence rather than
+implicitly checking a deck. See [complete candidate views and output](docs/product-behavior.md#complete-views-and-generated-output).

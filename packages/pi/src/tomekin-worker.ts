@@ -7,6 +7,7 @@ import {
     ProviderFailure,
     type ProviderReply,
     agentToolMutates,
+    agentToolPreservesCompleteOutput,
     agentToolResultDetails,
     isRetrievalEnvelope,
     serializeAgentToolDetails,
@@ -118,7 +119,7 @@ self.onmessage = async (
         };
         const details = agentToolResultDetails(result);
         const serializationStarted = performance.now();
-        const serialized = output(details, toolName.includes("deck_candidate"));
+        const serialized = output(details, agentToolPreservesCompleteOutput(toolName));
         log.info(
             {
                 operation: "pi_worker_output",

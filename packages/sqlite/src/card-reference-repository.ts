@@ -78,7 +78,19 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
       });
     },
     async summarizeReferenceSupport() {
-        return wrap(() => summarizeReferenceImports(db.select().from(scryfallBulkDataImport).all().map((row) => ScryfallBulkDataImportSchema.parse({
+        return wrap(() => readReferenceSupport(db));
+    },
+    async listCardIdentitiesByIds(ids) {
+      return wrap(() => ids.map((id) => readCardIdentityDetail(db, id)));
+    },
+  };
+}
+
+type ReferenceStore = Pick<TomekinDatabase,"select">;
+export function readReferenceSupport(db: ReferenceStore) {
+    // SQLite import timestamps have second precision. For equal timestamps, the
+    // most recently inserted committed import owns the current reference facts.
+    return summarizeReferenceImports(db.select().from(scryfallBulkDataImport).orderBy(sql`rowid DESC`).all().map((row) => ScryfallBulkDataImportSchema.parse({
             id: row.id,
             bulkDataType: row.bulkDataType,
             importContractRevision: row.importContractRevision,
@@ -90,12 +102,7 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
             importedRecordCount: row.importedRecordCount,
             warnings: row.warningsJson as string[],
             blockingErrors: row.blockingErrorsJson as string[]
-        }))));
-    },
-    async listCardIdentitiesByIds(ids) {
-      return wrap(() => ids.map((id) => readCardIdentityDetail(db, id)));
-    },
-  };
+        })));
 }
 
 function buildCardFilters(input: SearchCardIdentitiesInput) {
@@ -107,6 +114,7 @@ function buildCardFilters(input: SearchCardIdentitiesInput) {
   if (input.oracleText) filters.push(like(cardIdentity.oracleText, `%${input.oracleText}%`));
   return filters;
 }
+
 
 function wrap<T>(fn: () => T): Result<T, CardReferenceRepositoryError> {
   try {

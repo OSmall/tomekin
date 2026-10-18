@@ -263,6 +263,32 @@ uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlem
 inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
 legacy comparator remains pinned and does not depend on compatibility product tools.
 
+Explicit check coverage uses the same shared-handler/on-disk seam for initial inputs, saved baselines, transient
+revisions, check-specific applicability and timestamp separation. Two connections and interleaved calls exercise
+selected/pool/import races, including successful Oracle imports in one timestamp tick. Validator replacement prevents
+stale evidence reuse/publication. Actual OpenCode, Pi fallback and real Worker tests cover serialized schemas, typed
+errors, evidence persistence, post-dispatch cancellation/shutdown, unknown write outcomes and complete findings beyond
+the retired preview boundary. Current evaluation loads saved checks by candidate ID and exact timestamp; the frozen
+legacy comparator remains unchanged.
+
+## Complete candidate output coverage
+
+Migrated temporary SQLite/public-handler tests recover complete JSON beyond the old adapter preview, reconstruct the
+current records, preserve rationale/qualifications/evidence, exercise zero-first and escaped UTF-8 budget boundaries,
+reject changed view/candidate/evidence/name baselines and distinguish unchanged Brief-only continuation. Pool tests
+keep role groups, deduplicated options, alternatives and selected quantities separate. Reports retain complete recorded
+findings, honest absent/outdated statuses and missing focused judgments. Actual OpenCode schemas and Pi Worker/fallback
+outputs exercise complete envelopes and saved canonical rendering. CLI tests cover exact export arguments, missing
+candidate/plan and atomic filesystem failures preserving prior output and cleaning temporary files.
+
+Mermaid exports receive a separate manual syntax/render/readability check using an external compatible renderer.
+The public/synthetic `candidate-plan.ts` fixture covers escaped labels, cycles, multiple relationship kinds, symmetric
+competition, disconnected desired gaps, route priorities and repeated Mainboard/Sideboard quantities. Its larger
+representative variant has 24 selected identities and eight active alternatives with multi-role contributions. Check all
+three projections, confirm special characters render as text, verify quantities/alternatives remain distinguishable,
+and inspect layout at readable zoom. A passing render establishes no strategic quality. No renderer, live LLM or network
+is part of the default test suite.
+
 ## Provider search coverage
 
 The approved common runtime/handler seam uses isolated on-disk SQLite and injected provider/time ports. Static fixtures
@@ -276,3 +302,7 @@ process test rejects a second provider owner and recovers conservatively from in
 Worker/fallback and OpenCode tests preserve complete >16k selected text and structured errors; a killed Worker cannot
 erase host cooldown. Separate changing-source fixtures illustrate accepted live drift. Matched synthetic workflow
 measurements report application/adapter bytes and fixture stages/calls, without live census, throughput or model-token claims.
+
+Run `bun run evaluate:search` for the provider fixture protocol. The committed
+[measurement evidence](./research/provider-search-evidence/README.md) records source identity counts, ordinary
+continuation call costs, complete page/adapter bytes and five warm timing samples without a live-throughput claim.

@@ -24,7 +24,7 @@ describe("agent tool handlers", () => {
 
             expect(result.isOk()).toBe(true);
             if (result.isErr()) throw new Error(result.error.message);
-            expect(result.value).toEqual({
+            expect(result.value).toMatchObject({
                 status: "legal",
                 reasons: [],
                 warnings: [],
@@ -47,7 +47,7 @@ describe("agent tool handlers", () => {
 
             expect(result.isOk()).toBe(true);
             if (result.isErr()) throw new Error(result.error.message);
-            expect(result.value).toEqual({
+            expect(result.value).toMatchObject({
                 status: "legal",
                 reasons: [],
                 warnings: ["Scryfall reference data is 15 days old; refresh if current external facts matter."],
@@ -162,23 +162,6 @@ describe("agent tool handlers", () => {
         });
     });
 
-    test("renders canonical 60-card Constructed sections through the public handler", () => {
-        const handlers = createAgentToolHandlers(repositoriesWithCards([]));
-
-        const result = handlers.renderDeckCandidate({
-            label: "Modern Forests",
-            format: "modern",
-            cards: [
-                {cardIdentityId: forestId, cardName: "Forest", quantity: 60, section: "mainboard"},
-                {cardIdentityId: forestId, cardName: "Forest", quantity: 15, section: "sideboard"},
-            ],
-        });
-
-        expect(result.isOk()).toBe(true);
-        if (result.isErr()) throw new Error(result.error.message);
-        expect(result.value.portableDecklist).toBe("Mainboard\n60 Forest\n\nSideboard\n15 Forest");
-    });
-
     test("searches Card Sets through the public handler", async () => {
         const handlers = createAgentToolHandlers(repositoriesWithCards([]));
 
@@ -250,7 +233,7 @@ function repositoriesWithCards(cards: readonly CardIdentity[]): AgentToolReposit
         ],
         tags: [],
     }));
-    return {
+    const repositories:AgentToolRepositories = {
         cardReference: {
             searchCardIdentities: async () => ok(cards),
             getCardIdentity: async (idOrName) => {
@@ -295,10 +278,21 @@ function repositoriesWithCards(cards: readonly CardIdentity[]): AgentToolReposit
             listCollectionImports: async () => ok([]),
         },
         deckCandidates: {
+            captureDeckCheck:async(input)=> {
+                if("candidate_id" in input) return err({type:"not_found",message:"Not used by this test."});
+                const support=await repositories.cardReference.summarizeReferenceSupport();
+                if(support.isErr()) throw new Error(support.error.message);
+                return ok({brief:input.brief,cards:input.cards.map(row=> {
+                    const detail=details.find(d=>d.identity.id===row.cardIdentityId)!;
+                    return {card:detail.identity,quantity:row.quantity,section:row.section,parts:detail.parts,legalities:detail.legalities};
+                }),reference:support.value,checked_at:new Date().toISOString(),trial:true});
+            },
+            publishDeckCheck:async()=>err({type:"repository_error",message:"Not used by this test."}),
             createDeckCandidate: async () => err({type: "repository_error", message: "Not used by this test."}),
             editDeckCandidate: async () => err({type: "repository_error", message: "Not used by this test."}),
             getDeckCandidate: async () => err({type: "not_found", message: "Not used by this test."}),
             listDeckCandidates: async () => ok([]),
         },
     };
+    return repositories;
 }
