@@ -1,6 +1,6 @@
 # Provider-backed Scryfall Card Search
 
-Status: Accepted; local known-card lookup and confirmed-policy owned-row browsing implemented. Provider discovery/filtering and final Availability remain separate work.
+Status: Accepted; local known-card lookup, reference catalogue discovery and confirmed-policy owned-row browsing implemented. Provider discovery/filtering and final Availability remain separate work.
 Refines the decision recorded in
 [Choose the agent-facing Card Query authoring contract](https://github.com/OSmall/tomekin/issues/72).
 The existing CQL2 implementation remains the current discovery behaviour until provider migration.
@@ -40,7 +40,7 @@ error fitting rolls back to a coherent position before removed outcomes. Oversiz
 `record_too_large`, measured required/limit bytes and safe recovery, without prescribing a selection/query change.
 Self-contained cursor sizing is preflighted before execution. Failure envelopes have complete partial edges and one
 optional recovery cursor, with no normal pageInfo. No preview, spill-file recovery, saved cursor store or fixed expiry
-is adopted. Pi Worker/fallback now preserve complete lookup and Collection browse envelopes, plus complete exact location inspection; unmigrated tools retain their temporary cap.
+is adopted. Pi Worker/fallback now preserve complete lookup, tag-catalogue and Collection browse envelopes, plus complete exact location inspection; unmigrated tools retain their temporary cap.
 
 The intended agent workflow is staged retrieval: request only facts needed to compare the current candidates, then
 look up additional facts for a shortlist in groups. Card details already returned can be reused in that comparison.

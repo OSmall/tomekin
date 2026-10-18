@@ -15,7 +15,10 @@ retaining Tomekin's current domain model and relational reference corpus for kno
 and deterministic checks. Existing Collection and Deck Candidate foreign keys remain; no duplicated identity columns
 or name snapshots are adopted. The existing DSL remains an explicitly enabled legacy capability after migration.
 Local `lookup_cards` now implements the complete selected-fact, bounded-envelope and stateless input-position contract.
-Local Collection policy resolution and bounded owned-row browsing are implemented; provider filtering/evidence and catalogue migration remain separate slices. Local-only normal network
+Local `browse_tags` now provides explicit search/lookup/list operations over retained tag, alias and hierarchy tables.
+Its bounded complete-record envelopes use shared stateless cursors bound to the successful tag import. Catalogue reads
+are transactional, hierarchy depth is explicit and bounded, and no separate reference/search store is introduced.
+Local Collection policy resolution and bounded owned-row browsing are implemented. Provider filtering/evidence remains a separate slice. Local-only normal network
 behavior remains in effect until provider discovery ships.
 
 ## Current Components

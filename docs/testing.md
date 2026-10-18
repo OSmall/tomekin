@@ -299,3 +299,9 @@ Actual Pi Worker/fallback and OpenCode tests assert canonical selector metadata 
 exact location inspection also survives the former preview cap. Focused SQLite exceptions establish transaction rollback,
 equal-time/out-of-order import completion and generated migration preservation of records and integer timestamp units.
 Legacy lost source precision remains an explicit unknown rather than a guessed passing date.
+
+Tag catalogue coverage uses actual shared handlers composed with isolated on-disk SQLite for slug/label/alias search,
+complete definitions, explicit misses, optional bounded hierarchy, full recoverable traversal, relevant successful
+import bindings and whole-record UTF-8 budgets. Thin actual Pi Worker/fallback and OpenCode checks assert registry
+replacement, serialized nested operation schemas across independent metadata registries, complete large definitions
+and structured errors. Default tests use deterministic local fixtures and perform no source download.

@@ -58,6 +58,9 @@ controlled per-turn orientation that directs the assistant to read the root deck
 use. Pi retains ownership of login, settings, and conversation data within this clone-local profile. Other platforms fail clearly until
 a reviewed artifact is added.
 
+`browse_tags` discovers imported tag vocabulary with explicit search, known-slug lookup, optional bounded hierarchy,
+and recoverable catalogue listing. `search_card_sets` discovers codes/names from existing imported Set metadata.
+
 `lookup_cards` retrieves ordered local Oracle/name/Printing batches with explicitly selected complete facts,
 including multipart text and direct/inherited tags. Complete bounded envelopes support `first`/`after` recovery in
 OpenCode and both Pi execution paths. Local misses remain explicit, and optional unavailable tags do not block core

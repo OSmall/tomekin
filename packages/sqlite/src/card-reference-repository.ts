@@ -1,3 +1,4 @@
+import {readTagCatalogue} from "./tag-catalogue";
 import {readCardIdentityDetail, mapCardIdentity} from "./card-reference-detail";
 import {and, eq, inArray, like, or, sql} from "drizzle-orm";
 import {err, ok, type Result} from "neverthrow";
@@ -24,6 +25,7 @@ import {
 
 export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardReferenceRepository {
   return {
+    async readTagCatalogue(operation, offset, limit) { return wrap(() => readTagCatalogue(db, operation, offset, limit)); },
     async searchCardIdentities(input) {
       return wrap(() => {
         const filters = buildCardFilters(input);
