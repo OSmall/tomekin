@@ -17,13 +17,11 @@ permission:
   skill: allow
   "tomekin_draft_deck_building_brief": allow
   "tomekin_query_cards": allow
+  "tomekin_lookup_cards": allow
   "tomekin_hypergeometric_calculator": allow
-  "tomekin_get_card_identity": allow
   "tomekin_search_card_identity_tags": allow
   "tomekin_search_card_sets": allow
-  "tomekin_summarize_reference_support": allow
   "tomekin_get_format_constraints": allow
-  "tomekin_resolve_decklist_cards": allow
   "tomekin_validate_format_legality": allow
   "tomekin_evaluate_deck_candidate": allow
   "tomekin_render_deck_candidate": allow

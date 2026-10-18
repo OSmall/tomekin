@@ -65,7 +65,7 @@ describe("Tomekin agent configuration", () => {
         expect(querySkill).toContain("(locationType, locationName)");
         expect(querySkill).toContain("invalid workflow usage");
         expect(querySkill).toContain("Staged Retrieval");
-        expect(querySkill).toContain("Card Query has no pagination");
+        expect(querySkill).toContain("Local `query_cards` has no pagination");
         expect(coordinator).toContain("final Availability recheck");
         expect(coordinator).toContain("procedural");
     });

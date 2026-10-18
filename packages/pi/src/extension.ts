@@ -1,5 +1,5 @@
 import {Type, type TSchema} from "@sinclair/typebox";
-import {agentToolMutates, agentToolPreservesCompleteOutput, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {agentToolMutates, agentToolPreservesCompleteOutput, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
@@ -49,7 +49,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
         parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
-            if (signal.aborted) return cancelledOutput("Cancelled before dispatch.");
+            if (signal.aborted) return name === "lookup_cards" ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.")) : cancelledOutput("Cancelled before dispatch.");
             if (options.transport && options.databasePath) {
                 return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: !agentToolMutates(name)}, signal);
             }
@@ -58,14 +58,14 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
-                const result = await handler(params) as ResultLike;
-                if (signal.aborted && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
-                const details = result.isOk() ? result.value : errorDetails(result.error);
+                const result = await (name === "lookup_cards" ? runtime.handlers.lookupCards(params, signal) : handler(params)) as ResultLike;
+                if (signal.aborted && name !== "lookup_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
+                const details = agentToolResultDetails(result);
                 options.log.info({component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
                 return projectOutput(details, agentToolPreservesCompleteOutput(name));
             } catch {
                 options.log.warn({component: "agent_tool", operation: "pi_tool_call", tool: name, status: "failed"}, "Pi tool call failed unexpectedly");
-                return failureOutput(agentToolMutates(name)?"unknown_write_outcome":"tool_error", agentToolMutates(name)?"The write outcome is unknown. Inspect candidate list/get and reconcile before retrying.":"The approved tool could not complete.");
+                return failureOutput(agentToolMutates(name) ? "unknown_write_outcome" : "tool_error", agentToolMutates(name) ? "The write outcome is unknown. Inspect candidate list/get and reconcile before retrying." : "The approved tool could not complete.");
             } finally {
                 runtime.close();
             }
@@ -124,7 +124,7 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-        draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+        lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;
 }
@@ -151,8 +151,8 @@ function truncateUtf8ToByteLimit(text: string): string {
 
 /** Temporary safety cap for core tools pending their compact/recoverable output contracts. */
 function projectOutput(details: unknown, preserveComplete = false) {
-    const serialized = JSON.stringify(details, null, 2) ?? "null";
-    if (preserveComplete || serialized.length <= MAX_CORE_RESULT_CHARACTERS) return {content: [{type: "text", text: serialized}], details};
+    const serialized = serializeAgentToolDetails(details);
+    if (preserveComplete || isRetrievalEnvelope(details) || serialized.length <= MAX_CORE_RESULT_CHARACTERS) return {content: [{type: "text", text: serialized}], details};
     let previewLength = MAX_CORE_RESULT_CHARACTERS;
     let bounded: {truncated: true; originalCharacters: number; preview: string};
     let text: string;
@@ -182,9 +182,4 @@ export default function registerTomekinExtension(pi: PiApi) {
     pi.on("session_start", () => auditPiToolRegistry(pi.getActiveTools()));
     pi.on("session_shutdown", async () => { await transport.close(); });
     pi.on("before_agent_start", (event) => ({systemPrompt: appendTomekinPiBootstrap(event.systemPrompt)}));
-}
-
-function errorDetails(error:{readonly type?:string;readonly message:string}|undefined) {
- const {type,...details}=error??{message:"Unknown tool error."};
- return {error:type??"error",...details};
 }

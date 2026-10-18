@@ -19,7 +19,8 @@ import {
     type DeckBuildingBrief,
     type DeckCandidateCardSection,
 } from "@tomekin/core";
-import {getDetail, readReferenceSupport} from "./card-reference-repository";
+import {readReferenceSupport} from "./card-reference-repository";
+import {readCardIdentityDetail} from "./card-reference-detail";
 import type { TomekinDatabase } from "./database";
 import {
     cardIdentity,
@@ -190,7 +191,7 @@ export function createSqliteDeckCandidateRepository(
                 }
                 // Hydrate the revised memberships, never the baseline's derived cards.
                 const cards = memberships.map(m=> {
-                    const detail=getDetail(tx,m.cardIdentityId);
+                    const detail=readCardIdentityDetail(tx,m.cardIdentityId);
                     return {card:detail.identity,quantity:m.quantity,section:m.section,legalities:detail.legalities,parts:detail.parts};
                 });
                 const reference=readReferenceSupport(tx);

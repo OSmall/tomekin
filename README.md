@@ -49,7 +49,7 @@ On macOS arm64, `bun run tomekin` launches Pi v0.85.1 through your terminal usin
 at `.data/pi`. The launcher downloads only the pinned, SHA-256-verified standalone artifact into Tomekin's own
 `.data/tomekin-pi-runtime/` cache and keeps the normal Tomekin database (or `TOMEKIN_DB_PATH`) unchanged.
 
-The session exposes the 16 Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
+The session exposes the approved Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
 Pi's interactive `ask_user` tool. It does not give the model coding, shell, general filesystem, network, raw-database,
 MCP, task, discovery, or todo tools. The launcher explicitly registers the canonical `skills/` directory
 as Pi skills while ambient skill and context-file discovery remain disabled. The clone-local profile selects only the
@@ -57,6 +57,11 @@ reviewed `pi-ask-user@0.15.0` extension entry point, not its bundled skills, pro
 controlled per-turn orientation that directs the assistant to read the root deck-building skill before product-tool
 use. Pi retains ownership of login, settings, and conversation data within this clone-local profile. Other platforms fail clearly until
 a reviewed artifact is added.
+
+`lookup_cards` retrieves ordered local Oracle/name/Printing batches with explicitly selected complete facts,
+including multipart text and direct/inherited tags. Complete bounded envelopes support `first`/`after` recovery in
+OpenCode and both Pi execution paths. Local misses remain explicit, and optional unavailable tags do not block core
+lookup. It performs no network fallback or ownership evaluation. See the [lookup contract](docs/card-query.md#known-card-lookup).
 
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
 explicit decimal target. It works without imported card data and does not save records. See the
