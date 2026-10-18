@@ -105,7 +105,7 @@ async function observe(name: Workload) {
         const decklist = await stage("optionalCompletePortableDecklist", () => readView(runtime, created.candidate_id, "portable_decklist"));
         const pulls = await stage("optionalCompletePullList", () => readView(runtime, created.candidate_id, "collection_pull_list"));
         const lookup = unwrap(await stage("replacementFactLookup", () => runtime.handlers.lookupCards({references: added.map(value => ({kind: "oracle_id", value})), select: {name: true, oracle_text: true, mana_cost: true, type_line: true}, first: 3})));
-        requireEvidence(lookup.edges.length === 3, "all replacement facts found");
+        requireEvidence(lookup.edges.length === 3 && !lookup.pageInfo.hasNextPage && lookup.edges.every(({node}, i) => node.status === "found" && node.card.oracle_id === added[i] && node.card.name === `Synthetic ${String(rowCount + i + 1).padStart(3, "0")} — Æ` && node.card.oracle_text === "Draw a card." && node.card.mana_cost === "{1}" && node.card.type_line === (name === "tuning" ? "Artifact" : "Basic Land")), "all replacement facts complete");
         const serialized = await stage("applicationSerialization", () => JSON.stringify(edited));
         const openCode = await stage("openCodeSerialization", () => resultToOpencodeOutput(editResult));
         const adapterEdit = async (mode: "fallback" | "workerCold" | "workerWarm") => {
