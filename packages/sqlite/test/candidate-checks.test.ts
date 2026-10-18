@@ -1,3 +1,4 @@
+import {readCandidateJson} from "../../core/test/fixtures/read-candidate-json";
 import {expect, test} from "bun:test";
 import {mkdtempSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
@@ -37,7 +38,7 @@ test("an explicit saved legality check publishes latest reusable evidence withou
         const result=unwrap(await app.handlers.validateFormatLegality({candidate_id:created.candidate_id,expected_updated_at:created.updated_at}));
         expect(result.status).toBe("legal");
         expect(result.evidence.status).toBe("applicable");
-        const read=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"state"}));
+        const read=(await readCandidateJson(app.handlers.getDeckCandidate,created.candidate_id));
         expect(read.updatedAt).toBe(created.updated_at);
         expect(read.validation_evidence.checks.format_legality.status).toBe("applicable");
         expect(read.validation_evidence.checks.format_legality.result.status).toBe("legal");
@@ -62,7 +63,7 @@ test("initial and saved checks require their Oracle facts without depending on u
         const created=await initial(app);
         const checked=unwrap(await app.handlers.validateFormatLegality({candidate_id:created.candidate_id,expected_updated_at:created.updated_at}));
         expect(checked.evidence.status).toBe("applicable");
-        const recorded=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"state"}));
+        const recorded=(await readCandidateJson(app.handlers.getDeckCandidate,created.candidate_id));
         expect(recorded.validation_evidence.checks.format_legality.dependencies.reference_imports).toHaveLength(1);
         app.db.delete(scryfallBulkDataImport).where(eq(scryfallBulkDataImport.bulkDataType,"oracle_cards")).run();
         const unavailable=await app.handlers.validateFormatLegality({candidate_id:created.candidate_id,expected_updated_at:created.updated_at});
@@ -76,13 +77,13 @@ test("trial changes check the revised selected cards and Brief while leaving sav
     try{
         const created=await initial(app), input={candidate_id:created.candidate_id,expected_updated_at:created.updated_at};
         unwrap(await app.handlers.evaluateDeckCandidate(input));
-        const before=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"state"}));
+        const before=(await readCandidateJson(app.handlers.getDeckCandidate,created.candidate_id));
         const trial=unwrap(await app.handlers.evaluateDeckCandidate({...input,changes:{brief:{playExperience:"Trial experience"},memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:59}]}}));
         expect(trial.manaAndCurve.landCount).toBe(59);
         expect(trial.legality.status).toBe("illegal");
         expect(trial.powerAndExperience.playExperience).toBe("Trial experience");
         expect(trial.evidence.status).toBe("transient");
-        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"state"}))).toEqual(before);
+        expect((await readCandidateJson(app.handlers.getDeckCandidate,created.candidate_id))).toEqual(before);
         const illegalTrial=await app.handlers.evaluateDeckCandidate({...input,changes:{memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:0}]}});
         expect(illegalTrial.isErr()).toBe(true);
         const unknown="22222222-2222-4222-8222-222222222222";
@@ -92,7 +93,7 @@ test("trial changes check the revised selected cards and Brief while leaving sav
         const conflict=await app.handlers.validateFormatLegality({...input,expected_updated_at:"2026-10-17T00:00:00.000Z"});
         expect(conflict.isErr()).toBe(true);
         if(conflict.isErr()) expect(conflict.error.type).toBe("conflict");
-        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"state"}))).toEqual(before);
+        expect((await readCandidateJson(app.handlers.getDeckCandidate,created.candidate_id))).toEqual(before);
     }finally{app.dispose();}
 });
 
@@ -134,7 +135,7 @@ test("a concurrent selected edit prevents stale check publication without overwr
         expect(outdated.status).toBe("legal");
         expect(outdated.evidence.status).toBe("outdated");
         expect(newer.status).toBe("illegal");
-        const read=unwrap(await app.handlers.getDeckCandidate({id,view:"state"}));
+        const read=(await readCandidateJson(app.handlers.getDeckCandidate,id));
         expect(read.validation_evidence.checks.format_legality.status).toBe("applicable");
         expect(read.validation_evidence.checks.format_legality.result.status).toBe("illegal");
     }finally{closeDatabase(connection);app.dispose();}
@@ -171,5 +172,28 @@ test("a later Oracle import in the same timestamp tick invalidates a captured ch
         app.db.insert(scryfallBulkDataImport).values({id:"00000000-0000-4000-8000-000000000001",bulkDataType:"oracle_cards",importContractRevision:requiredScryfallImportContractRevisions.oracle_cards,status:"succeeded",startedAt:app.clock.now(),completedAt:app.clock.now(),sourceUpdatedAt:app.clock.now(),importedRecordCount:1,warningsJson:[],blockingErrorsJson:[]}).run();
         expect(unwrap(await checking).evidence.status).toBe("outdated");
         expect(unwrap(await app.handlers.getDeckCandidate({id})).validation_evidence.status).toBe("absent");
+    }finally{app.dispose();}
+});
+
+test("view continuations bind included evidence and canonical names without staling an unchanged Brief",async()=>{
+    const app=setup();
+    try{
+        const saved=await initial(app),id=saved.candidate_id;
+        const json=unwrap(await app.handlers.getDeckCandidate({id,view:"json",first:1}));
+        const briefPage=unwrap(await app.handlers.getDeckCandidate({id,view:"brief",first:1}));
+        unwrap(await app.handlers.validateFormatLegality({candidate_id:id,expected_updated_at:saved.updated_at}));
+        const changedEvidence=await app.handlers.getDeckCandidate({id,view:"json",after:json.pageInfo.endCursor});
+        expect(changedEvidence.isErr()).toBe(true);
+        expect(changedEvidence.error.envelope.error.code).toBe("stale_cursor");
+        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.pageInfo.endCursor})).status).toBe("ok");
+        const selected=unwrap(await app.handlers.getDeckCandidate({id,view:"selected",first:0}));
+        app.db.update(cardIdentity).set({name:"Canonical Forest"}).where(eq(cardIdentity.id,forest)).run();
+        const renamed=await app.handlers.getDeckCandidate({id,view:"selected",after:selected.pageInfo.endCursor});
+        expect(renamed.error.envelope.error.code).toBe("stale_cursor");
+        const checked=unwrap(await app.handlers.getDeckCandidate({id,view:"assessments",first:1}));
+        app.db.insert(scryfallBulkDataImport).values({id:crypto.randomUUID(),bulkDataType:"oracle_cards",importContractRevision:requiredScryfallImportContractRevisions.oracle_cards,status:"succeeded",startedAt:new Date("2026-10-19"),completedAt:new Date("2026-10-19"),sourceUpdatedAt:new Date("2026-10-19"),importedRecordCount:1,warningsJson:[],blockingErrorsJson:[]}).run();
+        const outdated=await app.handlers.getDeckCandidate({id,view:"assessments",after:checked.pageInfo.endCursor});
+        expect(outdated.error.envelope.error.code).toBe("stale_cursor");
+        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.pageInfo.endCursor})).status).toBe("ok");
     }finally{app.dispose();}
 });

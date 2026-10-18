@@ -14,7 +14,7 @@ import {
     type DeckCandidateRepository,
     CreateDeckCandidateInputSchema, EditDeckCandidateInputSchema, summarizeDeckCandidate
 } from "./deck-candidate";
-import {renderDeckCandidateMarkdown, renderPortableDecklist} from "./deck-candidate-rendering";
+import {GetDeckCandidateViewArgsSchema, readCandidateView} from "./deck-candidate-views";
 import {assessDeckLegality} from "./format-legality";
 import {DeckCheckInputSchema, DeckCheckArgsSchema, type CapturedDeckCheck, type DeckCheckName} from "./deck-checks";
 import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync";
@@ -48,21 +48,12 @@ export const SearchCardSetsArgsSchema = z.object({query: z.string().optional(), 
 export const ResolveDecklistCardsArgsSchema = z.object({names: z.array(z.string().min(1)).min(1)});
 export const ValidateDeckCandidateArgsSchema = DeckCheckInputSchema;
 export const RenderDeckCandidateArgsSchema = z.strictObject({
-    label: z.string().min(1),
-    format: DeckFormatSchema,
-    cards: z.array(z.object({
-        cardIdentityId: z.uuid(),
-        cardName: z.string().min(1),
-        quantity: z.number().int().positive(),
-        section: DeckCandidateCardSectionSchema,
-        sortOrder: z.number().int().nonnegative().default(0),
-        note: z.string().nullable().default(null)
-    })).min(1),
-    sections: z.record(z.string(), z.string()).optional()
+    candidate_id:z.uuid(), output:z.enum(["report","portable_decklist"]).default("report"),
+    first:z.number().int().min(0).max(200).optional(), after:z.string().min(1).optional(),
 });
 export const CreateDeckCandidateArgsSchema = CreateDeckCandidateInputSchema;
 export const EditDeckCandidateArgsSchema = EditDeckCandidateInputSchema;
-export const GetDeckCandidateArgsSchema = z.strictObject({id:z.uuid(),view:z.enum(["summary","state"]).default("summary")});
+export const GetDeckCandidateArgsSchema = GetDeckCandidateViewArgsSchema;
 export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema}).strict();
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
@@ -80,10 +71,10 @@ export const agentToolContracts = {
     resolve_decklist_cards: {description: "Resolve proposed card names to local Card Identities.", inputSchema: ResolveDecklistCardsArgsSchema},
     validate_format_legality: {description: "Explicitly check Format legality using candidate_id and expected_updated_at, with optional transient changes, or initial cards and Brief. Saved checks conditionally publish latest reusable evidence; trials remain transient.", inputSchema: DeckCheckArgsSchema},
     evaluate_deck_candidate: {description: "Explicitly evaluate legality, power context, mana curve and land count from saved candidate_id/expected_updated_at or initial cards/Brief. Optional changes are a transient trial. Saved evidence publishes only for matching inputs. Collection Availability is separate.", inputSchema: DeckCheckArgsSchema},
-    render_deck_candidate: {description: "Render stable Deck Candidate Markdown and a Portable Decklist.", inputSchema: RenderDeckCandidateArgsSchema},
+    render_deck_candidate: {description: "Generate a saved candidate report or selected-only canonical Portable Decklist. Returns complete ordered path/value records; repeat candidate_id/output with first/after. No editable report input and no implicit checks.", inputSchema: RenderDeckCandidateArgsSchema},
     create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
     edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
-    get_deck_candidate: {description: "Retrieve a saved Deck Candidate.", inputSchema: GetDeckCandidateArgsSchema},
+    get_deck_candidate: {description: "Read a compact saved candidate summary by default. Explicit brief/selected/options/pool/plan/assessments/json/report/portable_decklist views return complete path/value records with first/after continuation bound to the baseline. Repeat id/view; apply records in order; concatenate report/decklist string values. Pool groups roles and deduplicates options. No implicit checks.", inputSchema: GetDeckCandidateArgsSchema},
     list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
     list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
 } as const;
@@ -227,14 +218,12 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           collectionStatus: "Collection availability is not evaluated by this tool. Use query_cards for owned-copy evidence."
       });
     },
-    renderDeckCandidate(input: unknown) {
-        return safeSync(() => {
-            const args = RenderDeckCandidateArgsSchema.parse(input);
-            return {
-                markdown: renderDeckCandidateMarkdown(args),
-                portableDecklist: renderPortableDecklist(args.format, args.cards)
-            };
-        });
+    async renderDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => RenderDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        const result = await repositories.deckCandidates.getDeckCandidate(parsed.value.candidate_id);
+        if (result.isErr()) return result;
+        return readCandidateView(result.value, {id:parsed.value.candidate_id,view:parsed.value.output, ...parsed.value.first === undefined ? {} : {first:parsed.value.first}, ...parsed.value.after === undefined ? {} : {after:parsed.value.after}});
     },
     async createDeckCandidate(input: unknown) {
         const parsed = safeSync(() => CreateDeckCandidateArgsSchema.parse(input));
@@ -250,7 +239,9 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
         const parsed = safeSync(() => GetDeckCandidateArgsSchema.parse(input));
         if (parsed.isErr()) return parsed;
         const result = await repositories.deckCandidates.getDeckCandidate(parsed.value.id);
-        return result.map(candidate => parsed.value.view === "state" ? candidate : summarizeDeckCandidate(candidate));
+        if (result.isErr()) return result;
+        if (parsed.value.view === "summary") return ok(summarizeDeckCandidate(result.value));
+        return readCandidateView(result.value, parsed.value);
     },
     listDeckCandidates() {
         return repositories.deckCandidates.listDeckCandidates();

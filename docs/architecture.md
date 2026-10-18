@@ -158,7 +158,7 @@ Scryfall sync or local import populates local reference records. ManaBox import 
 reference data and transactionally replaces the current Collection snapshot. The agent then calls typed Agent Tools,
 which validate requests in core services and read or write through repository ports. SQLite executes the bounded data
 operations and returns domain-shaped results. Candidate create/edit operations save structured records without implicitly rendering or checking a deck. Rendering
-produces Markdown and a Portable Decklist from supplied or saved records.
+loads saved authoritative records and produces bounded generated Markdown or a selected canonical Portable Decklist.
 
 Imports and repository writes preserve the last usable state on expected validation or replacement failures. Tests use
 the same public services and repository boundaries with isolated temporary databases; see [Testing](./testing.md).
@@ -171,3 +171,15 @@ the same public services and repository boundaries with isolated temporary datab
 - SQLite with Drizzle behind repository ports.
 - Bun's test runner for deterministic unit and integration coverage.
 - OpenCode and the restricted interactive Pi session as local agent harness adapters.
+
+## Candidate inspection and export
+
+Core owns explicit candidate projections, generated report fragments and JSON/Mermaid source. The same saved read
+snapshot supplies canonical names and current per-check applicability. Complete explicit views use ordered path/value
+records within the shared byte-bounded retrieval envelope. Stateless cursors bind candidate/view and a transient hash of
+the content timestamp plus included records; check publication and canonical-name changes cannot mix pages. Brief-only
+reads do not depend on unused evidence/import state. No persisted report, fingerprint, cursor or extra authority exists.
+
+CLI loads a saved candidate, generates source in Core, writes a unique temporary file beside the destination and
+publishes by atomic rename. Filesystem failures clean the temporary file and leave previous output untouched. Diagram
+rendering remains an external inspection concern; no Mermaid/SVG production dependency is introduced.

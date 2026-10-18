@@ -1,3 +1,4 @@
+import {readCandidateJson} from "../../core/test/fixtures/read-candidate-json";
 import { expect, test } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -75,12 +76,7 @@ test("unknown create and edit Worker outcomes are inspectable before reconciliat
             await runtime.handlers.listDeckCandidates(),
         ).filter((c: any) => c.label === "Recoverable label");
         expect(matches).toHaveLength(1);
-        const baseline = unwrap(
-            await runtime.handlers.getDeckCandidate({
-                id: matches[0].candidate_id,
-                view: "state",
-            }),
-        );
+        const baseline = await readCandidateJson(runtime.handlers.getDeckCandidate,matches[0].candidate_id);
         expect(baseline.brief.goal).toBe(brief.goal);
         const input = {
             candidate_id: baseline.id,
@@ -99,12 +95,7 @@ test("unknown create and edit Worker outcomes are inspectable before reconciliat
         expect(edited.details).toMatchObject({
             error: "unknown_write_outcome",
         });
-        const inspected = unwrap(
-            await runtime.handlers.getDeckCandidate({
-                id: baseline.id,
-                view: "state",
-            }),
-        );
+        const inspected = await readCandidateJson(runtime.handlers.getDeckCandidate,baseline.id);
         expect(inspected.label).toBe("Recovered edit");
         expect(inspected.updatedAt).not.toBe(baseline.updatedAt);
         const blindRetry = await runtime.handlers.editDeckCandidate(input);
@@ -233,28 +224,22 @@ test("explicit candidate state survives Pi Worker and fallback without irreversi
             transport,
             databasePath: app.databasePath,
         });
-        const output = (await tool.execute(
-            "read",
-            { id: created.candidate_id, view: "state" },
-            new AbortController().signal,
-        )) as any;
-        expect(output.details.truncated).toBeUndefined();
-        expect(JSON.parse(output.content[0].text).plan.description).toBe(
-            description,
-        );
+        const recovered = await readCandidateJson(async input => {
+            const output = await tool.execute("read",input,new AbortController().signal) as any;
+            expect(output.details.truncated).toBeUndefined();
+            return JSON.parse(output.content[0].text);
+        },created.candidate_id);
+        expect(recovered.plan.description).toBe(description);
         const fallback = createCoreTool("get_deck_candidate", {
             log,
             createRuntime: () => createLocalAgentToolRuntime({ ...app, log }),
         });
-        const local = (await fallback.execute(
-            "read",
-            { id: created.candidate_id, view: "state" },
-            new AbortController().signal,
-        )) as any;
-        expect(local.details.truncated).toBeUndefined();
-        expect(JSON.parse(local.content[0].text).plan.description).toBe(
-            description,
-        );
+        const local = await readCandidateJson(async input => {
+            const output = await fallback.execute("read",input,new AbortController().signal) as any;
+            expect(output.details.truncated).toBeUndefined();
+            return JSON.parse(output.content[0].text);
+        },created.candidate_id);
+        expect(local.plan.description).toBe(description);
     } finally {
         await transport.close();
         runtime.close();

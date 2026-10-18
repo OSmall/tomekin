@@ -255,3 +255,10 @@ DeckCandidate
 
 This shape preserves the distinctions between owned rows, exact Printings, canonical Card Identities, source-backed
 tags, and proposed deck entries without presenting transient agent analysis as persisted product state.
+
+### Generated candidate views
+
+Reports, role-grouped/deduplicated pool views and Portable Decklists derive from the records above; they add no stored
+report authority or snapshot. Canonical names are joined on read. Explicit JSON retains the complete candidate and latest
+recorded check findings/dependencies. Continuation's view fingerprint is computed transiently from included records and
+content timestamp, not persisted as a candidate revision or historical report.
