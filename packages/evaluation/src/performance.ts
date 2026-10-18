@@ -25,7 +25,9 @@ async function readView(runtime: Runtime, candidateId: string, view: "json" | "p
     const records: CandidateViewRecord[] = [];
     let after: string | undefined, pages = 0, bytes = 0;
     do {
-        const page = unwrap(await runtime.handlers.getDeckCandidate({id: candidateId, view, first: 50, ...(after ? {after} : {})}));
+        const result = await runtime.handlers.getDeckCandidate({id: candidateId, view, first: 50, ...(after ? {after} : {})});
+        if (result.isErr()) throw new Error(JSON.stringify(result.error));
+        const page = result.value;
         if (!("edges" in page)) throw new Error("Expected bounded candidate view");
         records.push(...page.edges.map(edge => edge.node));
         bytes += utf8Bytes(JSON.stringify(page));
@@ -45,8 +47,8 @@ function restore(records: CandidateViewRecord[]): DeckCandidate {
     return value;
 }
 function checkStatuses(candidate: DeckCandidate) {
-    const checks = candidate.validation_evidence!.checks;
-    return {legality: checks.legality.status, evaluation: checks.evaluation.status, collection_availability: checks.collection_availability.status};
+    const checks = candidate.validation_evidence!.checks!;
+    return {legality: checks.format_legality.status, evaluation: checks.deck_evaluation.status, collection_availability: checks.collection_availability.status};
 }
 
 async function observe(name: Workload) {
@@ -60,7 +62,7 @@ async function observe(name: Workload) {
     const db = openDatabase(fixture.databasePath, {log});
     let importedId: string;
     try {
-        importedId = unwrap(await createSqliteCollectionRepository(db).replaceCollectionSnapshot({
+        importedId = unwrap(await createSqliteCollectionRepository(db, {now: () => new Date("2026-10-18T00:00:00.123Z")}).replaceCollectionSnapshot({
             sourcePath: "synthetic-performance.csv", importedAt: new Date("2026-10-18T00:00:00.123Z"),
             snapshot: {
                 locations: [{id: id(901), type: "binder", name: "Allowed 1"}, {id: id(902), type: "binder", name: "Allowed 2"}, {id: id(903), type: "deck", name: "Excluded"}],
@@ -70,7 +72,7 @@ async function observe(name: Workload) {
         })).id;
     } finally {closeDatabase(db);}
     const runtime = await stage("runtimeStartup", () => createLocalAgentToolRuntime({databasePath: fixture.databasePath, log}));
-    const transport = createPiWorkerTransport({workerUrl: new URL("../../pi/src/tomekin-worker.ts", import.meta.url).href});
+    const transport = createPiWorkerTransport({workerUrl: new URL("../../pi/src/tomekin-worker.ts", import.meta.url).href, createWorker: url => new Worker(url, {env: {...process.env as Record<string, string>, TOMEKIN_LOG_ENABLED: "false"}})});
     try {
         const rowCount = name === "tuning" ? 12 : 69;
         const initial = Array.from({length: rowCount}, (_, i) => id(i + 1));
@@ -118,7 +120,7 @@ async function observe(name: Workload) {
             requireEvidence(complete, `complete ${mode} edit`);
             return {complete, inputBytes: utf8Bytes(JSON.stringify(args)), outputBytes: utf8Bytes(text)};
         };
-        const adapterEdits = {fallback: await adapterEdit("fallback"), workerCold: await adapterEdit("workerCold"), workerWarm: await adapterEdit("workerWarm"), openCode: {complete: openCode === serialized, outputBytes: utf8Bytes(openCode)}};
+        const adapterEdits = {fallback: await adapterEdit("fallback"), workerCold: await adapterEdit("workerCold"), workerWarm: await adapterEdit("workerWarm"), openCode: {complete: JSON.stringify(JSON.parse(openCode)) === serialized, outputBytes: utf8Bytes(openCode)}};
         const selectedCoverage = coverage(final, after.memberships.map(item => item.card_identity_id));
         const checksBeforeExplicit = checkStatuses(before), checksAfterExplicit = checkStatuses(after);
         const selection = {beforeRows: initial.length, afterRows: after.memberships.length, copies: after.memberships.reduce((sum, row) => sum + row.quantity, 0), added: 3, removed: 3, retainedCutOptions: initial.slice(-3).filter(card => after.options.some(option => option.card_identity_id === card)).length, roleReferencesIntact: after.plan!.contributions.every(contribution => contribution.role_id === created.created_ids.role)};
@@ -140,7 +142,7 @@ export async function runCandidatePerformance(options: {warmRuns?: number} = {})
     for (const name of ["tuning", "commanderSize"] as const) {
         const cold = await observe(name);
         await observe(name);
-        const warm = [];
+        const warm: Awaited<ReturnType<typeof observe>>[] = [];
         for (let i = 0; i < warmRuns; i++) warm.push(await observe(name));
         workloads.push({...cold, timings: Object.fromEntries(Object.keys(cold.timingsMs).map(key => [key, {coldMs: cold.timingsMs[key]!, warm: summarize(warm.map(run => run.timingsMs[key]!))}])) as Record<string, {coldMs: number; warm: ReturnType<typeof summarize>}>});
     }

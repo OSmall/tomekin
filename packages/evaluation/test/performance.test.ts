@@ -14,6 +14,6 @@ test("three-card performance measurements preserve complete selection and explic
         expect(workload.renderedSelectedRows).toBe(workload.name === "tuning" ? 12 : 69);
         expect(workload.editPayload).toMatchObject({repeatedBriefBytes: 0, repeatedUnchangedMemberships: 0});
         expect(workload.adapterEdits).toMatchObject({fallback: {complete: true}, workerCold: {complete: true}, workerWarm: {complete: true}, openCode: {complete: true}});
-        expect(workload.timings.candidateEdit.warm.samplesMs).toHaveLength(1);
+        expect(workload.timings.candidateEdit!.warm.samplesMs).toHaveLength(1);
     }
 }, 30_000);
