@@ -81,7 +81,7 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         // Tentative pages must reserve their eventual stop metadata before accepting a record.
         const proposed = page(end+1,end+1===records.length?"source_exhausted":end+1-offset===first?"first":"response_budget");
         if (compactJsonBytes(proposed) > retrievalResponseBudgetBytes) {
-            if (end === offset) return failure({code:"record_too_large", message:`Complete record at ${JSON.stringify(records[end]!.path)} exceeds the response budget. Use a narrower explicit candidate view or developer JSON export for the complete artifact.`,retryable:false,cursor:token(offset),required_bytes:compactJsonBytes(proposed),limit_bytes:retrievalResponseBudgetBytes});
+            if (end === offset) return failure({code:"record_too_large", message:`Complete record at ${JSON.stringify(records[end]!.path)} cannot fit intact within the response budget. The recovery cursor remains before this record.`,retryable:false,cursor:token(offset),required_bytes:compactJsonBytes(proposed),limit_bytes:retrievalResponseBudgetBytes});
             return ok(page(end,"response_budget"));
         }
         end++;
