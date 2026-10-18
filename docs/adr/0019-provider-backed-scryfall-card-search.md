@@ -1,6 +1,6 @@
 # Provider-backed Scryfall Card Search
 
-Status: Accepted; local known-card lookup and reference catalogue discovery implemented. Provider discovery and Collection evidence remain pending.
+Status: Accepted; local known-card lookup, reference catalogue discovery and confirmed-policy owned-row browsing implemented. Provider discovery/filtering and final Availability remain separate work.
 Refines the decision recorded in
 [Choose the agent-facing Card Query authoring contract](https://github.com/OSmall/tomekin/issues/72).
 The existing CQL2 implementation remains the current discovery behaviour until provider migration.
@@ -11,9 +11,8 @@ selected for the process, with no runtime fallback. The local reference corpus i
 interpreting
 Scryfall syntax. Retain the existing DSL behind explicitly enabled `legacy_query_cards`, disabled by default.
 The new direction keeps the current domain model and table relationships rather than requiring a corpus redesign.
-No schema migration is currently required by the adopted design: no duplicate Collection identity columns, name
-snapshots, raw-card JSON storage, color-representation changes, or layout changes are adopted. New tools change the
-retrieval workflow, not the meaning of the existing persisted records.
+Provider retrieval itself requires no schema redesign: no duplicate Collection identity columns, name
+snapshots, raw-card JSON storage, color-representation changes, or layout changes are adopted. New tools preserve existing persisted record meanings. Collection policy browsing adds a transactional active-import pointer and exact source date text in migration 0009; it preserves existing rows and legacy timestamp units.
 
 The normal `search_cards` tool preserves Scryfall search parameters and passes `q` unchanged. `unique` is Scryfall's
 optional request parameter, not a Tomekin-imposed Printing mode. Forward the agent's supplied value unchanged; if
@@ -41,7 +40,7 @@ error fitting rolls back to a coherent position before removed outcomes. Oversiz
 `record_too_large`, measured required/limit bytes and safe recovery, without prescribing a selection/query change.
 Self-contained cursor sizing is preflighted before execution. Failure envelopes have complete partial edges and one
 optional recovery cursor, with no normal pageInfo. No preview, spill-file recovery, saved cursor store or fixed expiry
-is adopted. Pi Worker/fallback now preserve complete lookup and tag-catalogue envelopes; unmigrated tools retain their temporary cap.
+is adopted. Pi Worker/fallback now preserve complete lookup, tag-catalogue and Collection browse envelopes, plus complete exact location inspection; unmigrated tools retain their temporary cap.
 
 The intended agent workflow is staged retrieval: request only facts needed to compare the current candidates, then
 look up additional facts for a shortlist in groups. Card details already returned can be reused in that comparison.
@@ -206,3 +205,10 @@ tool. This is not a decision to alter their persisted records.
 The adopted direction supersedes ADR 0012's choice of CQL2 as the normal agent-facing language after implementation.
 ADR 0013's compiler rationale remains relevant to the retained legacy capability. Current behaviour documentation must
 be updated alongside implementation; this ADR does not describe delivered functionality.
+
+Collection browsing now uses closed `select`, `first`/`after`, complete ordinary envelopes and import-sensitive stateless
+row positions, replacing the earlier `fields`/`limit` illustration for this tool. Core owns a reusable actual-row facts
+and pure policy evaluator. Candidate permission is loaded from the whole Brief so strict recent-copy intent cannot be
+silently widened; exploratory inspiration retains wider permitted assembly. The active Collection import is updated in
+replacement's transaction, never inferred from greatest import start time. Reliable new source dates retain milliseconds;
+legacy precision loss stays explicit unknown and requires reimport for reliable chronology.

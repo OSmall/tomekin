@@ -31,19 +31,25 @@ an intermediate player, with limited bookkeeping” belongs in `playExperience`.
 
 ## Resolve The Collection Allow-list Once
 
-Call `list_collection_locations` and state the exact allowed `(locationType, locationName)` pairs in the confirmed
-working context. Collection Location names are exact and case-sensitive.
+Call `list_collection_locations` and inspect its exact locations plus authoritative active import context. Confirm
+allowed sources and any protected/excluded locations, excluded identities/Printings/rows, and typed copy restrictions.
+Keep the inspectable `collectionAccessPolicy` in the Brief, or use an explicit confirmed policy before a candidate
+exists. An empty allow-list permits zero rows. Existing Deck borrowing remains visibly Committed even when allowed.
 
-Translate that allow-list into one positive Collection predicate and copy it unchanged into every Collection query:
+Use `browse_collection_cards` for actual owned-row/date discovery and exact owned-Printing restrictions. It resolves
+UUID plus type/name or exact case-sensitive type/name pairs in the bound snapshot. Repeat the fixed policy/criteria
+with `after` for complete bounded traversal; request card-level facts through batched `lookup_cards`. Ask for the user's
+changed agreement before widening sources or restrictions. A successful Collection replacement requires scope
+reconfirmation; unchanged names do not rebind permission.
 
-- Require `collection.quantity > 0`.
-- When all allowed names are unique, use `collection.locationName in [...]`.
-- When a name exists under more than one location type, preserve the intended pairs with an `or` of scoped
-  `(collection.locationType, collection.locationName)` branches.
-- Wrap complex location logic and quantity in one `withCollectionCard` so they apply to the same owned row scope.
+For recent-card inspiration follow the coordinator's Recent Source Additions workflow: independently browse unknown
+dates unless declined and preserve strict physical-copy eligibility versus wider exploratory assembly. Unknown metadata
+never proves a strict restriction. Inspect completion/undated coverage before claiming a scan is complete.
 
-The tool has no hidden active policy. A Collection query that omits the confirmed allow-list is invalid workflow usage:
-discard it and retry with the full scope. Do not widen the scope merely because a promising card exists elsewhere.
+Legacy `query_cards` requires the same positive Collection predicate on every call: `collection.quantity > 0`, exact
+`(locationType, locationName)` alternatives and `withCollectionCard` for complex scope/quantity logic. Omission or
+widening of the confirmed allow-list is invalid workflow usage. That legacy evidence cannot prove typed policy or
+actual owned-Printing compliance; use the policy-aware browse path for those claims.
 
 ## Discover Broad Directions
 

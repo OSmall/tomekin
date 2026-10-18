@@ -24,8 +24,11 @@ card facts, discovery, construction or tuning are needed.
 3. Ask the user to confirm or edit the Brief before substantial discovery or full construction.
 4. Keep strength and pilot complexity explicit: `powerLevel` or Commander Bracket describes strength, while
    `playExperience` describes desired gameplay feel and complexity.
-5. When Collection evidence matters, call `list_collection_locations`, confirm an exact allow-list, and preserve the
-   same procedural `(locationType, locationName)` scope for all later Collection queries and the final Availability recheck.
+5. When Collection evidence matters, call `list_collection_locations`, confirm exact sources and restrictions, and
+   retain the active-import-bound `collectionAccessPolicy` in the Brief. Use `browse_collection_cards` with that
+   candidate's Brief policy or an explicit confirmed policy for actual-row eligibility. Preserve the same permission
+   through the final Availability recheck. Legacy `query_cards` still requires procedural exact
+   `(locationType, locationName)` predicates; it does not enforce metadata policy or actual owned-Printing correlation.
 6. If the Format is absent or ambiguous, ask one focused Format question before drafting. Do not silently default to
    Commander.
 7. For a sufficiently contextualised nominated-card tuning review, state material assumptions and proceed. For open
@@ -59,6 +62,21 @@ skill preserves the lifecycle and authority constraints.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.
 - Do not call a card Available, Committed, or Missing until Collection evidence has been checked under the confirmed
   allow-list.
+
+## Recent Source Additions
+
+For “recent”, “yesterday” or similar requests, confirm the user's task timezone and resolve an explicit UTC
+`[added_at_from, added_at_before)` interval. Record `recentAdditions.purpose` as `strict_copy_eligibility` or
+`exploratory_inspiration`. Strict copies require matching confirmed policy `copy_requirements` date bounds; an
+incompatible Brief returns an error until corrected. Exploratory inspiration may assemble discovered identities from
+other permitted rows.
+
+Browse dated rows with `browse_collection_cards`, explicit copy `select` and bounded `first`/`after`. Then independently
+browse `date_state: "unknown"` within the same permitted scope unless the user declines; record that choice in
+`recentAdditions.undated_search`. Label unknown rows “date unknown; possibly relevant” and report partial/unchecked
+coverage. Only reliable source `Added` chronology proves date bounds; legacy precision loss is unknown. A successful
+Collection replacement requires location refresh and scope reconfirmation, including row exclusions. A failed attempt
+preserves the active policy references. See [the exact policy and browse contract](../../docs/card-query.md#collection-policy-and-owned-row-browsing).
 
 ## Save And Resume Construction
 

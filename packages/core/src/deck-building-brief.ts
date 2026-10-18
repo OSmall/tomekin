@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {CollectionAccessPolicySchema, UtcInstantSchema, validDateRequirements} from "./collection-policy";
 
 export const deckFormatValues = [
   "commander",
@@ -25,7 +26,10 @@ export const sixtyCardConstructedFormatValues = [
 export const SixtyCardConstructedFormatSchema = z.enum(sixtyCardConstructedFormatValues);
 export type SixtyCardConstructedFormat = z.infer<typeof SixtyCardConstructedFormatSchema>;
 
+export const RecentAdditionsSchema = z.strictObject({purpose: z.enum(["strict_copy_eligibility", "exploratory_inspiration"]), added_at_from: UtcInstantSchema.optional(), added_at_before: UtcInstantSchema.optional(), timezone: z.string().min(1), undated_search: z.enum(["required", "declined"]).default("required")}).refine(validDateRequirements, "Date constraints conflict or the interval is empty.");
 const sharedBriefShape = {
+  collectionAccessPolicy: CollectionAccessPolicySchema.nullable().default(null),
+  recentAdditions: RecentAdditionsSchema.nullable().default(null),
   goal: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text."),
   formatAnchor: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").nullable().default(null),
   playExperience: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").default("Synergistic, varied, expressive, and fair-feeling."),

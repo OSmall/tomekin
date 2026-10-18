@@ -1,6 +1,7 @@
 import {createAgentToolHandlers, type Logger, type CardLookupOptions} from "@tomekin/core";
 import {
     closeDatabase,
+    createSqliteCollectionBrowseRepository,
     createSqliteCardLookupRepository,
     createSqliteCardQueryRepository,
     createSqliteCardReferenceRepository,
@@ -37,6 +38,7 @@ export function createLocalAgentToolRuntime(options: LocalAgentToolRuntimeOption
         logger.info(support.isOk() ? {operation: "reference_readiness", status: support.value.ready ? "ready" : "unready", missingDatasets: support.value.missing, reimportRequiredDatasets: support.value.reimportRequired} : {operation: "reference_readiness", status: "failed"}, "Local reference readiness diagnostic");
     });
     const handlers = createAgentToolHandlers({
+        collectionBrowse: createSqliteCollectionBrowseRepository(database),
         cardLookup: createSqliteCardLookupRepository(database),
         cardReference,
         cardQuery: createSqliteCardQueryRepository(database),

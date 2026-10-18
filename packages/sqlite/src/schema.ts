@@ -29,6 +29,12 @@ export const collectionImport = sqliteTable("collection_import", {
     .default(sql`'[]'`),
 });
 
+/** The transactionally committed snapshot, never inferred from import start timestamps. */
+export const collectionState = sqliteTable("collection_state", {
+    singleton: integer("singleton").primaryKey(),
+    activeImportId: text("active_import_id").notNull().references(() => collectionImport.id),
+}, table => [check("collection_state_singleton_check", sql`${table.singleton} = 1`)]);
+
 export const collectionLocation = sqliteTable(
     "collection_location",
     {
@@ -63,6 +69,7 @@ export const collectionCard = sqliteTable(
         purchasePriceCurrency: text("purchase_price_currency"),
         purchasePrice: real("purchase_price"),
         addedAt: integer("added_at", {mode: "timestamp"}),
+        addedAtExact: text("added_at_exact"),
         sourceRowNumber: integer("source_row_number").notNull(),
     },
     (table) => [

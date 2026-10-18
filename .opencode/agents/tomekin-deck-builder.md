@@ -18,6 +18,7 @@ permission:
   "tomekin_draft_deck_building_brief": allow
   "tomekin_query_cards": allow
   "tomekin_lookup_cards": allow
+  "tomekin_browse_collection_cards": allow
   "tomekin_hypergeometric_calculator": allow
   "tomekin_browse_tags": allow
   "tomekin_search_card_sets": allow

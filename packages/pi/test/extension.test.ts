@@ -51,7 +51,7 @@ describe("Pi reference-status transport", () => {
 
     test("defines the complete fixed interactive capability registry", () => {
         expect(expectedPiToolNames).toEqual([
-            "draft_deck_building_brief", "query_cards", "lookup_cards", "hypergeometric_calculator", "browse_tags",
+            "draft_deck_building_brief", "query_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
             "search_card_sets", "get_format_constraints",
             "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
             "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",

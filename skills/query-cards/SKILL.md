@@ -230,6 +230,13 @@ this location.”
 
 ### Canonical Collection Location Allow-list
 
+For new policy-aware actual-row, source-date and exact owned-Printing discovery, use `browse_collection_cards` with
+an explicit confirmed `collectionAccessPolicy` or its candidate-owned Brief reference. Inspect `list_collection_locations`
+for the active import ID and exact locations. See [the closed policy/copy contract](../../docs/card-query.md#collection-policy-and-owned-row-browsing).
+The legacy Card Query rules below remain procedural; independent `withPrinting` and Collection predicates do not
+establish that the owned Printing matches. Reconfirm scope after successful Collection reimport and independently browse
+unknown source dates for recent-addition requests unless the user declines.
+
 Card Query is stateless: it does not remember the Deck Building Brief or a Collection Access Policy. When a
 deck-building workflow confirms allowed Collection Locations, call `list_collection_locations` once and record exact
 `(locationType, locationName)` pairs. Copy the same positive allow-list predicate into every Collection query and the
