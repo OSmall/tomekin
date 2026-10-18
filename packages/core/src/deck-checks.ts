@@ -2,7 +2,7 @@ import {z} from "zod";
 import {DeckBuildingBriefSchema, type DeckBuildingBrief} from "./deck-building-brief";
 import {DeckCandidateCardSectionSchema, DeckCandidateChangesSchema, type DeckCandidateState, type DeckCandidateRepositoryError} from "./deck-candidate";
 import type {DeckLegalityCard} from "./format-legality";
-import type {ReferenceDataStatus} from "./card-reference-queries";
+import {currentReferenceImports, type ReferenceDataStatus} from "./card-reference-queries";
 import type {ScryfallBulkDataImport} from "./scryfall-sync";
 import {requiredScryfallImportContractRevisions} from "./scryfall-sync";
 import type {Result} from "neverthrow";
@@ -58,14 +58,16 @@ export type DeckCheckRepository = {
 };
 
 export function checkDependencies(candidate:DeckCandidateState, check:DeckCheckName, imports:readonly ScryfallBulkDataImport[], versions:DeckCheckVersions=deckCheckVersions, collectionSnapshot?:string|null, requirements?:readonly import("./collection-availability").AvailabilityDemand[]):DeckCheckDependencies {
-    const oracle = imports.filter(i=>i.bulkDataType==="oracle_cards"&&i.status==="succeeded")
-        .sort((a,b)=>(b.completedAt??b.startedAt).getTime()-(a.completedAt??a.startedAt).getTime())[0];
+    const current = currentReferenceImports(imports);
+    // Keep dependency serialization stable when unrelated datasets are imported.
+    const datasets = check === "collection_availability" ? ["all_cards", "oracle_cards"] as const : ["oracle_cards"] as const;
+    const references = datasets.flatMap(dataset => current.get(dataset) ? [current.get(dataset)!] : []);
     const brief=candidate.brief;
     return {
         selected_changed_at:candidate.selectedChangedAt,
         brief_changed_at:candidate.briefChangedAt,
         brief_inputs:check==="collection_availability" ? {collectionAccessPolicy:brief.collectionAccessPolicy,recentAdditions:brief.recentAdditions} : check==="format_legality" ? {format:brief.format,...(brief.format==="commander"?{ruleZeroExceptions:brief.ruleZeroExceptions}:{})} : {format:brief.format,...(brief.format==="commander"?{ruleZeroExceptions:brief.ruleZeroExceptions,commanderBracket:brief.commanderBracket}:{powerLevel:brief.powerLevel}),playExperience:brief.playExperience},
-        reference_imports:check==="collection_availability" ? imports.filter(i=>["oracle_cards","all_cards"].includes(i.bulkDataType)&&i.status==="succeeded").sort((a,b)=>a.bulkDataType.localeCompare(b.bulkDataType)||(b.completedAt??b.startedAt).getTime()-(a.completedAt??a.startedAt).getTime()).filter((i,n,all)=>all.findIndex(j=>j.bulkDataType===i.bulkDataType)===n).map(i=>({id:i.id,completed_at:(i.completedAt??i.startedAt).toISOString(),source_updated_at:i.sourceUpdatedAt?.toISOString()??null,import_contract_revision:i.importContractRevision})) : oracle?[{id:oracle.id,completed_at:(oracle.completedAt??oracle.startedAt).toISOString(),source_updated_at:oracle.sourceUpdatedAt?.toISOString()??null,import_contract_revision:oracle.importContractRevision}]:[],
+        reference_imports:references.map(i=>({id:i.id,completed_at:(i.completedAt??i.startedAt).toISOString(),source_updated_at:i.sourceUpdatedAt?.toISOString()??null,import_contract_revision:i.importContractRevision})),
         reference_contract_revision:requiredScryfallImportContractRevisions.oracle_cards,
         ...(check==="collection_availability"?{collection_snapshot:collectionSnapshot??null,...requirements?{availability_requirements:requirements}:{}}:{}),
         validator_versions:check==="collection_availability" ? {collection_availability:versions.collection_availability} : check==="format_legality"?{format_legality:versions.format_legality}:{format_legality:versions.format_legality,deck_evaluation:versions.deck_evaluation},

@@ -998,3 +998,40 @@ test("exact escaped UTF-8 budgets reserve final Availability stop metadata befor
         f.dispose();
     }
 });
+
+
+test.each([
+    ["oracle_cards", "clock rollback", "2025-12-31T00:00:00.000Z"],
+    ["oracle_cards", "same timestamp and lower UUID", "2026-01-01T00:00:00.000Z"],
+    ["all_cards", "clock rollback", "2025-12-31T00:00:00.000Z"],
+    ["all_cards", "same timestamp and lower UUID", "2026-01-01T00:00:00.000Z"],
+])("Availability binds committed %s replacement under %s", async (dataset, _case, timestamp) => {
+    const f = await createCollectionFixture();
+    const {scryfallBulkDataImport} = await import("@tomekin/sqlite");
+    const {requiredScryfallImportContractRevisions} = await import("@tomekin/core");
+    try {
+        f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ? WHERE bulk_data_type = ?").run("ffffffff-ffff-4fff-8fff-ffffffffffff", dataset);
+        const saved = await saveAssembly(f);
+        const input = {candidate_id: saved.candidate_id, expected_updated_at: saved.updated_at};
+        expect((await f.runtime.handlers.checkCollectionAvailability(input))._unsafeUnwrap().evidence.status).toBe("applicable");
+        const pending = f.runtime.handlers.checkCollectionAvailability(input);
+        const replacementId = id(800);
+        const bulkDataType = dataset as "oracle_cards" | "all_cards";
+        f.db.insert(scryfallBulkDataImport).values({id: replacementId, bulkDataType, status: "succeeded", importContractRevision: requiredScryfallImportContractRevisions[bulkDataType], startedAt: new Date(timestamp), completedAt: new Date(timestamp), sourceUpdatedAt: new Date("2026-10-18"), importedRecordCount: 1, warningsJson: [], blockingErrorsJson: []}).run();
+        expect((await pending)._unsafeUnwrap().evidence.status).toBe("outdated");
+        const stale = await readCandidateJson(f.runtime.handlers.getDeckCandidate, saved.candidate_id);
+        expect(stale.validation_evidence.checks.collection_availability.status).toBe("outdated");
+        const pull = (await f.runtime.handlers.renderDeckCandidate({candidate_id: saved.candidate_id, output: "collection_pull_list"}))._unsafeUnwrap();
+        expect(pull.edges).toMatchObject([{node: {value: {evidence_status: "outdated"}}}]);
+        const checked = (await f.runtime.handlers.checkCollectionAvailability(input))._unsafeUnwrap();
+        expect(checked.evidence.status).toBe("applicable");
+        const current = (await readCandidateJson(f.runtime.handlers.getDeckCandidate, saved.candidate_id)).validation_evidence.checks.collection_availability;
+        expect(current.status).toBe("applicable");
+        expect(current.dependencies.reference_imports.map((row: any) => row.id)).toContain(replacementId);
+        expect(current.result.reference_imports.find((row: any) => row.dataset === dataset)).toMatchObject({import_id: replacementId, completed_at: timestamp, source_updated_at: "2026-10-18T00:00:00.000Z"});
+        expect(current.result.summary).toMatchObject({required: 2, owned: 2, eligible: 2, sufficient: true});
+        await f.recordFailedImport();
+        await f.reimportTags();
+        expect((await readCandidateJson(f.runtime.handlers.getDeckCandidate, saved.candidate_id)).validation_evidence.checks.collection_availability.status).toBe("applicable");
+    } finally {f.dispose();}
+});

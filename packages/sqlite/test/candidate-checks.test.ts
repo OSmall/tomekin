@@ -197,3 +197,60 @@ test("view continuations bind included evidence and canonical names without stal
         expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.pageInfo.endCursor})).status).toBe("ok");
     }finally{app.dispose();}
 });
+
+
+test.each([
+    ["clock rollback", "2026-10-17T00:00:00.000Z"],
+    ["same timestamp and lower UUID", "2026-10-18T00:00:00.000Z"],
+])("committed Oracle replacement under %s invalidates saved and in-flight checks", async (_case, timestamp) => {
+    const app = setup();
+    try {
+        const saved = await initial(app);
+        const input = {candidate_id: saved.candidate_id, expected_updated_at: saved.updated_at};
+        unwrap(await app.handlers.validateFormatLegality(input));
+        unwrap(await app.handlers.evaluateDeckCandidate(input));
+        const legality = app.handlers.validateFormatLegality(input);
+        const evaluation = app.handlers.evaluateDeckCandidate(input);
+        const replacementId = "00000000-0000-4000-8000-000000000001";
+        const sourceUpdatedAt = new Date("2026-10-18T12:00:00.000Z");
+        app.db.insert(scryfallBulkDataImport).values({id: replacementId, bulkDataType: "oracle_cards", importContractRevision: requiredScryfallImportContractRevisions.oracle_cards, status: "succeeded", startedAt: new Date(timestamp), completedAt: new Date(timestamp), sourceUpdatedAt, importedRecordCount: 1, warningsJson: [], blockingErrorsJson: []}).run();
+        expect(unwrap(await legality).evidence.status).toBe("outdated");
+        expect(unwrap(await evaluation).evidence.status).toBe("outdated");
+        const old = await readCandidateJson(app.handlers.getDeckCandidate, saved.candidate_id);
+        expect(old.validation_evidence.checks.format_legality.status).toBe("outdated");
+        expect(old.validation_evidence.checks.deck_evaluation.status).toBe("outdated");
+        const current = unwrap(await app.handlers.validateFormatLegality(input));
+        expect(current.evidence.status).toBe("applicable");
+        expect(current.scryfallSourceUpdatedAt).toEqual(sourceUpdatedAt);
+        unwrap(await app.handlers.evaluateDeckCandidate(input));
+        const refreshed = await readCandidateJson(app.handlers.getDeckCandidate, saved.candidate_id);
+        for (const check of ["format_legality", "deck_evaluation"]) {
+            expect(refreshed.validation_evidence.checks[check]).toMatchObject({status: "applicable", dependencies: {reference_imports: [{id: replacementId, source_updated_at: sourceUpdatedAt.toISOString()}]}});
+        }
+        // Failed attempts and unrelated successful imports do not replace Oracle authority.
+        for (const [bulkDataType, status] of [["oracle_cards", "failed"], ["oracle_tags", "succeeded"], ["all_cards", "succeeded"]] as const) {
+            app.db.insert(scryfallBulkDataImport).values({id: crypto.randomUUID(), bulkDataType, status, importContractRevision: requiredScryfallImportContractRevisions[bulkDataType], startedAt: new Date("2026-10-20"), completedAt: new Date("2026-10-20"), importedRecordCount: 0, warningsJson: [], blockingErrorsJson: []}).run();
+        }
+        const retained = unwrap(await app.handlers.getDeckCandidate({id: saved.candidate_id}));
+        expect(retained.validation_evidence.checks.format_legality.status).toBe("applicable");
+        expect(retained.validation_evidence.checks.deck_evaluation.status).toBe("applicable");
+    } finally {app.dispose();}
+});
+
+
+test("readiness and source-age warnings describe only committed current datasets", async () => {
+    const app = setup();
+    try {
+        // This superseded snapshot is incompatible and old; the replacement is compatible and has no source date.
+        app.db.update(scryfallBulkDataImport).set({importContractRevision: 0, sourceUpdatedAt: new Date("2020-01-01")}).where(eq(scryfallBulkDataImport.bulkDataType, "oracle_cards")).run();
+        const replacementId = "00000000-0000-4000-8000-000000000001";
+        app.db.insert(scryfallBulkDataImport).values({id: replacementId, bulkDataType: "oracle_cards", status: "succeeded", importContractRevision: requiredScryfallImportContractRevisions.oracle_cards, startedAt: new Date("2026-10-17"), completedAt: new Date("2026-10-17"), sourceUpdatedAt: null, importedRecordCount: 1, warningsJson: [], blockingErrorsJson: []}).run();
+        app.db.insert(scryfallBulkDataImport).values({id: crypto.randomUUID(), bulkDataType: "oracle_cards", status: "failed", importContractRevision: 0, startedAt: new Date("2026-10-19"), completedAt: new Date("2026-10-19"), sourceUpdatedAt: new Date("2020-01-01"), importedRecordCount: 0, warningsJson: [], blockingErrorsJson: []}).run();
+        expect(unwrap(await app.handlers.summarizeReferenceSupport())).toMatchObject({ready: true, reimportRequired: [], warnings: []});
+        const saved = await initial(app);
+        const checked = unwrap(await app.handlers.validateFormatLegality({candidate_id: saved.candidate_id, expected_updated_at: saved.updated_at}));
+        expect(checked).toMatchObject({scryfallSourceUpdatedAt: null, warnings: [], evidence: {status: "applicable"}});
+        const evidence = (await readCandidateJson(app.handlers.getDeckCandidate, saved.candidate_id)).validation_evidence.checks.format_legality;
+        expect(evidence.dependencies.reference_imports).toMatchObject([{id: replacementId, source_updated_at: null}]);
+    } finally {app.dispose();}
+});

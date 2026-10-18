@@ -1,5 +1,5 @@
 import {randomUUIDv7} from "bun";
-import {desc, sql} from "drizzle-orm";
+import {sql} from "drizzle-orm";
 import {err, ok, type Result} from "neverthrow";
 import type {
   CardIdentity,
@@ -1116,6 +1116,7 @@ export function createSqliteScryfallRepository(
     },
 
     async listBulkDataImports() {
+      // Administrative history retains start-time order; it is not a current-snapshot authority source.
       try {
         const rows = await db
           .select()
@@ -1135,7 +1136,7 @@ export function createSqliteScryfallRepository(
           .where(
             sql`${scryfallBulkDataImport.bulkDataType} = ${bulkDataType} AND ${scryfallBulkDataImport.status} = 'succeeded'`,
           )
-          .orderBy(desc(scryfallBulkDataImport.completedAt))
+          .orderBy(sql`rowid DESC`)
           .limit(1);
         return ok(row ? toScryfallBulkDataImport(row) : null);
       } catch (error) {

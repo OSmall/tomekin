@@ -2,7 +2,7 @@ import {z} from "zod";
 import {err, ok, type Result} from "neverthrow";
 import {compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type RetrievalEnvelope, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError} from "./card-retrieval";
 import {requiredScryfallImportContractRevisions, type ScryfallBulkDataImport} from "./scryfall-sync";
-import type {CardReferenceRepositoryError} from "./card-reference-queries";
+import {currentReferenceImports, type CardReferenceRepositoryError} from "./card-reference-queries";
 import type {CardLookupOptions} from "./card-lookup";
 
 export const TagCatalogueOperationSchema = z.discriminatedUnion("type", [
@@ -15,6 +15,7 @@ export type BrowseTagsArgs = z.infer<typeof BrowseTagsArgsSchema>;
 export type TagDefinition = {id: string; slug: string; label: string; description: string | null; source_page_uri: string; aliases: string[]};
 export type TagHierarchy = {depth: number; parents: TagDefinition[]; children: TagDefinition[]; relationships: {parent_slug: string; child_slug: string}[]};
 export type TagCatalogueOutcome = {status: "found"; tag: TagDefinition; hierarchy?: TagHierarchy} | {status: "not_found"; slug: string};
+/** Rows and imports share one snapshot; imports are newest committed first. */
 export type TagCatalogueSnapshot = {imports: readonly ScryfallBulkDataImport[]; outcomes: TagCatalogueOutcome[]};
 export type TagCatalogueRepository = {readTagCatalogue(operation: BrowseTagsArgs["operation"], offset: number, limit: number): Promise<Result<TagCatalogueSnapshot, CardReferenceRepositoryError>>};
 
@@ -53,8 +54,7 @@ export async function browseTags(repository: TagCatalogueRepository, input: unkn
     }
     const snapshot = await repository.readTagCatalogue(args.operation, offset, first + 1);
     if (snapshot.isErr()) return finish(failure({code: "local_error", message: snapshot.error.message, retryable: false}));
-    // Repository orders equal-timestamp imports newest first, matching retained reference readiness.
-    const imported = snapshot.value.imports.filter(i => i.bulkDataType === "oracle_tags" && i.status === "succeeded").sort((a,b) => (b.completedAt ?? b.startedAt).getTime() - (a.completedAt ?? a.startedAt).getTime())[0];
+    const imported = currentReferenceImports(snapshot.value.imports).get("oracle_tags");
     if (incoming && incoming.revisions.oracle_tags !== (imported?.id ?? null)) return finish(failure({code: "stale_cursor", message: "The successful tag import changed. Restart catalogue browsing.", reason: "reference_import_changed", recovery: "restart", retryable: false}));
     if (!imported || imported.importContractRevision !== requiredScryfallImportContractRevisions.oracle_tags) return finish(failure({code: "reference_data_unready", message: "Tag catalogue requires a compatible Oracle Tags import. Run bun run sync:scryfall.", retryable: false, missing_datasets: imported ? [] : ["oracle_tags"], reimport_required_datasets: imported ? ["oracle_tags"] : []}));
     const token = (position: number) => encodeRetrievalCursor({version: 1, tool: "browse_tags", source: "local_tag_catalogue", bindings, revisions: {oracle_tags: imported.id}, position});
