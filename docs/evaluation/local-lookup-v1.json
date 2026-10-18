@@ -1,0 +1,775 @@
+{
+  "kind": "local-lookup-v1",
+  "runtime": {
+    "bun": "1.3.14",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "sourceCommit": "94fca04a0aa9c6aff31e592436f25fa4c75cc971",
+  "fixtureSha256": "43457ceb152e0a3c15e9dfe9f89d7c203478898bc076b47e1bda980133fa00ba",
+  "protocol": {
+    "cold": 1,
+    "unmeasuredWarmup": 1,
+    "warmRuns": 5,
+    "tokenUsage": "Estimates only; no model run.",
+    "comparison": "Matched synthetic source records and required full Oracle text. This lookup-only slice does not measure provider discovery, candidate edits or final Availability."
+  },
+  "workflows": [
+    {
+      "name": "discovery",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "providerCalls": 0,
+      "requestedOccurrences": 7,
+      "returnedOccurrences": 7,
+      "pages": 3,
+      "pageBytes": [
+        4020,
+        2731,
+        2449
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeRequiredFacts": {
+        "oracleTextSourceCharacters": 1300,
+        "oracleTextReturnedCharacters": 1300,
+        "completeOracleText": true,
+        "multipart": "Not present in matched workflow fixture; independently covered by public multipart handler tests."
+      },
+      "additionalFacts": {
+        "returned": 5,
+        "repeatedOracleText": 0
+      },
+      "application": {
+        "utf8Bytes": 4020,
+        "tokenEstimate": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 1005
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        },
+        "piWorker": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        }
+      },
+      "timingsMs": {
+        "firstLookupHandler": 7.304041999999981,
+        "continuation1": 2.849415999999991,
+        "continuation2": 1.2795419999999922,
+        "applicationSerialization": 0.016291999999992868,
+        "openCodeSerialization": 0.09137499999999932,
+        "piFallbackIncludingRuntime": 4.913207999999997,
+        "piWorkerIncludingStartupRuntime": 77.294625,
+        "additionalSelectedFacts": 4.496791999999999
+      },
+      "limits": {
+        "collectionEvidence": "Not requested; no Collection or final Availability claim.",
+        "liveModelNetwork": "Not run; no measured tokens or network pacing evidence."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstLookupHandler": 7.304041999999981,
+          "continuation1": 2.849415999999991,
+          "continuation2": 1.2795419999999922,
+          "applicationSerialization": 0.016291999999992868,
+          "openCodeSerialization": 0.09137499999999932,
+          "piFallbackIncludingRuntime": 4.913207999999997,
+          "piWorkerIncludingStartupRuntime": 77.294625,
+          "additionalSelectedFacts": 4.496791999999999
+        },
+        "warm": {
+          "firstLookupHandler": {
+            "samplesMs": [
+              2.1237499999999727,
+              1.6519589999999766,
+              1.6197080000000597,
+              1.9152500000000146,
+              1.8113329999999905
+            ],
+            "medianMs": 1.8113329999999905,
+            "minMs": 1.6197080000000597,
+            "maxMs": 2.1237499999999727
+          },
+          "continuation1": {
+            "samplesMs": [
+              2.487083000000041,
+              1.5995000000000346,
+              1.5118750000000318,
+              1.5442910000000438,
+              1.421875
+            ],
+            "medianMs": 1.5442910000000438,
+            "minMs": 1.421875,
+            "maxMs": 2.487083000000041
+          },
+          "continuation2": {
+            "samplesMs": [
+              0.8872089999999844,
+              0.685792000000049,
+              0.6590419999999995,
+              0.6339580000000069,
+              0.5987079999999878
+            ],
+            "medianMs": 0.6590419999999995,
+            "minMs": 0.5987079999999878,
+            "maxMs": 0.8872089999999844
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.0047089999999911925,
+              0.002999999999985903,
+              0.00437499999998181,
+              0.003500000000030923,
+              0.003291999999987638
+            ],
+            "medianMs": 0.003500000000030923,
+            "minMs": 0.002999999999985903,
+            "maxMs": 0.0047089999999911925
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.004040999999972428,
+              0.004500000000007276,
+              0.005999999999971806,
+              0.005541999999991276,
+              0.004250000000070031
+            ],
+            "medianMs": 0.004500000000007276,
+            "minMs": 0.004040999999972428,
+            "maxMs": 0.005999999999971806
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.4642090000000394,
+              2.399000000000001,
+              2.74512500000003,
+              2.7674579999999196,
+              2.3789580000000115
+            ],
+            "medianMs": 2.4642090000000394,
+            "minMs": 2.3789580000000115,
+            "maxMs": 2.7674579999999196
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              73.83225000000004,
+              74.33129200000002,
+              75.82475,
+              80.83945800000004,
+              80.47270800000001
+            ],
+            "medianMs": 75.82475,
+            "minMs": 73.83225000000004,
+            "maxMs": 80.83945800000004
+          },
+          "additionalSelectedFacts": {
+            "samplesMs": [
+              3.9471249999999714,
+              5.011250000000018,
+              4.451208999999949,
+              4.815207999999984,
+              4.027458000000024
+            ],
+            "medianMs": 4.451208999999949,
+            "minMs": 3.9471249999999714,
+            "maxMs": 5.011250000000018
+          }
+        }
+      }
+    },
+    {
+      "name": "construction",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "providerCalls": 0,
+      "requestedOccurrences": 7,
+      "returnedOccurrences": 7,
+      "pages": 3,
+      "pageBytes": [
+        4020,
+        2731,
+        2449
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeRequiredFacts": {
+        "oracleTextSourceCharacters": 1300,
+        "oracleTextReturnedCharacters": 1300,
+        "completeOracleText": true,
+        "multipart": "Not present in matched workflow fixture; independently covered by public multipart handler tests."
+      },
+      "additionalFacts": {
+        "returned": 5,
+        "repeatedOracleText": 0
+      },
+      "application": {
+        "utf8Bytes": 4020,
+        "tokenEstimate": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 1005
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        },
+        "piWorker": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        }
+      },
+      "timingsMs": {
+        "firstLookupHandler": 1.9800410000000284,
+        "continuation1": 1.584333000000015,
+        "continuation2": 0.6890829999999823,
+        "applicationSerialization": 0.003125000000181899,
+        "openCodeSerialization": 0.007708000000093307,
+        "piFallbackIncludingRuntime": 2.968208000000004,
+        "piWorkerIncludingStartupRuntime": 94.3393329999999,
+        "additionalSelectedFacts": 11.046958000000132
+      },
+      "limits": {
+        "collectionEvidence": "Not requested; no Collection or final Availability claim.",
+        "liveModelNetwork": "Not run; no measured tokens or network pacing evidence."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstLookupHandler": 1.9800410000000284,
+          "continuation1": 1.584333000000015,
+          "continuation2": 0.6890829999999823,
+          "applicationSerialization": 0.003125000000181899,
+          "openCodeSerialization": 0.007708000000093307,
+          "piFallbackIncludingRuntime": 2.968208000000004,
+          "piWorkerIncludingStartupRuntime": 94.3393329999999,
+          "additionalSelectedFacts": 11.046958000000132
+        },
+        "warm": {
+          "firstLookupHandler": {
+            "samplesMs": [
+              1.6964159999999993,
+              1.7910420000000613,
+              1.696875000000091,
+              1.7372090000001208,
+              1.6252499999998236
+            ],
+            "medianMs": 1.696875000000091,
+            "minMs": 1.6252499999998236,
+            "maxMs": 1.7910420000000613
+          },
+          "continuation1": {
+            "samplesMs": [
+              1.4274169999998776,
+              1.5502500000000055,
+              1.4368750000001,
+              2.0673750000000837,
+              1.3854999999998654
+            ],
+            "medianMs": 1.4368750000001,
+            "minMs": 1.3854999999998654,
+            "maxMs": 2.0673750000000837
+          },
+          "continuation2": {
+            "samplesMs": [
+              0.6458340000001499,
+              2.6811669999999594,
+              0.7256250000000364,
+              0.9796670000000631,
+              0.6533750000000964
+            ],
+            "medianMs": 0.7256250000000364,
+            "minMs": 0.6458340000001499,
+            "maxMs": 2.6811669999999594
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.003292000000101325,
+              0.01120800000012423,
+              0.0036660000000665605,
+              0.004624999999805368,
+              0.003208000000086031
+            ],
+            "medianMs": 0.0036660000000665605,
+            "minMs": 0.003208000000086031,
+            "maxMs": 0.01120800000012423
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.011416999999937616,
+              0.010667000000012195,
+              0.014208999999937078,
+              0.012000000000170985,
+              0.007499999999936335
+            ],
+            "medianMs": 0.011416999999937616,
+            "minMs": 0.007499999999936335,
+            "maxMs": 0.014208999999937078
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.438417000000072,
+              2.811290999999983,
+              4.121457999999848,
+              2.6377090000000862,
+              2.2597920000000613
+            ],
+            "medianMs": 2.6377090000000862,
+            "minMs": 2.2597920000000613,
+            "maxMs": 4.121457999999848
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              95.157917,
+              82.10975000000008,
+              84.5787499999999,
+              76.35450000000014,
+              72.96787500000005
+            ],
+            "medianMs": 82.10975000000008,
+            "minMs": 72.96787500000005,
+            "maxMs": 95.157917
+          },
+          "additionalSelectedFacts": {
+            "samplesMs": [
+              4.892334000000119,
+              5.067624999999907,
+              3.600832999999966,
+              4.842624999999998,
+              4.335749999999734
+            ],
+            "medianMs": 4.842624999999998,
+            "minMs": 3.600832999999966,
+            "maxMs": 5.067624999999907
+          }
+        }
+      }
+    },
+    {
+      "name": "tuning",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "providerCalls": 0,
+      "requestedOccurrences": 7,
+      "returnedOccurrences": 7,
+      "pages": 3,
+      "pageBytes": [
+        4020,
+        2731,
+        2449
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeRequiredFacts": {
+        "oracleTextSourceCharacters": 1300,
+        "oracleTextReturnedCharacters": 1300,
+        "completeOracleText": true,
+        "multipart": "Not present in matched workflow fixture; independently covered by public multipart handler tests."
+      },
+      "additionalFacts": {
+        "returned": 5,
+        "repeatedOracleText": 0
+      },
+      "application": {
+        "utf8Bytes": 4020,
+        "tokenEstimate": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 1005
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        },
+        "piWorker": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        }
+      },
+      "timingsMs": {
+        "firstLookupHandler": 1.6152079999997113,
+        "continuation1": 1.4416659999997137,
+        "continuation2": 0.845792000000074,
+        "applicationSerialization": 0.00687500000003638,
+        "openCodeSerialization": 0.0071250000000873115,
+        "piFallbackIncludingRuntime": 2.6568750000001273,
+        "piWorkerIncludingStartupRuntime": 84.90437500000007,
+        "additionalSelectedFacts": 5.785707999999886
+      },
+      "limits": {
+        "collectionEvidence": "Not requested; no Collection or final Availability claim.",
+        "liveModelNetwork": "Not run; no measured tokens or network pacing evidence."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstLookupHandler": 1.6152079999997113,
+          "continuation1": 1.4416659999997137,
+          "continuation2": 0.845792000000074,
+          "applicationSerialization": 0.00687500000003638,
+          "openCodeSerialization": 0.0071250000000873115,
+          "piFallbackIncludingRuntime": 2.6568750000001273,
+          "piWorkerIncludingStartupRuntime": 84.90437500000007,
+          "additionalSelectedFacts": 5.785707999999886
+        },
+        "warm": {
+          "firstLookupHandler": {
+            "samplesMs": [
+              1.4770840000001044,
+              1.5916669999996884,
+              1.6012919999998303,
+              1.6097090000002936,
+              1.5014580000001843
+            ],
+            "medianMs": 1.5916669999996884,
+            "minMs": 1.4770840000001044,
+            "maxMs": 1.6097090000002936
+          },
+          "continuation1": {
+            "samplesMs": [
+              1.4197080000003552,
+              1.2628340000001117,
+              1.228125000000091,
+              1.3362080000001697,
+              1.230750000000171
+            ],
+            "medianMs": 1.2628340000001117,
+            "minMs": 1.228125000000091,
+            "maxMs": 1.4197080000003552
+          },
+          "continuation2": {
+            "samplesMs": [
+              0.5765409999999065,
+              0.5756249999999454,
+              0.629207999999835,
+              0.5781670000001213,
+              0.6150420000003578
+            ],
+            "medianMs": 0.5781670000001213,
+            "minMs": 0.5756249999999454,
+            "maxMs": 0.629207999999835
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.005916999999953987,
+              0.004167000000052212,
+              0.004166000000168424,
+              0.004667000000154076,
+              0.004500000000007276
+            ],
+            "medianMs": 0.004500000000007276,
+            "minMs": 0.004166000000168424,
+            "maxMs": 0.005916999999953987
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.00687500000003638,
+              0.0067089999997733685,
+              0.008624999999938154,
+              0.006957999999940512,
+              0.005375000000185537
+            ],
+            "medianMs": 0.00687500000003638,
+            "minMs": 0.005375000000185537,
+            "maxMs": 0.008624999999938154
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.240374999999858,
+              2.2519579999998314,
+              2.067790999999943,
+              2.0862080000001697,
+              2.0971660000000156
+            ],
+            "medianMs": 2.0971660000000156,
+            "minMs": 2.067790999999943,
+            "maxMs": 2.2519579999998314
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              72.47125000000005,
+              76.39258300000029,
+              69.7922080000003,
+              73.29079199999978,
+              73.36170799999991
+            ],
+            "medianMs": 73.29079199999978,
+            "minMs": 69.7922080000003,
+            "maxMs": 76.39258300000029
+          },
+          "additionalSelectedFacts": {
+            "samplesMs": [
+              3.982875000000149,
+              3.2766249999999673,
+              3.2509170000002996,
+              3.2780000000002474,
+              4.72854099999995
+            ],
+            "medianMs": 3.2780000000002474,
+            "minMs": 3.2509170000002996,
+            "maxMs": 4.72854099999995
+          }
+        }
+      }
+    },
+    {
+      "name": "assembly",
+      "fixtureRevision": "synthetic-workflows-v1",
+      "providerCalls": 0,
+      "requestedOccurrences": 7,
+      "returnedOccurrences": 7,
+      "pages": 3,
+      "pageBytes": [
+        4020,
+        2731,
+        2449
+      ],
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "completeRequiredFacts": {
+        "oracleTextSourceCharacters": 1300,
+        "oracleTextReturnedCharacters": 1300,
+        "completeOracleText": true,
+        "multipart": "Not present in matched workflow fixture; independently covered by public multipart handler tests."
+      },
+      "additionalFacts": {
+        "returned": 5,
+        "repeatedOracleText": 0
+      },
+      "application": {
+        "utf8Bytes": 4020,
+        "tokenEstimate": {
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 1005
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true
+        },
+        "piFallback": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        },
+        "piWorker": {
+          "utf8Bytes": 4020,
+          "tokenEstimate": {
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 1005
+          },
+          "completeEnvelope": true,
+          "completeRecords": 3,
+          "clipped": false
+        }
+      },
+      "timingsMs": {
+        "firstLookupHandler": 2.461667000000034,
+        "continuation1": 2.680749999999989,
+        "continuation2": 0.9868750000000546,
+        "applicationSerialization": 0.007999999999810825,
+        "openCodeSerialization": 0.012624999999843567,
+        "piFallbackIncludingRuntime": 3.251499999999851,
+        "piWorkerIncludingStartupRuntime": 87.6550830000001,
+        "additionalSelectedFacts": 6.176042000000052
+      },
+      "limits": {
+        "collectionEvidence": "Not requested; no Collection or final Availability claim.",
+        "liveModelNetwork": "Not run; no measured tokens or network pacing evidence."
+      },
+      "timingProtocol": {
+        "cold": {
+          "firstLookupHandler": 2.461667000000034,
+          "continuation1": 2.680749999999989,
+          "continuation2": 0.9868750000000546,
+          "applicationSerialization": 0.007999999999810825,
+          "openCodeSerialization": 0.012624999999843567,
+          "piFallbackIncludingRuntime": 3.251499999999851,
+          "piWorkerIncludingStartupRuntime": 87.6550830000001,
+          "additionalSelectedFacts": 6.176042000000052
+        },
+        "warm": {
+          "firstLookupHandler": {
+            "samplesMs": [
+              1.5985419999997248,
+              1.6617909999999938,
+              1.6345830000000205,
+              1.5895000000000437,
+              1.5776249999998981
+            ],
+            "medianMs": 1.5985419999997248,
+            "minMs": 1.5776249999998981,
+            "maxMs": 1.6617909999999938
+          },
+          "continuation1": {
+            "samplesMs": [
+              1.2596670000002632,
+              1.301915999999892,
+              1.2930419999997866,
+              1.486790999999812,
+              1.213959000000159
+            ],
+            "medianMs": 1.2930419999997866,
+            "minMs": 1.213959000000159,
+            "maxMs": 1.486790999999812
+          },
+          "continuation2": {
+            "samplesMs": [
+              0.5324999999997999,
+              0.5646249999999782,
+              0.5668329999998605,
+              0.7742920000000595,
+              0.5274170000002414
+            ],
+            "medianMs": 0.5646249999999782,
+            "minMs": 0.5274170000002414,
+            "maxMs": 0.7742920000000595
+          },
+          "applicationSerialization": {
+            "samplesMs": [
+              0.0029580000000350992,
+              0.0032499999997526174,
+              0.003584000000046217,
+              0.0069589999998243,
+              0.004124999999930878
+            ],
+            "medianMs": 0.003584000000046217,
+            "minMs": 0.0029580000000350992,
+            "maxMs": 0.0069589999998243
+          },
+          "openCodeSerialization": {
+            "samplesMs": [
+              0.006082999999762251,
+              0.005000000000109139,
+              0.007625000000189175,
+              0.006124999999883585,
+              0.007750000000214641
+            ],
+            "medianMs": 0.006124999999883585,
+            "minMs": 0.005000000000109139,
+            "maxMs": 0.007750000000214641
+          },
+          "piFallbackIncludingRuntime": {
+            "samplesMs": [
+              2.0339169999997466,
+              2.172541999999794,
+              2.0092500000000655,
+              2.583499999999731,
+              1.9458330000002206
+            ],
+            "medianMs": 2.0339169999997466,
+            "minMs": 1.9458330000002206,
+            "maxMs": 2.583499999999731
+          },
+          "piWorkerIncludingStartupRuntime": {
+            "samplesMs": [
+              72.96983399999999,
+              72.00662499999999,
+              76.62358399999994,
+              77.68729200000007,
+              73.45695799999976
+            ],
+            "medianMs": 73.45695799999976,
+            "minMs": 72.00662499999999,
+            "maxMs": 77.68729200000007
+          },
+          "additionalSelectedFacts": {
+            "samplesMs": [
+              3.263832999999977,
+              4.286624999999731,
+              4.9856249999998,
+              4.07445800000005,
+              3.4042920000001686
+            ],
+            "medianMs": 4.07445800000005,
+            "minMs": 3.263832999999977,
+            "maxMs": 4.9856249999998
+          }
+        }
+      }
+    }
+  ]
+}

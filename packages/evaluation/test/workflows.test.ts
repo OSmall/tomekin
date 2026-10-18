@@ -5,7 +5,7 @@ import {runBaseline} from "../src/baseline";
 // Allow concurrent CI work without turning Bun's default timeout into a latency target.
 const workflowTestTimeoutMs = 30_000;
 
-test("synthetic workflow baseline accounts for complete local evidence and legacy three-card replacement", async () => {
+test("current synthetic workflow accounts for local evidence and targeted three-card edits", async () => {
     const report = await runBaseline({warmRuns: 1});
     expect(report.workflows.map((workflow) => workflow.name)).toEqual(["discovery", "construction", "tuning", "assembly"]);
     expect(report.workflows[0]!.observed).toMatchObject({identities: 12, printings: 16, ownedRows: 10, copies: 14, allowedIdentities: 8});

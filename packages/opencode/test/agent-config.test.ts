@@ -51,7 +51,8 @@ describe("Tomekin agent configuration", () => {
             expect(tuning).toContain(path);
         }
         expect(tuning).toContain("Pair every recommended addition with a cut");
-        expect(tuning).toMatch(/wait\s+for separate confirmation/);
+        expect(tuning).toMatch(/Existing\s+explicit authorization/);
+        expect(tuning).toContain("edit_deck_candidate");
         expect(coordinator).toContain("sixty-card-constructed-deck-tuning");
         expect(coordinator).toContain("Do not route it directly to fresh architecture");
     });
@@ -64,7 +65,7 @@ describe("Tomekin agent configuration", () => {
         expect(querySkill).toContain("(locationType, locationName)");
         expect(querySkill).toContain("invalid workflow usage");
         expect(querySkill).toContain("Staged Retrieval");
-        expect(querySkill).toContain("Card Query has no pagination");
+        expect(querySkill).toContain("Local `query_cards` has no pagination");
         expect(coordinator).toContain("final Availability recheck");
         expect(coordinator).toContain("procedural");
     });

@@ -1,9 +1,38 @@
 ---
 name: query-cards
-description: Use when composing, fixing, or explaining filters for the `query_cards` Tomekin tool.
+description: Use when retrieving known-card facts with lookup_cards or composing, fixing, or explaining local query_cards filters.
 ---
 
 # Query Cards
+
+## Known Cards
+
+Use `lookup_cards` for exact Oracle IDs, canonical whole names (including ` // `), or Printing IDs.
+Request only newly needed facts through an explicit nonempty `select` object whose properties are literal `true`.
+For pasted decklists, batch name references and select `name` or `oracle_id`; preserve duplicate input occurrences.
+Every found card includes `oracle_id`, and an exact Printing reference also includes `printing_id`.
+
+```json
+{"references":[{"kind":"name","value":"Sol Ring"}],"select":{"name":true,"oracle_text":true}}
+```
+
+Results are complete `edges[].node` outcomes: `found` with selected card facts or `not_found` with the original
+reference. A miss only describes the local reference snapshot. `oracle_text` includes complete existing ordered
+face names/text; explicit `card_faces` returns all supported face facts. `tags` returns complete direct/inherited
+associations. `unavailable_fields` distinguishes absent/incompatible optional datasets from known empty facts.
+Printing properties require Printing references throughout the original batch, including references before `after`.
+
+For another page, repeat the fixed ordered references and `include_provenance` setting with the returned
+`pageInfo.endCursor` as `after`. `first` defaults to 50, accepts 0–200, and counts misses and duplicates.
+Selections and `first` may change. Follow `hasNextPage`; an exhausted source returns false. Failures have
+`status: "error"`, complete partial edges and a single optional `error.cursor` for an ordinary retry.
+For stale import bindings restart; after hard cancellation reuse the last delivered cursor or original request.
+The 51,200-byte compact envelope never clips selected text, faces, tags or JSON. `record_too_large` leaves its
+occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imports; tags are optional enrichment.
+It performs no network fallback, automatic hydration, ownership lookup or final Availability proof.
+Read `docs/card-query.md` for the complete field, cursor and error contract.
+
+## Local Discovery
 
 Use this reference for the `query_cards` tool. Card Query is structured card retrieval over local Card Identity,
 related Card Printings, supported sanctioned Format legality, Card Identity Tags, and imported Collection rows. It is not SQL and does not
@@ -322,7 +351,7 @@ Complete coverage does not require returning every raw field at once.
 - Keep `include.tags` and `include.collectionCards` off during broad scans.
 - Fetch full tags for strategic shortlists and Collection Card rows for Availability or assembly evidence.
 - Do not request `include.tags: true` and `include.collectionCards: true` together across hundreds of cards.
-- Card Query has no pagination. If a result reaches its limit, narrow the filter into non-overlapping buckets rather
+- Local `query_cards` has no pagination. If a result reaches its limit, narrow the filter into non-overlapping buckets rather
   than raising the maximum or assuming the unseen tail is irrelevant.
 
 ## Includes

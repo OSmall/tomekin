@@ -26,29 +26,29 @@ export const SixtyCardConstructedFormatSchema = z.enum(sixtyCardConstructedForma
 export type SixtyCardConstructedFormat = z.infer<typeof SixtyCardConstructedFormatSchema>;
 
 const sharedBriefShape = {
-  goal: z.string().min(1),
-  formatAnchor: z.string().min(1).nullable().default(null),
-  playExperience: z.string().min(1).default("Synergistic, varied, expressive, and fair-feeling."),
-  budget: z.string().min(1).nullable().default(null),
-  missingCardTolerance: z.string().min(1).default("Moderate; check the imported Collection before treating cards as Missing Cards."),
-  comboTolerance: z.string().min(1).default("Avoid deterministic combo wins unless explicitly requested."),
-  constraints: z.array(z.string().min(1)).default([]),
-  exclusions: z.array(z.string().min(1)).default([]),
-  assumptions: z.array(z.string().min(1)).default([]),
+  goal: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text."),
+  formatAnchor: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").nullable().default(null),
+  playExperience: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").default("Synergistic, varied, expressive, and fair-feeling."),
+  budget: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").nullable().default(null),
+  missingCardTolerance: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").default("Moderate; check the imported Collection before treating cards as Missing Cards."),
+  comboTolerance: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").default("Avoid deterministic combo wins unless explicitly requested."),
+  constraints: z.array(z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.")).default([]),
+  exclusions: z.array(z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.")).default([]),
+  assumptions: z.array(z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.")).default([]),
 };
 
 export const CommanderDeckBuildingBriefSchema = z.strictObject({
   ...sharedBriefShape,
   format: z.literal("commander"),
-  commanderBracket: z.string().min(1).nullable(),
-  ruleZeroExceptions: z.array(z.string().min(1)),
+  commanderBracket: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").nullable(),
+  ruleZeroExceptions: z.array(z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.")),
 });
 export type CommanderDeckBuildingBrief = z.infer<typeof CommanderDeckBuildingBriefSchema>;
 
 export const SixtyCardConstructedDeckBuildingBriefSchema = z.strictObject({
   ...sharedBriefShape,
   format: SixtyCardConstructedFormatSchema,
-  powerLevel: z.string().min(1).nullable(),
+  powerLevel: z.string().refine(value => value.trim().length > 0, "Expected meaningful non-whitespace text.").nullable(),
 });
 export type SixtyCardConstructedDeckBuildingBrief = z.infer<typeof SixtyCardConstructedDeckBuildingBriefSchema>;
 

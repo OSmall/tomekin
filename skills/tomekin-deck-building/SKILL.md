@@ -1,6 +1,6 @@
 ---
 name: tomekin-deck-building
-description: Use when discovering, building, or revising an MTG deck with Tomekin tools. Confirm the Deck Building Brief and Collection scope, route to opportunity discovery, fresh construction, or Format-specific tuning, then validate, recheck Availability, render, and persist safely.
+description: Use when discovering, building, or revising an MTG deck with Tomekin tools. Confirm the Deck Building Brief and Collection scope, route to opportunity discovery, fresh construction, or Format-specific tuning, save construction progress, then explicitly validate and finish safely.
 ---
 
 # Tomekin Deck Building
@@ -17,14 +17,15 @@ For a standalone supplied sampling question, use `hypergeometric_calculator` wit
 This pure calculation needs no Collection import, reference readiness or Deck Candidate. Apply the workflow below when
 card facts, discovery, construction or tuning are needed.
 
-1. Check `summarize_reference_support`. Missing `oracle_cards`, `all_cards`, or `oracle_tags` blocks local
-   deck-building.
+1. Use startup/setup diagnostics and tool readiness errors for reference status. Local `lookup_cards` needs compatible
+   Oracle Cards and All Cards imports; absent tags are reported as unavailable enrichment. Local `query_cards` still
+   requires all three datasets. Follow the actionable sync instruction when a required dataset is unavailable.
 2. Draft a best-effort Deck Building Brief with `draft_deck_building_brief`.
 3. Ask the user to confirm or edit the Brief before substantial discovery or full construction.
 4. Keep strength and pilot complexity explicit: `powerLevel` or Commander Bracket describes strength, while
    `playExperience` describes desired gameplay feel and complexity.
 5. When Collection evidence matters, call `list_collection_locations`, confirm an exact allow-list, and preserve the
-   same `(locationType, locationName)` scope for all later Collection queries and the final Availability recheck.
+   same procedural `(locationType, locationName)` scope for all later Collection queries and the final Availability recheck.
 6. If the Format is absent or ambiguous, ask one focused Format question before drafting. Do not silently default to
    Commander.
 7. For a sufficiently contextualised nominated-card tuning review, state material assumptions and proceed. For open
@@ -52,16 +53,37 @@ skill preserves the lifecycle and authority constraints.
 ## Retrieve Evidence Economically
 
 - Load `query-cards` before non-trivial filters or after any validation error.
-- Use `query_cards`, `search_card_identity_tags`, and `get_card_identity` to assemble and compare coherent packages.
+- Use `query_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
   cards.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.
 - Do not call a card Available, Committed, or Missing until Collection evidence has been checked under the confirmed
   allow-list.
 
+## Save And Resume Construction
+
+Use `create_deck_candidate` for concrete authorized progress, including empty selection and provisional plans. Keep the
+Brief, current plan, assessed options/contributions and selected memberships in their respective owners. A plan uses
+`schema_version: 1`; new nodes/relationships declare request-local `ref` values. Use returned `created_ids` for later edits.
+Every retained option needs a reasoned role contribution; a desired role with zero selected contributors needs a gap
+assessment. Repeated copies use membership quantities. Cuts retain assessed options unless explicitly removed.
+
+Read `get_deck_candidate` for a compact summary or `view: "state"` for full current reasoning. Use `edit_deck_candidate`
+with `candidate_id`, the exact last-read `expected_updated_at`, and typed `changes`. Quantities are absolute; omissions
+preserve stored values and optional fields can explicitly clear with `null`. Coordinate related additions/removals in one
+edit. The tools enforce record integrity without implicitly checking legality, evaluation or Availability.
+
+Explain the actual selected-deck/current-strategy result and persistence target before applying it. Existing authorization
+counts when it covers that result; otherwise obtain candidate-level agreement. Authorized construction and pool-only
+maintenance need no per-option approval. After a conflict, reload and reconcile before retrying. After an unknown edit
+outcome, inspect the candidate and affected records. After an unknown create outcome, inspect `list_deck_candidates` and
+matching candidate state by label, Format/anchor, times and contents; labels are not unique and ambiguous matches require
+inspection before another create. See [the public write contract](../../docs/product-behavior.md#structured-candidate-writes).
+
 ## Validate And Finish A Deck Candidate
 
-1. Resolve final names with `resolve_decklist_cards`.
+1. Resolve final names with batched `lookup_cards` name references and `select: {name: true}`. Check every ordered
+   outcome across pages and resolve any local miss before validation.
 2. Validate deterministic Format construction with `validate_format_legality`.
 3. When a non-empty Collection scope is active, requery all final card names with the unchanged allow-list. Compare
    scoped `totalQuantity` with required quantities and classify Available, Committed, and Missing cards before
@@ -70,38 +92,6 @@ skill preserves the lifecycle and authority constraints.
    count, and Collection caveats. It is not a deterministic deck-quality verdict.
 5. Follow the active skill's static quality review and revise for at most three complete passes.
 6. Render Markdown and Portable Decklist with `render_deck_candidate`.
-7. Save with `save_deck_candidate` only after final cards resolve, legality passes, scoped Availability is rechecked,
-   and assumptions and caveats are represented.
-
-If the Collection allow-list was accidentally omitted or changed during a query, discard that result and retry. The
-current enforcement is procedural because the Brief and evaluator do not yet carry a structured Collection Access
-Policy.
-
-If local reference data is unavailable, stop deck-building and tell the user to run this setup before retrying. Do not
-attempt to compensate with live web data or unsupported sources.
-
-```sh
-bun run db:sqlite:migration:apply
-bun run import:scryfall -- oracle_cards /path/to/oracle-cards.jsonl.gz
-bun run import:scryfall -- all_cards /path/to/all-cards.jsonl.gz
-bun run import:scryfall -- oracle_tags /path/to/oracle-tags.jsonl.gz
-```
-
-## Quality And Safety Rules
-
-- State a functional game plan and expected play experience.
-- Include enough enablers, payoffs, mana support, interaction, actual card advantage, resilience, and credible win
-  conditions for the confirmed Brief.
-- Do not reduce requested strength merely to meet an approachable pilot-complexity target.
-- Use the shared bounded-statistics method for explicit sampling questions. Gameplay simulation, mulligan/selection
-  sequences, casting analysis, goldfishing, live prices, live metagame knowledge and exhaustive combo detection remain
-  unsupported.
-- Deterministic legality results cannot be overridden by agent judgment.
-- Build no 60-card Sideboard unless requested; Commander does not gain a Sideboard.
-
-A Deck Opportunity shortlist and a Deck Change Proposal are transient analysis. Do not save either with the current
-tools. Build a full Deck Candidate only after the user selects an opportunity or accepts a tuning path.
-
-For accepted tuning, show the exact final additions, cuts, quantities, and persistence target, then wait for separate
-confirmation before resolving, revalidating, rendering, and saving. Update a saved Deck Candidate in place unless the
-user requests a copy or variant; an imported Existing Deck can only produce a new Deck Candidate.
+7. Persist the authorized result through create/edit as needed and report the actual save result. Keep explicit check
+   findings and the remaining strategic/Brief/Collection review distinct from structural save success. A saved provisional
+   candidate is not a completed deck merely because its records are sound.

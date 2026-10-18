@@ -62,6 +62,19 @@ be represented as JSON Schema, because OpenCode performs that conversion during 
 and LLM quality evaluation should stay out of the default `bun test` suite unless a separate explicit smoke harness is
 added.
 
+## Lookup Done Bar
+
+The primary seam is shared Agent Tool handlers composed with isolated on-disk SQLite and tiny public real-card
+fixtures imported through the existing import repository. It covers exact Oracle/name/Printing resolution, ordered
+misses/duplicates, closed selectors, original-batch incompatibility, core/optional readiness, null/empty distinctions,
+complete faces/tags/Printing facts, first/after including zero, relevant successful import invalidation (including same
+stored-second imports), whole escaped UTF-8 limits, oversized records/cursors and cancellation/deadline recovery.
+Synthetic tag annotations stress transport limits without publishing private session or Collection data.
+
+Thin actual OpenCode and Pi Worker/fallback tests inspect the serialized closed selector schema, complete >16k
+model-visible output, structured validation errors and Worker cancellation/replacement. Complete lookup envelopes bypass
+the old preview projectors. These tests establish card-only facts; Collection-policy evidence remains later work.
+
 ## Calculator Done Bar
 
 The pure numerical seam is an explicit exception to the broader shared-handler seam: independent subset enumeration
@@ -240,3 +253,12 @@ long-text and three-card-save assertions. See [the evaluation protocol and captu
 fixture cardinalities, cold/warm conditions, known limits and the separately runnable legacy comparator. These synthetic
 measurements establish no live-model, production latency, strategic-quality or whole-deck Availability claim.
 
+
+## Structured candidate write coverage
+
+Public create/edit/get/list handlers run against migrated temporary on-disk SQLite, including reopened connections,
+linked local references, explained gaps, explicit removal/clearing, Unicode limits and same-tick stale-write conflicts.
+Focused SQLite failure injection verifies transaction rollback; direct constraint checks cover relational ownership and
+uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlement, preserved conflict context and
+inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
+legacy comparator remains pinned and does not depend on compatibility product tools.

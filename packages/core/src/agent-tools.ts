@@ -1,3 +1,5 @@
+import {lookupCards, type CardLookupOptions} from "./card-lookup";
+import {LookupCardsArgsSchema, type CardLookupRepository} from "./card-retrieval";
 import {calculateHypergeometric, HypergeometricCalculatorArgsSchema, HypergeometricCalculatorRequestSchema} from "./hypergeometric-calculator";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
@@ -8,8 +10,7 @@ import type {CollectionQueryRepository} from "./collection-import";
 import {
     DeckCandidateCardSectionSchema,
     type DeckCandidateRepository,
-    normalizeDeckCandidateForSave,
-    SaveDeckCandidateInputSchema
+    CreateDeckCandidateInputSchema, EditDeckCandidateInputSchema, summarizeDeckCandidate
 } from "./deck-candidate";
 import {renderDeckCandidateMarkdown, renderPortableDecklist} from "./deck-candidate-rendering";
 import {assessDeckLegality, type DeckLegalityCard} from "./format-legality";
@@ -18,6 +19,7 @@ import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
   "query_cards",
+  "lookup_cards",
   "hypergeometric_calculator",
   "get_card_identity",
   "search_card_identity_tags",
@@ -28,7 +30,8 @@ export const AgentToolNameSchema = z.enum([
   "validate_format_legality",
   "evaluate_deck_candidate",
   "render_deck_candidate",
-  "save_deck_candidate",
+  "create_deck_candidate",
+  "edit_deck_candidate",
   "get_deck_candidate",
   "list_deck_candidates",
   "list_collection_locations",
@@ -60,16 +63,14 @@ export const RenderDeckCandidateArgsSchema = z.strictObject({
     })).min(1),
     sections: z.record(z.string(), z.string()).optional()
 });
-export const SaveDeckCandidateArgsSchema = SaveDeckCandidateInputSchema;
-/** JSON transport preserves the public ISO timestamp form accepted by the save normalizer. */
-export const SaveDeckCandidateTransportArgsSchema = SaveDeckCandidateInputSchema.extend({
-    collectionImportTimestamp: z.string().datetime({offset: true}).nullable().default(null),
-});
-export const GetDeckCandidateArgsSchema = z.object({id: z.uuid()});
+export const CreateDeckCandidateArgsSchema = CreateDeckCandidateInputSchema;
+export const EditDeckCandidateArgsSchema = EditDeckCandidateInputSchema;
+export const GetDeckCandidateArgsSchema = z.strictObject({id:z.uuid(),view:z.enum(["summary","state"]).default("summary")});
 export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema}).strict();
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
     query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
@@ -82,7 +83,8 @@ export const agentToolContracts = {
     validate_format_legality: {description: "Validate deterministic Format construction and legality.", inputSchema: ValidateDeckCandidateArgsSchema},
     evaluate_deck_candidate: {description: "Evaluate a candidate's legality, power context, mana curve, and land count.", inputSchema: ValidateDeckCandidateArgsSchema},
     render_deck_candidate: {description: "Render stable Deck Candidate Markdown and a Portable Decklist.", inputSchema: RenderDeckCandidateArgsSchema},
-    save_deck_candidate: {description: "Persist a final Deck Candidate.", inputSchema: SaveDeckCandidateTransportArgsSchema},
+    create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
+    edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
     get_deck_candidate: {description: "Retrieve a saved Deck Candidate.", inputSchema: GetDeckCandidateArgsSchema},
     list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
     list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
@@ -92,6 +94,7 @@ export function agentToolInputJsonSchema(name: AgentToolName): Record<string, un
     return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
+  readonly cardLookup?: CardLookupRepository;
   readonly cardReference: CardReferenceRepository;
   readonly cardQuery: CardQueryRepository;
   readonly deckCandidates: DeckCandidateRepository;
@@ -107,8 +110,12 @@ export type AgentToolError =
     readonly reimportRequiredBulkDataTypes: readonly ScryfallBulkDataType[];
 };
 
-export function createAgentToolHandlers(repositories: AgentToolRepositories) {
+export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
   return {
+      lookupCards(input: unknown, signal?: AbortSignal) {
+          if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
+          return lookupCards(repositories.cardLookup, input, options.lookup, signal);
+      },
       hypergeometricCalculator: calculateHypergeometric,
       async queryCards(input: unknown) {
       const parsed = parseCardQueryInput(input);
@@ -221,18 +228,24 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories) {
             };
         });
     },
-      async saveDeckCandidate(input: unknown) {
-          const candidate = normalizeDeckCandidateForSave(SaveDeckCandidateArgsSchema.parse(input));
-          const ready = await requireReferenceData(repositories.cardReference);
-          if (ready.isErr()) return ready;
-          return repositories.deckCandidates.saveDeckCandidate(candidate);
+    async createDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => CreateDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        return repositories.deckCandidates.createDeckCandidate(parsed.value);
     },
-    getDeckCandidate(input: unknown) {
-      const args = GetDeckCandidateArgsSchema.parse(input);
-      return repositories.deckCandidates.getDeckCandidate(args.id);
+    async editDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => EditDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        return repositories.deckCandidates.editDeckCandidate(parsed.value);
+    },
+    async getDeckCandidate(input: unknown) {
+        const parsed = safeSync(() => GetDeckCandidateArgsSchema.parse(input));
+        if (parsed.isErr()) return parsed;
+        const result = await repositories.deckCandidates.getDeckCandidate(parsed.value.id);
+        return result.map(candidate => parsed.value.view === "state" ? candidate : summarizeDeckCandidate(candidate));
     },
     listDeckCandidates() {
-      return repositories.deckCandidates.listDeckCandidates();
+        return repositories.deckCandidates.listDeckCandidates();
     },
     listCollectionLocations() {
       return repositories.collection.listCollectionLocations();
@@ -302,4 +315,14 @@ function safeSync<T>(fn: () => T): Result<T, AgentToolError> {
   } catch (error) {
     return err({type: "validation_error", message: error instanceof Error ? error.message : String(error)});
   }
+}
+
+/** These tools must settle once dispatched, including future check-evidence publication. */
+export function agentToolMutates(name: string): boolean {
+    return [
+        "create_deck_candidate",
+        "edit_deck_candidate",
+        "validate_format_legality",
+        "evaluate_deck_candidate",
+    ].includes(name);
 }
