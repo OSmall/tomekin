@@ -25,7 +25,7 @@ export function collectionRequestBindings(args: CollectionRetrievalArgs) {
 }
 function latest(snapshot: CollectionPolicySnapshot) {
     const result = new Map<string, CollectionPolicySnapshot["referenceImports"][number]>();
-    for (const item of snapshot.referenceImports) if (item.status === "succeeded") {const old = result.get(item.bulkDataType); if (!old || (item.completedAt ?? item.startedAt).getTime() > (old.completedAt ?? old.startedAt).getTime()) result.set(item.bulkDataType, item);}
+    for (const item of snapshot.referenceImports) if (item.status === "succeeded") {const old = result.get(item.bulkDataType); if (!old) result.set(item.bulkDataType, item);}
     return result;
 }
 /** Local evaluation is complete per source card, transient, and bound before anything is emitted. */

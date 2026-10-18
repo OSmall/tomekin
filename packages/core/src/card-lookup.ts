@@ -172,7 +172,7 @@ function latestSuccessful(imports: readonly ScryfallBulkDataImport[]) {
     const latest = new Map<string, ScryfallBulkDataImport>();
     for (const item of imports) if (item.status === "succeeded") {
         const previous = latest.get(item.bulkDataType);
-        if (!previous || (item.completedAt ?? item.startedAt).getTime() > (previous.completedAt ?? previous.startedAt).getTime()) latest.set(item.bulkDataType, item);
+        if (!previous) latest.set(item.bulkDataType, item);
     }
     return latest;
 }

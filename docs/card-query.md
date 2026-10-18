@@ -119,7 +119,7 @@ attempts do not replace these dependencies.
 
 Repeat fixed Collection scope, policy source, evidence mode and provenance setting on every ordinary first/after call.
 Card/copy selectors and first may change. Cursors retain active successful Collection/reference imports and the effective
-policy, including dependencies no longer selected. Same-tick reference replacements use committed insertion order.
+policy, including dependencies no longer selected. Reference replacements use committed insertion order, including same-tick and clock-rollback imports.
 Successful replacement or candidate-policy change invalidates dependent cursors and in-flight results; stale work emits
 no old edges with fresh context. Failed and unrelated imports do not invalidate. Reconfirm Collection scope after
 replacement; reference replacement needs restart. No historical row store or saved result buffer is added.

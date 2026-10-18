@@ -122,6 +122,7 @@ export function evaluateOwnedRow(policy: ResolvedCollectionPolicy, row: OwnedRow
     if (policy.excluded_collection_card_ids.includes(row.collection_card_id)) reasons.push("excluded_collection_card_id");
     return {...result, proof_fields: ["location", ...result.proof_fields], reasons, decision: reasons.length ? "excluded" : result.decision, committed: row.location.type === "deck"};
 }
+/** referenceImports are newest committed insertion first, including same-tick or clock-rollback replacements. */
 export type CollectionPolicySnapshot = {activeImport: {id: string; imported_at: string} | null; legacySnapshot: boolean; locations: readonly CollectionLocationImportRecord[]; referenceImports: readonly ScryfallBulkDataImport[]};
 export type CollectionRowOrder = "source_order" | "added_at_asc" | "added_at_desc";
 export type CollectionBrowseRepository = {

@@ -455,7 +455,7 @@ export async function searchCards(
         for (const item of snapshot.value.imports) {
             if (item.status !== "succeeded") continue;
             const old = imports.get(item.bulkDataType);
-            if (!old || (item.completedAt ?? item.startedAt).getTime() > (old.completedAt ?? old.startedAt).getTime()) imports.set(item.bulkDataType, item);
+            if (!old) imports.set(item.bulkDataType, item);
         }
         for (const [dataset, revision] of Object.entries(revisions).filter(([key]) => !["collection", "collection_policy"].includes(key)))
             if (revision !== (imports.get(dataset)?.id ?? null))

@@ -181,6 +181,11 @@ test("same-tick successful reference replacement stales search and lookup eviden
         // Synthetic same-tick successful replacement with a UUID below the prior import. Row order remains authoritative.
         f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ?, started_at = ?, completed_at = ? WHERE bulk_data_type = 'oracle_cards' AND id != ?").run(id(0), old.started_at, old.completed_at, old.id);
         for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, lookup.pageInfo.endCursor], [runtime.handlers.searchCards, searchInput, search.pageInfo.endCursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed", recovery: "restart"}});
+        const nextLookup = envelope(await runtime.handlers.lookupCards(lookupInput));
+        const nextSearch = envelope(await runtime.handlers.searchCards(searchInput));
+        await f.reimportOracle();
+        f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET started_at = 0, completed_at = 0 WHERE bulk_data_type = 'oracle_cards' AND id NOT IN (?, ?)").run(old.id, id(0));
+        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, nextLookup.pageInfo.endCursor], [runtime.handlers.searchCards, searchInput, nextSearch.pageInfo.endCursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed"}});
     } finally {runtime.close(); f.dispose();}
 });
 

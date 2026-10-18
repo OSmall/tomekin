@@ -70,6 +70,7 @@ export function decodeRetrievalCursor(token: string): {cursor?: RetrievalCursor;
 }
 export type CardTags = {direct: {slug: string; weight: CardIdentityTaggingWeight; annotation: string | null}[]; inherited: {slug: string; weight: CardIdentityTaggingWeight}[]};
 export type LocalLookupRecord = {detail: CardIdentityDetail; printing?: CardPrinting; set?: CardSet; promoTypes?: string[]; tags?: CardTags};
+/** Import records are newest committed insertion first; wall-clock timestamps do not establish replacement authority. */
 export type CardLookupSnapshot = {imports: readonly ScryfallBulkDataImport[]; records: readonly (LocalLookupRecord | null)[]};
 export type CardLookupRepository = {readSnapshot(references: readonly CardReference[], includeTags: boolean): Promise<Result<CardLookupSnapshot, CardReferenceRepositoryError>>};
 

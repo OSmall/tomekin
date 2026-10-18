@@ -226,8 +226,7 @@ Collection-scoped provider filtering and opt-in search/lookup summaries/copy evi
 Collection retrieval service uses the existing actual-owned-row repository and policy evaluator; candidate policy loads
 the whole Brief. Identity matching and explicit exact Printing matching keep the provider representative separate from
 actual owned versions. Complete same-row counts/lists and one inspectable context are bound to relevant successful
-imports/effective policy, checked during evaluation and before emission. Same-tick import ties follow committed row
-order. Stateless cursors retain the original fixed inputs and raw source position, and unreturned incomplete/oversized
+imports/effective policy, checked during evaluation and before emission. Reference import authority follows committed row order, including clock rollback. Stateless cursors retain the original fixed inputs and raw source position, and unreturned incomplete/oversized
 cards remain unconsumed. The current concrete inputs and no/empty/unconfirmed states are documented in
 [Collection retrieval evidence](../card-query.md#collection-retrieval-evidence). No migration, Collection writeback,
 whole-Collection agent dump, saved search store or final whole-deck allocation claim is introduced by retrieval.
