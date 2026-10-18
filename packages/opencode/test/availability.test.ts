@@ -78,6 +78,52 @@ test("Availability exposes closed public check inputs and settles complete struc
                 policy_shortfall: 4,
             },
         });
+        const saved = (
+            await f.runtime.handlers.createDeckCandidate({
+                label: "Adapter assembly",
+                brief: input.brief,
+                plan: {
+                    schema_version: 1,
+                    description: "Saved assembly",
+                    nodes: [
+                        {
+                            ref: "mana",
+                            kind: "role",
+                            label: "Mana",
+                            description: "Resources",
+                        },
+                    ],
+                    contributions: [
+                        {
+                            card_identity_id: id(1),
+                            role_ref: "mana",
+                            rationale: "Produces resources",
+                        },
+                    ],
+                },
+                options: [{ card_identity_id: id(1) }],
+                memberships: [
+                    {
+                        card_identity_id: id(1),
+                        section: "mainboard",
+                        quantity: 7,
+                    },
+                ],
+            })
+        )._unsafeUnwrap();
+        const savedInput = {
+            candidate_id: saved.candidate_id,
+            expected_updated_at: saved.updated_at,
+            requirements: input.requirements,
+            first: 2,
+        };
+        const savedOpen = JSON.parse(
+            await check_collection_availability.execute(
+                savedInput as never,
+                {} as never,
+            ),
+        );
+        expect(savedOpen.evidence.status).toBe("applicable");
         for (const mode of ["Worker", "fallback"] as const) {
             const tool = createCoreTool("check_collection_availability", {
                 log,
@@ -93,7 +139,7 @@ test("Availability exposes closed public check inputs and settles complete struc
             });
             expect(JSON.parse(JSON.stringify(tool.parameters))).toEqual(schema);
             const controller = new AbortController(),
-                pending = tool.execute(mode, input, controller.signal);
+                pending = tool.execute(mode, savedInput, controller.signal);
             controller.abort();
             const output: any = await pending;
             expect(JSON.parse(output.content[0].text)).toEqual(
@@ -102,11 +148,25 @@ test("Availability exposes closed public check inputs and settles complete struc
             expect(output.details).toMatchObject({
                 status: "ok",
                 check_completion: "complete",
+                evidence: { status: "applicable" },
                 summary: { owned: 6, eligible: 2 },
             });
             expect(
                 Buffer.byteLength(output.content[0].text),
             ).toBeLessThanOrEqual(51200);
+            const persisted = (
+                await f.runtime.handlers.getDeckCandidate({
+                    id: saved.candidate_id,
+                })
+            )._unsafeUnwrap();
+            expect(persisted).toMatchObject({
+                updated_at: saved.updated_at,
+                validation_evidence: {
+                    checks: {
+                        collection_availability: { status: "applicable" },
+                    },
+                },
+            });
             const stale: any = await tool.execute(
                 "stale",
                 {

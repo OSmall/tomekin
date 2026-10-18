@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { err, ok } from "neverthrow";
 import {
+    deckCheckVersions,
     DeckCheckArgsSchema,
     SavedDeckCheckSchema,
     InitialDeckCheckSchema,
@@ -73,6 +74,15 @@ export type AvailabilityAllocation = {
     proof_fields: string[];
 };
 export type AvailabilityResult = {
+    evaluator_version: string;
+    candidate_context: { candidate_id: string | null; trial: boolean };
+    reference_imports: {
+        dataset: string;
+        import_id: string;
+        completed_at: string;
+        source_updated_at: string | null;
+        import_contract_revision: number;
+    }[];
     check_completion: "complete";
     collection_context: {
         state: "ready" | "empty_collection" | "no_collection";
@@ -488,7 +498,35 @@ export async function computeCollectionAvailability(
             | "missing_owned"
             | "policy_shortfall",
     ) => details.reduce((n, d) => n + (d[key] ?? 0), 0);
+    const dependencies = snapshotRevisions(snapshot);
     const result: AvailabilityResult = {
+        evaluator_version:
+            capture.dependencies?.validator_versions.collection_availability ??
+            deckCheckVersions.collection_availability,
+        candidate_context: {
+            candidate_id: capture.candidate_id ?? null,
+            trial: capture.trial,
+        },
+        reference_imports: ["oracle_cards", "all_cards"].flatMap((dataset) => {
+            const revision = snapshot.referenceImports.find(
+                (item) => item.id === dependencies[dataset],
+            );
+            return revision
+                ? [
+                      {
+                          dataset,
+                          import_id: revision.id,
+                          completed_at: (
+                              revision.completedAt ?? revision.startedAt
+                          ).toISOString(),
+                          source_updated_at:
+                              revision.sourceUpdatedAt?.toISOString() ?? null,
+                          import_contract_revision:
+                              revision.importContractRevision,
+                      },
+                  ]
+                : [];
+        }),
         check_completion: "complete",
         collection_context: {
             state: !snapshot.activeImport
@@ -501,7 +539,7 @@ export async function computeCollectionAvailability(
             effective_policy: policy,
             policy_status: policy ? "confirmed" : "unconfirmed",
         },
-        dependencies: snapshotRevisions(snapshot),
+        dependencies,
         summary: {
             required: sum("quantity"),
             owned: sum("owned"),
@@ -603,8 +641,44 @@ export function availabilityPage(
         provider_total: null,
         scoped_total: records.length,
     });
-    const fail = (error: RetrievalProblem) =>
-        err({
+    options.log?.debug(
+        {
+            toolName: "check_collection_availability",
+            operation: "witness_page",
+            after: args.after,
+            baseline,
+        },
+        "Availability witness continuation input",
+    );
+    const fail = (error: RetrievalProblem) => {
+        options.log?.debug(
+            {
+                toolName: "check_collection_availability",
+                operation: "witness_page",
+                code: error.code,
+                cursor: error.cursor,
+                baseline,
+            },
+            "Availability witness continuation failure",
+        );
+        if (
+            [
+                "record_too_large",
+                "cursor_too_large",
+                "response_budget_too_small",
+            ].includes(error.code)
+        )
+            options.log?.warn(
+                {
+                    toolName: "check_collection_availability",
+                    operation: "witness_page",
+                    code: error.code,
+                    requiredBytes: error.required_bytes,
+                    limitBytes: budget,
+                },
+                "Complete Availability witness exceeds response capacity",
+            );
+        return err({
             type: "retrieval_error" as const,
             message: error.message,
             envelope: {
@@ -615,6 +689,7 @@ export function availabilityPage(
                 metadata: metadata(0),
             },
         });
+    };
     if (args.after) {
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return fail(decoded.problem);
