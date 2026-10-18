@@ -186,7 +186,7 @@ async function observe(name: WorkflowName) {
                 return evidence?.summary.owned_quantity === owned.reduce((total, row) => total + row.quantity, 0) && evidence.summary.eligible_quantity === permitted.reduce((total, row) => total + row.quantity, 0) && JSON.stringify(evidence.copies?.map(row => row.collection_card_id).sort()) === JSON.stringify(permitted.map(row => row.id).sort()) && evidence.copies?.every(row => permitted.some(expected => expected.id === row.collection_card_id && expected.printingId === row.printing_id && expected.quantity === row.quantity && expected.finish === row.finish));
             }),
             completeOracleText:
-                collected[0]?.node.card.oracle_text === sourceText,
+                collected.every(({node}) => node.card.oracle_text === source.find(card => card.oracle_id === node.card.oracle_id)?.oracle_text),
             scopedTotal: page.metadata.scoped_total,
             application: measure(application),
             adapters: {
@@ -244,7 +244,7 @@ export async function runCollectionQueryEvaluation(options: {warmRuns?: number} 
             },
         });
     }
-    for (const item of workflows) if (!item.evidenceCorrect || item.coverage.missing.length || item.coverage.unexpected.length || item.coverage.duplicates.length || !item.adapters.piWorker.completeEnvelope || !item.adapters.piFallback.completeEnvelope) throw new Error(`Incomplete Collection fixture evidence: ${item.name}`);
+    for (const item of workflows) if (!item.evidenceCorrect || !item.completeOracleText || item.coverage.missing.length || item.coverage.unexpected.length || item.coverage.duplicates.length || !item.adapters.piWorker.completeEnvelope || !item.adapters.piFallback.completeEnvelope) throw new Error(`Incomplete Collection fixture evidence: ${item.name}`);
     return {
         kind: "collection-query-v1",
         runtime: {
