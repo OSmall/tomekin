@@ -90,6 +90,7 @@
       "dependencies": {
         "@sinclair/typebox": "0.34.41",
         "@tomekin/agent": "workspace:*",
+        "@tomekin/cli": "workspace:*",
         "@tomekin/core": "workspace:*",
         "@tomekin/sqlite": "workspace:*",
         "pi-ask-user": "0.15.0",

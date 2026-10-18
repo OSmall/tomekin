@@ -270,3 +270,21 @@ stale evidence reuse/publication. Actual OpenCode, Pi fallback and real Worker t
 errors, evidence persistence, post-dispatch cancellation/shutdown, unknown write outcomes and complete findings beyond
 the retired preview boundary. Current evaluation loads saved checks by candidate ID and exact timestamp; the frozen
 legacy comparator remains unchanged.
+
+## Complete candidate output coverage
+
+Migrated temporary SQLite/public-handler tests recover complete JSON beyond the old adapter preview, reconstruct the
+current records, preserve rationale/qualifications/evidence, exercise zero-first and escaped UTF-8 budget boundaries,
+reject changed view/candidate/evidence/name baselines and distinguish unchanged Brief-only continuation. Pool tests
+keep role groups, deduplicated options, alternatives and selected quantities separate. Reports retain complete recorded
+findings, honest absent/outdated statuses and missing focused judgments. Actual OpenCode schemas and Pi Worker/fallback
+outputs exercise complete envelopes and saved canonical rendering. CLI tests cover exact export arguments, missing
+candidate/plan and atomic filesystem failures preserving prior output and cleaning temporary files.
+
+Mermaid exports receive a separate manual syntax/render/readability check using an external compatible renderer.
+The public/synthetic `candidate-plan.ts` fixture covers escaped labels, cycles, multiple relationship kinds, symmetric
+competition, disconnected desired gaps, route priorities and repeated Mainboard/Sideboard quantities. Its larger
+representative variant has 24 selected identities and eight active alternatives with multi-role contributions. Check all
+three projections, confirm special characters render as text, verify quantities/alternatives remain distinguishable,
+and inspect layout at readable zoom. A passing render establishes no strategic quality. No renderer, live LLM or network
+is part of the default test suite.

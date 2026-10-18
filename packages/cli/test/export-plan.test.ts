@@ -1,0 +1,40 @@
+import {test,expect} from "bun:test";
+import {mkdtempSync,mkdirSync,readdirSync,readFileSync,rmSync,writeFileSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
+import {applySqliteMigrations,openDatabase,closeDatabase,createSqliteDeckCandidateRepository} from "@tomekin/sqlite";
+import {runDeckCandidateExportCommand} from "@tomekin/cli";
+test("CLI exports a current plan atomically and reports argument, missing-plan and filesystem failures", async()=>{
+    const root=mkdtempSync(join(tmpdir(),"tomekin-export-")),path=join(root,"test.sqlite"),out=join(root,"plan.json"),log=createTestRootLoggerFromEnv();
+    applySqliteMigrations(path,{log});
+    const db=openDatabase(path,{log});
+    try {
+        const repo=createSqliteDeckCandidateRepository(db,{now:()=>new Date("2026-10-18T00:00:00.000Z")});
+        const saved=await repo.createDeckCandidate({label:"Provisional",brief:{format:"casual_60",goal:"Develop a plan",powerLevel:null} as any,options:[],memberships:[],plan:{schema_version:1,description:"A complete plan",nodes:[],contributions:[],relationships:[]}});
+        if(saved.isErr()) throw new Error(saved.error.message);
+        let stderr="",stdout="";
+        const io={stdout:{write:(s:string)=>{stdout+=s;}},stderr:{write:(s:string)=>{stderr+=s;}}};
+        const run=(args:string[])=>runDeckCandidateExportCommand(args,{TOMEKIN_DB_PATH:path},io,{log});
+        expect(await run([saved.value.candidate_id,"--format","json","--projection","pool","--output",out])).toBe(0);
+        const parsed=JSON.parse(readFileSync(out,"utf8"));
+        expect(parsed.candidate.plan.description).toBe("A complete plan");
+        expect(parsed.candidate.id).toBe(saved.value.candidate_id);
+        expect(stdout).toContain(out);
+        writeFileSync(out,"existing artifact");
+        expect(await run([saved.value.candidate_id,"--format","svg","--output",out])).toBe(1);
+        expect(readFileSync(out,"utf8")).toBe("existing artifact");
+        mkdirSync(join(root,"directory-target"));
+        expect(await run([saved.value.candidate_id,"--format","mermaid","--output",join(root,"directory-target")])).toBe(1);
+        expect(readdirSync(root).filter(name=>name.includes(".tmp-"))).toEqual([]);
+        expect(stderr).toContain("Could not write");
+        expect(await run(["99999999-9999-4999-8999-999999999999","--format","json","--output",out])).toBe(1);
+        expect(readFileSync(out,"utf8")).toBe("existing artifact");
+        const noPlan=await repo.createDeckCandidate({label:"No plan",brief:{format:"casual_60",goal:"Develop",powerLevel:null} as any,options:[],memberships:[]});
+        if(noPlan.isErr())throw new Error(noPlan.error.message);
+        expect(await run([noPlan.value.candidate_id,"--format","json","--output",out])).toBe(1);
+        expect(stderr).toContain("no current Deck Plan");
+        expect(await run([saved.value.candidate_id,"--output",out,"--projection","bogus"])).toBe(1);
+        expect(readFileSync(out,"utf8")).toBe("existing artifact");
+    }finally{closeDatabase(db);rmSync(root,{recursive:true,force:true});}
+});
