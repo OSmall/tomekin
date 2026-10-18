@@ -1,4 +1,5 @@
 import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
+import {browseTags, BrowseTagsArgsSchema} from "./tag-catalogue";
 import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
 import {collectionPolicyFromBrief, type CollectionBrowseRepository} from "./collection-policy";
 import {lookupCards, type CardLookupOptions} from "./card-lookup";
@@ -28,7 +29,7 @@ export const AgentToolNameSchema = z.enum([
   "browse_collection_cards",
   "hypergeometric_calculator",
   "get_card_identity",
-  "search_card_identity_tags",
+  "browse_tags",
   "search_card_sets",
   "summarize_reference_support",
   "get_format_constraints",
@@ -67,7 +68,7 @@ export const agentToolContracts = {
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
     legacy_query_cards: {description: "Explicitly enabled legacy local CQL2 retrieval. Disabled by default; prefer search_cards and lookup_cards.", inputSchema: CardQueryInputSchema},
     get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
-    search_card_identity_tags: {description: "Search local Card Identity Tags by slug, label, or alias.", inputSchema: SearchCardIdentityTagsArgsSchema},
+    browse_tags: {description: "Browse imported tag vocabulary through explicit search (slug/label/alias), exact known-slug lookup, or recoverable list. Complete definitions; hierarchy only on requested lookup, depth defaults to one and is bounded to three. Repeat operation with first/after. Tags are discovery facts, not Deck Roles or quality judgments.", inputSchema: BrowseTagsArgsSchema},
     search_card_sets: {description: "Search local Card Sets by code or name.", inputSchema: SearchCardSetsArgsSchema},
     summarize_reference_support: {description: "Report local reference-data readiness.", inputSchema: EmptyAgentToolArgsSchema},
     get_format_constraints: {description: "Return deterministic construction constraints for a Deck Format.", inputSchema: GetFormatConstraintsArgsSchema},
@@ -121,6 +122,11 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
           return lookupCards(repositories.cardLookup, input, options.lookup, signal);
       },
+      browseTags(input: unknown, signal?: AbortSignal) {
+          const read = repositories.cardReference.readTagCatalogue;
+          if (!read) throw new Error("Tag catalogue repository unavailable.");
+          return browseTags({readTagCatalogue: read}, input, options.lookup, signal);
+      },
       hypergeometricCalculator: calculateHypergeometric,
       async legacyQueryCards(input: unknown) {
           if (!options.enableLegacyQuery) return err({type:"tool_error" as const,message:"Legacy query is disabled. Set TOMEKIN_ENABLE_LEGACY_QUERY=true explicitly to enable it."});
@@ -153,10 +159,15 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           return repositories.cardReference.searchCardIdentityTags(args);
       },
       async searchCardSets(input: unknown) {
-          const args = SearchCardSetsArgsSchema.parse(input);
-          const ready = await requireReferenceData(repositories.cardReference);
+          const parsed = safeSync(() => SearchCardSetsArgsSchema.parse(input));
+          if (parsed.isErr()) return parsed;
+          const support = await repositories.cardReference.summarizeReferenceSupport();
+          if (support.isErr()) return support;
+          const missing = support.value.missing.filter(dataset => dataset === "all_cards");
+          const reimportRequired = support.value.reimportRequired.filter(dataset => dataset === "all_cards");
+          const ready = referenceReadiness({...support.value, missing, reimportRequired, ready: missing.length === 0 && reimportRequired.length === 0});
           if (ready.isErr()) return ready;
-          return repositories.cardReference.searchCardSets(args);
+          return repositories.cardReference.searchCardSets(parsed.value);
       },
     summarizeReferenceSupport() {
       return repositories.cardReference.summarizeReferenceSupport();

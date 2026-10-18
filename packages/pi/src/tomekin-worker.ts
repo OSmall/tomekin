@@ -31,7 +31,7 @@ const handlers: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
     legacy_query_cards: "legacyQueryCards",
     hypergeometric_calculator: "hypergeometricCalculator",
     get_card_identity: "getCardIdentity",
-    search_card_identity_tags: "searchCardIdentityTags",
+    browse_tags: "browseTags",
     search_card_sets: "searchCardSets",
     summarize_reference_support: "summarizeReferenceSupport",
     get_format_constraints: "getFormatConstraints",

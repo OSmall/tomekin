@@ -26,6 +26,10 @@ for operating rules, restart recovery and the unrecorded-header crash limitation
 Normal discovery is `search_cards`; local CQL2 is only explicitly enabled `legacy_query_cards`. `lookup_cards` remains
 local and does not hydrate missing facts from the provider. Reference relationships and existing foreign keys remain.
 
+Local `browse_tags` provides explicit search/lookup/list over retained tags, aliases and hierarchy. Complete-record
+pages use stateless import-bound cursors and transactional catalogue reads; hierarchy depth is explicit and bounded.
+`search_card_sets` uses the existing Set catalogue and only requires All Cards readiness. No second reference store.
+
 ## Current Components
 
 ### Portable core

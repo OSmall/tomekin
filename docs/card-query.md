@@ -26,7 +26,7 @@ selected identity-face gameplay facts. Unsupported or ambiguous source content f
 same direct/inherited semantics and unavailable-data sidecar as lookup. Introducing tag enrichment binds its successful
 import or known absence, plus the Oracle import actually used for local identity/tag resolution; later selectors retain
 those dependencies. A newer provider identity absent locally uses `identity_not_in_local_reference_data`, not empty tags. Unrelated imports do not stale pure live cursors.
-Provenance is opt-in and lists only local dependencies actually used.
+Provenance is opt-in: provider name/retrieval time and only the local dependencies actually used.
 
 `first` defaults to 175 and accepts 0–200. Repeat fixed q, native controls and effective `include_provenance` with
 `after`; `select` and `first` may change. Successful envelopes have complete edges, pageInfo and a stop reason.
@@ -71,7 +71,7 @@ logs do not dump complete results. Production defaults to info and retains crede
 ## Known-card lookup
 
 `lookup_cards` is the delivered local retrieval contract through Core, SQLite, OpenCode and Pi Worker/fallback.
-Collection-policy filtering/evidence and catalogue continuation remain separate work; lookup returns card facts only.
+Lookup returns card facts; provider Collection filtering/evidence remains separate work.
 
 ```json
 {"references":[{"kind":"name","value":"Sol Ring"},{"kind":"printing_id","value":"073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a"}],"select":{"name":true,"oracle_text":true},"first":50}
@@ -149,6 +149,52 @@ completion/source-update timestamps. It is omitted by default. No Collection con
 slice. Info logging records selected fact names, status/counts, whole UTF-8 bytes and timing; deliberate debug logging
 records incoming/outgoing continuation positions, without complete production result-body logging.
 
+## Tag and Set discovery
+
+`browse_tags` replaces the public `search_card_identity_tags` tool. Supply one explicit `operation`:
+
+```json
+{"operation":{"type":"search","query":"mana ramp"},"first":25}
+{"operation":{"type":"lookup","slugs":["mana-rock","recursion"]}}
+{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{}}}
+{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{"depth":2}}}
+{"operation":{"type":"list"},"first":50}
+```
+
+Search matches literal case-insensitive substrings in slugs, labels and aliases; `%` and `_` remain literals.
+Search/list results are ordered by slug then UUID. Exact known-slug lookup preserves supplied order, duplicates
+and explicit `not_found` occurrences. Every found node has `status: "found"` and a complete `tag` definition:
+`id`, `slug`, `label`, nullable `description`, `source_page_uri`, and all `aliases`.
+No hierarchy appears by default. Lookup's optional `hierarchy: {}` requests one level of immediate parents,
+children and connecting relationships. Explicit `depth` accepts integers 1–3. The result's `hierarchy` contains
+`depth`, complete parent/child definitions reachable in each direction within that depth, and deduplicated
+`relationships: [{parent_slug,child_slug}]`. A depth boundary is deliberate, not a claim that no further graph exists.
+Cycles and repeated paths are deduplicated. Per-card `lookup_cards` tags still include all reachable ancestors;
+the catalogue exploration bound does not narrow inherited card facts. Tags are discovery facts, not Deck Roles
+or strategic quality judgments.
+
+`first` defaults to 50 and accepts 0–200. Repeat the same operation with `pageInfo.endCursor` as `after`;
+`first` may change. Search/list traversal is complete under an unchanged tag import. Use `hasNextPage` to
+continue and `error.cursor` after recoverable execution stops. Catalogue uses the same compact 51,200-byte
+success/error envelope and 120-second deadline as lookup, with whole definitions/requested hierarchies indivisible.
+Oversized records remain unconsumed. Cursors bind only the successful compatible `oracle_tags` import and operation;
+failed attempts and unrelated imports do not invalidate them. Rows, aliases, edges and import binding share a SQLite
+read transaction. A replacement tag import yields `stale_cursor` with restart recovery. Missing/incompatible tag data
+returns `reference_data_unready`, distinct from successful empty search/list and a known-slug miss. No provider call,
+startup catalogue dump, second reference store or saved search/cursor store is introduced.
+
+`search_card_sets` retains `{query?,limit?}` code/name discovery over existing imported `card_set` records.
+It requires a compatible All Cards import, independently of tag readiness. Query is case-insensitive, with exact
+code/name matches ranked first; limit defaults to 25 and is capped at 100. No supplementary Set refresh path exists.
+
+The example slugs above were verified against the public Scryfall Oracle Tags snapshot updated
+2026-10-17T21:00:36.595Z, discovered through
+[Oracle Tags bulk metadata](https://api.scryfall.com/bulk-data/oracle_tags) and read from its
+[JSONL snapshot](https://data.scryfall.io/oracle-tags/oracle-tags-20261017210036.jsonl.gz):
+`mana-rock` (`523a4f29-25ee-483c-8123-a8e62b62af5a`), `ramp`
+(`2f3e4ad7-5e60-41b4-bdbc-653f16869cf6`, aliases `acceleration`, `mana ramp`) and `recursion`
+(`82b824ad-648f-467f-a190-2e0fa9a795d2`). Discover current vocabulary from the imported catalogue before assuming
+any other literal slug.
 ## Collection policy and owned-row browsing
 
 `list_collection_locations` returns `{locations, collection_context}`. The context gives `state`, authoritative

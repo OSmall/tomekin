@@ -250,6 +250,7 @@ function projectOutput(details: unknown): PiToolOutput {
 }
 function cancelledOutput(message: string, request?: WorkerRequest) {
     return projectOutput(
+        request?.toolName === "browse_tags" ||
         request?.toolName === "browse_collection_cards" ||
         request?.toolName === "lookup_cards" ||
             request?.toolName === "search_cards"

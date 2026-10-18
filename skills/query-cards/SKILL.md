@@ -32,6 +32,21 @@ occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imp
 It performs no network fallback, automatic hydration, ownership lookup or final Availability proof.
 Read `docs/card-query.md` for the complete field, cursor and error contract.
 
+## Tag and Set Vocabulary
+
+Use `browse_tags` with an explicit operation: `{type: "search", query: "mana ramp"}` for slug/label/alias search,
+`{type: "lookup", slugs: ["mana-rock"]}` for complete known definitions, or `{type: "list"}` for catalogue listing.
+Definitions include all aliases. Hierarchy is absent unless lookup requests `hierarchy: {}` (immediate parents,
+children and edges); explicitly request `depth: 2` or `3` for bounded deeper exploration. Repeat the operation with
+`first`/`after` until `hasNextPage` is false; recover execution stops with `error.cursor`. Successful empty search,
+known-slug `not_found`, and `reference_data_unready` have different meanings. Successful tag replacement invalidates
+old cursors. Tags support discovery; assess Deck Roles and quality from the card in its candidate context.
+`lookup_cards` selected tags still include every reachable inherited ancestor, independently of catalogue depth.
+
+Use `search_card_sets` with a code/name query for existing imported Set metadata. Load no raw catalogue at startup.
+The literal `mana-rock`, `ramp` and `recursion` slugs were verified from the public 2026-10-17 Oracle Tags bulk
+snapshot; source UUIDs and snapshot provenance are recorded in `docs/card-query.md` under Tag and Set discovery.
+
 ## Owned-row Browsing
 
 For policy-aware actual-row, source-date and exact owned-Printing discovery, use `browse_collection_cards` with an

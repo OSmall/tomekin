@@ -56,7 +56,7 @@ skill preserves the lifecycle and authority constraints.
 ## Retrieve Evidence Economically
 
 - Load `query-cards` before non-trivial filters or after any validation error.
-- Use native `search_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
+- Use native `search_cards`, `browse_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
 - Native search currently returns card facts and optional tags, without Collection-policy filtering or owned-row evidence.
   Earlier local Collection examples belong to explicitly enabled `legacy_query_cards`; consult its disclosed reference before use.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted

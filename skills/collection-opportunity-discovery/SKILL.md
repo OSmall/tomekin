@@ -57,7 +57,7 @@ Use bounded searches to find clusters of Collection support without requesting a
 
 1. Query compact Card Identity and scoped quantity results by Format, seed, color constraints, tag concept, functional
    package, or Mana Value band. Prefer limits of 20-50 per discovery query.
-2. Resolve relevant tag IDs with `search_card_identity_tags`; use direct and Inherited Card Identity Tags as evidence,
+2. Resolve relevant tag IDs with `browse_tags` search (`operation: {type: "search", query: "..."}`); use direct and Inherited Card Identity Tags as evidence,
    not as automatic Deck Roles.
 3. Form candidate directions from repeated overlap among Format Anchors, enablers, payoffs, mana support, interaction,
    card advantage, resilience, and credible win conditions.

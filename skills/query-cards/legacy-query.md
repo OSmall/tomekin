@@ -108,9 +108,9 @@ Sortable properties:
 - `in` is exact list matching where `=` is valid; do not use it for booleans.
 - `colorIdentitySubsetOf` works only with `identity.colorIdentity`. It means legal within the given Commander Color
   Identity.
-- `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `search_card_identity_tags` first.
+- `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `browse_tags` first.
 - For deck-building concepts such as draw, ramp, removal, recursion, protection, sacrifice, or tokens, call
-  `search_card_identity_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
+  `browse_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
 - `hasTagInHierarchy` matches the chosen tag and descendant taggings. Use it for normal concept search, especially broad
   functional concepts represented by Inherited Card Identity Tags.
 - For multi-tag concept searches such as draw plus ramp, use independent `hasTagInHierarchy` predicates in an outer
@@ -419,7 +419,7 @@ Text search in Oracle text or type line:
 
 Tag workflow:
 
-1. Call `search_card_identity_tags` for the user's concept, such as `ramp` or `recursion`.
+1. Call `browse_tags` for the user's concept, such as `ramp` or `recursion`.
 2. Pick the intended exact tag ID.
 3. Query with `hasTagInHierarchy`.
 

@@ -27,5 +27,6 @@ export * from "./deck-checks";
 export * from "./card-search";
 export * from "./provider-admission";
 
+export * from "./tag-catalogue";
 export * from "./collection-policy";
 export * from "./collection-browse";

@@ -15,6 +15,15 @@ cooldown across runtime/Worker cancellation. One active provider process per sha
 See the [search contract](./card-query.md#live-card-discovery) for continuation, limits and operating rules.
 Collection-policy filtering and owned-copy evidence are not provided by this search slice.
 
+## Reference vocabulary
+
+`browse_tags` provides explicit slug/label/alias search, known-slug definitions and recoverable catalogue listing.
+Hierarchy appears only when requested for lookup: one parent/child level by default, explicitly up to three.
+Missing tag data is a readiness error; empty search and known-slug misses are separate successful outcomes.
+Complete definitions and requested graph records survive adapter transport without preview clipping. Catalogue
+pagination binds the successful tag import; per-card inherited tags remain complete at every depth.
+`search_card_sets` discovers existing imported Set code/name metadata and depends only on All Cards readiness.
+
 ## Known-card facts
 
 Use `lookup_cards` for batched exact canonical names, Oracle IDs or exact Printing IDs. It returns every ordered

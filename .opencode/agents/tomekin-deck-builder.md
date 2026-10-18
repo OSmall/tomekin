@@ -21,7 +21,7 @@ permission:
   "tomekin_lookup_cards": allow
   "tomekin_browse_collection_cards": allow
   "tomekin_hypergeometric_calculator": allow
-  "tomekin_search_card_identity_tags": allow
+  "tomekin_browse_tags": allow
   "tomekin_search_card_sets": allow
   "tomekin_get_format_constraints": allow
   "tomekin_validate_format_legality": allow

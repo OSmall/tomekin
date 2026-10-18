@@ -897,3 +897,24 @@ test("newer provider identities have unavailable local enrichment and tag reads 
         fixture.dispose();
     }
 });
+
+test("opt-in provenance names the provider actually read without inventing local imports", async () =>
+    withSearch(async (runtime) => {
+        const response = await details(
+            runtime.handlers.searchCards({
+                ...request,
+                include_provenance: true,
+            }),
+        );
+        expect(response.provenance).toMatchObject({
+            provider: {name: "fixture"},
+            reference_imports: [],
+        });
+        expect(
+            Number.isFinite(
+                Date.parse(response.provenance.provider.retrieved_at),
+            ),
+        ).toBe(true);
+        const omitted = await details(runtime.handlers.searchCards(request));
+        expect(omitted).not.toHaveProperty("provenance");
+    }));

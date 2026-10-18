@@ -209,7 +209,19 @@ export async function searchCards(
                 cursor: token(pos),
             },
             metadata: {...metadata(), returned_count: 0},
-            ...(provenance ? {provenance} : {}),
+            ...(parsed.success && parsed.data.include_provenance
+                ? {
+                      provenance: {
+                          ...provenance,
+                          reference_imports:
+                              provenance?.reference_imports ?? [],
+                          provider: provenance?.provider ?? {
+                              name: options.provider.id,
+                              retrieved_at: "2000-01-01T00:00:00.000Z",
+                          },
+                      },
+                  }
+                : {}),
         });
     const ensurePosition = (pos: Position) => {
         const bytes = minimumPositionBytes(pos);
@@ -460,6 +472,7 @@ export async function searchCards(
         }
         if (args.include_provenance)
             provenance = {
+                ...provenance,
                 reference_imports: Object.keys(revisions).flatMap((dataset) => {
                     const item = imports.get(dataset);
                     return item
@@ -484,16 +497,7 @@ export async function searchCards(
     } catch (e) {
         return finish(failure((e as ProviderFailure).problem));
     }
-    if (
-        compactJsonBytes(
-            failure({
-                code: "scan_timeout",
-                message: "Search deadline reached.",
-                retryable: true,
-                cursor: token(safe),
-            }),
-        ) > budget
-    )
+    if (minimumPositionBytes(safe) > budget)
         return finish(
             failure({
                 code: "cursor_too_large",
@@ -549,6 +553,15 @@ export async function searchCards(
                 scanBudgetMs: deadline,
             });
             httpMs += now() - t;
+            if (args.include_provenance)
+                provenance = {
+                    ...provenance,
+                    reference_imports: provenance?.reference_imports ?? [],
+                    provider: {
+                        name: options.provider.id,
+                        retrieved_at: new Date().toISOString(),
+                    },
+                };
             check();
             if (reply.status === 429)
                 throw new ProviderFailure({
