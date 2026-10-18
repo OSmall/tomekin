@@ -1,3 +1,5 @@
+import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
+import {collectionPolicyFromBrief, type CollectionBrowseRepository} from "./collection-policy";
 import {lookupCards, type CardLookupOptions} from "./card-lookup";
 import {LookupCardsArgsSchema, type CardLookupRepository} from "./card-retrieval";
 import {calculateHypergeometric, HypergeometricCalculatorArgsSchema, HypergeometricCalculatorRequestSchema} from "./hypergeometric-calculator";
@@ -21,6 +23,7 @@ export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
   "query_cards",
   "lookup_cards",
+  "browse_collection_cards",
   "hypergeometric_calculator",
   "get_card_identity",
   "search_card_identity_tags",
@@ -64,6 +67,7 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    browse_collection_cards: {description: "Browse actual owned Collection rows locally under an inspectable confirmed policy, with exact Printing/date filters before bounds. added_at is reliable source chronology; unknown dates remain independently searchable. Use first/after for complete pages.", inputSchema: BrowseCollectionCardsArgsSchema},
     lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
@@ -89,6 +93,7 @@ export function agentToolInputJsonSchema(name: AgentToolName): Record<string, un
 }
 export type AgentToolRepositories = {
   readonly cardLookup?: CardLookupRepository;
+  readonly collectionBrowse?: CollectionBrowseRepository;
   readonly cardReference: CardReferenceRepository;
   readonly cardQuery: CardQueryRepository;
   readonly deckCandidates: DeckCandidateRepository;
@@ -106,6 +111,14 @@ export type AgentToolError =
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
   return {
+      browseCollectionCards(input: unknown, signal?: AbortSignal) {
+          if (!repositories.collectionBrowse) throw new Error("Collection browse repository is unavailable.");
+          return browseCollectionCards(repositories.collectionBrowse, async reference => {
+              if (reference.kind === "explicit") return ok(reference.policy);
+              const candidate = await repositories.deckCandidates.getDeckCandidate(reference.candidate_id);
+              return candidate.andThen(value => collectionPolicyFromBrief(value.brief));
+          }, input, options.lookup, signal);
+      },
       lookupCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
           return lookupCards(repositories.cardLookup, input, options.lookup, signal);
@@ -242,8 +255,10 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
     listDeckCandidates() {
         return repositories.deckCandidates.listDeckCandidates();
     },
-    listCollectionLocations() {
-      return repositories.collection.listCollectionLocations();
+    async listCollectionLocations() {
+        if (!repositories.collectionBrowse) return (await repositories.collection.listCollectionLocations()).map(locations => ({locations, collection_context: {state: "no_collection", collection_import_id: null}}));
+        const snapshot = await repositories.collectionBrowse.readCollectionPolicySnapshot();
+        return snapshot.map(value => ({locations: value.locations, collection_context: {state: value.activeImport ? "ready" : value.legacySnapshot ? "reimport_required" : "no_collection", collection_import_id: value.activeImport?.id ?? null, imported_at: value.activeImport?.imported_at ?? null}}));
     },
   };
 }
@@ -317,5 +332,5 @@ export function agentToolMutates(name: string): boolean {
 
 /** Candidate reasoning and explicit findings must survive adapter serialization. */
 export function agentToolPreservesCompleteOutput(name:string):boolean {
-    return name.includes("deck_candidate") || name === "validate_format_legality";
+    return name.includes("deck_candidate") || name === "validate_format_legality" || name === "list_collection_locations";
 }

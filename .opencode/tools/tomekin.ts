@@ -1,5 +1,5 @@
 import {tool} from "@opencode-ai/plugin";
-import {CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {CollectionCopySelectionSchema, type CollectionCopySelection, CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createCanonicalOpenCodeInputSchema, createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
@@ -9,6 +9,12 @@ const lookupSelection = createCanonicalOpenCodeInputSchema(
     CardSelectionSchema,
     (agentToolInputJsonSchema("lookup_cards").properties as Record<string, unknown>).select,
     (validate) => tool.schema.custom<CardSelection>(validate),
+);
+
+const collectionSelection = createCanonicalOpenCodeInputSchema(
+    CollectionCopySelectionSchema,
+    (agentToolInputJsonSchema("browse_collection_cards").properties as Record<string, unknown>).select,
+    (validate) => tool.schema.custom<CollectionCopySelection>(validate),
 );
 
 type AgentToolRuntime = {
@@ -48,7 +54,7 @@ async function runTool<T>(toolName: string, args: unknown, fn: (handlers: Return
     const output = resultToOpencodeOutput(result as Parameters<typeof resultToOpencodeOutput>[0]);
     const resultLike = result as {isOk?: () => boolean; isErr?: () => boolean};
     logger.info({operation: "agent_tool_call", status: resultLike.isErr?.() ? "failed" : "succeeded", durationMs: elapsedMs(startedAtMs), outputBytes: Buffer.byteLength(output, "utf8")}, "Agent tool call finished");
-    if (toolName !== "lookup_cards") logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
+    if (!["lookup_cards", "browse_collection_cards"].includes(toolName)) logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
     return output;
   } catch (error) {
     logger.error({operation: "agent_tool_call", status: "threw", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Agent tool call threw");
@@ -181,5 +187,13 @@ export const lookup_cards = tool({
     args: {...argsOf("lookup_cards"), select: lookupSelection},
     async execute(args) {
         return runTool("lookup_cards", args, (handlers) => handlers.lookupCards(args));
+    },
+});
+
+export const browse_collection_cards = tool({
+    description: agentToolContracts.browse_collection_cards.description,
+    args: {...argsOf("browse_collection_cards"), select: collectionSelection},
+    async execute(args) {
+        return runTool("browse_collection_cards", args, handlers => handlers.browseCollectionCards(args));
     },
 });
