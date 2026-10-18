@@ -49,7 +49,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
         parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
-            if (signal.aborted) return name === "lookup_cards" ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.")) : cancelledOutput("Cancelled before dispatch.");
+            if (signal.aborted) return ["lookup_cards", "browse_tags"].includes(name) ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.")) : cancelledOutput("Cancelled before dispatch.");
             if (options.transport && options.databasePath) {
                 return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: !agentToolMutates(name)}, signal);
             }
@@ -58,8 +58,8 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
-                const result = await (name === "lookup_cards" ? runtime.handlers.lookupCards(params, signal) : handler(params)) as ResultLike;
-                if (signal.aborted && name !== "lookup_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
+                const result = await (name === "lookup_cards" ? runtime.handlers.lookupCards(params, signal) : name === "browse_tags" ? runtime.handlers.browseTags(params, signal) : handler(params)) as ResultLike;
+                if (signal.aborted && !["lookup_cards", "browse_tags"].includes(name) && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
                 const details = agentToolResultDetails(result);
                 options.log.info({component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
                 return projectOutput(details, agentToolPreservesCompleteOutput(name));
@@ -124,7 +124,7 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-        lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+        lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", browse_tags: "browseTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;
 }

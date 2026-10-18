@@ -1,5 +1,5 @@
 import {tool} from "@opencode-ai/plugin";
-import {CardSelectionSchema, type CardSelection, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
+import {CardSelectionSchema, type CardSelection, TagCatalogueOperationSchema, type BrowseTagsArgs, agentToolInputJsonSchema, agentToolContracts, createRootLogger, type LogComponent, type Logger, resolveLogConfigFromEnv, serializeError} from "@tomekin/core";
 import {createCanonicalOpenCodeInputSchema, createLocalAgentToolHandlers, type LocalRuntimeOptions, resultToOpencodeOutput} from "@tomekin/opencode";
 
 const argsOf = <Name extends keyof typeof agentToolContracts>(name: Name) => agentToolContracts[name].inputSchema.shape;
@@ -48,7 +48,7 @@ async function runTool<T>(toolName: string, args: unknown, fn: (handlers: Return
     const output = resultToOpencodeOutput(result as Parameters<typeof resultToOpencodeOutput>[0]);
     const resultLike = result as {isOk?: () => boolean; isErr?: () => boolean};
     logger.info({operation: "agent_tool_call", status: resultLike.isErr?.() ? "failed" : "succeeded", durationMs: elapsedMs(startedAtMs), outputBytes: Buffer.byteLength(output, "utf8")}, "Agent tool call finished");
-    if (toolName !== "lookup_cards") logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
+    if (!["lookup_cards", "browse_tags"].includes(toolName)) logger.debug({operation: "agent_tool_call", status: "finished", output}, "Agent tool output");
     return output;
   } catch (error) {
     logger.error({operation: "agent_tool_call", status: "threw", durationMs: elapsedMs(startedAtMs), error: serializeError(error)}, "Agent tool call threw");
@@ -81,12 +81,17 @@ export const query_cards = tool({
   },
 });
 
-export const search_card_identity_tags = tool({
-  description: "Search local Scryfall Oracle Tags by slug, label, or alias.",
-  args: argsOf("search_card_identity_tags"),
-  async execute(args) {
-    return runTool("search_card_identity_tags", args, (handlers) => handlers.searchCardIdentityTags(args));
-  },
+const tagOperation = createCanonicalOpenCodeInputSchema(
+    TagCatalogueOperationSchema,
+    (agentToolInputJsonSchema("browse_tags").properties as Record<string, unknown>).operation,
+    (validate) => tool.schema.custom<BrowseTagsArgs["operation"]>(validate),
+);
+export const browse_tags = tool({
+    description: agentToolContracts.browse_tags.description,
+    args: {...argsOf("browse_tags"), operation: tagOperation},
+    async execute(args) {
+        return runTool("browse_tags", args, (handlers) => handlers.browseTags(args));
+    },
 });
 
 export const search_card_sets = tool({

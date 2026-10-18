@@ -55,6 +55,7 @@ export type ReferenceDataStatus = {
 };
 
 export type CardReferenceRepository = {
+  readTagCatalogue?: import("./tag-catalogue").TagCatalogueRepository["readTagCatalogue"];
   searchCardIdentities(input: SearchCardIdentitiesInput): Promise<Result<readonly CardIdentity[], CardReferenceRepositoryError>>;
   getCardIdentity(idOrName: string): Promise<Result<CardIdentityDetail, CardReferenceRepositoryError>>;
   searchCardIdentityTags(input: SearchCardIdentityTagsInput): Promise<Result<readonly CardIdentityTag[], CardReferenceRepositoryError>>;
