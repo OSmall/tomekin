@@ -227,8 +227,31 @@ The exact UTC `updated_at` is candidate-wide. A stale edit returns `conflict`, w
 timestamps. Reload and reconcile rather than silently rebasing. Success returns compact actual-change context and stable
 ID mappings. `get_deck_candidate({id})` and `list_deck_candidates` return summaries with Format/anchor, timestamps, selected
 section quantities, pool size and concise role/gap information. Explicit `get_deck_candidate({id, view: "state"})` exposes
-current authoritative records for resumption. Ordinary reads do not invoke checks; the write foundation currently reports
-validation evidence as absent. Saved-input reusable check evidence and complete generated views have separate ownership.
+current authoritative records for resumption. Ordinary reads do not invoke checks. Summaries expose each recorded check's
+applicability and check time; explicit state retains complete findings and captured dependencies.
+
+### Explicit saved and transient checks
+
+`validate_format_legality` and `evaluate_deck_candidate` accept either `{candidate_id, expected_updated_at, changes?}`
+or initial `{cards, brief}`. A saved baseline must match the exact last-read content timestamp. Optional typed `changes`
+apply to a transient resulting state; revised selected memberships are hydrated with canonical card facts before checking.
+Initial inputs and trials return complete findings without creating candidates or overwriting saved evidence.
+
+An explicit saved check captures the Brief, selected memberships, Oracle facts and successful Oracle import dependency
+in one database snapshot. Its latest candidate-owned findings publish only while the check's selected inputs, relevant
+Brief fields, Oracle import/contract revision and validator versions still match. Concurrent relevant changes return
+the captured findings as `outdated` without replacing evidence for newer inputs. Publication does not change candidate
+content timestamps or invalidate an existing edit precondition.
+
+Evidence reads distinguish `absent`, `applicable` and `outdated` separately for `format_legality` and `deck_evaluation`.
+Applicability describes checked inputs, including illegal results; it is not a completion flag. Pool/plan maintenance,
+selected notes/order and unrelated Brief changes preserve selected legality. Evaluation power/play-experience changes
+stale evaluation while preserving legality. Selected identity/quantity/section changes affect both. Oracle imports and
+validator changes stale the checks that use them; unused Printing/tag imports do not. These checks need current Oracle
+reference data, independently of Printing/tag import readiness. Collection Availability remains a separate capability.
+
+Create, edit, read and rendering operations never invoke these checks. Pi preserves their complete findings beyond its
+old preview boundary, classifies both as possible evidence writes and settles dispatched calls after cancellation.
 
 After an unknown Worker write outcome, inspect before retrying. For edits, compare saved records and timestamps with the
 intended result. For creates, use list/get to inspect possible matches by label, Format/anchor, times and contents; labels

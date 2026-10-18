@@ -347,6 +347,7 @@ export type DeckCandidateState = {
     options: CandidateOption[];
     memberships: CandidateMembership[];
     assessments: z.infer<typeof CandidateAssessmentsSchema>;
+    validation_evidence?: import("./deck-checks").CandidateValidationEvidence;
 };
 export type DeckCandidate = DeckCandidateState & { cards: DeckCandidateCard[] };
 export type DeckCandidateSummary = {
@@ -364,7 +365,7 @@ export type DeckCandidateSummary = {
         selected_copies: number;
         gap: boolean;
     }[];
-    validation_evidence: { status: "absent" | "applicable" | "outdated" };
+    validation_evidence: import("./deck-checks").CandidateValidationSummary;
 };
 export type CandidateWriteResult = {
     candidate_id: string;
@@ -387,7 +388,7 @@ export type DeckCandidateRepositoryError = {
     readonly expected_updated_at?: string;
     readonly current_updated_at?: string;
 };
-export type DeckCandidateRepository = {
+export type DeckCandidateRepository = import("./deck-checks").DeckCheckRepository & {
     createDeckCandidate(
         input: CreateDeckCandidateInput,
     ): Promise<
@@ -422,6 +423,8 @@ export function summarizeDeckCandidate(
     const selected_quantities = { commander: 0, mainboard: 0, sideboard: 0 };
     for (const membership of candidate.memberships)
         selected_quantities[membership.section] += membership.quantity;
+    const evidence=candidate.validation_evidence ?? {status:"absent" as const};
+    const compact=(check:import("./deck-checks").DeckCheckEvidence)=>check.status==="absent"?{status:check.status}:{status:check.status,checked_at:check.checked_at};
     return {
         candidate_id: candidate.id,
         label: candidate.label,
@@ -445,7 +448,7 @@ export function summarizeDeckCandidate(
                     gap: selected_copies === 0,
                 };
             }),
-        validation_evidence: { status: "absent" },
+        validation_evidence: {status:evidence.status,...(evidence.checks?{checks:{format_legality:compact(evidence.checks.format_legality),deck_evaluation:compact(evidence.checks.deck_evaluation)}}:{})},
     };
 }
 export function roleSelectedCopies(

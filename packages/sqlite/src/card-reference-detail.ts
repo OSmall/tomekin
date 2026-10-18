@@ -3,7 +3,7 @@ import {CardIdentitySchema, type CardIdentity, type CardIdentityDetail} from "@t
 import type {TomekinDatabase} from "./database";
 import {cardIdentity, cardIdentityPart, cardIdentityFormatLegality, cardIdentityTag, cardIdentityTagging} from "./schema";
 
-export function readCardIdentityDetail(db: TomekinDatabase, id: string): CardIdentityDetail {
+export function readCardIdentityDetail(db: Pick<TomekinDatabase,"select">, id: string): CardIdentityDetail {
   const identity = db.select().from(cardIdentity).where(eq(cardIdentity.id, id)).get();
   if (!identity) throw {type: "not_found", message: `Card Identity not found: ${id}.`};
   const tags = db.select({tagId: cardIdentityTagging.tagId, cardIdentityId: cardIdentityTagging.cardIdentityId, weight: cardIdentityTagging.weight, annotation: cardIdentityTagging.annotation, slug: cardIdentityTag.slug, label: cardIdentityTag.label}).from(cardIdentityTagging).innerJoin(cardIdentityTag, eq(cardIdentityTagging.tagId, cardIdentityTag.id)).where(eq(cardIdentityTagging.cardIdentityId, id)).all();

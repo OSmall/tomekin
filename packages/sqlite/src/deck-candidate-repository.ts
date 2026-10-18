@@ -14,7 +14,13 @@ import {
     type DeckCandidateState,
     type DeckCandidateRepository,
     type DeckCandidateRepositoryError,
+    checkDependencies, matchingCheckDependencies, candidateValidationEvidence, deckCheckVersions,
+    type DeckCheckVersions, type RecordedDeckCheck, type DeckCheckName,
+    type DeckBuildingBrief,
+    type DeckCandidateCardSection,
 } from "@tomekin/core";
+import {readReferenceSupport} from "./card-reference-repository";
+import {readCardIdentityDetail} from "./card-reference-detail";
 import type { TomekinDatabase } from "./database";
 import {
     cardIdentity,
@@ -33,6 +39,7 @@ export function createSqliteDeckCandidateRepository(
     db: TomekinDatabase,
     clock: { now(): Date },
     newId: () => string = randomUUIDv7,
+    versions: DeckCheckVersions = deckCheckVersions,
 ): DeckCandidateRepository {
     return {
         async createDeckCandidate(input) {
@@ -82,7 +89,7 @@ export function createSqliteDeckCandidateRepository(
             return wrap(() =>
                 db.transaction(
                     (tx) => {
-                        const before = readCandidate(tx, input.candidate_id);
+                        const before = readCandidate(tx, input.candidate_id, versions);
                         if (before.updatedAt !== input.expected_updated_at)
                             throw {
                                 type: "conflict",
@@ -120,6 +127,7 @@ export function createSqliteDeckCandidateRepository(
                             .where(eq(deckCandidate.id, candidate.id))
                             .run();
                         persistRecords(tx, candidate, before, newId);
+                        candidate.validation_evidence = readCandidate(tx, candidate.id, versions).validation_evidence!;
                         return writeResult(
                             candidate,
                             result.createdIds,
@@ -132,7 +140,7 @@ export function createSqliteDeckCandidateRepository(
             );
         },
         async getDeckCandidate(id) {
-            return wrap(() => db.transaction((tx) => readCandidate(tx, id)));
+            return wrap(() => db.transaction((tx) => readCandidate(tx, id, versions)));
         },
         async listDeckCandidates() {
             return wrap(() =>
@@ -146,10 +154,62 @@ export function createSqliteDeckCandidateRepository(
                         )
                         .all()
                         .map((row) =>
-                            summarizeDeckCandidate(readCandidate(tx, row.id)),
+                            summarizeDeckCandidate(readCandidate(tx, row.id, versions)),
                         ),
                 ),
             );
+        },
+        async captureDeckCheck(input, check) {
+            return wrap(() => db.transaction(tx => {
+                const now = clock.now().toISOString();
+                let candidate:DeckCandidateState|null=null;
+                let brief:DeckBuildingBrief;
+                let memberships: {cardIdentityId:string;quantity:number;section:DeckCandidateCardSection}[];
+                const trial=!("candidate_id" in input) || input.changes !== undefined;
+                if("candidate_id" in input) {
+                    const saved=readCandidate(tx,input.candidate_id,versions);
+                    if(saved.updatedAt!==input.expected_updated_at) {
+                        throw {
+                            type:"conflict",
+                            message:`Deck Candidate ${saved.id} changed; reload before checking.`,
+                            candidate_id:saved.id,
+                            expected_updated_at:input.expected_updated_at,
+                            current_updated_at:saved.updatedAt,
+                        } satisfies DeckCandidateRepositoryError;
+                    }
+                    candidate=input.changes===undefined?saved:reviseDeckCandidate(saved,{
+                        candidate_id:input.candidate_id,
+                        expected_updated_at:input.expected_updated_at,
+                        changes:input.changes,
+                    },now,newId).candidate;
+                    requireOptionIdentities(tx,candidate);
+                    brief=candidate.brief;
+                    memberships=candidate.memberships.map(m=>({cardIdentityId:m.card_identity_id,quantity:m.quantity,section:m.section}));
+                } else {
+                    brief=input.brief;
+                    memberships=input.cards;
+                }
+                // Hydrate the revised memberships, never the baseline's derived cards.
+                const cards = memberships.map(m=> {
+                    const detail=readCardIdentityDetail(tx,m.cardIdentityId);
+                    return {card:detail.identity,quantity:m.quantity,section:m.section,legalities:detail.legalities,parts:detail.parts};
+                });
+                const reference=readReferenceSupport(tx);
+                return {brief,cards,reference,checked_at:now,
+                    ...(candidate ? {candidate_id:candidate.id,dependencies:checkDependencies(candidate,check,reference.imports,versions)} : {}),
+                    trial,
+                };
+            }));
+        },
+        async publishDeckCheck(candidateId, check, evidence) {
+            return wrap(() => db.transaction(tx=> {
+                const candidate=readCandidate(tx,candidateId,versions);
+                const current=checkDependencies(candidate,check,readReferenceSupport(tx).imports,versions);
+                if(!matchingCheckDependencies(current,evidence.dependencies)) return "outdated" as const;
+                const row=tx.select({evidence:deckCandidate.checkEvidenceJson}).from(deckCandidate).where(eq(deckCandidate.id,candidateId)).get()!;
+                tx.update(deckCandidate).set({checkEvidenceJson:{...(row.evidence as object??{}),[check]:evidence}}).where(eq(deckCandidate.id,candidateId)).run();
+                return "applicable" as const;
+            },{behavior:"immediate"}));
         },
     };
 }
@@ -178,18 +238,7 @@ function persistRecords(
 ) {
     const id = candidate.id,
         oldPlan = before?.plan;
-    for (const option of candidate.options)
-        if (
-            !db
-                .select({ id: cardIdentity.id })
-                .from(cardIdentity)
-                .where(eq(cardIdentity.id, option.card_identity_id))
-                .get()
-        )
-            throw {
-                type: "unresolved_card_identity",
-                message: `options.card_identity_id: Unknown Card Identity ${option.card_identity_id}.`,
-            } satisfies DeckCandidateRepositoryError;
+    requireOptionIdentities(db,candidate);
     const pair = (value: { card_identity_id: string; role_id: string }) =>
         `${value.card_identity_id}/${value.role_id}`;
     const membership = (value: { card_identity_id: string; section: string }) =>
@@ -415,7 +464,13 @@ function persistRecords(
                 .run();
     }
 }
-function readCandidate(db: Store, id: string): DeckCandidate {
+function requireOptionIdentities(db: Store,candidate:DeckCandidateState) {
+    for (const option of candidate.options) {
+        if (!db.select({id:cardIdentity.id}).from(cardIdentity).where(eq(cardIdentity.id,option.card_identity_id)).get())
+            throw {type:"unresolved_card_identity",message:`options.card_identity_id: Unknown Card Identity ${option.card_identity_id}.`} satisfies DeckCandidateRepositoryError;
+    }
+}
+function readCandidate(db: Store, id: string, versions:DeckCheckVersions=deckCheckVersions): DeckCandidate {
     const row = db
         .select()
         .from(deckCandidate)
@@ -555,7 +610,7 @@ function readCandidate(db: Store, id: string): DeckCandidate {
         : [];
     const createdAt = row.createdAtExact ?? row.createdAt.toISOString(),
         updatedAt = row.updatedAtExact ?? row.updatedAt.toISOString();
-    return {
+    const candidate:DeckCandidate = {
         id,
         label: row.label,
         brief,
@@ -589,6 +644,8 @@ function readCandidate(db: Store, id: string): DeckCandidate {
             note: m.note,
         })),
     };
+    candidate.validation_evidence=candidateValidationEvidence(candidate,(row.checkEvidenceJson??{}) as Partial<Record<DeckCheckName,RecordedDeckCheck>>,readReferenceSupport(db).imports,versions);
+    return candidate;
 }
 function wrap<T>(fn: () => T): Result<T, DeckCandidateRepositoryError> {
     try {

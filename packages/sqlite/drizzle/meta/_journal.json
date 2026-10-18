@@ -57,6 +57,13 @@
       "when": 1792281255538,
       "tag": "0007_noisy_gorilla_man",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1792281824072,
+      "tag": "0008_flat_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

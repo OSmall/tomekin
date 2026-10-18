@@ -185,6 +185,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Local SQLite persistence for Scryfall reference data, Collection snapshots, and saved Deck Candidates.
 - Structured candidate create/edit with provisional plans, assessed options, selected memberships and exact timestamp
   concurrency checks. Saves and reads do not automatically validate a deck.
+- Explicit saved-candidate legality/evaluation by ID and last-read timestamp, isolated transient trials, and latest
+  check-specific evidence with absent/applicable/outdated reads. Evidence publication preserves content timestamps.
 - Explicit Scryfall bulk sync for `oracle_cards`, `all_cards`, and `oracle_tags`.
 - Local Card Set discovery plus Printing-scoped Card Query filters, including Universes Beyond and promo-type semantics.
 - ManaBox Collection CSV import with blocking validation and non-destructive failed imports.
