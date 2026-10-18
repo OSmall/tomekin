@@ -1,27 +1,77 @@
 # Card Query
 
-Card Query is Tomekin's current public contract for structured, agent-facing card retrieval. It exposes a bounded,
-Card Identity-rooted language over local reference and Collection data without exposing SQL, tables, arbitrary joins,
-or physical schema details. Product workflows that use this contract are described in
-[`product-behavior.md`](./product-behavior.md).
+Card Query provides provider-backed discovery with `search_cards` and local batched known-card facts with
+`lookup_cards`. Both require explicit closed typed selections and return bounded complete envelopes. The retained
+CQL2 implementation is available only as explicitly enabled `legacy_query_cards` (`TOMEKIN_ENABLE_LEGACY_QUERY=true`);
+it is disabled in the normal tool registry. OpenCode also requires allowing `tomekin_legacy_query_cards` explicitly.
+Domain terms are defined in the [glossary](../GLOSSARY.md). Historical CQL2 rationale remains in ADRs 0012/0013.
 
-[ADR 0019](./adr/0019-provider-backed-scryfall-card-search.md) adopts provider-backed Scryfall-syntax search as the
-normal discovery path after implementation. The existing DSL will remain an explicitly enabled legacy capability;
-this document continues to describe the delivered contract and does not imply that the transition has shipped.
+## Live card discovery
 
-Domain terms are defined in the [glossary](../GLOSSARY.md), and the related persisted records are defined in
-[`data-model.md`](./data-model.md). The rationale for the query language and SQLite compilation boundary is retained in
-ADRs [`0012`](./adr/0012-cql2-shaped-card-queries.md) and
-[`0013`](./adr/0013-sql-backed-card-query-repository.md).
+```json
+{"q":"t:creature o:draw","unique":"cards","select":{"name":true,"oracle_text":true},"first":175}
+```
 
-The implementation is inspired by CQL2-JSON expression nodes but does not claim CQL2 conformance. `sortby`, `include`,
-and `limit` are Tomekin query-envelope fields rather than CQL2 filter members.
+`search_cards` forwards `q` unchanged and preserves supplied native `unique`, `order`, `dir`, `include_extras`,
+`include_multilingual`, and `include_variations`. Omitted controls remain omitted on the initial request; supplied
+`next_page` URLs may contain the provider's own defaults. Tomekin neither parses q nor claims an effective rollup,
+matched face or matched tag. Prefer `unique: "cards"` for identity discovery and `prints` for an explicit version need.
+A representative Printing cannot establish all matching owned versions. Pure live discovery requires no local import.
+Collection policy/filtering/evidence is not part of this delivered search slice; no Collection identifiers go upstream.
+
+The selected card projection below is shared with lookup. Search nodes are `{card, unavailable_fields?}` without a
+lookup occurrence status. Every card retains Oracle identity; selected Printing facts additionally retain Printing ID.
+`mana_value` maps provider `cmc`; reversible presentation records require one distinct face Oracle ID and unambiguous
+selected identity-face gameplay facts. Unsupported or ambiguous source content fails explicitly. Local tags use the
+same direct/inherited semantics and unavailable-data sidecar as lookup. Introducing tag enrichment binds its successful
+import or known absence, plus the Oracle import actually used for local identity/tag resolution; later selectors retain
+those dependencies. A newer provider identity absent locally uses `identity_not_in_local_reference_data`, not empty tags. Unrelated imports do not stale pure live cursors.
+Provenance is opt-in: provider name/retrieval time and only the local dependencies actually used.
+
+`first` defaults to 175 and accepts 0–200. Repeat fixed q, native controls and effective `include_provenance` with
+`after`; `select` and `first` may change. Successful envelopes have complete edges, pageInfo and a stop reason.
+`hasNextPage=true` establishes another qualifying card, including on zero-first calls; no card is consumed by
+lookahead. Empty source exhaustion is successful. `provider_total` is the latest supplied count, or null;
+`scoped_total` remains null even at exhaustion because live traversal is not a frozen census.
+
+Stateless versioned tokens contain request/provider bindings, relevant import revisions and source URL/page,
+page-completion flag and raw Printing (`Card.id`) anchor. Mid-page continuation refetches the page and resumes after
+exactly one occurrence of the anchor. A missing anchor is `cursor_anchor_not_found`; duplicate anchors are
+`provider_error/duplicate_anchor`. Page-end continuation follows the retained supplied next_page without rereading
+the old page. Empty pages follow supplied next_page sequentially. No numbered-page synthesis, result buffer,
+search store or token expiry is introduced. Static fixtures prove no local loss/replay; upstream changes can still
+repeat or omit records, or remove an anchor.
+
+The complete compact escaped JSON envelope has a default 51,200 UTF-8-byte budget. One 120-second budget covers
+admission, HTTP, local enrichment, projection and lookahead. A result, face text or tag list is indivisible. Failure
+returns complete partial edges and one optional safe `error.cursor`, without pageInfo; metadata growth rolls back
+removed edges and recovery position together. Oversized records stay unconsumed. Oversized self-contained positions
+fail explicitly; neither automatic narrowing instructions nor spill files are used. Cooperative cancellation can return
+safe progress; a killed Worker has no new delivered position and uses the last received cursor/original request.
+
+A host-owned dispatcher spaces actual HTTP starts by at least 500 ms, recomputing from each actual dispatch without
+catch-up bursts or an extra post-response delay. A 429 pauses starts for at least 31 seconds from receipt, extended
+by a longer valid Retry-After. Cancellation detaches delivery while the owner still observes HTTP; it cannot erase
+cooldown. A wait exceeding the remaining scan budget returns `rate_limited` and remaining retry milliseconds.
+There is no automatic retry loop. Host HTTP observation has an independent 120-second bound.
+
+One active Tomekin provider process per user/state root is enforced with an exclusive owner directory under
+`${XDG_STATE_HOME:-~/.local/state}/tomekin/scryfall`. Pi and OpenCode sessions must share this state root; a second
+active provider process fails with actionable setup guidance, even with another database/worktree. Keep one provider
+process active at a time. Minimal durable control metadata records only provider/version, wall cooldown deadline and
+uncertain-dispatch state; it contains no q, cursors or cards. An interrupted owner, uncertain state or corrupt recovery
+state establishes a fresh 31-second quiet period and retains any longer known deadline, reanchored to monotonic time.
+Uncertain ownership fails closed for inspection. A crash between receiving an unrecorded longer header and durable
+publication cannot reconstruct that unseen value; recovery does not claim otherwise. Persistence failure closes admission.
+
+Info logs contain selected-property names, stage timings, provider/raw/returned counts and exact application/adapter
+bytes. Debug deliberately includes q, full incoming/outgoing cursors and decoded positions/import bindings. Operational
+logs do not dump complete results. Production defaults to info and retains credential redaction.
 
 ## Known-card lookup
 
 `lookup_cards` is the delivered local retrieval contract through Core, SQLite, OpenCode and Pi Worker/fallback.
-The existing `query_cards` discovery contract follows below. Provider-backed `search_cards`, Collection-policy
-filtering/evidence and catalogue continuation remain separate work; lookup currently returns card facts only.
+Lookup returns card facts; provider Collection filtering/evidence remains separate work.
 
 ```json
 {"references":[{"kind":"name","value":"Sol Ring"},{"kind":"printing_id","value":"073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a"}],"select":{"name":true,"oracle_text":true},"first":50}
@@ -99,6 +149,52 @@ completion/source-update timestamps. It is omitted by default. No Collection con
 slice. Info logging records selected fact names, status/counts, whole UTF-8 bytes and timing; deliberate debug logging
 records incoming/outgoing continuation positions, without complete production result-body logging.
 
+## Tag and Set discovery
+
+`browse_tags` replaces the public `search_card_identity_tags` tool. Supply one explicit `operation`:
+
+```json
+{"operation":{"type":"search","query":"mana ramp"},"first":25}
+{"operation":{"type":"lookup","slugs":["mana-rock","recursion"]}}
+{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{}}}
+{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{"depth":2}}}
+{"operation":{"type":"list"},"first":50}
+```
+
+Search matches literal case-insensitive substrings in slugs, labels and aliases; `%` and `_` remain literals.
+Search/list results are ordered by slug then UUID. Exact known-slug lookup preserves supplied order, duplicates
+and explicit `not_found` occurrences. Every found node has `status: "found"` and a complete `tag` definition:
+`id`, `slug`, `label`, nullable `description`, `source_page_uri`, and all `aliases`.
+No hierarchy appears by default. Lookup's optional `hierarchy: {}` requests one level of immediate parents,
+children and connecting relationships. Explicit `depth` accepts integers 1–3. The result's `hierarchy` contains
+`depth`, complete parent/child definitions reachable in each direction within that depth, and deduplicated
+`relationships: [{parent_slug,child_slug}]`. A depth boundary is deliberate, not a claim that no further graph exists.
+Cycles and repeated paths are deduplicated. Per-card `lookup_cards` tags still include all reachable ancestors;
+the catalogue exploration bound does not narrow inherited card facts. Tags are discovery facts, not Deck Roles
+or strategic quality judgments.
+
+`first` defaults to 50 and accepts 0–200. Repeat the same operation with `pageInfo.endCursor` as `after`;
+`first` may change. Search/list traversal is complete under an unchanged tag import. Use `hasNextPage` to
+continue and `error.cursor` after recoverable execution stops. Catalogue uses the same compact 51,200-byte
+success/error envelope and 120-second deadline as lookup, with whole definitions/requested hierarchies indivisible.
+Oversized records remain unconsumed. Cursors bind only the successful compatible `oracle_tags` import and operation;
+failed attempts and unrelated imports do not invalidate them. Rows, aliases, edges and import binding share a SQLite
+read transaction. A replacement tag import yields `stale_cursor` with restart recovery. Missing/incompatible tag data
+returns `reference_data_unready`, distinct from successful empty search/list and a known-slug miss. No provider call,
+startup catalogue dump, second reference store or saved search/cursor store is introduced.
+
+`search_card_sets` retains `{query?,limit?}` code/name discovery over existing imported `card_set` records.
+It requires a compatible All Cards import, independently of tag readiness. Query is case-insensitive, with exact
+code/name matches ranked first; limit defaults to 25 and is capped at 100. No supplementary Set refresh path exists.
+
+The example slugs above were verified against the public Scryfall Oracle Tags snapshot updated
+2026-10-17T21:00:36.595Z, discovered through
+[Oracle Tags bulk metadata](https://api.scryfall.com/bulk-data/oracle_tags) and read from its
+[JSONL snapshot](https://data.scryfall.io/oracle-tags/oracle-tags-20261017210036.jsonl.gz):
+`mana-rock` (`523a4f29-25ee-483c-8123-a8e62b62af5a`), `ramp`
+(`2f3e4ad7-5e60-41b4-bdbc-653f16869cf6`, aliases `acceleration`, `mana ramp`) and `recursion`
+(`82b824ad-648f-467f-a190-2e0fa9a795d2`). Discover current vocabulary from the imported catalogue before assuming
+any other literal slug.
 ## Collection policy and owned-row browsing
 
 `list_collection_locations` returns `{locations, collection_context}`. The context gives `state`, authoritative
@@ -179,9 +275,9 @@ budgeting includes final exhaustion metadata, Collection context, all cursors an
 historical Collection store or new card-query language is involved. This is row eligibility evidence, not whole-deck
 joint allocation or a reservation.
 
-## Local discovery request envelope
+## Legacy local discovery request envelope
 
-`query_cards` accepts one strict object with four optional fields:
+`legacy_query_cards` accepts one strict object with four optional fields:
 
 ```ts
 type CardQueryInput = {
@@ -227,7 +323,7 @@ type CardQueryError =
   | {type: "repository_error"; message: string};
 ```
 
-That is the core Card Query port's error type. The public `query_cards` Agent Tool first checks reference readiness, so
+That is the core Card Query port's error type. The public `legacy_query_cards` Agent Tool first checks reference readiness, so
 its full failure surface also includes:
 
 - `reference_data_unready`, with a message plus `missingBulkDataTypes` and `reimportRequiredBulkDataTypes`; and

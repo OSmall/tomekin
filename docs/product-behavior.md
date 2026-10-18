@@ -5,6 +5,25 @@ in [`product-scope.md`](./product-scope.md); domain terms belong in the [glossar
 belong in [`data-model.md`](./data-model.md); Card Query semantics belong in [`card-query.md`](./card-query.md); and
 verification policy belongs in [`testing.md`](./testing.md).
 
+## Live discovery
+
+`search_cards` accepts native Scryfall q and supplied controls unchanged, plus explicit complete fact selections and
+ordinary first/after continuation. Pure search works before local reference import; tags are optional local enrichment.
+Results are complete bounded envelopes with safe structured error recovery. Live source drift permits repeats/omissions;
+scoped totals remain unknown even at exhaustion. A shared host dispatcher enforces actual-start pacing and retained
+cooldown across runtime/Worker cancellation. One active provider process per shared user/state root is enforced.
+See the [search contract](./card-query.md#live-card-discovery) for continuation, limits and operating rules.
+Collection-policy filtering and owned-copy evidence are not provided by this search slice.
+
+## Reference vocabulary
+
+`browse_tags` provides explicit slug/label/alias search, known-slug definitions and recoverable catalogue listing.
+Hierarchy appears only when requested for lookup: one parent/child level by default, explicitly up to three.
+Missing tag data is a readiness error; empty search and known-slug misses are separate successful outcomes.
+Complete definitions and requested graph records survive adapter transport without preview clipping. Catalogue
+pagination binds the successful tag import; per-card inherited tags remain complete at every depth.
+`search_card_sets` discovers existing imported Set code/name metadata and depends only on All Cards readiness.
+
 ## Known-card facts
 
 Use `lookup_cards` for batched exact canonical names, Oracle IDs or exact Printing IDs. It returns every ordered
@@ -40,7 +59,7 @@ its restricted authority, and directs the agent to read the root `tomekin-deck-b
 use. That skill routes to the further skills required by the request.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
-`lookup_cards` and `browse_collection_cards` preserve their complete 51,200-byte compact success/error envelopes in model-visible content and details,
+`search_cards`, `lookup_cards` and `browse_collection_cards` preserve their complete 51,200-byte compact success/error envelopes in model-visible content and details,
 with ordinary `first`/`after` recovery. Location inspection preserves complete names/IDs and snapshot context. Other unmigrated core tools retain their temporary 16,000-character preview cap;
 scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
@@ -373,8 +392,7 @@ ManaBox List rows are not currently skipped and summarized as desired; unsupport
 tracked compliance work is [issue #39](https://github.com/OSmall/tomekin/issues/39).
 
 Scryfall reference data is populated only by explicit user-invoked sync or local-file import commands. Successful
-dataset replacement is transactional, and a failed import preserves the previous usable dataset. Normal deck-building
-does not automatically fetch or refresh Scryfall data.
+dataset replacement is transactional, and a failed import preserves the previous usable dataset. Provider discovery fetches live search results but never refreshes the retained local corpus automatically.
 
 ## External Authority Limits
 
@@ -382,8 +400,8 @@ The local deck-building agent is authority-bound to Tomekin's product tools. Dur
 shell commands, inspect source files, issue raw SQL, use generic database access, call arbitrary web services, or write
 Collection state.
 
-Local Scryfall data is authoritative for Card Identity, Oracle text, Format legality, Game Changer flags, EDHREC rank,
+Live search evidence comes from its provider. Local lookup and deterministic checks use the retained snapshot for Card Identity, Oracle text, Format legality, Game Changer flags, EDHREC rank,
 Card Sets and Printings, and Oracle Tags. Tomekin does not claim live prices, current metagame knowledge, exhaustive
 combo detection, gameplay simulation, mulligan or casting analysis, goldfishing, or deterministic strategic optimality.
 The bounded uniform-sampling calculation above supports explicit opening-sample events only.
-Only the explicit Scryfall sync command performs live Scryfall network requests.
+Live search and explicit bulk sync perform Scryfall network requests; the agent receives no arbitrary network capability.

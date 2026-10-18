@@ -3,12 +3,16 @@ import {chmod, mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
 import {existsSync} from "node:fs";
 import {join} from "node:path";
 
-export const expectedPiToolNames = [
-    "draft_deck_building_brief", "query_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "search_card_identity_tags",
+const basePiToolNames = [
+    "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
     "search_card_sets", "get_format_constraints",
     "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
     "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
 ] as const;
+export function resolvePiToolNames(environment: Record<string,string|undefined> = process.env): readonly (typeof basePiToolNames[number] | "legacy_query_cards")[] {
+    return [...basePiToolNames, ...(environment.TOMEKIN_ENABLE_LEGACY_QUERY === "true" ? ["legacy_query_cards" as const] : [])];
+}
+export const expectedPiToolNames = resolvePiToolNames();
 
 /** Review anchor; Bun's lockfile records the matching package integrity. */
 export const reviewedAskUserPackage = {
@@ -67,15 +71,16 @@ export function createPiSpawnConfiguration(options: {
     readonly extensionPath: string;
     readonly environment?: Record<string, string | undefined>;
 }) {
+    const environment = {...process.env,...options.environment,PI_CODING_AGENT_DIR:join(options.workspacePath,".data","pi")};
     return {
         executable: options.executablePath,
         args: [
             "--no-skills", "--no-context-files", "--no-builtin-tools",
             "--skill", join(options.workspacePath, "skills"),
-            "--tools", expectedPiToolNames.join(","), "--extension", options.extensionPath,
+            "--tools", resolvePiToolNames(environment).join(","), "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,
-        env: {...process.env, ...options.environment, PI_CODING_AGENT_DIR: join(options.workspacePath, ".data", "pi")},
+        env: environment,
         stdin: "inherit" as const,
         stdout: "inherit" as const,
         stderr: "inherit" as const,

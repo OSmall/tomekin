@@ -1,4 +1,6 @@
 import {CheckCollectionAvailabilityArgsSchema, CheckCollectionAvailabilityInputSchema, normalizeAvailabilityDemands, computeCollectionAvailability, availabilityPage} from "./collection-availability";
+import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
+import {browseTags, BrowseTagsArgsSchema} from "./tag-catalogue";
 import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
 import {collectionPolicyFromBrief, type CollectionBrowseRepository} from "./collection-policy";
 import {lookupCards, type CardLookupOptions} from "./card-lookup";
@@ -22,12 +24,13 @@ import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync
 
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
-  "query_cards",
+  "legacy_query_cards",
   "lookup_cards",
+  "search_cards",
   "browse_collection_cards",
   "hypergeometric_calculator",
   "get_card_identity",
-  "search_card_identity_tags",
+  "browse_tags",
   "search_card_sets",
   "summarize_reference_support",
   "get_format_constraints",
@@ -61,13 +64,14 @@ export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
     check_collection_availability: {description:"Explicitly check the complete selected demand jointly against recorded Collection quantities and the whole Brief policy. Optional requirements cover every selected section/quantity exactly and only narrow compatible copies. Saved evidence publishes conditionally; trials remain transient. Complete bounded path/value witnesses recover with first/after; no reservations or moves.",inputSchema:CheckCollectionAvailabilityArgsSchema},
+    search_cards: {description: "Search the boot-configured live Scryfall provider using unchanged native q and optional native controls. Prefer unique cards for identity discovery; use prints for explicit Printing needs. Select complete facts explicitly. Repeat fixed q/controls/provenance with first/after; live traversal can drift, scoped totals remain unknown. No local import required unless local enrichment is selected.", inputSchema: SearchCardsArgsSchema},
     browse_collection_cards: {description: "Browse actual owned Collection rows locally under an inspectable confirmed policy, with exact Printing/date filters before bounds. added_at is reliable source chronology; unknown dates remain independently searchable. Use first/after for complete pages.", inputSchema: BrowseCollectionCardsArgsSchema},
     lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
-    query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
+    legacy_query_cards: {description: "Explicitly enabled legacy local CQL2 retrieval. Disabled by default; prefer search_cards and lookup_cards.", inputSchema: CardQueryInputSchema},
     get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
-    search_card_identity_tags: {description: "Search local Card Identity Tags by slug, label, or alias.", inputSchema: SearchCardIdentityTagsArgsSchema},
+    browse_tags: {description: "Browse imported tag vocabulary through explicit search (slug/label/alias), exact known-slug lookup, or recoverable list. Complete definitions; hierarchy only on requested lookup, depth defaults to one and is bounded to three. Repeat operation with first/after. Tags are discovery facts, not Deck Roles or quality judgments.", inputSchema: BrowseTagsArgsSchema},
     search_card_sets: {description: "Search local Card Sets by code or name.", inputSchema: SearchCardSetsArgsSchema},
     summarize_reference_support: {description: "Report local reference-data readiness.", inputSchema: EmptyAgentToolArgsSchema},
     get_format_constraints: {description: "Return deterministic construction constraints for a Deck Format.", inputSchema: GetFormatConstraintsArgsSchema},
@@ -103,7 +107,7 @@ export type AgentToolError =
     readonly reimportRequiredBulkDataTypes: readonly ScryfallBulkDataType[];
 };
 
-export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
+export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions; search?: CardSearchOptions; enableLegacyQuery?: boolean} = {}) {
   return {
       async checkCollectionAvailability(input: unknown, signal?: AbortSignal) {
           const parsed = CheckCollectionAvailabilityArgsSchema.safeParse(input);
@@ -130,6 +134,10 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
               return err({type:"validation_error" as const,message});
           }
       },
+      searchCards(input: unknown, signal?: AbortSignal) {
+          if (!repositories.cardLookup || !options.search) throw new Error("Search provider unavailable.");
+          return searchCards(repositories.cardLookup, input, options.search, signal);
+      },
       browseCollectionCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.collectionBrowse) throw new Error("Collection browse repository is unavailable.");
           return browseCollectionCards(repositories.collectionBrowse, async reference => {
@@ -142,7 +150,20 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
           return lookupCards(repositories.cardLookup, input, options.lookup, signal);
       },
+      browseTags(input: unknown, signal?: AbortSignal) {
+          const read = repositories.cardReference.readTagCatalogue;
+          if (!read) throw new Error("Tag catalogue repository unavailable.");
+          return browseTags({readTagCatalogue: read}, input, options.lookup, signal);
+      },
       hypergeometricCalculator: calculateHypergeometric,
+      async legacyQueryCards(input: unknown) {
+          if (!options.enableLegacyQuery) return err({type:"tool_error" as const,message:"Legacy query is disabled. Set TOMEKIN_ENABLE_LEGACY_QUERY=true explicitly to enable it."});
+          const parsed = parseCardQueryInput(input);
+          if(parsed.isErr()) return parsed;
+          const ready=await requireReferenceData(repositories.cardReference);
+          if(ready.isErr())return ready;
+          return repositories.cardQuery.queryCards(parsed.value);
+      },
       async queryCards(input: unknown) {
       const parsed = parseCardQueryInput(input);
           if (parsed.isErr()) return parsed;
@@ -166,10 +187,15 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           return repositories.cardReference.searchCardIdentityTags(args);
       },
       async searchCardSets(input: unknown) {
-          const args = SearchCardSetsArgsSchema.parse(input);
-          const ready = await requireReferenceData(repositories.cardReference);
+          const parsed = safeSync(() => SearchCardSetsArgsSchema.parse(input));
+          if (parsed.isErr()) return parsed;
+          const support = await repositories.cardReference.summarizeReferenceSupport();
+          if (support.isErr()) return support;
+          const missing = support.value.missing.filter(dataset => dataset === "all_cards");
+          const reimportRequired = support.value.reimportRequired.filter(dataset => dataset === "all_cards");
+          const ready = referenceReadiness({...support.value, missing, reimportRequired, ready: missing.length === 0 && reimportRequired.length === 0});
           if (ready.isErr()) return ready;
-          return repositories.cardReference.searchCardSets(args);
+          return repositories.cardReference.searchCardSets(parsed.value);
       },
     summarizeReferenceSupport() {
       return repositories.cardReference.summarizeReferenceSupport();
@@ -243,7 +269,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
                   playExperience: args.brief.playExperience,
               },
         manaAndCurve: {landCount, manaCurve},
-          collectionStatus: "Collection availability is not evaluated by this tool. Use query_cards for owned-copy evidence."
+          collectionStatus: "Collection availability is not evaluated by this tool. Establish explicit Collection evidence before an Availability claim."
       });
     },
     async renderDeckCandidate(input: unknown) {

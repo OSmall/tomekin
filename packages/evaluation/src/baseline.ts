@@ -49,11 +49,11 @@ async function runWorkflow(name: WorkflowName) {
         const ownedCopies = observedRows.reduce((total, row) => total + row.quantity, 0);
         const applicationText = await stage("applicationSerialization", () => JSON.stringify(query, null, 2));
         const opencode = await stage("openCodeSerialization", () => resultToOpencodeOutput(queried));
-        const piFallback = await stage("piFallbackIncludingRuntimeAndQuery", () => createCoreTool("query_cards", {log, createRuntime: () => createLocalAgentToolRuntime({databasePath: fixture.databasePath, log})}).execute("synthetic-fallback", input, new AbortController().signal)) as PiToolOutput;
-        const transport = createPiWorkerTransport({workerUrl: new URL("../../pi/src/tomekin-worker.ts", import.meta.url).href});
+        const piFallback = await stage("piFallbackIncludingRuntimeAndQuery", () => createCoreTool("legacy_query_cards", {log, createRuntime: () => {const local=createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});return {...local,handlers:{...local.handlers,legacyQueryCards:local.handlers.queryCards}};}}).execute("synthetic-fallback", input, new AbortController().signal)) as PiToolOutput;
+        const transport = createPiWorkerTransport({workerUrl: new URL("../../pi/src/tomekin-worker.ts", import.meta.url).href,createWorker:url=>new Worker(url,{env:{...process.env as Record<string,string>,TOMEKIN_ENABLE_LEGACY_QUERY:"true"}})});
         let piWorker: PiToolOutput;
         try {
-            piWorker = await stage("piWorkerIncludingStartupRuntimeAndQuery", () => transport.invoke({toolCallId: "synthetic-worker", toolName: "query_cards", params: input, databasePath: fixture.databasePath}, new AbortController().signal));
+            piWorker = await stage("piWorkerIncludingStartupRuntimeAndQuery", () => transport.invoke({toolCallId: "synthetic-worker", toolName: "legacy_query_cards", params: input, databasePath: fixture.databasePath}, new AbortController().signal));
         } finally {await transport.close();}
         const adapter = (output: PiToolOutput) => {
             const details = output.details as {truncated?: boolean; items?: {id: string}[]};

@@ -268,3 +268,15 @@ Record a failed import and resume a delivered cursor; the active snapshot remain
 Collection, then verify the old policy and cursor require refreshed exact locations and scope reconfirmation. Observe
 `no_collection`, imported-empty, null policy and confirmed empty allow-list as distinct states. Do not treat browse row
 quantities as whole-deck joint allocation or physical reservations.
+
+### Tag vocabulary discovery
+
+Search `browse_tags` with `operation: {type: "search", query: "mana ramp"}`, then inspect a returned exact slug
+with `operation: {type: "lookup", slugs: ["mana-rock"]}`. Verify complete definitions/aliases with no hierarchy
+until requested. Repeat with `hierarchy: {}` and explicit `depth: 2`; distinguish immediate edges from the chosen
+exploration boundary. Traverse `operation: {type: "list"}` through `first`/`after` to exhaustion, without injecting
+the catalogue into startup context. A missing tag import is a readiness failure; a successful empty search or
+known-slug miss is not. Compare selected per-card `tags`: inherited ancestors remain complete even when catalogue
+exploration stops at one level. Keep strategic Deck Role judgments contextual. Verified example-slug source
+provenance is beside the contract in `docs/card-query.md`. This is a focused tool scenario; final executable workflow
+integration remains separate work.

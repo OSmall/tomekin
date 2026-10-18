@@ -55,8 +55,9 @@ Collection Access Policy is not a structured or independently enforced service t
 Collection Location allow-list in the working context, repeats it in Card Queries, and performs a best-effort final
 owned/missing check. There is no persisted final Availability or Collection Pull List service.
 
-Normal deck-building uses local data and makes no hidden network calls. Only the explicit Scryfall sync command fetches
-live Scryfall data. The agent has no arbitrary web, shell, raw SQL, or generic database authority.
+Discovery uses the boot-injected live Scryfall search provider; local lookup and deterministic checks use explicitly
+imported reference data. Search does not silently refresh that corpus. The agent has no arbitrary web, shell, raw SQL,
+or generic database authority. Bulk refresh remains the explicit Scryfall sync command.
 
 Tomekin stores source purchase-price metadata when present but does not currently provide live price lookup, price-aware
 optimization, or budgeted purchase recommendations. It also does not claim current metagame knowledge, exhaustive combo
