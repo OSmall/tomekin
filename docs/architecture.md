@@ -28,6 +28,12 @@ and Agent Tool handlers. It does not depend on OpenCode, Drizzle, SQLite paths, 
 Expected service failures use typed `Result` values. Zod validates data at service and adapter boundaries. Repository
 ports expose only the persistence operations each service needs.
 
+Explicit deck checks use a repository snapshot operation to capture candidate state, revised trial memberships,
+canonical Oracle facts and import provenance consistently. Core computes deterministic findings from that capture.
+A separate immediate transaction publishes latest candidate-owned evidence only when its check-specific inputs and
+reference/validator dependencies still match. Read-time applicability is a dependency comparison, never an implicit
+validator run. Evidence writes leave content timestamps unchanged; transient trials have no persistent identity.
+
 The hypergeometric service is pure and independent of repository ports/reference readiness. It sums exact BigInt
 combinatorial weights, uses exact decimal fractions and a monotone lower-bound search for minimum qualifying counts,
 and determines event status before approximate display conversion. With the 1,000 population limit, every numerator

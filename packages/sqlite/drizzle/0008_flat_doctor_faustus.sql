@@ -1,0 +1,1 @@
+ALTER TABLE `deck_candidate` ADD `check_evidence_json` text;

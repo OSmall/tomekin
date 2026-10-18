@@ -1,5 +1,5 @@
 import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/agent";
-import {agentToolMutates, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {agentToolMutates, agentToolPreservesCompleteOutput, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 
 declare const self: Worker;
 
@@ -24,7 +24,7 @@ self.onmessage = async (event: MessageEvent<{id: string; toolName: string; param
         if (typeof handler !== "function") return postMessage({id, output: output({error: "tool_unavailable", message: "Approved tool handler is unavailable."})});
         const result = await handler(params) as {isOk(): boolean; value?: unknown; error?: {type?: string; message: string}};
         const details = result.isOk() ? result.value : errorDetails(result.error);
-        postMessage({id, output: output(details,toolName.includes("deck_candidate"))});
+        postMessage({id, output: output(details,agentToolPreservesCompleteOutput(toolName))});
     } catch {
         postMessage({id, output: output({error: agentToolMutates(toolName)?"unknown_write_outcome":"tool_error", message: agentToolMutates(toolName)?"The write outcome is unknown. Inspect candidate list/get and reconcile before retrying.":"The approved tool could not complete."})});
     }

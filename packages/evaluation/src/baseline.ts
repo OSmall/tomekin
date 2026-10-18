@@ -61,7 +61,6 @@ async function runWorkflow(name: WorkflowName) {
         const selectedRows = name === "tuning" ? 12 : 20;
         const initialIds = Array.from({length: selectedRows}, (_, index) => id(index + 1));
         const finalIds = name === "tuning" ? [...initialIds.slice(0, 9), id(13), id(14), id(15)] : initialIds;
-        const cards = (ids: string[]) => ids.map((cardIdentityId, index) => ({cardIdentityId, quantity: selectedRows === 12 ? 5 : 3, section: "mainboard" as const, sortOrder: index, note: null}));
         const initialInput = candidateCreateInput(initialIds, "Synthetic candidate", () => selectedRows === 12 ? 5 : 3);
         let threeCardSave: {beforeRows: number; afterRows: number; quantity: number; added: number; removed: number} | null = null;
         let legality: unknown = null;
@@ -77,7 +76,7 @@ async function runWorkflow(name: WorkflowName) {
             if (coverage(finalIds, savedIds).missing.length || savedIds.length !== selectedRows) throw new Error("Saved candidate coverage mismatch");
             selected = {rows: read.cards.length, copies: read.cards.reduce((total, card) => total + card.quantity, 0)};
             if (name === "tuning") threeCardSave = {beforeRows: initialIds.length, afterRows: read.cards.length, quantity: selected.copies, added: 3, removed: 3};
-            const check = {cards: cards(finalIds), brief};
+            const check = {candidate_id:read.id,expected_updated_at:read.updatedAt};
             const validation = await stage("explicitValidationHandler", () => runtime.handlers.validateFormatLegality(check).then(unwrap));
             legality = validation;
             await stage("explicitEvaluationHandler", () => runtime.handlers.evaluateDeckCandidate(check).then(unwrap));

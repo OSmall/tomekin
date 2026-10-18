@@ -249,3 +249,11 @@ Focused SQLite failure injection verifies transaction rollback; direct constrain
 uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlement, preserved conflict context and
 inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
 legacy comparator remains pinned and does not depend on compatibility product tools.
+
+Explicit check coverage uses the same shared-handler/on-disk seam for initial inputs, saved baselines, transient
+revisions, check-specific applicability and timestamp separation. Two connections and interleaved calls exercise
+selected/pool/import races, including successful Oracle imports in one timestamp tick. Validator replacement prevents
+stale evidence reuse/publication. Actual OpenCode, Pi fallback and real Worker tests cover serialized schemas, typed
+errors, evidence persistence, post-dispatch cancellation/shutdown, unknown write outcomes and complete findings beyond
+the retired preview boundary. Current evaluation loads saved checks by candidate ID and exact timestamp; the frozen
+legacy comparator remains unchanged.

@@ -15,3 +15,4 @@ export * from "./scryfall-sync";
 
 export * from "./hypergeometric-calculator";
 export * from "./deck-candidate-changes";
+export * from "./deck-checks";

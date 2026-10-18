@@ -140,3 +140,13 @@ test("exposes and executes the generic calculator through OpenCode with actionab
         expect(agent).toContain('"tomekin_hypergeometric_calculator": allow');
     } finally { restore(); rmSync(directory, {recursive: true, force: true}); }
 });
+
+test("both check tools expose saved and initial inputs in the actual OpenCode property schema",()=>{
+    for(const definition of [tomekinTools.validate_format_legality,tomekinTools.evaluate_deck_candidate]) {
+        const schema=tool.schema.toJSONSchema(tool.schema.object(definition.args));
+        expect(schema.additionalProperties).toBe(false);
+        const properties=schema.properties as Record<string,unknown>;
+        for(const field of ["candidate_id","expected_updated_at","changes","cards","brief"]) expect(properties[field]).toBeDefined();
+        expect(tool.schema.object(definition.args).safeParse({candidate_id:"11111111-1111-4111-8111-111111111111",expected_updated_at:"2026-10-18T00:00:00.000Z"}).success).toBe(true);
+    }
+});

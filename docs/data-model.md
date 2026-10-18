@@ -196,6 +196,13 @@ Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-
 unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
 columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
 
+`check_evidence_json` stores at most the latest `format_legality` and `deck_evaluation` records, each with complete
+findings, UTC check time and captured selected/Brief timestamps, relevant Brief fields, Oracle import/contract revision
+and validator versions. There is no check history or fingerprint. Read-time applicability compares check-specific
+dependencies; publication repeats that comparison in an immediate transaction and updates only this evidence column.
+Trial changes and initial-input findings are never persisted. Import timestamps have second precision, so tied Oracle
+imports are resolved by committed insertion order rather than UUID ordering.
+
 ### Selected SectionMembership (`deck_candidate_card`)
 
 One row per candidate/Card Identity/section owns a positive integral quantity, nonnegative order and optional selected
