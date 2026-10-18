@@ -113,3 +113,64 @@ test("small exhaustive independent match enumeration confirms joint owned, eligi
         expect(cases).toBe(13824);
     }finally{f.dispose();}
 },120_000);
+
+test("same-tick lower-ID successful reference replacement invalidates Availability continuation and evidence",async()=>{
+    const f=await createCollectionFixture();
+    try{
+        const input={brief:brief(f.policy),cards:[selected()],first:1};
+        const before=(await f.runtime.handlers.checkCollectionAvailability(input))._unsafeUnwrap();
+        f.db.$client.prepare("INSERT INTO scryfall_bulk_data_import (id,bulk_data_type,import_contract_revision,status,started_at,completed_at,source_updated_at,source_uri,imported_record_count,warnings_json,blocking_errors_json) SELECT ?,bulk_data_type,import_contract_revision,status,started_at,completed_at,source_updated_at,source_uri,imported_record_count,warnings_json,blocking_errors_json FROM scryfall_bulk_data_import WHERE bulk_data_type='all_cards' ORDER BY rowid DESC LIMIT 1").run(id(900));
+        const stale=(await f.runtime.handlers.checkCollectionAvailability({...input,after:before.pageInfo.endCursor}))._unsafeUnwrapErr();
+        expect(stale.envelope.error.code).toBe("stale_cursor");
+    }finally{f.dispose();}
+});
+
+async function saveAssembly(f:any){return (await f.runtime.handlers.createDeckCandidate({label:"Evidence lifetime",brief:brief(f.policy),plan:{schema_version:1,description:"Assembly",nodes:[{ref:"mana",kind:"role",label:"Mana",description:"Resources"}],contributions:[{card_identity_id:id(1),role_ref:"mana",rationale:"Provides resources"}]},options:[{card_identity_id:id(1)}],memberships:[{card_identity_id:id(1),section:"mainboard",quantity:2}]}))._unsafeUnwrap();}
+
+test("publication rejects selected races, permits pool maintenance and makes reimported saved Pull Lists outdated without name rebinding",async()=>{
+    const f=await createCollectionFixture();
+    try{
+        let saved=await saveAssembly(f);const candidate_id=saved.candidate_id;
+        const pending=f.runtime.handlers.checkCollectionAvailability({candidate_id,expected_updated_at:saved.updated_at});
+        saved=(await f.runtime.handlers.editDeckCandidate({candidate_id,expected_updated_at:saved.updated_at,changes:{memberships:[{action:"set",card_identity_id:id(1),section:"mainboard",quantity:3}]}}))._unsafeUnwrap();
+        expect((await pending)._unsafeUnwrap().evidence.status).toBe("outdated");
+        expect((await readCandidateJson(f.runtime.handlers.getDeckCandidate,candidate_id)).validation_evidence.checks.collection_availability.status).toBe("absent");
+        const poolPending=f.runtime.handlers.checkCollectionAvailability({candidate_id,expected_updated_at:saved.updated_at});
+        saved=(await f.runtime.handlers.editDeckCandidate({candidate_id,expected_updated_at:saved.updated_at,changes:{options:[{action:"update",card_identity_id:id(1),changes:{comparison_note:"Keep assessing this option"}}]}}))._unsafeUnwrap();
+        expect((await poolPending)._unsafeUnwrap().evidence.status).toBe("applicable");
+        await f.recordFailedImport();expect((await readCandidateJson(f.runtime.handlers.getDeckCandidate,candidate_id)).validation_evidence.checks.collection_availability.status).toBe("applicable");
+        await f.replace();
+        const outdated=await readCandidateJson(f.runtime.handlers.getDeckCandidate,candidate_id);
+        expect(outdated.validation_evidence.checks.collection_availability.status).toBe("outdated");expect(outdated.updatedAt).toBe(saved.updated_at);
+        const pulls=(await f.runtime.handlers.renderDeckCandidate({candidate_id,output:"collection_pull_list"}))._unsafeUnwrap();expect(pulls.edges).toEqual([{node:{path:[],value:{evidence_status:"outdated",checked_at:expect.any(String),message:expect.any(String)}}}]);
+        expect((await f.runtime.handlers.checkCollectionAvailability({candidate_id,expected_updated_at:saved.updated_at}))._unsafeUnwrapErr()).toMatchObject({type:"validation_error",message:expect.stringContaining("reconfirm")});
+    }finally{f.dispose();}
+});
+
+test("unfinished checks publish no proof, large capacities do not expand physical copies and unsafe totals fail explicitly",async()=>{
+    const {createLocalAgentToolRuntime}=await import("@tomekin/agent");const {log}=await import("./fixtures/lookup");
+    const f=await createCollectionFixture(),timed=createLocalAgentToolRuntime({databasePath:f.databasePath,log,lookup:{scanDeadlineMs:0}});
+    try{
+        const saved=await saveAssembly(f);
+        const partial=(await timed.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id,expected_updated_at:saved.updated_at}))._unsafeUnwrapErr().envelope;
+        expect(partial).toMatchObject({status:"error",check_completion:"partial",edges:[],error:{code:"scan_timeout"}});expect(partial).not.toHaveProperty("summary");
+        expect((await readCandidateJson(f.runtime.handlers.getDeckCandidate,saved.candidate_id)).validation_evidence.status).toBe("absent");
+        const cancelled=new AbortController();cancelled.abort();expect((await f.runtime.handlers.checkCollectionAvailability({brief:brief(),cards:[selected()]},cancelled.signal))._unsafeUnwrapErr().envelope.error.code).toBe("cancelled");
+        f.db.$client.prepare("UPDATE collection_card SET quantity=1000000000").run();
+        const huge=(await f.runtime.handlers.checkCollectionAvailability({brief:brief({...f.policy,copy_requirements:{}}),cards:[selected("mainboard",2000000001)]}))._unsafeUnwrap();
+        expect(huge.summary).toMatchObject({owned:2000000001,eligible:2000000000,missing_owned:0,policy_shortfall:1});expect(values(huge,"allocations")).toHaveLength(2);
+        expect((await f.runtime.handlers.checkCollectionAvailability({brief:brief(),cards:[selected("mainboard",Number.MAX_SAFE_INTEGER),selected("sideboard",1)]}))._unsafeUnwrapErr()).toMatchObject({type:"validation_error",message:expect.stringContaining("safe integer")});
+    }finally{timed.close();f.dispose();}
+});
+
+test("a whole oversized witness fails before that row and preserves the complete recoverable prefix",async()=>{
+    const f=await createCollectionFixture();
+    try{
+        f.db.$client.prepare("UPDATE card_printing SET printed_name=? WHERE id=?").run('大型 "quoted" '.repeat(6000),id(2));
+        const input={brief:brief({...f.policy,copy_requirements:{}}),cards:[selected("mainboard",3)]};
+        const prefix=(await f.runtime.handlers.checkCollectionAvailability(input))._unsafeUnwrap();expect(prefix.pageInfo.hasNextPage).toBe(true);expect(prefix.check_completion).toBe("complete");expect(Buffer.byteLength(JSON.stringify(prefix))).toBeLessThanOrEqual(51200);
+        const error=(await f.runtime.handlers.checkCollectionAvailability({...input,after:prefix.pageInfo.endCursor}))._unsafeUnwrapErr().envelope;
+        const recovery=error.error.cursor;expect(typeof recovery).toBe("string");expect(error).toMatchObject({status:"error",check_completion:"complete",edges:[],error:{code:"record_too_large",retryable:false}});expect(error.error.required_bytes).toBeGreaterThan(51200);expect(Buffer.byteLength(JSON.stringify(error))).toBeLessThanOrEqual(51200);
+        expect((await f.runtime.handlers.checkCollectionAvailability({...input,after:recovery}))._unsafeUnwrapErr()).toMatchObject({envelope:{error:{code:"record_too_large"}}});
+    }finally{f.dispose();}
+});
