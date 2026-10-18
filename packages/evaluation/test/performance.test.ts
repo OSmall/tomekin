@@ -5,6 +5,7 @@ test("three-card performance measurements preserve complete selection and explic
     const report = await runCandidatePerformance({warmRuns: 1});
     expect(report.workloads.map(item => item.name)).toEqual(["tuning", "commanderSize"]);
     for (const workload of report.workloads) {
+        expect(workload.selection.copies).toBe(workload.name === "tuning" ? 60 : 100);
         expect(workload.selection).toMatchObject({added: 3, removed: 3, retainedCutOptions: 3, roleReferencesIntact: true});
         expect(workload.coverage).toEqual({missing: [], unexpected: [], duplicates: []});
         expect(workload.checksBeforeExplicit).toEqual({legality: "absent", evaluation: "absent", collection_availability: "absent"});

@@ -93,7 +93,8 @@ async function observe(name: Workload) {
             memberships: [...initial.slice(-3).map(card_identity_id => ({action: "remove", card_identity_id, section: "mainboard"})), ...added.map((card_identity_id, i) => ({action: "set", card_identity_id, section: "mainboard", quantity: quantity(rowCount - 3 + i), sort_order: rowCount - 3 + i}))],
         }});
         const editInput = editInputFor(created);
-        const edited = unwrap(await stage("candidateEdit", () => runtime.handlers.editDeckCandidate(editInput)));
+        const editResult = await stage("candidateEdit", () => runtime.handlers.editDeckCandidate(editInput));
+        const edited = unwrap(editResult);
         const before = restore((await stage("completeReadBeforeChecks", () => readView(runtime, created.candidate_id, "json"))).records);
         const checkInput = {candidate_id: created.candidate_id, expected_updated_at: edited.updated_at};
         const legality = unwrap(await stage("explicitLegality", () => runtime.handlers.validateFormatLegality(checkInput)));
@@ -106,7 +107,7 @@ async function observe(name: Workload) {
         const lookup = unwrap(await stage("replacementFactLookup", () => runtime.handlers.lookupCards({references: added.map(value => ({kind: "oracle_id", value})), select: {name: true, oracle_text: true, mana_cost: true, type_line: true}, first: 3})));
         requireEvidence(lookup.edges.length === 3, "all replacement facts found");
         const serialized = await stage("applicationSerialization", () => JSON.stringify(edited));
-        const openCode = await stage("openCodeSerialization", () => resultToOpencodeOutput({isErr: () => false, isOk: () => true, value: edited} as any));
+        const openCode = await stage("openCodeSerialization", () => resultToOpencodeOutput(editResult));
         const adapterEdit = async (mode: "fallback" | "workerCold" | "workerWarm") => {
             // Separate equivalent candidates prevent replaying a mutation or reusing its stale timestamp.
             const candidate = unwrap(await runtime.handlers.createDeckCandidate(input));
@@ -123,7 +124,7 @@ async function observe(name: Workload) {
         const adapterEdits = {fallback: await adapterEdit("fallback"), workerCold: await adapterEdit("workerCold"), workerWarm: await adapterEdit("workerWarm"), openCode: {complete: JSON.stringify(JSON.parse(openCode)) === serialized, outputBytes: utf8Bytes(openCode)}};
         const selectedCoverage = coverage(final, after.memberships.map(item => item.card_identity_id));
         const checksBeforeExplicit = checkStatuses(before), checksAfterExplicit = checkStatuses(after);
-        const selection = {beforeRows: initial.length, afterRows: after.memberships.length, copies: after.memberships.reduce((sum, row) => sum + row.quantity, 0), added: 3, removed: 3, retainedCutOptions: initial.slice(-3).filter(card => after.options.some(option => option.card_identity_id === card)).length, roleReferencesIntact: after.plan!.contributions.every(contribution => contribution.role_id === created.created_ids.role)};
+        const selection = {beforeRows: initial.length, afterRows: after.memberships.length, copies: after.memberships.reduce((sum, row) => sum + row.quantity, 0), added: after.memberships.filter(row => !initial.includes(row.card_identity_id)).length, removed: initial.filter(card => !after.memberships.some(row => row.card_identity_id === card)).length, retainedCutOptions: initial.slice(-3).filter(card => after.options.some(option => option.card_identity_id === card)).length, roleReferencesIntact: after.plan!.contributions.every(contribution => contribution.role_id === created.created_ids.role)};
         requireEvidence(!selectedCoverage.missing.length && !selectedCoverage.unexpected.length && !selectedCoverage.duplicates.length, "selected identities");
         requireEvidence(Object.values(checksBeforeExplicit).every(status => status === "absent"), "mutation must not invoke checks");
         requireEvidence(Object.values(checksAfterExplicit).every(status => status === "applicable"), "matching reusable explicit evidence");
@@ -131,8 +132,15 @@ async function observe(name: Workload) {
         requireEvidence(before.updatedAt === edited.updated_at && after.updatedAt === edited.updated_at, "checks preserve exact content timestamp");
         const renderedSelectedRows = decklist.records.filter(record => record.path.length === 1 && typeof record.value === "string" && /^\d+ /.test(record.value)).length;
         requireEvidence(renderedSelectedRows === rowCount, "complete Portable Decklist");
+        timingsMs.editAndExplicitChecks = ["candidateEdit", "explicitLegality", "explicitEvaluation", "explicitAvailability"].reduce((sum, key) => sum + timingsMs[key]!, 0);
+        timingsMs.editChecksAndCompleteOptionalOutputs = timingsMs.editAndExplicitChecks + ["optionalCompleteReport", "optionalCompletePortableDecklist", "optionalCompletePullList", "replacementFactLookup"].reduce((sum, key) => sum + timingsMs[key]!, 0);
         return {name, selection, coverage: selectedCoverage, checksBeforeExplicit, checksAfterExplicit, contentTimestampPreservedByChecks: after.updatedAt === edited.updated_at, availability: availability.summary, legality, evaluation, renderedSelectedRows, editPayload: {inputBytes: utf8Bytes(JSON.stringify(editInput)), outputBytes: utf8Bytes(serialized), repeatedBriefBytes: 0, repeatedUnchangedMemberships: 0}, adapterEdits, optionalOutputs: {report: {pages: report.pages, bytes: report.bytes}, portableDecklist: {pages: decklist.pages, bytes: decklist.bytes}, pullList: {pages: pulls.pages, bytes: pulls.bytes}}, timingsMs};
     } finally {await transport.close(); runtime.close(); fixture.dispose();}
+}
+
+function variance(samples: number[]) {
+    const meanMs = samples.reduce((sum, n) => sum + n, 0) / samples.length;
+    return {...summarize(samples), meanMs, populationStdDevMs: Math.sqrt(samples.reduce((sum, n) => sum + (n - meanMs) ** 2, 0) / samples.length)};
 }
 
 export async function runCandidatePerformance(options: {warmRuns?: number} = {}) {
@@ -144,9 +152,9 @@ export async function runCandidatePerformance(options: {warmRuns?: number} = {})
         await observe(name);
         const warm: Awaited<ReturnType<typeof observe>>[] = [];
         for (let i = 0; i < warmRuns; i++) warm.push(await observe(name));
-        workloads.push({...cold, timings: Object.fromEntries(Object.keys(cold.timingsMs).map(key => [key, {coldMs: cold.timingsMs[key]!, warm: summarize(warm.map(run => run.timingsMs[key]!))}])) as Record<string, {coldMs: number; warm: ReturnType<typeof summarize>}>});
+        workloads.push({...cold, timings: Object.fromEntries(Object.keys(cold.timingsMs).map(key => [key, {coldMs: cold.timingsMs[key]!, warm: variance(warm.map(run => run.timingsMs[key]!))}])) as Record<string, {coldMs: number; warm: ReturnType<typeof variance>}>});
     }
     const hash = (path: string) => createHash("sha256").update(readFileSync(new URL(path, import.meta.url))).digest("hex");
-    return {kind: "candidate-performance-v1", sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], {encoding: "utf8"}).trim(), harnessSha256: hash("./performance.ts"), fixtureSha256: hash("./fixtures.ts"), fixtureRevision, runtime: {bun: Bun.version, platform: process.platform, arch: process.arch, cpu: cpus()[0]?.model}, protocol: {warmRuns, cold: "First dispatch per workload against fresh on-disk synthetic SQLite; OS cache not flushed; later workload shares process/module caches.", warm: "One unmeasured equivalent warm-up, then fresh equivalent databases. Worker cold starts a new Worker each observation; Worker warm reuses that Worker.", logging: "Disabled throughout; no logging latency measurement or attribution.", setup: "Schema migration, source seeding and successful Collection import excluded. Runtime startup and candidate creation recorded separately.", completion: "Mutation, explicit legality/evaluation/final Availability, full paged optional views, serializers and adapter edits timed separately. No model, provider or live/private data.", oldComparator: "Immutable pre-migration-v1.json and pinned evaluate:legacy source3f23b7a; old saves include implicit checks, old read/outputs have different completeness. Raw handler times are not end-to-end speedup ratios.", target: "Characterize observed local complete three-card edits and requested checks; achieved timing envelope is reported with variance, never enforced as a CI threshold or live-session guarantee."}, workloads};
+    return {kind: "candidate-performance-v1", sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], {encoding: "utf8"}).trim(), harnessSha256: hash("./performance.ts"), fixtureSha256: hash("./fixtures.ts"), fixtureRevision, runtime: {bun: Bun.version, platform: process.platform, arch: process.arch, cpu: cpus()[0]?.model}, protocol: {warmRuns, cold: "First dispatch per workload against fresh on-disk synthetic SQLite; OS cache not flushed; later workload shares process/module caches.", warm: "One unmeasured equivalent warm-up, then fresh equivalent databases. Worker cold starts a new Worker each observation; Worker warm reuses that Worker.", logging: "Disabled throughout; no logging latency measurement or attribution.", setup: "Schema migration, source seeding and successful Collection import excluded. Runtime startup and candidate creation recorded separately.", completion: "Mutation, explicit legality/evaluation/final Availability, full paged optional views, serializers and adapter edits timed separately. Composite timings sum the same observation stages; exclude setup/create/verification reads and duplicate adapter probes. No model, provider or live/private data.", oldComparator: "Immutable pre-migration-v1.json and pinned evaluate:legacy source3f23b7a; old saves include implicit checks, old read/outputs have different completeness. Raw handler times are not end-to-end speedup ratios.", target: "Characterize observed local complete three-card edits and requested checks; achieved timing envelope is reported with variance, never enforced as a CI threshold or live-session guarantee."}, workloads};
 }
 if (import.meta.main) console.log(JSON.stringify(await runCandidatePerformance(), null, 2));
