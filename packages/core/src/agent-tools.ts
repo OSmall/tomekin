@@ -1,3 +1,4 @@
+import {CheckCollectionAvailabilityArgsSchema, CheckCollectionAvailabilityInputSchema, normalizeAvailabilityDemands, computeCollectionAvailability, availabilityPage} from "./collection-availability";
 import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
 import {collectionPolicyFromBrief, type CollectionBrowseRepository} from "./collection-policy";
 import {lookupCards, type CardLookupOptions} from "./card-lookup";
@@ -33,6 +34,7 @@ export const AgentToolNameSchema = z.enum([
   "resolve_decklist_cards",
   "validate_format_legality",
   "evaluate_deck_candidate",
+  "check_collection_availability",
   "render_deck_candidate",
   "create_deck_candidate",
   "edit_deck_candidate",
@@ -58,6 +60,7 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    check_collection_availability: {description:"Explicitly check the complete selected demand jointly against recorded Collection quantities and the whole Brief policy. Optional requirements cover every selected section/quantity exactly and only narrow compatible copies. Saved evidence publishes conditionally; trials remain transient. Complete bounded path/value witnesses recover with first/after; no reservations or moves.",inputSchema:CheckCollectionAvailabilityArgsSchema},
     browse_collection_cards: {description: "Browse actual owned Collection rows locally under an inspectable confirmed policy, with exact Printing/date filters before bounds. added_at is reliable source chronology; unknown dates remain independently searchable. Use first/after for complete pages.", inputSchema: BrowseCollectionCardsArgsSchema},
     lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
@@ -80,7 +83,7 @@ export const agentToolContracts = {
 } as const;
 
 export function agentToolInputJsonSchema(name: AgentToolName): Record<string, unknown> {
-    return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : name === "validate_format_legality" || name === "evaluate_deck_candidate" ? DeckCheckInputSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
+    return z.toJSONSchema(name === "check_collection_availability" ? CheckCollectionAvailabilityInputSchema : name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : name === "validate_format_legality" || name === "evaluate_deck_candidate" ? DeckCheckInputSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
   readonly cardLookup?: CardLookupRepository;
@@ -102,6 +105,29 @@ export type AgentToolError =
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
   return {
+      async checkCollectionAvailability(input: unknown, signal?: AbortSignal) {
+          const parsed = CheckCollectionAvailabilityArgsSchema.safeParse(input);
+          if (!parsed.success) return err({type:"validation_error" as const,message:parsed.error.message});
+          const {requirements,first,after,...checkInput}=parsed.data;
+          const checked=DeckCheckInputSchema.safeParse(checkInput);
+          if(!checked.success) return err({type:"validation_error" as const,message:checked.error.message});
+          const captured=await captureCheck(repositories,checked.data,"collection_availability");
+          if(captured.isErr())return captured;
+          if(!repositories.collectionBrowse) return err({type:"tool_error" as const,message:"Collection repository is unavailable."});
+          try {
+              const normalized=normalizeAvailabilityDemands(captured.value.cards,requirements);
+              const computed=await computeCollectionAvailability(repositories.collectionBrowse,captured.value,normalized,options.lookup,signal);
+              if(computed.isErr()) return computed;
+              if(captured.value.dependencies) captured.value.dependencies.availability_requirements=normalized;
+              const settled=await settleCheck(repositories,captured.value,"collection_availability",computed.value);
+              if(settled.isErr())return settled;
+              return availabilityPage(computed.value,{...first!==undefined?{first}:{},...after?{after}:{}},settled.value.evidence,options.lookup);
+          } catch(error) {
+              const message=error instanceof Error?error.message:String(error);
+              if(message==="cancelled"||message==="scan_timeout") return err({type:"retrieval_error" as const,message,envelope:{status:"error" as const,check_completion:"partial",edges:[],error:{code:message,retryable:true,message:"Availability computation did not complete; no final deficits or sufficiency were established. Recompute from the original request."},metadata:{requested_count:first??50,returned_count:0,response_budget_bytes:options.lookup?.responseBudgetBytes??51200,provider_total:null,scoped_total:null}}});
+              return err({type:"validation_error" as const,message});
+          }
+      },
       browseCollectionCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.collectionBrowse) throw new Error("Collection browse repository is unavailable.");
           return browseCollectionCards(repositories.collectionBrowse, async reference => {
@@ -318,6 +344,8 @@ export function agentToolMutates(name: string): boolean {
         "edit_deck_candidate",
         "validate_format_legality",
         "evaluate_deck_candidate",
+        "check_collection_availability",
+  "check_collection_availability",
     ].includes(name);
 }
 

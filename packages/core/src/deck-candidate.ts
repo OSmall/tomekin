@@ -452,7 +452,7 @@ export function summarizeDeckCandidate(
                     gap: selected_copies === 0,
                 };
             }),
-        validation_evidence: {status:evidence.status,...(evidence.checks?{checks:{format_legality:compact(evidence.checks.format_legality),deck_evaluation:compact(evidence.checks.deck_evaluation)}}:{})},
+        validation_evidence: {status:evidence.status,...(evidence.checks?{checks:{format_legality:compact(evidence.checks.format_legality),deck_evaluation:compact(evidence.checks.deck_evaluation),collection_availability:compact(evidence.checks.collection_availability)}}:{})},
     };
 }
 export function roleSelectedCopies(

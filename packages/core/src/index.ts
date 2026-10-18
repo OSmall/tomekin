@@ -25,3 +25,5 @@ export * from "./deck-checks";
 
 export * from "./collection-policy";
 export * from "./collection-browse";
+
+export * from "./collection-availability";
