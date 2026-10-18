@@ -11,14 +11,14 @@ describe("Tomekin agent configuration", () => {
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
         const agent = read(".opencode/agents/tomekin-deck-builder.md");
 
-        expect(discovery).toContain("Return up to three viable Deck Opportunities");
-        expect(discovery).toContain("never pad the shortlist");
+        expect(discovery).toContain("Return useful compared Deck Opportunities");
+        expect(discovery).toContain("no fixed quota or universal top-N cutoff");
         expect(discovery).toContain("Do not produce, render, or save a full decklist");
         expect(discovery).toContain("commander-deck-architecture");
         expect(discovery).toContain("sixty-card-constructed-deck-architecture");
         expect(commanderArchitecture).toContain("selected a Deck Opportunity");
-        expect(commanderArchitecture).toContain("Preserve the confirmed `(locationType, locationName)` Collection allow-list unchanged");
-        expect(commanderArchitecture).toContain("Recheck final Availability with the same confirmed Collection Location allow-list");
+        expect(commanderArchitecture).toContain("Preserve the whole confirmed Collection Access Policy");
+        expect(commanderArchitecture).toContain("Obtain final joint Availability under the whole confirmed Collection Access Policy");
         expect(coordinator).toContain("collection-opportunity-discovery");
         expect(agent).toContain("tomekin-deck-building");
         expect(coordinator).toContain("Format is absent or ambiguous");
@@ -38,7 +38,7 @@ describe("Tomekin agent configuration", () => {
         expect(methodology).toContain("selection, not net card advantage");
         expect(methodology).toContain("19.59");
         expect(methodology).toContain("Do not create a Sideboard by default");
-        expect(methodology).toContain("at most three complete construction/review passes");
+        expect(methodology).toContain("Save authorized structurally sound construction as it progresses");
         expect(coordinator).toContain("sixty-card-constructed-deck-architecture");
         expect(coordinator).toMatch(/selected\s+Deck Opportunity or specific Format Anchor/);
     });

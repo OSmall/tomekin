@@ -144,7 +144,7 @@ These facts support the local contribution examples, not source-report certifica
 ## Return To The Lifecycle
 
 Resolve final names and explicitly run applicable deterministic checks through `tomekin-deck-building` before claiming
-a completed deck result. Recheck final Availability with the same confirmed Collection Location allow-list.
+a completed deck result. Obtain final joint Availability under the whole confirmed Collection Access Policy.
 Explain plan, Commander Bracket/play experience, qualified selected coverage, template departures, mana/curve,
 commander dependence, meaningful inclusions/exclusions, practical constraints and uncertainty. Save authorized incomplete construction through create/edit; explicitly check the actual accepted result and recover
 complete joint Availability and Pull List evidence through the root lifecycle.
