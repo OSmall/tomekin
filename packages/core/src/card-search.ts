@@ -1,3 +1,4 @@
+import {collectionRetrievalShape, collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies} from "./collection-retrieval";
 import {err, ok, type Result} from "neverthrow";
 import {z} from "zod";
 import {
@@ -24,6 +25,7 @@ import {
 import type {Logger} from "./logging";
 
 export const SearchCardsArgsSchema = z.strictObject({
+    ...collectionRetrievalShape,
     q: z.string().min(1),
     unique: z.enum(["cards", "art", "prints"]).optional(),
     order: z
@@ -73,6 +75,7 @@ export type CardSearchProvider = {
 };
 export type CardSearchOptions = {
     provider: CardSearchProvider;
+    collection?: CollectionRetrievalDependencies | undefined;
     now?: () => number;
     scanDeadlineMs?: number;
     responseBudgetBytes?: number;
@@ -162,6 +165,7 @@ export async function searchCards(
         httpMs = 0,
         projectionMs = 0,
         localMs = 0;
+    let collection: CollectionRetrievalSession | undefined;
     let revisions: Record<string, string | null> = {},
         provenance: RetrievalEnvelope<CardResult>["provenance"];
     let safe: Position = {
@@ -197,6 +201,7 @@ export async function searchCards(
         error,
         metadata: metadata(),
         ...(provenance ? {provenance} : {}),
+        ...(collection ? {collection_context: collection.context} : {}),
     });
     const minimumPositionBytes = (pos: Position) =>
         compactJsonBytes({
@@ -250,6 +255,7 @@ export async function searchCards(
         stop_reason: reason,
         metadata: metadata(),
         ...(provenance ? {provenance} : {}),
+        ...(collection ? {collection_context: collection.context} : {}),
     });
     const recover = (
         problem: RetrievalProblem,
@@ -351,6 +357,7 @@ export async function searchCards(
                 .map((key) => [key, args[key]]),
         ),
         include_provenance: args.include_provenance ?? false,
+        ...collectionRequestBindings(args),
     };
     const initial = new URL(endpoint);
     for (const key of controls)
@@ -392,7 +399,7 @@ export async function searchCards(
                 pos.data.lastId === null &&
                 pos.data.page < 1) ||
             Object.keys(c.revisions).some(
-                (key) => !["oracle_cards", "oracle_tags"].includes(key),
+                (key) => !["oracle_cards", "oracle_tags", "all_cards", "collection", "collection_policy"].includes(key),
             )
         )
             return finish(
@@ -406,6 +413,13 @@ export async function searchCards(
         safe = pos.data;
         revisions = c.revisions;
         hasPreviousPage = true;
+    }
+    try {
+        collection = await prepareCollectionRetrieval(args, options.collection, args.after ? revisions : undefined);
+        Object.assign(revisions, collection?.revisions);
+    } catch (e) {
+        if (e instanceof CollectionRetrievalFailure) return finish(failure(e.problem));
+        throw e;
     }
     const localSnapshot = async (ids: string[]) => {
         const t = now();
@@ -440,7 +454,7 @@ export async function searchCards(
                     a.id.localeCompare(b.id),
             ))
             imports.set(item.bulkDataType, item);
-        for (const [dataset, revision] of Object.entries(revisions))
+        for (const [dataset, revision] of Object.entries(revisions).filter(([key]) => !["collection", "collection_policy"].includes(key)))
             if (revision !== (imports.get(dataset)?.id ?? null))
                 throw new ProviderFailure({
                     code: "stale_cursor",
@@ -527,6 +541,7 @@ export async function searchCards(
     ) => {
         check();
         if (Object.keys(revisions).length) await readRevisions();
+        await collection?.assertCurrent();
         check();
         return finish(page(more, stop));
     };
@@ -668,8 +683,9 @@ export async function searchCards(
                 }
                 if (args.select.tags && tagUnavailable)
                     node.unavailable_fields = {tags: tagUnavailable};
+                const matches = collection ? await collection.evaluate(node, raw.id as string, check) : true;
                 check();
-                if (edges.length === first)
+                if (matches && edges.length === first)
                     return await finalize(true, "first");
                 const consumed: Position = {
                     url: safe.url,
@@ -679,6 +695,7 @@ export async function searchCards(
                     nextPage: i === data.length - 1 ? nextPage : null,
                 };
                 ensurePosition(consumed);
+                if (!matches) {safe = consumed; continue;}
                 before.push(prior);
                 positions.push(consumed);
                 edges.push({node});
@@ -714,15 +731,17 @@ export async function searchCards(
             safe = completed;
         }
     } catch (e) {
-        const problem =
-            e instanceof ProviderFailure
+        let consistencyError: CollectionRetrievalFailure | undefined;
+        try { await collection?.assertCurrent(); if (Object.keys(revisions).length) await readRevisions(); } catch (error) { if (error instanceof CollectionRetrievalFailure || error instanceof ProviderFailure) consistencyError = new CollectionRetrievalFailure(error.problem); else throw error; }
+        const problem = consistencyError?.problem ?? (
+            e instanceof ProviderFailure || e instanceof CollectionRetrievalFailure
                 ? e.problem
                 : {
                       code: "provider_error" as const,
                       message: "Provider transport failed.",
                       reason: "transport_failure",
                       retryable: true,
-                  };
+                  });
         if (problem.code === "stale_cursor") {
             edges = [];
             positions = [];

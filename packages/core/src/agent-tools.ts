@@ -1,3 +1,4 @@
+import type {CollectionRetrievalDependencies} from "./collection-retrieval";
 import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
 import {browseTags, BrowseTagsArgsSchema} from "./tag-catalogue";
 import {BrowseCollectionCardsArgsSchema, browseCollectionCards} from "./collection-browse";
@@ -105,10 +106,15 @@ export type AgentToolError =
 };
 
 export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions; search?: CardSearchOptions; enableLegacyQuery?: boolean} = {}) {
+  const collection: CollectionRetrievalDependencies | undefined = repositories.collectionBrowse ? {repository: repositories.collectionBrowse, loadPolicy: async reference => {
+      if (reference.kind === "explicit") return ok(reference.policy);
+      const candidate = await repositories.deckCandidates.getDeckCandidate(reference.candidate_id);
+      return candidate.andThen(value => collectionPolicyFromBrief(value.brief));
+  }} : undefined;
   return {
       searchCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup || !options.search) throw new Error("Search provider unavailable.");
-          return searchCards(repositories.cardLookup, input, options.search, signal);
+          return searchCards(repositories.cardLookup, input, {...options.search, collection}, signal);
       },
       browseCollectionCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.collectionBrowse) throw new Error("Collection browse repository is unavailable.");
@@ -120,7 +126,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
       },
       lookupCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
-          return lookupCards(repositories.cardLookup, input, options.lookup, signal);
+          return lookupCards(repositories.cardLookup, input, {...options.lookup, collection}, signal);
       },
       browseTags(input: unknown, signal?: AbortSignal) {
           const read = repositories.cardReference.readTagCatalogue;
