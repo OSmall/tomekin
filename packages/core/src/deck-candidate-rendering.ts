@@ -1,4 +1,4 @@
-import {summarizeDeckCandidate, type DeckCandidate, type DeckCandidateCard} from "./deck-candidate";
+import {roleSelectedCopies, summarizeDeckCandidate, type DeckCandidate, type DeckCandidateCard} from "./deck-candidate";
 import type {DeckFormat} from "./deck-building-brief";
 
 export type RenderDeckCandidateInput = {
@@ -25,15 +25,13 @@ export const deckCandidateMarkdownSections = [
 export type DeckCandidateMarkdownSection = (typeof deckCandidateMarkdownSections)[number];
 
 export function renderPortableDecklist(format: DeckFormat, cards: readonly DeckCandidateCard[]): string {
-    const mainboard = renderDecklistSection("Mainboard", cards.filter((card) => card.section === "mainboard"));
-    if (format === "commander") {
-        const commander = renderDecklistSection("Commander", cards.filter((card) => card.section === "commander"));
-        return `${commander}\n\n${mainboard}`;
-    }
-    const sideboardCards = cards.filter((card) => card.section === "sideboard");
-    return sideboardCards.length === 0
-        ? mainboard
-        : `${mainboard}\n\n${renderDecklistSection("Sideboard", sideboardCards)}`;
+    const sections: string[] = [];
+    const commanders = cards.filter(card => card.section === "commander");
+    if (format === "commander" || commanders.length) sections.push(renderDecklistSection("Commander", commanders));
+    sections.push(renderDecklistSection("Mainboard", cards.filter(card => card.section === "mainboard")));
+    const sideboard = cards.filter(card => card.section === "sideboard");
+    if (sideboard.length) sections.push(renderDecklistSection("Sideboard", sideboard));
+    return sections.join("\n\n");
 }
 
 export function renderDeckCandidateMarkdown(input: RenderDeckCandidateInput): string {
@@ -71,10 +69,10 @@ function defaultSectionContent(section: DeckCandidateMarkdownSection): string {
 /** Ordered complete report fragments; join with the empty string to render Markdown. */
 export function renderCandidateReportParts(candidate: DeckCandidate): string[] {
     const json = (value: unknown) => `\n\n\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\`\n\n`;
-    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", json(summarizeDeckCandidate(candidate).validation_evidence), "## Collection Status\n\nCurrent Availability and Collection Pull List evidence is unrecorded. Historical contribution/source notes do not establish current owned-copy proof.\n\n", "## Portable Decklist\n\n\`\`\`txt\n", renderPortableDecklist(candidate.format, candidate.cards), "\n\`\`\`\n\n", "## Selected Membership\n\n"];
+    const parts = [`# ${candidate.label}\n\nCandidate ${candidate.id}; updated ${candidate.updatedAt}.\n\n`, "## Deck Building Brief", json(candidate.brief), "## Game Plan\n\n", `${candidate.plan?.description ?? "Unrecorded."}\n\n`, "## Power And Experience\n\n", `${candidate.assessments.power_play_experience_fit ?? "Unrecorded."}\n\n`, "## Mana And Curve\n\n", `${candidate.assessments.mana_curve_adequacy ?? "Unrecorded."}\n\n`, "## Explicit Check Evidence", json(candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence), "## Collection Status\n\nCurrent Availability and Collection Pull List evidence is unrecorded. Historical contribution/source notes do not establish current owned-copy proof.\n\n", "## Portable Decklist\n\n\`\`\`txt\n", ...renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line=>`${line}\n`), "\`\`\`\n\n", "## Selected Membership\n\n"];
     for (const membership of candidate.memberships) parts.push(json(membership));
     parts.push("## Roles And Win Routes\n\n");
-    for (const node of candidate.plan?.nodes ?? []) parts.push(json(node));
+    for (const node of candidate.plan?.nodes ?? []) parts.push(json(node.kind === "role" ? {...node, selected_copies:roleSelectedCopies(candidate,node), assessment_status:node.coverage_assessment ? "recorded" : "unrecorded"} : node));
     parts.push("## Relationships\n\n");
     for (const relationship of candidate.plan?.relationships ?? []) parts.push(json(relationship));
     parts.push("## Deck Card Pool And Contributions\n\nPool options include alternatives; only Selected Membership contributes selected quantities.\n\n");

@@ -1,3 +1,4 @@
+import {readCandidateJson} from "../../core/test/fixtures/read-candidate-json";
 import {expect,test} from "bun:test";
 import {mkdtempSync,rmSync} from "node:fs";
 import {tmpdir} from "node:os";
@@ -52,7 +53,7 @@ test("OpenCode, Pi Worker and fallback publish real evidence; dispatched check w
         await closing;
         expect(output.details).toMatchObject({legality:{status:"illegal"},manaAndCurve:{landCount:0},evidence:{status:"applicable"}});
         expect(JSON.parse(output.content[0].text)).toEqual(JSON.parse(JSON.stringify(output.details)));
-        const state=unwrap(await runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"state"}));
+        const state=(await readCandidateJson(runtime.handlers.getDeckCandidate,saved.candidate_id));
         expect(state.updatedAt).toBe(saved.updated_at);
         expect(state.validation_evidence.checks.deck_evaluation.status).toBe("applicable");
         const fallback=createCoreTool("validate_format_legality",{log,createRuntime:()=>createLocalAgentToolRuntime({...app,log})});
@@ -77,7 +78,7 @@ test("a lost real Worker check response is an unknown write outcome whose saved 
         const saved=unwrap(await runtime.handlers.createDeckCandidate({label:"Recover evidence",brief}));
         const output=await transport.invoke({toolCallId:"lost",toolName:"validate_format_legality",databasePath:app.databasePath,params:{candidate_id:saved.candidate_id,expected_updated_at:saved.updated_at}},new AbortController().signal);
         expect(output.details).toMatchObject({error:"unknown_write_outcome"});
-        const state=unwrap(await runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"state"}));
+        const state=(await readCandidateJson(runtime.handlers.getDeckCandidate,saved.candidate_id));
         expect(state.validation_evidence.checks.format_legality).toMatchObject({status:"applicable",result:{status:"illegal"}});
         expect(state.updatedAt).toBe(saved.updated_at);
     }finally{await transport.close();runtime.close();app.dispose();}

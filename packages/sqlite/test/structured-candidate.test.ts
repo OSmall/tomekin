@@ -1,3 +1,4 @@
+import {readCandidateJson} from "../../core/test/fixtures/read-candidate-json";
 import { expect, test } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -172,7 +173,7 @@ async function initial(app: ReturnType<typeof setup>) {
     );
 }
 async function state(app: ReturnType<typeof setup>, id: string) {
-    return unwrap(await app.handlers.getDeckCandidate({ id, view: "state" }));
+    return readCandidateJson(app.handlers.getDeckCandidate,id);
 }
 test("linked local refs persist stable identities, repeated copies and section-aware coverage after reopening", async () => {
     const app = setup();
@@ -1317,7 +1318,7 @@ test("large views enforce the complete escaped byte budget, reconstruct exact JS
             after=page.pageInfo.hasNextPage?page.pageInfo.endCursor:null;
         }while(after);
         expect(large).toBe(true);
-        expect(restored).toEqual(await state(app,created.candidate_id));
+        expect(restored).toEqual(unwrap(await createSqliteDeckCandidateRepository(app.db,{now:()=>new Date()}).getDeckCandidate(created.candidate_id)));
         const oversized='🦉'.repeat(18000);
         unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:changed.updated_at,changes:{plan:{schema_version:1,description:oversized}}}));
         const first=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200}));

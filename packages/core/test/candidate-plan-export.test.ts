@@ -1,5 +1,5 @@
 import {expect,test} from "bun:test";
-import {exportCandidatePlan,renderSavedDeckCandidate} from "@tomekin/core";
+import {exportCandidatePlan,renderSavedDeckCandidate,renderPortableDecklist} from "@tomekin/core";
 import {candidatePlanFixture} from "./fixtures/candidate-plan";
 test("developer JSON preserves all authority and Mermaid distinguishes selection, alternatives, gaps, priorities and symmetric competition", () => {
     const candidate = candidatePlanFixture();
@@ -34,4 +34,17 @@ test("saved reports retain reasoning and selected canonical decklist with explic
     expect(report.markdown).toContain("Synthetic card facts");
     expect(report.markdown).toContain("Still seeking resilient protection");
     expect(report.markdown).toContain('"status": "absent"');
+});
+test("reports preserve complete recorded findings and mark outdated evidence without manufacturing focused judgments",()=>{
+    const candidate=candidatePlanFixture();
+    candidate.validation_evidence={status:"outdated",checks:{format_legality:{status:"outdated",checked_at:candidate.updatedAt,dependencies:{selected_changed_at:candidate.updatedAt,brief_changed_at:candidate.updatedAt,brief_inputs:{format:"casual_60"},reference_imports:[],reference_contract_revision:1,validator_versions:{format_legality:"1"}},result:{status:"illegal",reasons:["Recorded construction finding remains inspectable"]}},deck_evaluation:{status:"absent"}}};
+    const report=renderSavedDeckCandidate(candidate).markdown;
+    expect(report).toContain("Recorded construction finding remains inspectable");
+    expect(report).toContain('"status": "outdated"');
+    expect(report).toContain("Unrecorded.");
+});
+
+test("Portable Decklist exposes every persisted selected section even for incomplete unchecked construction",()=>{
+    const candidate=candidatePlanFixture();
+    expect(renderPortableDecklist("commander",candidate.cards)).toBe("Commander\n\nMainboard\n3 Forest\n\nSideboard\n1 Forest");
 });

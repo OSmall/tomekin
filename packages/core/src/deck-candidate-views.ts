@@ -5,12 +5,12 @@ import {type DeckCandidate, roleSelectedCopies, summarizeDeckCandidate} from "./
 import {compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
 import {renderCandidateReportParts, renderPortableDecklist} from "./deck-candidate-rendering";
 
-export const candidateViewValues = ["summary", "state", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist"] as const;
+export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist"] as const;
 export const GetDeckCandidateViewArgsSchema = z.strictObject({
     id: z.uuid(), view: z.enum(candidateViewValues).default("summary"),
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(),
 }).superRefine((v, c) => {
-    if ((v.view === "summary" || v.view === "state") && (v.first !== undefined || v.after !== undefined)) c.addIssue({code:"custom", message:"Use view json for recoverable full-state records; summary/state do not accept pagination.", path:["view"]});
+    if (v.view === "summary" && (v.first !== undefined || v.after !== undefined)) c.addIssue({code:"custom", message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]});
 });
 export type CandidateViewArgs = z.infer<typeof GetDeckCandidateViewArgsSchema>;
 /** Apply these records in order to an empty value; paths are object keys/array indices. Values are complete, never previews. */
@@ -36,7 +36,7 @@ function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord
     else if (view === "options") value = candidateOptionDetails(candidate);
     else if (view === "pool") value = candidatePoolView(candidate);
     else if (view === "plan") value = candidate.plan;
-    else if (view === "assessments") value = {assessments: candidate.assessments, validation_evidence: summarizeDeckCandidate(candidate).validation_evidence};
+    else if (view === "assessments") value = {assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
     else if (view === "report") value = renderCandidateReportParts(candidate);
     else value = candidate;
@@ -58,8 +58,8 @@ function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord
 export function readCandidateView(candidate: DeckCandidate, args: CandidateViewArgs) {
     const first = args.first ?? 50;
     const records = recordsFor(candidate, args.view);
-    // Also binds current canonical names and recorded evidence: evidence publication need not edit candidate.updatedAt.
-    const baseline = createHash("sha256").update(JSON.stringify(candidate)).digest("hex");
+    // Bind exactly the included view plus content timestamp. Included names/check evidence can change without a content edit; unrelated data must not stale a Brief-only view.
+    const baseline = createHash("sha256").update(JSON.stringify({updated_at:candidate.updatedAt,view:args.view,records})).digest("hex");
     const context: CandidateViewContext = {candidate_id:candidate.id, updated_at:candidate.updatedAt, view:args.view, baseline, record_format:"path_value_v1"};
     let offset = 0;
     const metadata = (returned_count: number) => ({requested_count:first, returned_count, response_budget_bytes:retrievalResponseBudgetBytes, provider_total:null, scoped_total:records.length});
@@ -78,7 +78,8 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         pageInfo:{startCursor:token(offset),endCursor:token(end),hasPreviousPage:offset>0,hasNextPage:end<records.length},stop_reason,metadata:metadata(end-offset)});
     let end = offset;
     while (end < records.length && end-offset < first) {
-        const proposed = page(end+1,end+1===records.length?"source_exhausted":"first");
+        // Tentative pages must reserve their eventual stop metadata before accepting a record.
+        const proposed = page(end+1,end+1===records.length?"source_exhausted":end+1-offset===first?"first":"response_budget");
         if (compactJsonBytes(proposed) > retrievalResponseBudgetBytes) {
             if (end === offset) return failure({code:"record_too_large", message:`Complete record at ${JSON.stringify(records[end]!.path)} exceeds the response budget. Use a narrower explicit candidate view or developer JSON export for the complete artifact.`,retryable:false,cursor:token(offset),required_bytes:compactJsonBytes(proposed),limit_bytes:retrievalResponseBudgetBytes});
             return ok(page(end,"response_budget"));

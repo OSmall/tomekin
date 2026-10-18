@@ -12,6 +12,7 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         const schema=JSON.parse(JSON.stringify(tool.parameters));
         expect(schema).toEqual(agentToolInputJsonSchema("get_deck_candidate"));
         expect(schema.properties.view.enum).toContain("pool");
+        expect(schema.properties.view.enum).not.toContain("state");
         let after:string|undefined;
         let description:string|undefined;
         let firstCursor:string|undefined;

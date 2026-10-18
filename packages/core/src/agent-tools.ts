@@ -70,7 +70,7 @@ export const agentToolContracts = {
     render_deck_candidate: {description: "Generate a saved candidate report or selected-only canonical Portable Decklist. Returns complete ordered path/value records; repeat candidate_id/output with first/after. No editable report input and no implicit checks.", inputSchema: RenderDeckCandidateArgsSchema},
     create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
     edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
-    get_deck_candidate: {description: "Read a compact saved candidate summary by default. Explicit brief/selected/options/pool/plan/assessments/json/report/portable_decklist views return complete path/value records with first/after continuation bound to the baseline. Repeat id/view; apply records in order; concatenate report/decklist string values. Pool groups roles and deduplicates options. state is an unbounded internal compatibility view; prefer json for complete recovery. No implicit checks.", inputSchema: GetDeckCandidateArgsSchema},
+    get_deck_candidate: {description: "Read a compact saved candidate summary by default. Explicit brief/selected/options/pool/plan/assessments/json/report/portable_decklist views return complete path/value records with first/after continuation bound to the baseline. Repeat id/view; apply records in order; concatenate report/decklist string values. Pool groups roles and deduplicates options. No implicit checks.", inputSchema: GetDeckCandidateArgsSchema},
     list_deck_candidates: {description: "List saved Deck Candidates.", inputSchema: EmptyAgentToolArgsSchema},
     list_collection_locations: {description: "List imported Collection Locations.", inputSchema: EmptyAgentToolArgsSchema},
 } as const;
@@ -228,7 +228,6 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
         const result = await repositories.deckCandidates.getDeckCandidate(parsed.value.id);
         if (result.isErr()) return result;
         if (parsed.value.view === "summary") return ok(summarizeDeckCandidate(result.value));
-        if (parsed.value.view === "state") return ok(result.value);
         return readCandidateView(result.value, parsed.value);
     },
     listDeckCandidates() {
