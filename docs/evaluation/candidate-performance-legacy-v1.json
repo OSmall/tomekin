@@ -1,0 +1,1980 @@
+{
+  "sourceCommit": "3f23b7a3cbdd1d713f209e2c001934a3a36e1ecb",
+  "harnessSourceSha256": "53b67d2830a6ad4c41897194634fc614ed0932482686a65867b337a3fcec3076",
+  "fixtureSourceSha256": "43457ceb152e0a3c15e9dfe9f89d7c203478898bc076b47e1bda980133fa00ba",
+  "commanderSizeWorkload": {
+    "beforeRows": 69,
+    "afterRows": 69,
+    "quantity": 100,
+    "added": 3,
+    "removed": 3,
+    "timingsMs": 13.8159169999999,
+    "inputBytes": 8539,
+    "outputBytes": 11325,
+    "shape": "Commander-sized only; synthetic Casual 60 save, no legality or strategic claim",
+    "variance": {
+      "samplesMs": [
+        5.840708000001541,
+        4.734167000000525,
+        9.130624999999782,
+        4.802583000000595,
+        5.033292000000074
+      ],
+      "medianMs": 5.033292000000074,
+      "minMs": 4.734167000000525,
+      "maxMs": 9.130624999999782
+    }
+  },
+  "schemaVersion": 1,
+  "fixtureRevision": "synthetic-workflows-v1",
+  "fixtureManifestSha256": "0f5a697e305198fed43ae6a93625aba84d91f7d231c0f7b782f8969fe9f969bc",
+  "runtime": {
+    "bun": "1.3.14",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M1"
+  },
+  "mode": "synthetic-local-no-network-no-LLM",
+  "workflows": [
+    {
+      "name": "discovery",
+      "boundedTraversal": {
+        "requested": 3,
+        "returned": 3,
+        "missing": 5,
+        "recovery": "unsupported"
+      },
+      "factCompleteness": {
+        "longTextSourceCharacters": 1300,
+        "longTextReturnedCharacters": 500,
+        "complete": false,
+        "multipart": {
+          "status": "unknown",
+          "reason": "This pre-migration corpus has no multipart facts; later projection fixtures must add their acceptance oracle"
+        }
+      },
+      "factLookups": {
+        "first": 5,
+        "second": 7,
+        "repeated": 5,
+        "misses": 0,
+        "providerCalls": 0
+      },
+      "legality": null,
+      "observed": {
+        "identities": 12,
+        "printings": 16,
+        "ownedRows": 10,
+        "copies": 14,
+        "allowedIdentities": 8
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "scopedEvidence": {
+        "rows": 8,
+        "copies": 12,
+        "sameRowWitnesses": [
+          {
+            "row": "00000000-0000-4000-8000-000000000200",
+            "printing": "00000000-0000-4000-8000-000000000100",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 5
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000201",
+            "printing": "00000000-0000-4000-8000-000000000101",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000202",
+            "printing": "00000000-0000-4000-8000-000000000102",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000203",
+            "printing": "00000000-0000-4000-8000-000000000103",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000204",
+            "printing": "00000000-0000-4000-8000-000000000104",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000205",
+            "printing": "00000000-0000-4000-8000-000000000105",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000206",
+            "printing": "00000000-0000-4000-8000-000000000106",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000207",
+            "printing": "00000000-0000-4000-8000-000000000107",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          }
+        ]
+      },
+      "application": {
+        "utf8Bytes": 8407,
+        "utf16Characters": 8383,
+        "tokens": {
+          "status": "estimated",
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 2102
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 8407,
+          "utf16Characters": 8383,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2102
+          },
+          "clipped": false,
+          "completeRecords": 8,
+          "hostClipping": {
+            "status": "unknown",
+            "reason": "OpenCode host capacity is outside this serializer seam"
+          }
+        },
+        "piFallback": {
+          "utf8Bytes": 8407,
+          "utf16Characters": 8383,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2102
+          },
+          "clipped": false,
+          "wholeRecordLoss": 0,
+          "completeRecords": 8,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        },
+        "piWorker": {
+          "utf8Bytes": 8407,
+          "utf16Characters": 8383,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2102
+          },
+          "clipped": false,
+          "wholeRecordLoss": 0,
+          "completeRecords": 8,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        }
+      },
+      "timingsMs": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": 7.967999999999989,
+        "boundedQueryHandler": 1.111333999999971,
+        "firstKnownCardLookup": 7.8200840000000085,
+        "secondKnownCardLookup": 8.373667000000012,
+        "applicationSerialization": 0.2666250000000332,
+        "openCodeSerialization": 0.07620900000000574,
+        "piFallbackIncludingRuntimeAndQuery": 4.458500000000015,
+        "piWorkerIncludingStartupRuntimeAndQuery": 98.04166600000002
+      },
+      "threeCardSave": null,
+      "selected": null,
+      "candidatePayload": null,
+      "repeatedFacts": {
+        "requestedRetrievals": 3,
+        "repeatedIdentityOccurrences": 16,
+        "reason": "The same complete query is repeated solely to compare actual adapter paths; not agent workflow efficiency."
+      },
+      "limitations": {
+        "provider": {
+          "status": "unknown",
+          "reason": "Legacy local SQL path makes zero provider calls; provider scheduling/cooldown not applicable"
+        },
+        "internalStages": {
+          "status": "unknown",
+          "reason": "Existing repository does not instrument individual compile/selection/totals/hydration spans"
+        },
+        "finalAvailability": {
+          "status": "unknown",
+          "reason": "Current tools do not establish whole-deck joint allocation"
+        },
+        "strategicQuality": {
+          "status": "unknown",
+          "reason": "Synthetic facts are measurement inputs, not human-reviewed strategy"
+        },
+        "legalRealDeck": {
+          "status": "unknown",
+          "reason": "Synthetic names and facts cannot establish real-card format legality"
+        }
+      },
+      "conditions": {
+        "cold": "First dispatch against freshly seeded on-disk SQLite; OS cache not flushed",
+        "warm": "One warm-up then fresh equivalent databases; process/modules and OS cache may be warm",
+        "warmRuns": 5
+      },
+      "stageVariance": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": {
+          "coldMs": 7.967999999999989,
+          "warm": {
+            "samplesMs": [
+              3.543542000000002,
+              1.7799170000000686,
+              1.460459000000128,
+              1.7330420000000686,
+              1.5109999999999673
+            ],
+            "medianMs": 1.7330420000000686,
+            "minMs": 1.460459000000128,
+            "maxMs": 3.543542000000002
+          }
+        },
+        "boundedQueryHandler": {
+          "coldMs": 1.111333999999971,
+          "warm": {
+            "samplesMs": [
+              0.7598750000000791,
+              0.8068749999999909,
+              2.6744579999999587,
+              0.758750000000191,
+              1.2417500000001382
+            ],
+            "medianMs": 0.8068749999999909,
+            "minMs": 0.758750000000191,
+            "maxMs": 2.6744579999999587
+          }
+        },
+        "firstKnownCardLookup": {
+          "coldMs": 7.8200840000000085,
+          "warm": {
+            "samplesMs": [
+              2.841166000000044,
+              2.8158750000000055,
+              10.369666999999936,
+              6.577583999999888,
+              7.893000000000029
+            ],
+            "medianMs": 6.577583999999888,
+            "minMs": 2.8158750000000055,
+            "maxMs": 10.369666999999936
+          }
+        },
+        "secondKnownCardLookup": {
+          "coldMs": 8.373667000000012,
+          "warm": {
+            "samplesMs": [
+              6.742708999999991,
+              11.463624999999979,
+              18.56208300000003,
+              13.944707999999991,
+              6.500375000000076
+            ],
+            "medianMs": 11.463624999999979,
+            "minMs": 6.500375000000076,
+            "maxMs": 18.56208300000003
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.2666250000000332,
+          "warm": {
+            "samplesMs": [
+              0.049583000000097854,
+              0.07287499999995362,
+              0.0632909999999356,
+              0.1357500000001437,
+              0.04525000000012369
+            ],
+            "medianMs": 0.0632909999999356,
+            "minMs": 0.04525000000012369,
+            "maxMs": 0.1357500000001437
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.07620900000000574,
+          "warm": {
+            "samplesMs": [
+              0.0392500000000382,
+              0.024750000000040018,
+              0.03449999999997999,
+              0.03391600000009021,
+              0.031083999999964362
+            ],
+            "medianMs": 0.03391600000009021,
+            "minMs": 0.024750000000040018,
+            "maxMs": 0.0392500000000382
+          }
+        },
+        "piFallbackIncludingRuntimeAndQuery": {
+          "coldMs": 4.458500000000015,
+          "warm": {
+            "samplesMs": [
+              3.7506249999999,
+              5.469209000000092,
+              3.342166000000134,
+              3.4208750000000236,
+              2.458874999999807
+            ],
+            "medianMs": 3.4208750000000236,
+            "minMs": 2.458874999999807,
+            "maxMs": 5.469209000000092
+          }
+        },
+        "piWorkerIncludingStartupRuntimeAndQuery": {
+          "coldMs": 98.04166600000002,
+          "warm": {
+            "samplesMs": [
+              128.86358399999995,
+              110.60729200000003,
+              187.26075000000014,
+              153.84666700000002,
+              300.0905409999998
+            ],
+            "medianMs": 153.84666700000002,
+            "minMs": 110.60729200000003,
+            "maxMs": 300.0905409999998
+          }
+        }
+      }
+    },
+    {
+      "name": "construction",
+      "boundedTraversal": {
+        "requested": 3,
+        "returned": 3,
+        "missing": 23,
+        "recovery": "unsupported"
+      },
+      "factCompleteness": {
+        "longTextSourceCharacters": 1300,
+        "longTextReturnedCharacters": 500,
+        "complete": false,
+        "multipart": {
+          "status": "unknown",
+          "reason": "This pre-migration corpus has no multipart facts; later projection fixtures must add their acceptance oracle"
+        }
+      },
+      "factLookups": {
+        "first": 5,
+        "second": 7,
+        "repeated": 5,
+        "misses": 0,
+        "providerCalls": 0
+      },
+      "legality": {
+        "status": "legal",
+        "reasons": [],
+        "warnings": [],
+        "scryfallSourceUpdatedAt": null
+      },
+      "observed": {
+        "identities": 26,
+        "printings": 30,
+        "ownedRows": 28,
+        "copies": 100,
+        "allowedIdentities": 26
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "scopedEvidence": {
+        "rows": 28,
+        "copies": 100,
+        "sameRowWitnesses": [
+          {
+            "row": "00000000-0000-4000-8000-000000000200",
+            "printing": "00000000-0000-4000-8000-000000000100",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 73
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000201",
+            "printing": "00000000-0000-4000-8000-000000000101",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000202",
+            "printing": "00000000-0000-4000-8000-000000000102",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000203",
+            "printing": "00000000-0000-4000-8000-000000000103",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000204",
+            "printing": "00000000-0000-4000-8000-000000000104",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000205",
+            "printing": "00000000-0000-4000-8000-000000000105",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000206",
+            "printing": "00000000-0000-4000-8000-000000000106",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000207",
+            "printing": "00000000-0000-4000-8000-000000000107",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000208",
+            "printing": "00000000-0000-4000-8000-000000000108",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000209",
+            "printing": "00000000-0000-4000-8000-000000000109",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000210",
+            "printing": "00000000-0000-4000-8000-000000000110",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000211",
+            "printing": "00000000-0000-4000-8000-000000000111",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000212",
+            "printing": "00000000-0000-4000-8000-000000000112",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000213",
+            "printing": "00000000-0000-4000-8000-000000000113",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000214",
+            "printing": "00000000-0000-4000-8000-000000000114",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000215",
+            "printing": "00000000-0000-4000-8000-000000000115",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000216",
+            "printing": "00000000-0000-4000-8000-000000000116",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000217",
+            "printing": "00000000-0000-4000-8000-000000000117",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000218",
+            "printing": "00000000-0000-4000-8000-000000000118",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000219",
+            "printing": "00000000-0000-4000-8000-000000000119",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000220",
+            "printing": "00000000-0000-4000-8000-000000000120",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000221",
+            "printing": "00000000-0000-4000-8000-000000000121",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000222",
+            "printing": "00000000-0000-4000-8000-000000000122",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000223",
+            "printing": "00000000-0000-4000-8000-000000000123",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000224",
+            "printing": "00000000-0000-4000-8000-000000000124",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000225",
+            "printing": "00000000-0000-4000-8000-000000000125",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000226",
+            "printing": "00000000-0000-4000-8000-000000000100",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000227",
+            "printing": "00000000-0000-4000-8000-000000000101",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          }
+        ]
+      },
+      "application": {
+        "utf8Bytes": 27285,
+        "utf16Characters": 27207,
+        "tokens": {
+          "status": "estimated",
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 6822
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 27285,
+          "utf16Characters": 27207,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 6822
+          },
+          "clipped": false,
+          "completeRecords": 26,
+          "hostClipping": {
+            "status": "unknown",
+            "reason": "OpenCode host capacity is outside this serializer seam"
+          }
+        },
+        "piFallback": {
+          "utf8Bytes": 15799,
+          "utf16Characters": 15760,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 3950
+          },
+          "clipped": true,
+          "wholeRecordLoss": 26,
+          "completeRecords": 0,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        },
+        "piWorker": {
+          "utf8Bytes": 17890,
+          "utf16Characters": 17845,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 4473
+          },
+          "clipped": true,
+          "wholeRecordLoss": 26,
+          "completeRecords": 0,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        }
+      },
+      "timingsMs": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": 7.244916000000103,
+        "boundedQueryHandler": 1.90825000000018,
+        "firstKnownCardLookup": 4.1245420000000195,
+        "secondKnownCardLookup": 6.644666999999799,
+        "applicationSerialization": 0.27408300000001873,
+        "openCodeSerialization": 0.17204199999991943,
+        "piFallbackIncludingRuntimeAndQuery": 5.014208999999937,
+        "piWorkerIncludingStartupRuntimeAndQuery": 293.168416,
+        "initialSaveHandler": 74.68670800000018,
+        "replacementSaveHandler": 31.363124999999854,
+        "candidateReadHandler": 2.242707999999766,
+        "explicitValidationHandler": 70.75725000000011,
+        "explicitEvaluationHandler": 45.48454199999969,
+        "explicitRenderingHandler": 43.522207999999864
+      },
+      "threeCardSave": null,
+      "selected": {
+        "rows": 20,
+        "copies": 60
+      },
+      "candidatePayload": {
+        "fullPayloads": 2,
+        "inputBytes": 5294,
+        "repeatedBriefBytes": 128,
+        "repeatedUnchangedCardRows": 20
+      },
+      "repeatedFacts": {
+        "requestedRetrievals": 3,
+        "repeatedIdentityOccurrences": 52,
+        "reason": "The same complete query is repeated solely to compare actual adapter paths; not agent workflow efficiency."
+      },
+      "limitations": {
+        "provider": {
+          "status": "unknown",
+          "reason": "Legacy local SQL path makes zero provider calls; provider scheduling/cooldown not applicable"
+        },
+        "internalStages": {
+          "status": "unknown",
+          "reason": "Existing repository does not instrument individual compile/selection/totals/hydration spans"
+        },
+        "finalAvailability": {
+          "status": "unknown",
+          "reason": "Current tools do not establish whole-deck joint allocation"
+        },
+        "strategicQuality": {
+          "status": "unknown",
+          "reason": "Synthetic facts are measurement inputs, not human-reviewed strategy"
+        },
+        "legalRealDeck": {
+          "status": "unknown",
+          "reason": "Synthetic names and facts cannot establish real-card format legality"
+        }
+      },
+      "conditions": {
+        "cold": "First dispatch against freshly seeded on-disk SQLite; OS cache not flushed",
+        "warm": "One warm-up then fresh equivalent databases; process/modules and OS cache may be warm",
+        "warmRuns": 5
+      },
+      "stageVariance": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": {
+          "coldMs": 7.244916000000103,
+          "warm": {
+            "samplesMs": [
+              4.178000000000338,
+              2.2411670000001322,
+              2.21887500000048,
+              2.8776660000003176,
+              2.333708999999544
+            ],
+            "medianMs": 2.333708999999544,
+            "minMs": 2.21887500000048,
+            "maxMs": 4.178000000000338
+          }
+        },
+        "boundedQueryHandler": {
+          "coldMs": 1.90825000000018,
+          "warm": {
+            "samplesMs": [
+              1.5979999999999563,
+              0.959208999999646,
+              0.8807919999999285,
+              0.8641250000000582,
+              1.003833000000668
+            ],
+            "medianMs": 0.959208999999646,
+            "minMs": 0.8641250000000582,
+            "maxMs": 1.5979999999999563
+          }
+        },
+        "firstKnownCardLookup": {
+          "coldMs": 4.1245420000000195,
+          "warm": {
+            "samplesMs": [
+              15.264208000000053,
+              3.5705830000001697,
+              3.5097080000005008,
+              2.5590420000007725,
+              4.9163750000006985
+            ],
+            "medianMs": 3.5705830000001697,
+            "minMs": 2.5590420000007725,
+            "maxMs": 15.264208000000053
+          }
+        },
+        "secondKnownCardLookup": {
+          "coldMs": 6.644666999999799,
+          "warm": {
+            "samplesMs": [
+              36.924417000000176,
+              6.1595830000001115,
+              7.524500000000444,
+              6.115874999999505,
+              8.650625000000218
+            ],
+            "medianMs": 7.524500000000444,
+            "minMs": 6.115874999999505,
+            "maxMs": 36.924417000000176
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.27408300000001873,
+          "warm": {
+            "samplesMs": [
+              1.2932499999997162,
+              0.1267920000000231,
+              0.08937500000047294,
+              0.09120800000073359,
+              0.10304199999973207
+            ],
+            "medianMs": 0.10304199999973207,
+            "minMs": 0.08937500000047294,
+            "maxMs": 1.2932499999997162
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.17204199999991943,
+          "warm": {
+            "samplesMs": [
+              0.12787500000013097,
+              0.06891599999971731,
+              0.05445899999995163,
+              0.05879099999947357,
+              0.06608400000004622
+            ],
+            "medianMs": 0.06608400000004622,
+            "minMs": 0.05445899999995163,
+            "maxMs": 0.12787500000013097
+          }
+        },
+        "piFallbackIncludingRuntimeAndQuery": {
+          "coldMs": 5.014208999999937,
+          "warm": {
+            "samplesMs": [
+              8.171416000000136,
+              3.2222499999998035,
+              19.31279100000029,
+              3.292833000000428,
+              2.768583000000035
+            ],
+            "medianMs": 3.292833000000428,
+            "minMs": 2.768583000000035,
+            "maxMs": 19.31279100000029
+          }
+        },
+        "piWorkerIncludingStartupRuntimeAndQuery": {
+          "coldMs": 293.168416,
+          "warm": {
+            "samplesMs": [
+              244.3628749999998,
+              147.4167080000002,
+              115.3954160000003,
+              103.34262499999932,
+              153.28958299999977
+            ],
+            "medianMs": 147.4167080000002,
+            "minMs": 103.34262499999932,
+            "maxMs": 244.3628749999998
+          }
+        },
+        "initialSaveHandler": {
+          "coldMs": 74.68670800000018,
+          "warm": {
+            "samplesMs": [
+              19.122875000000022,
+              10.900166999999783,
+              4.305749999999534,
+              9.320417000000816,
+              3.7395409999999174
+            ],
+            "medianMs": 9.320417000000816,
+            "minMs": 3.7395409999999174,
+            "maxMs": 19.122875000000022
+          }
+        },
+        "replacementSaveHandler": {
+          "coldMs": 31.363124999999854,
+          "warm": {
+            "samplesMs": [
+              7.725584000000254,
+              3.878000000000611,
+              2.6274580000008427,
+              4.802958000000217,
+              2.5883330000006026
+            ],
+            "medianMs": 3.878000000000611,
+            "minMs": 2.5883330000006026,
+            "maxMs": 7.725584000000254
+          }
+        },
+        "candidateReadHandler": {
+          "coldMs": 2.242707999999766,
+          "warm": {
+            "samplesMs": [
+              0.3914580000000569,
+              0.25754200000028504,
+              0.2510839999995369,
+              0.6829590000006647,
+              0.27833300000020245
+            ],
+            "medianMs": 0.27833300000020245,
+            "minMs": 0.2510839999995369,
+            "maxMs": 0.6829590000006647
+          }
+        },
+        "explicitValidationHandler": {
+          "coldMs": 70.75725000000011,
+          "warm": {
+            "samplesMs": [
+              16.855541999999787,
+              8.430915999999343,
+              10.351708999999573,
+              9.585707999999613,
+              12.84008300000005
+            ],
+            "medianMs": 10.351708999999573,
+            "minMs": 8.430915999999343,
+            "maxMs": 16.855541999999787
+          }
+        },
+        "explicitEvaluationHandler": {
+          "coldMs": 45.48454199999969,
+          "warm": {
+            "samplesMs": [
+              8.792374999999993,
+              8.583791999999448,
+              6.3774999999996,
+              7.6874589999997625,
+              7.3145000000004075
+            ],
+            "medianMs": 7.6874589999997625,
+            "minMs": 6.3774999999996,
+            "maxMs": 8.792374999999993
+          }
+        },
+        "explicitRenderingHandler": {
+          "coldMs": 43.522207999999864,
+          "warm": {
+            "samplesMs": [
+              0.14474999999993088,
+              0.12145800000052986,
+              0.07079199999952834,
+              0.15408300000035524,
+              0.08862499999941065
+            ],
+            "medianMs": 0.12145800000052986,
+            "minMs": 0.07079199999952834,
+            "maxMs": 0.15408300000035524
+          }
+        }
+      }
+    },
+    {
+      "name": "tuning",
+      "boundedTraversal": {
+        "requested": 3,
+        "returned": 3,
+        "missing": 5,
+        "recovery": "unsupported"
+      },
+      "factCompleteness": {
+        "longTextSourceCharacters": 1300,
+        "longTextReturnedCharacters": null,
+        "complete": null,
+        "multipart": {
+          "status": "unknown",
+          "reason": "This pre-migration corpus has no multipart facts; later projection fixtures must add their acceptance oracle"
+        }
+      },
+      "factLookups": {
+        "first": 5,
+        "second": 7,
+        "repeated": 5,
+        "misses": 0,
+        "providerCalls": 0
+      },
+      "legality": {
+        "status": "illegal",
+        "reasons": [
+          "Synthetic 001 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 002 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 003 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 004 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 005 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 006 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 007 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 008 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 009 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 013 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 014 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 015 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4."
+        ],
+        "warnings": [],
+        "scryfallSourceUpdatedAt": null
+      },
+      "observed": {
+        "identities": 20,
+        "printings": 22,
+        "ownedRows": 10,
+        "copies": 12,
+        "allowedIdentities": 8
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "scopedEvidence": {
+        "rows": 10,
+        "copies": 12,
+        "sameRowWitnesses": [
+          {
+            "row": "00000000-0000-4000-8000-000000000200",
+            "printing": "00000000-0000-4000-8000-000000000112",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 3
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000201",
+            "printing": "00000000-0000-4000-8000-000000000113",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000202",
+            "printing": "00000000-0000-4000-8000-000000000114",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000203",
+            "printing": "00000000-0000-4000-8000-000000000115",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000204",
+            "printing": "00000000-0000-4000-8000-000000000116",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000205",
+            "printing": "00000000-0000-4000-8000-000000000117",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000206",
+            "printing": "00000000-0000-4000-8000-000000000118",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000207",
+            "printing": "00000000-0000-4000-8000-000000000119",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000208",
+            "printing": "00000000-0000-4000-8000-000000000112",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000209",
+            "printing": "00000000-0000-4000-8000-000000000113",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          }
+        ]
+      },
+      "application": {
+        "utf8Bytes": 9046,
+        "utf16Characters": 9022,
+        "tokens": {
+          "status": "estimated",
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 2262
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 9046,
+          "utf16Characters": 9022,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2262
+          },
+          "clipped": false,
+          "completeRecords": 8,
+          "hostClipping": {
+            "status": "unknown",
+            "reason": "OpenCode host capacity is outside this serializer seam"
+          }
+        },
+        "piFallback": {
+          "utf8Bytes": 9046,
+          "utf16Characters": 9022,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2262
+          },
+          "clipped": false,
+          "wholeRecordLoss": 0,
+          "completeRecords": 8,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        },
+        "piWorker": {
+          "utf8Bytes": 9046,
+          "utf16Characters": 9022,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 2262
+          },
+          "clipped": false,
+          "wholeRecordLoss": 0,
+          "completeRecords": 8,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        }
+      },
+      "timingsMs": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": 3.722541000000092,
+        "boundedQueryHandler": 0.6167909999994663,
+        "firstKnownCardLookup": 3.2008749999995416,
+        "secondKnownCardLookup": 13.259458999999879,
+        "applicationSerialization": 0.06208299999980227,
+        "openCodeSerialization": 0.14875000000029104,
+        "piFallbackIncludingRuntimeAndQuery": 4.859250000000429,
+        "piWorkerIncludingStartupRuntimeAndQuery": 251.58708300000035,
+        "initialSaveHandler": 16.790874999999687,
+        "replacementSaveHandler": 3.3382089999995515,
+        "candidateReadHandler": 0.45679199999995035,
+        "explicitValidationHandler": 23.575791999999637,
+        "explicitEvaluationHandler": 24.40795799999978,
+        "explicitRenderingHandler": 1.4974580000007336
+      },
+      "threeCardSave": {
+        "beforeRows": 12,
+        "afterRows": 12,
+        "quantity": 60,
+        "added": 3,
+        "removed": 3
+      },
+      "selected": {
+        "rows": 12,
+        "copies": 60
+      },
+      "candidatePayload": {
+        "fullPayloads": 2,
+        "inputBytes": 3374,
+        "repeatedBriefBytes": 128,
+        "repeatedUnchangedCardRows": 9
+      },
+      "repeatedFacts": {
+        "requestedRetrievals": 3,
+        "repeatedIdentityOccurrences": 16,
+        "reason": "The same complete query is repeated solely to compare actual adapter paths; not agent workflow efficiency."
+      },
+      "limitations": {
+        "provider": {
+          "status": "unknown",
+          "reason": "Legacy local SQL path makes zero provider calls; provider scheduling/cooldown not applicable"
+        },
+        "internalStages": {
+          "status": "unknown",
+          "reason": "Existing repository does not instrument individual compile/selection/totals/hydration spans"
+        },
+        "finalAvailability": {
+          "status": "unknown",
+          "reason": "Current tools do not establish whole-deck joint allocation"
+        },
+        "strategicQuality": {
+          "status": "unknown",
+          "reason": "Synthetic facts are measurement inputs, not human-reviewed strategy"
+        },
+        "legalRealDeck": {
+          "status": "unknown",
+          "reason": "Synthetic names and facts cannot establish real-card format legality"
+        }
+      },
+      "conditions": {
+        "cold": "First dispatch against freshly seeded on-disk SQLite; OS cache not flushed",
+        "warm": "One warm-up then fresh equivalent databases; process/modules and OS cache may be warm",
+        "warmRuns": 5
+      },
+      "stageVariance": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": {
+          "coldMs": 3.722541000000092,
+          "warm": {
+            "samplesMs": [
+              7.452917000000525,
+              20.50029100000029,
+              1.2470830000002024,
+              3.1670839999997042,
+              3.824916999999914
+            ],
+            "medianMs": 3.824916999999914,
+            "minMs": 1.2470830000002024,
+            "maxMs": 20.50029100000029
+          }
+        },
+        "boundedQueryHandler": {
+          "coldMs": 0.6167909999994663,
+          "warm": {
+            "samplesMs": [
+              3.635291999999936,
+              2.121291999999812,
+              0.6364579999999478,
+              1.3564580000002024,
+              0.7055829999999332
+            ],
+            "medianMs": 1.3564580000002024,
+            "minMs": 0.6364579999999478,
+            "maxMs": 3.635291999999936
+          }
+        },
+        "firstKnownCardLookup": {
+          "coldMs": 3.2008749999995416,
+          "warm": {
+            "samplesMs": [
+              18.403957999999875,
+              5.879249999999956,
+              3.6317079999998896,
+              3.132332999999562,
+              4.867916999999579
+            ],
+            "medianMs": 4.867916999999579,
+            "minMs": 3.132332999999562,
+            "maxMs": 18.403957999999875
+          }
+        },
+        "secondKnownCardLookup": {
+          "coldMs": 13.259458999999879,
+          "warm": {
+            "samplesMs": [
+              32.66412500000024,
+              6.464584000000286,
+              4.168875000000298,
+              4.830167000000074,
+              9.082625000000007
+            ],
+            "medianMs": 6.464584000000286,
+            "minMs": 4.168875000000298,
+            "maxMs": 32.66412500000024
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.06208299999980227,
+          "warm": {
+            "samplesMs": [
+              0.0830839999998716,
+              0.07124999999996362,
+              0.04837500000030559,
+              0.04658299999937299,
+              0.17195799999990413
+            ],
+            "medianMs": 0.07124999999996362,
+            "minMs": 0.04658299999937299,
+            "maxMs": 0.17195799999990413
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.14875000000029104,
+          "warm": {
+            "samplesMs": [
+              0.028707999999824096,
+              0.039249999999810825,
+              0.0365830000000642,
+              0.028416000000106578,
+              0.12766600000031758
+            ],
+            "medianMs": 0.0365830000000642,
+            "minMs": 0.028416000000106578,
+            "maxMs": 0.12766600000031758
+          }
+        },
+        "piFallbackIncludingRuntimeAndQuery": {
+          "coldMs": 4.859250000000429,
+          "warm": {
+            "samplesMs": [
+              12.669792000000598,
+              4.675749999999425,
+              2.812582999999904,
+              2.6970000000001164,
+              6.805959000000257
+            ],
+            "medianMs": 4.675749999999425,
+            "minMs": 2.6970000000001164,
+            "maxMs": 12.669792000000598
+          }
+        },
+        "piWorkerIncludingStartupRuntimeAndQuery": {
+          "coldMs": 251.58708300000035,
+          "warm": {
+            "samplesMs": [
+              331.66599999999926,
+              343.71545799999967,
+              104.32349999999951,
+              207.5079169999999,
+              163.13783299999977
+            ],
+            "medianMs": 207.5079169999999,
+            "minMs": 104.32349999999951,
+            "maxMs": 343.71545799999967
+          }
+        },
+        "initialSaveHandler": {
+          "coldMs": 16.790874999999687,
+          "warm": {
+            "samplesMs": [
+              8.879291999999623,
+              7.1649170000000595,
+              3.1693750000004,
+              6.968166999999994,
+              27.86449999999968
+            ],
+            "medianMs": 7.1649170000000595,
+            "minMs": 3.1693750000004,
+            "maxMs": 27.86449999999968
+          }
+        },
+        "replacementSaveHandler": {
+          "coldMs": 3.3382089999995515,
+          "warm": {
+            "samplesMs": [
+              5.341792000000169,
+              4.822207999999591,
+              3.1000829999993584,
+              5.854874999999993,
+              15.022249999999985
+            ],
+            "medianMs": 5.341792000000169,
+            "minMs": 3.1000829999993584,
+            "maxMs": 15.022249999999985
+          }
+        },
+        "candidateReadHandler": {
+          "coldMs": 0.45679199999995035,
+          "warm": {
+            "samplesMs": [
+              0.34158300000035524,
+              0.3931250000005093,
+              0.34324999999989814,
+              0.38800000000082946,
+              0.37591599999996106
+            ],
+            "medianMs": 0.37591599999996106,
+            "minMs": 0.34158300000035524,
+            "maxMs": 0.3931250000005093
+          }
+        },
+        "explicitValidationHandler": {
+          "coldMs": 23.575791999999637,
+          "warm": {
+            "samplesMs": [
+              27.63166700000056,
+              9.688750000000255,
+              8.496707999999671,
+              18.465000000000146,
+              22.44433299999946
+            ],
+            "medianMs": 18.465000000000146,
+            "minMs": 8.496707999999671,
+            "maxMs": 27.63166700000056
+          }
+        },
+        "explicitEvaluationHandler": {
+          "coldMs": 24.40795799999978,
+          "warm": {
+            "samplesMs": [
+              7.651708000000326,
+              7.37487499999952,
+              4.693124999999782,
+              12.107417000000169,
+              27.34900000000016
+            ],
+            "medianMs": 7.651708000000326,
+            "minMs": 4.693124999999782,
+            "maxMs": 27.34900000000016
+          }
+        },
+        "explicitRenderingHandler": {
+          "coldMs": 1.4974580000007336,
+          "warm": {
+            "samplesMs": [
+              0.11116700000002311,
+              0.15087499999935972,
+              0.10037499999998545,
+              0.5133749999995416,
+              0.09233300000050804
+            ],
+            "medianMs": 0.11116700000002311,
+            "minMs": 0.09233300000050804,
+            "maxMs": 0.5133749999995416
+          }
+        }
+      }
+    },
+    {
+      "name": "assembly",
+      "boundedTraversal": {
+        "requested": 3,
+        "returned": 3,
+        "missing": 23,
+        "recovery": "unsupported"
+      },
+      "factCompleteness": {
+        "longTextSourceCharacters": 1300,
+        "longTextReturnedCharacters": 500,
+        "complete": false,
+        "multipart": {
+          "status": "unknown",
+          "reason": "This pre-migration corpus has no multipart facts; later projection fixtures must add their acceptance oracle"
+        }
+      },
+      "factLookups": {
+        "first": 5,
+        "second": 7,
+        "repeated": 5,
+        "misses": 0,
+        "providerCalls": 0
+      },
+      "legality": {
+        "status": "legal",
+        "reasons": [],
+        "warnings": [],
+        "scryfallSourceUpdatedAt": null
+      },
+      "observed": {
+        "identities": 26,
+        "printings": 30,
+        "ownedRows": 28,
+        "copies": 100,
+        "allowedIdentities": 26
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "scopedEvidence": {
+        "rows": 28,
+        "copies": 100,
+        "sameRowWitnesses": [
+          {
+            "row": "00000000-0000-4000-8000-000000000200",
+            "printing": "00000000-0000-4000-8000-000000000100",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 73
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000201",
+            "printing": "00000000-0000-4000-8000-000000000101",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000202",
+            "printing": "00000000-0000-4000-8000-000000000102",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000203",
+            "printing": "00000000-0000-4000-8000-000000000103",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000204",
+            "printing": "00000000-0000-4000-8000-000000000104",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000205",
+            "printing": "00000000-0000-4000-8000-000000000105",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000206",
+            "printing": "00000000-0000-4000-8000-000000000106",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000207",
+            "printing": "00000000-0000-4000-8000-000000000107",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000208",
+            "printing": "00000000-0000-4000-8000-000000000108",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000209",
+            "printing": "00000000-0000-4000-8000-000000000109",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000210",
+            "printing": "00000000-0000-4000-8000-000000000110",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000211",
+            "printing": "00000000-0000-4000-8000-000000000111",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000212",
+            "printing": "00000000-0000-4000-8000-000000000112",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000213",
+            "printing": "00000000-0000-4000-8000-000000000113",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000214",
+            "printing": "00000000-0000-4000-8000-000000000114",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000215",
+            "printing": "00000000-0000-4000-8000-000000000115",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000216",
+            "printing": "00000000-0000-4000-8000-000000000116",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000217",
+            "printing": "00000000-0000-4000-8000-000000000117",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000218",
+            "printing": "00000000-0000-4000-8000-000000000118",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000219",
+            "printing": "00000000-0000-4000-8000-000000000119",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000220",
+            "printing": "00000000-0000-4000-8000-000000000120",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000221",
+            "printing": "00000000-0000-4000-8000-000000000121",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000222",
+            "printing": "00000000-0000-4000-8000-000000000122",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000223",
+            "printing": "00000000-0000-4000-8000-000000000123",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000224",
+            "printing": "00000000-0000-4000-8000-000000000124",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000225",
+            "printing": "00000000-0000-4000-8000-000000000125",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000226",
+            "printing": "00000000-0000-4000-8000-000000000100",
+            "location": "00000000-0000-4000-8000-000000000901",
+            "finish": "nonfoil",
+            "quantity": 1
+          },
+          {
+            "row": "00000000-0000-4000-8000-000000000227",
+            "printing": "00000000-0000-4000-8000-000000000101",
+            "location": "00000000-0000-4000-8000-000000000902",
+            "finish": "foil",
+            "quantity": 1
+          }
+        ]
+      },
+      "application": {
+        "utf8Bytes": 27285,
+        "utf16Characters": 27207,
+        "tokens": {
+          "status": "estimated",
+          "method": "ceil(UTF-8 bytes / 4)",
+          "value": 6822
+        }
+      },
+      "adapters": {
+        "openCode": {
+          "utf8Bytes": 27285,
+          "utf16Characters": 27207,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 6822
+          },
+          "clipped": false,
+          "completeRecords": 26,
+          "hostClipping": {
+            "status": "unknown",
+            "reason": "OpenCode host capacity is outside this serializer seam"
+          }
+        },
+        "piFallback": {
+          "utf8Bytes": 15799,
+          "utf16Characters": 15760,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 3950
+          },
+          "clipped": true,
+          "wholeRecordLoss": 26,
+          "completeRecords": 0,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        },
+        "piWorker": {
+          "utf8Bytes": 17890,
+          "utf16Characters": 17845,
+          "tokens": {
+            "status": "estimated",
+            "method": "ceil(UTF-8 bytes / 4)",
+            "value": 4473
+          },
+          "clipped": true,
+          "wholeRecordLoss": 26,
+          "completeRecords": 0,
+          "recovery": {
+            "status": "unsupported",
+            "reason": "Legacy query_cards has neither cursor nor offset; clipped preview is not a complete result."
+          }
+        }
+      },
+      "timingsMs": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": 8.48554200000035,
+        "boundedQueryHandler": 2.3657080000011774,
+        "firstKnownCardLookup": 19.234375,
+        "secondKnownCardLookup": 41.080167000000074,
+        "applicationSerialization": 0.11349999999947613,
+        "openCodeSerialization": 0.08116700000027777,
+        "piFallbackIncludingRuntimeAndQuery": 6.242624999998952,
+        "piWorkerIncludingStartupRuntimeAndQuery": 379.0767500000002,
+        "initialSaveHandler": 7.488166999999521,
+        "replacementSaveHandler": 7.386999999998807,
+        "candidateReadHandler": 0.513582999999926,
+        "explicitValidationHandler": 23.48833299999933,
+        "explicitEvaluationHandler": 10.725249999999505,
+        "explicitRenderingHandler": 0.2132500000006985
+      },
+      "threeCardSave": null,
+      "selected": {
+        "rows": 20,
+        "copies": 60
+      },
+      "candidatePayload": {
+        "fullPayloads": 2,
+        "inputBytes": 5294,
+        "repeatedBriefBytes": 128,
+        "repeatedUnchangedCardRows": 20
+      },
+      "repeatedFacts": {
+        "requestedRetrievals": 3,
+        "repeatedIdentityOccurrences": 52,
+        "reason": "The same complete query is repeated solely to compare actual adapter paths; not agent workflow efficiency."
+      },
+      "limitations": {
+        "provider": {
+          "status": "unknown",
+          "reason": "Legacy local SQL path makes zero provider calls; provider scheduling/cooldown not applicable"
+        },
+        "internalStages": {
+          "status": "unknown",
+          "reason": "Existing repository does not instrument individual compile/selection/totals/hydration spans"
+        },
+        "finalAvailability": {
+          "status": "unknown",
+          "reason": "Current tools do not establish whole-deck joint allocation"
+        },
+        "strategicQuality": {
+          "status": "unknown",
+          "reason": "Synthetic facts are measurement inputs, not human-reviewed strategy"
+        },
+        "legalRealDeck": {
+          "status": "unknown",
+          "reason": "Synthetic names and facts cannot establish real-card format legality"
+        }
+      },
+      "conditions": {
+        "cold": "First dispatch against freshly seeded on-disk SQLite; OS cache not flushed",
+        "warm": "One warm-up then fresh equivalent databases; process/modules and OS cache may be warm",
+        "warmRuns": 5
+      },
+      "stageVariance": {
+        "queryHandlerIncludingReadinessCompilationSelectionTotalsHydration": {
+          "coldMs": 8.48554200000035,
+          "warm": {
+            "samplesMs": [
+              1.801499999999578,
+              1.8267500000001746,
+              4.026333000001614,
+              1.8442080000004353,
+              2.4714590000003227
+            ],
+            "medianMs": 1.8442080000004353,
+            "minMs": 1.801499999999578,
+            "maxMs": 4.026333000001614
+          }
+        },
+        "boundedQueryHandler": {
+          "coldMs": 2.3657080000011774,
+          "warm": {
+            "samplesMs": [
+              0.7717499999998836,
+              0.804707999999664,
+              2.644125000000713,
+              0.8084580000013375,
+              0.9567920000008598
+            ],
+            "medianMs": 0.8084580000013375,
+            "minMs": 0.7717499999998836,
+            "maxMs": 2.644125000000713
+          }
+        },
+        "firstKnownCardLookup": {
+          "coldMs": 19.234375,
+          "warm": {
+            "samplesMs": [
+              2.361790999999357,
+              2.229583000000275,
+              17.680500000000393,
+              3.0192500000011933,
+              3.414166999998997
+            ],
+            "medianMs": 3.0192500000011933,
+            "minMs": 2.229583000000275,
+            "maxMs": 17.680500000000393
+          }
+        },
+        "secondKnownCardLookup": {
+          "coldMs": 41.080167000000074,
+          "warm": {
+            "samplesMs": [
+              4.8680829999993875,
+              5.743792000001122,
+              12.28979099999924,
+              6.9268749999992,
+              7.449583000001439
+            ],
+            "medianMs": 6.9268749999992,
+            "minMs": 4.8680829999993875,
+            "maxMs": 12.28979099999924
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.11349999999947613,
+          "warm": {
+            "samplesMs": [
+              0.07341699999960838,
+              0.0799589999987802,
+              0.1468330000006972,
+              0.17604199999914272,
+              0.08541700000023411
+            ],
+            "medianMs": 0.08541700000023411,
+            "minMs": 0.07341699999960838,
+            "maxMs": 0.17604199999914272
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.08116700000027777,
+          "warm": {
+            "samplesMs": [
+              0.05829199999971024,
+              0.0607079999990674,
+              0.09270900000046822,
+              0.06725000000005821,
+              0.058208999998896616
+            ],
+            "medianMs": 0.0607079999990674,
+            "minMs": 0.058208999998896616,
+            "maxMs": 0.09270900000046822
+          }
+        },
+        "piFallbackIncludingRuntimeAndQuery": {
+          "coldMs": 6.242624999998952,
+          "warm": {
+            "samplesMs": [
+              2.4519170000003214,
+              2.773041000000376,
+              3.2744169999987207,
+              3.735332999998718,
+              6.928665999999794
+            ],
+            "medianMs": 3.2744169999987207,
+            "minMs": 2.4519170000003214,
+            "maxMs": 6.928665999999794
+          }
+        },
+        "piWorkerIncludingStartupRuntimeAndQuery": {
+          "coldMs": 379.0767500000002,
+          "warm": {
+            "samplesMs": [
+              102.38470899999993,
+              125.28637499999968,
+              168.25066600000173,
+              109.01729200000045,
+              103.53604200000154
+            ],
+            "medianMs": 109.01729200000045,
+            "minMs": 102.38470899999993,
+            "maxMs": 168.25066600000173
+          }
+        },
+        "initialSaveHandler": {
+          "coldMs": 7.488166999999521,
+          "warm": {
+            "samplesMs": [
+              3.535707999999431,
+              5.156582999999955,
+              6.4412499999998545,
+              9.067250000000058,
+              4.666999999999462
+            ],
+            "medianMs": 5.156582999999955,
+            "minMs": 3.535707999999431,
+            "maxMs": 9.067250000000058
+          }
+        },
+        "replacementSaveHandler": {
+          "coldMs": 7.386999999998807,
+          "warm": {
+            "samplesMs": [
+              3.922082999999475,
+              6.372250000000349,
+              9.955916999999317,
+              3.659750000000713,
+              2.6513750000012806
+            ],
+            "medianMs": 3.922082999999475,
+            "minMs": 2.6513750000012806,
+            "maxMs": 9.955916999999317
+          }
+        },
+        "candidateReadHandler": {
+          "coldMs": 0.513582999999926,
+          "warm": {
+            "samplesMs": [
+              0.3169999999990978,
+              0.28724999999940337,
+              3.3477079999993293,
+              0.46329100000002654,
+              0.26433299999916926
+            ],
+            "medianMs": 0.3169999999990978,
+            "minMs": 0.26433299999916926,
+            "maxMs": 3.3477079999993293
+          }
+        },
+        "explicitValidationHandler": {
+          "coldMs": 23.48833299999933,
+          "warm": {
+            "samplesMs": [
+              9.400041000000783,
+              12.214583000000857,
+              11.277124999998705,
+              15.370624999999563,
+              8.163791000000856
+            ],
+            "medianMs": 11.277124999998705,
+            "minMs": 8.163791000000856,
+            "maxMs": 15.370624999999563
+          }
+        },
+        "explicitEvaluationHandler": {
+          "coldMs": 10.725249999999505,
+          "warm": {
+            "samplesMs": [
+              6.747541999999157,
+              11.708666000000449,
+              10.197374999999738,
+              11.048415999999634,
+              6.857749999999214
+            ],
+            "medianMs": 10.197374999999738,
+            "minMs": 6.747541999999157,
+            "maxMs": 11.708666000000449
+          }
+        },
+        "explicitRenderingHandler": {
+          "coldMs": 0.2132500000006985,
+          "warm": {
+            "samplesMs": [
+              0.07266700000036508,
+              0.1607079999994312,
+              0.13237500000104774,
+              0.12995799999953306,
+              0.18712500000037835
+            ],
+            "medianMs": 0.13237500000104774,
+            "minMs": 0.07266700000036508,
+            "maxMs": 0.18712500000037835
+          }
+        }
+      }
+    }
+  ]
+}

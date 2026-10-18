@@ -66,3 +66,13 @@ Cold, unmeasured warm-up and five warm observations retain the same timing proto
 this slice. Its synthetic names/facts are matched measurement inputs, not legal decks or live strategic evidence.
 Provider discovery, Collection-policy evidence, candidate editing and final whole-deck Availability remain unmeasured
 by this lookup-only artifact. The frozen pre-migration artifact and `evaluate:legacy` source remain unchanged.
+
+## Post-build candidate performance
+
+`bun run evaluate:performance` measures atomic three-card edits separately from explicit legality, evaluation and final
+joint Availability, complete optional paged reports/decklists/Pull Lists, replacement facts, serialization and actual Pi
+fallback/new-Worker/reused-Worker edits. It uses only public synthetic SQLite fixtures. Current create/edit never runs
+automatic deck checks; requested explicit final checks remain necessary. See [the measurements and their comparison
+limits](candidate-performance-v1.md) and [captured report](candidate-performance-v1.json). The original baseline stays
+immutable; the separate [matched pinned legacy rerun](candidate-performance-legacy-v1.json) does not replace it.
+No benchmark timing is a CI threshold, live-session latency guarantee or explanation of the historical six-minute case.
