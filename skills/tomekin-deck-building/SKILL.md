@@ -18,7 +18,7 @@ This pure calculation needs no Collection import, reference readiness or Deck Ca
 card facts, discovery, construction or tuning are needed.
 
 1. Use startup/setup diagnostics and tool readiness errors for reference status. Local `lookup_cards` needs compatible
-   Oracle Cards and All Cards imports; absent tags are reported as unavailable enrichment. Local `query_cards` still
+   Oracle Cards and All Cards imports; absent tags are reported as unavailable enrichment. Pure live `search_cards` requires no local import; explicitly enabled `legacy_query_cards`
    requires all three datasets. Follow the actionable sync instruction when a required dataset is unavailable.
 2. Draft a best-effort Deck Building Brief with `draft_deck_building_brief`.
 3. Ask the user to confirm or edit the Brief before substantial discovery or full construction.
@@ -53,7 +53,9 @@ skill preserves the lifecycle and authority constraints.
 ## Retrieve Evidence Economically
 
 - Load `query-cards` before non-trivial filters or after any validation error.
-- Use `query_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
+- Use native `search_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
+- Native search currently returns card facts and optional tags, without Collection-policy filtering or owned-row evidence.
+  Earlier local Collection examples belong to explicitly enabled `legacy_query_cards`; consult its disclosed reference before use.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
   cards.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.

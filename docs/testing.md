@@ -262,3 +262,17 @@ Focused SQLite failure injection verifies transaction rollback; direct constrain
 uniqueness. Actual OpenCode/Pi Worker tests verify write classification, settlement, preserved conflict context and
 inspection after lost create/edit responses. Current synthetic evaluation uses the new create/edit surface; the frozen
 legacy comparator remains pinned and does not depend on compatibility product tools.
+
+## Provider search coverage
+
+The approved common runtime/handler seam uses isolated on-disk SQLite and injected provider/time ports. Static fixtures
+exercise native passthrough, raw Printing anchors, supplied-next-page/empty-page traversal, zero-first/lookahead,
+complete UTF-8 pages and recoverable errors. Optional tag bindings retain introduced successful-import/known-absence
+dependencies; reversible presentation facts remain separate from canonical gameplay layout.
+
+Focused fake-clock owner tests cover actual starts, late timers, no post-response delay, queued/in-flight cancellation,
+detached 429, retry headers, deadline/cooldown interaction, restart reanchoring and fail-closed persistence. A real child
+process test rejects a second provider owner and recovers conservatively from interruption without network. Actual Pi
+Worker/fallback and OpenCode tests preserve complete >16k selected text and structured errors; a killed Worker cannot
+erase host cooldown. Separate changing-source fixtures illustrate accepted live drift. Matched synthetic workflow
+measurements report application/adapter bytes and fixture stages/calls, without live census, throughput or model-token claims.

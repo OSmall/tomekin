@@ -22,8 +22,8 @@ describe("opencode tool schemas", () => {
         }
     });
 
-    test("exposes query_cards and Card Set discovery, but not the retired narrow Collection search", () => {
-        expect(isToolDefinition(tomekinTools.query_cards)).toBe(true);
+    test("exposes search_cards and Card Set discovery, but not the retired narrow Collection search", () => {
+        expect(isToolDefinition(tomekinTools.search_cards)).toBe(true);
         expect(isToolDefinition(tomekinTools.search_card_sets)).toBe(true);
         expect("search_collection_cards" in tomekinTools).toBe(false);
         expect("list_collection_imports" in tomekinTools).toBe(false);

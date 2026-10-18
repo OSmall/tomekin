@@ -1,4 +1,6 @@
-import {createAgentToolHandlers, type Logger, type CardLookupOptions} from "@tomekin/core";
+import {getProcessCardSearchProvider} from "./provider";
+export {getProcessCardSearchProvider} from "./provider";
+import {createAgentToolHandlers, type Logger, type CardSearchOptions, type CardLookupOptions} from "@tomekin/core";
 import {
     closeDatabase,
     createSqliteCardLookupRepository,
@@ -21,6 +23,7 @@ export type LocalAgentToolRuntimeOptions = {
     readonly databasePath: string;
     readonly log: Logger;
     readonly lookup?: CardLookupOptions;
+    readonly search?: CardSearchOptions;
 };
 
 /**
@@ -42,7 +45,7 @@ export function createLocalAgentToolRuntime(options: LocalAgentToolRuntimeOption
         cardQuery: createSqliteCardQueryRepository(database),
         collection: createSqliteCollectionRepository(database, clock),
         deckCandidates: createSqliteDeckCandidateRepository(database, clock),
-    }, {lookup: {...options.lookup, log: options.log}});
+    }, {enableLegacyQuery: process.env.TOMEKIN_ENABLE_LEGACY_QUERY === "true", search: {...options.search, provider: options.search?.provider ?? {id: "scryfall", dispatch: (url, context) => getProcessCardSearchProvider(options.log).dispatch(url, context)}, log: options.log}, lookup: {...options.lookup, log: options.log}});
 
     return {
         databasePath: options.databasePath,

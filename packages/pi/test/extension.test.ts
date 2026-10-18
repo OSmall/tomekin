@@ -51,7 +51,7 @@ describe("Pi reference-status transport", () => {
 
     test("defines the complete fixed interactive capability registry", () => {
         expect(expectedPiToolNames).toEqual([
-            "draft_deck_building_brief", "query_cards", "lookup_cards", "hypergeometric_calculator", "search_card_identity_tags",
+            "draft_deck_building_brief", "search_cards", "lookup_cards", "hypergeometric_calculator", "search_card_identity_tags",
             "search_card_sets", "get_format_constraints",
             "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
             "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
@@ -149,7 +149,7 @@ describe("Pi reference-status transport", () => {
     });
 
     test("fails closed when the effective registry differs from the approved capability", () => {
-        expect(() => auditPiToolRegistry(["query_cards"])).toThrow("missing required tool");
+        expect(() => auditPiToolRegistry(["search_cards"])).toThrow("missing required tool");
         expect(() => auditPiToolRegistry(["bash", ...expectedPiToolNames])).toThrow("unexpected tool bash");
         expect(() => auditPiToolRegistry([...expectedPiToolNames, "ask_user"])).toThrow("duplicate tool ask_user");
     });

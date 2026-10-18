@@ -1,3 +1,4 @@
+import {searchCards, SearchCardsArgsSchema, type CardSearchOptions} from "./card-search";
 import {lookupCards, type CardLookupOptions} from "./card-lookup";
 import {LookupCardsArgsSchema, type CardLookupRepository} from "./card-retrieval";
 import {calculateHypergeometric, HypergeometricCalculatorArgsSchema, HypergeometricCalculatorRequestSchema} from "./hypergeometric-calculator";
@@ -18,8 +19,9 @@ import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync
 
 export const AgentToolNameSchema = z.enum([
   "draft_deck_building_brief",
-  "query_cards",
+  "legacy_query_cards",
   "lookup_cards",
+  "search_cards",
   "hypergeometric_calculator",
   "get_card_identity",
   "search_card_identity_tags",
@@ -70,10 +72,11 @@ export const GetFormatConstraintsArgsSchema = z.object({format: DeckFormatSchema
 export const EmptyAgentToolArgsSchema = z.strictObject({});
 
 export const agentToolContracts = {
+    search_cards: {description: "Search the boot-configured live Scryfall provider using unchanged native q and optional native controls. Prefer unique cards for identity discovery; use prints for explicit Printing needs. Select complete facts explicitly. Repeat fixed q/controls/provenance with first/after; live traversal can drift, scoped totals remain unknown. No local import required unless local enrichment is selected.", inputSchema: SearchCardsArgsSchema},
     lookup_cards: {description: "Retrieve known cards locally by exact Oracle ID, canonical whole name or Printing ID. Select explicit complete facts; preserves ordered misses and duplicates. Repeat fixed references and provenance with first/after to recover. No provider fallback or ownership claim.", inputSchema: LookupCardsArgsSchema},
     hypergeometric_calculator: {description: "Calculate a uniform sample without replacement probability (exactly, at_least, at_most, between) or the minimum population qualifying count for an at_least event and explicit decimal-string target. Population at most 1000. Counts are copies in the modeled population. No mulligans, selection sequences, castability or win-rate inference; reads and writes no records.", inputSchema: HypergeometricCalculatorArgsSchema},
     draft_deck_building_brief: {description: "Normalize a proposed Format-specific Deck Building Brief and return assumptions requiring user confirmation.", inputSchema: DeckBuildingBriefSchema},
-    query_cards: {description: "Run a structured local Card Query. Load the query-cards skill before non-trivial filters.", inputSchema: CardQueryInputSchema},
+    legacy_query_cards: {description: "Explicitly enabled legacy local CQL2 retrieval. Disabled by default; prefer search_cards and lookup_cards.", inputSchema: CardQueryInputSchema},
     get_card_identity: {description: "Get one local Card Identity by ID or name.", inputSchema: GetCardIdentityArgsSchema},
     search_card_identity_tags: {description: "Search local Card Identity Tags by slug, label, or alias.", inputSchema: SearchCardIdentityTagsArgsSchema},
     search_card_sets: {description: "Search local Card Sets by code or name.", inputSchema: SearchCardSetsArgsSchema},
@@ -110,13 +113,25 @@ export type AgentToolError =
     readonly reimportRequiredBulkDataTypes: readonly ScryfallBulkDataType[];
 };
 
-export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions} = {}) {
+export function createAgentToolHandlers(repositories: AgentToolRepositories, options: {lookup?: CardLookupOptions; search?: CardSearchOptions; enableLegacyQuery?: boolean} = {}) {
   return {
+      searchCards(input: unknown, signal?: AbortSignal) {
+          if (!repositories.cardLookup || !options.search) throw new Error("Search provider unavailable.");
+          return searchCards(repositories.cardLookup, input, options.search, signal);
+      },
       lookupCards(input: unknown, signal?: AbortSignal) {
           if (!repositories.cardLookup) throw new Error("Card lookup repository is unavailable.");
           return lookupCards(repositories.cardLookup, input, options.lookup, signal);
       },
       hypergeometricCalculator: calculateHypergeometric,
+      async legacyQueryCards(input: unknown) {
+          if (!options.enableLegacyQuery) return err({type:"tool_error" as const,message:"Legacy query is disabled. Set TOMEKIN_ENABLE_LEGACY_QUERY=true explicitly to enable it."});
+          const parsed = parseCardQueryInput(input);
+          if(parsed.isErr()) return parsed;
+          const ready=await requireReferenceData(repositories.cardReference);
+          if(ready.isErr())return ready;
+          return repositories.cardQuery.queryCards(parsed.value);
+      },
       async queryCards(input: unknown) {
       const parsed = parseCardQueryInput(input);
           if (parsed.isErr()) return parsed;
@@ -216,7 +231,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
                   playExperience: args.brief.playExperience,
               },
         manaAndCurve: {landCount, manaCurve},
-          collectionStatus: "Collection availability is not evaluated by this tool. Use query_cards for owned-copy evidence."
+          collectionStatus: "Collection availability is not evaluated by this tool. Establish explicit Collection evidence before an Availability claim."
       });
     },
     renderDeckCandidate(input: unknown) {

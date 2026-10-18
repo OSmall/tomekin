@@ -61,17 +61,18 @@ describe("Tomekin agent configuration", () => {
         const querySkill = read(".opencode/skills/query-cards/SKILL.md");
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
 
-        expect(querySkill).toContain("Canonical Collection Location Allow-list");
-        expect(querySkill).toContain("(locationType, locationName)");
-        expect(querySkill).toContain("invalid workflow usage");
+        const legacyQuery = read("skills/query-cards/legacy-query.md");
+        expect(legacyQuery).toContain("Canonical Collection Location Allow-list");
+        expect(legacyQuery).toContain("(locationType, locationName)");
+        expect(legacyQuery).toContain("invalid workflow usage");
         expect(querySkill).toContain("Staged Retrieval");
-        expect(querySkill).toContain("Local `query_cards` has no pagination");
+        expect(legacyQuery).toContain("Local `legacy_query_cards` has no pagination");
         expect(coordinator).toContain("final Availability recheck");
         expect(coordinator).toContain("procedural");
     });
 
     test("documents the complete public Card Query legality vocabulary", () => {
-        const querySkill = read(".opencode/skills/query-cards/SKILL.md");
+        const querySkill = read("skills/query-cards/legacy-query.md");
 
         for (const format of ["commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper"]) {
             expect(querySkill).toContain(`legality.${format}`);
@@ -80,7 +81,7 @@ describe("Tomekin agent configuration", () => {
     });
 
     test("permits Card Set discovery and documents Printing-scope semantics", () => {
-        const querySkill = read(".opencode/skills/query-cards/SKILL.md");
+        const querySkill = read("skills/query-cards/legacy-query.md");
         const agent = read(".opencode/agents/tomekin-deck-builder.md");
 
         expect(agent).toContain('"tomekin_search_card_sets": allow');

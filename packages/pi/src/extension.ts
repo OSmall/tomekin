@@ -49,7 +49,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
         parameters: Type.Unsafe<Record<string, unknown>>(agentToolInputJsonSchema(name as keyof typeof agentToolContracts)),
         executionMode: "sequential",
         async execute(_toolCallId, params, signal) {
-            if (signal.aborted) return name === "lookup_cards" ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.")) : cancelledOutput("Cancelled before dispatch.");
+            if (signal.aborted) return (name === "lookup_cards" || name === "search_cards") ? projectOutput(retrievalCancellationEnvelope(params, "Cancelled before dispatch.", name === "search_cards" ? 175 : 50)) : cancelledOutput("Cancelled before dispatch.");
             if (options.transport && options.databasePath) {
                 return options.transport.invoke({toolCallId: _toolCallId, toolName: name, params, databasePath: options.databasePath, cancellable: !agentToolMutates(name)}, signal);
             }
@@ -58,11 +58,13 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
             try {
                 const handler = runtime.handlers[toHandlerName(name)];
                 if (typeof handler !== "function") return failureOutput("tool_unavailable", "Approved tool handler is unavailable.");
-                const result = await (name === "lookup_cards" ? runtime.handlers.lookupCards(params, signal) : handler(params)) as ResultLike;
-                if (signal.aborted && name !== "lookup_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
+                const result = await ((name === "lookup_cards" || name === "search_cards") ? (name === "search_cards" ? runtime.handlers.searchCards(params, signal) : runtime.handlers.lookupCards(params, signal)) : handler(params)) as ResultLike;
+                if (signal.aborted && name !== "lookup_cards" && name !== "search_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
                 const details = agentToolResultDetails(result);
-                options.log.info({component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
-                return projectOutput(details, name.includes("deck_candidate"));
+                const serializationStarted = performance.now();
+                const output = projectOutput(details, name.includes("deck_candidate"));
+                options.log.info({adapterBytes: Buffer.byteLength(output.content[0]?.text ?? "", "utf8"), adapterSerializationMs: performance.now() - serializationStarted, component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
+                return output;
             } catch {
                 options.log.warn({component: "agent_tool", operation: "pi_tool_call", tool: name, status: "failed"}, "Pi tool call failed unexpectedly");
                 return failureOutput(agentToolMutates(name) ? "unknown_write_outcome" : "tool_error", agentToolMutates(name) ? "The write outcome is unknown. Inspect candidate list/get and reconcile before retrying." : "The approved tool could not complete.");
@@ -124,7 +126,7 @@ export function createMethodologyReadTool(options: {readonly workspacePath: stri
 
 function toHandlerName(name: string): keyof LocalAgentToolRuntime["handlers"] {
     const names: Record<string, keyof LocalAgentToolRuntime["handlers"]> = {
-        lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", query_cards: "queryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
+        search_cards: "searchCards", lookup_cards: "lookupCards", draft_deck_building_brief: "draftDeckBuildingBrief", legacy_query_cards: "legacyQueryCards", hypergeometric_calculator: "hypergeometricCalculator", get_card_identity: "getCardIdentity", search_card_identity_tags: "searchCardIdentityTags", search_card_sets: "searchCardSets", summarize_reference_support: "summarizeReferenceSupport", get_format_constraints: "getFormatConstraints", resolve_decklist_cards: "resolveDecklistCards", validate_format_legality: "validateFormatLegality", evaluate_deck_candidate: "evaluateDeckCandidate", render_deck_candidate: "renderDeckCandidate", create_deck_candidate: "createDeckCandidate", edit_deck_candidate: "editDeckCandidate", get_deck_candidate: "getDeckCandidate", list_deck_candidates: "listDeckCandidates", list_collection_locations: "listCollectionLocations",
     };
     return names[name]!;
 }
@@ -170,7 +172,7 @@ function failureOutput(error: string, message: string) { return projectOutput({e
 export default function registerTomekinExtension(pi: PiApi) {
     const log = createRootLogger(resolveLogConfigFromEnv(process.env));
     const databasePath = resolveDatabasePath();
-    const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href});
+    const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href,log});
     for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {transport, databasePath, log}));
     pi.registerTool(createMethodologyReadTool({workspacePath: process.cwd()}));
     const registerLaterTool = pi.registerTool.bind(pi);
