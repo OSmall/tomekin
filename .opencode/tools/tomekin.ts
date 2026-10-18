@@ -197,3 +197,11 @@ export const browse_collection_cards = tool({
         return runTool("browse_collection_cards", args, handlers => handlers.browseCollectionCards(args));
     },
 });
+
+export const check_collection_availability = tool({
+    description: agentToolContracts.check_collection_availability.description,
+    args: argsOf("check_collection_availability"),
+    async execute(args) {
+        return runTool("check_collection_availability", args, handlers => handlers.checkCollectionAvailability(args));
+    },
+});
