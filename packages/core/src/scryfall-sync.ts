@@ -807,6 +807,7 @@ export type Clock = {
 };
 
 export type ScryfallRepository = {
+  /** Current successful replacement in committed order, independent of timestamps or IDs. */
   getLatestSuccessfulBulkDataImport(
     bulkDataType: ScryfallBulkDataType,
   ): Promise<Result<ScryfallBulkDataImport | null, ScryfallRepositoryError>>;

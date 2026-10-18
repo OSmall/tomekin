@@ -87,7 +87,7 @@ export function summarizeReferenceImports(imports: readonly ScryfallBulkDataImpo
   const warnings: string[] = [];
   for (const item of latestSuccessful.values()) {
     if (item.sourceUpdatedAt === null) continue;
-    const ageDays = (now.getTime() - item.sourceUpdatedAt!.getTime()) / 86_400_000;
+    const ageDays = (now.getTime() - item.sourceUpdatedAt.getTime()) / 86_400_000;
     if (ageDays > 14) warnings.push(`${item.bulkDataType} reference data is ${Math.floor(ageDays)} days old; refresh if current external facts matter.`);
   }
     return {

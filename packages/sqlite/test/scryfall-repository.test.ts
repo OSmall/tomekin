@@ -907,3 +907,25 @@ const rawOracleTags = [
     taggings: [],
   },
 ] as const;
+
+
+test.each([
+    ["clock rollback", "2024-12-31T00:00:00.000Z"],
+    ["same timestamp and lower UUID", "2025-01-01T00:00:01.000Z"],
+])("Scryfall import readiness and latest facts follow committed replacement under %s", async (_case, timestamp) => {
+    const {db, repository} = createTestRepositoryFixture();
+    try {
+        const records = await readOracleCardIdentityRecordsFixture();
+        (await repository.importCardIdentities(importInput(records)))._unsafeUnwrap();
+        const oldId = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+        db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ?, import_contract_revision = 0 WHERE bulk_data_type = 'oracle_cards'").run(oldId);
+        const replacement = createSqliteScryfallRepository(db, {now: () => new Date(timestamp)});
+        const imported = (await replacement.importCardIdentities({...importInput(records), startedAt: new Date(timestamp)}))._unsafeUnwrap();
+        expect(imported.id < oldId).toBe(true);
+        (await replacement.importCardPrintings(importInput(await readAllCardPrintingsFixture())))._unsafeUnwrap();
+        (await replacement.recordFailedBulkDataImport("oracle_cards", {startedAt: new Date("2026-01-01"), completedAt: new Date("2026-01-01"), blockingErrors: ["Synthetic failed replacement"]}))._unsafeUnwrap();
+        expect((await replacement.getLatestSuccessfulBulkDataImport("oracle_cards"))._unsafeUnwrap()?.id).toBe(imported.id);
+        expect((await createScryfallSyncServices(replacement, {now: () => new Date(timestamp)}).requireCardReferenceData()).isOk()).toBe(true);
+        expect((await replacement.listCardIdentities())._unsafeUnwrap().find(card => card.name === "Sol Ring")?.id).toBe("6ad8011d-3471-4369-9d68-b264cc027487");
+    } finally {closeDatabase(db);}
+});

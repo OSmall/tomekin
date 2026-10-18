@@ -90,8 +90,7 @@ export function createSqliteCardReferenceRepository(db: TomekinDatabase): CardRe
 
 type ReferenceStore = Pick<TomekinDatabase,"select">;
 export function readReferenceSupport(db: ReferenceStore) {
-    // SQLite import timestamps have second precision. For equal timestamps, the
-    // most recently inserted committed import owns the current reference facts.
+    // The most recently committed import owns current facts, including equal timestamps and clock rollback.
     return summarizeReferenceImports(db.select().from(scryfallBulkDataImport).orderBy(sql`rowid DESC`).all().map((row) => ScryfallBulkDataImportSchema.parse({
             id: row.id,
             bulkDataType: row.bulkDataType,

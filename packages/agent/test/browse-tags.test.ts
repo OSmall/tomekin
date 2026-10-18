@@ -125,3 +125,37 @@ test("catalogue reports malformed cursors, oversized bindings and safe cancellat
         expect(resumed.edges).toMatchObject([{node: {tag: {slug: "mana"}}}]);
     } finally {runtime.close(); fixture.dispose();}
 });
+
+
+test.each([
+    ["clock rollback", "2026-10-17T00:00:00.000Z"],
+    ["same timestamp and lower UUID", "2026-10-18T00:00:00.000Z"],
+])("catalogue continuation rejects a committed replacement under %s", async (_case, timestamp) => {
+    let now = new Date("2026-10-18T00:00:00.000Z");
+    const fixture = await createLookupFixture({tags: true, now: () => now});
+    const {openDatabase, closeDatabase, createSqliteScryfallRepository} = await import("@tomekin/sqlite");
+    const {id} = await import("./fixtures/lookup");
+    const db = openDatabase(fixture.databasePath, {log});
+    // A later replacement must win even when its UUID sorts below the old import.
+    const oldId = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+    db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ? WHERE bulk_data_type = 'oracle_tags'").run(oldId);
+    const repo = createSqliteScryfallRepository(db, {now: () => now});
+    const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
+    try {
+        const args = {operation: {type: "list"}, first: 1};
+        const first = (await runtime.handlers.browseTags(args))._unsafeUnwrap();
+        expect(first.edges).toMatchObject([{node: {tag: {slug: "mana", label: "mana"}}}]);
+        const after = first.pageInfo.endCursor!;
+        (await repo.recordFailedBulkDataImport("oracle_tags", {startedAt: now, completedAt: now, blockingErrors: ["Synthetic failed replacement"]}))._unsafeUnwrap();
+        await fixture.reimportOracle();
+        expect((await runtime.handlers.browseTags({...args, after})).isOk()).toBe(true);
+        now = new Date(timestamp);
+        const replaced = (await repo.importCardIdentityTags({startedAt: now, records: (async function*() {
+            yield {tag: {id: id(20), slug: "mana-rock", label: "replacement mana rock", description: null, sourcePageUri: "https://example.invalid/tag"}, aliases: [], taggings: [], hierarchy: []};
+            yield {tag: {id: id(21), slug: "mana", label: "replacement mana", description: null, sourcePageUri: "https://example.invalid/tag"}, aliases: [], taggings: [], hierarchy: []};
+        })()}))._unsafeUnwrap();
+        expect(replaced.id < oldId).toBe(true);
+        expect((await runtime.handlers.browseTags({...args, after}))._unsafeUnwrapErr().envelope).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed"}});
+        expect((await runtime.handlers.browseTags(args))._unsafeUnwrap().edges).toMatchObject([{node: {tag: {slug: "mana", label: "replacement mana"}}}]);
+    } finally {runtime.close(); closeDatabase(db); fixture.dispose();}
+});

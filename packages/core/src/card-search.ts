@@ -852,7 +852,9 @@ export function projectProviderCard(
                 ? (raw.cmc ?? null)
                 : field === "printing_layout"
                   ? printingLayout
-                  : (raw[field] ?? null);
+                  : field === "promo_types"
+                    ? (raw[field] === undefined ? [] : raw[field])
+                    : (raw[field] ?? null);
     }
     if (
         select.card_faces ||
@@ -895,7 +897,7 @@ export function projectProviderCard(
         });
     }
     for (const [field, value] of Object.entries(card)) {
-        if (value === null || field === "card_faces") continue;
+        if ((value === null && field !== "promo_types") || field === "card_faces") continue;
         const arrays = [
             "colors",
             "color_identity",

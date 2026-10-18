@@ -1,5 +1,5 @@
 import {expect, test} from "bun:test";
-import {mkdtempSync, rmSync} from "node:fs";
+import {mkdtempSync, readFileSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {
@@ -918,3 +918,28 @@ test("opt-in provenance names the provider actually read without inventing local
         const omitted = await details(runtime.handlers.searchCards(request));
         expect(omitted).not.toHaveProperty("provenance");
     }));
+
+
+test("public Sol Ring Printing preserves empty promo associations and nullable scalars in search and lookup", async () => {
+    const fixture = await createLookupFixture();
+    const raw = JSON.parse(readFileSync(new URL("../test/fixtures/all-cards-minimal.json", import.meta.resolve("@tomekin/sqlite")), "utf8")).find((record: any) => record.name === "Sol Ring");
+    expect(raw).not.toHaveProperty("promo_types");
+    expect(raw).not.toHaveProperty("printed_name");
+    let source = raw;
+    const provider = {id: "public-fixture", async dispatch() {return {status: 200, body: {object: "list", data: [source], has_more: false}};}};
+    const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log: createTestRootLoggerFromEnv(), search: {provider}});
+    try {
+        const select = {promo_types: true, printed_name: true};
+        const search = await details(runtime.handlers.searchCards({q: "Sol Ring", select}));
+        const lookup = agentToolResultDetails(await runtime.handlers.lookupCards({references: [{kind: "printing_id", value: raw.id}], select})) as any;
+        const expected = {oracle_id: raw.oracle_id, printing_id: raw.id, promo_types: [], printed_name: null};
+        expect(search.edges[0].node.card).toEqual(expected);
+        expect(lookup.edges[0].node.card).toEqual(expected);
+        source = {...raw, promo_types: ["prerelease"]};
+        expect((await details(runtime.handlers.searchCards({q: "Sol Ring", select}))).edges[0].node.card.promo_types).toEqual(["prerelease"]);
+        for (const malformed of [null, "prerelease", {}, [1], ["prerelease", null]]) {
+            source = {...raw, promo_types: malformed};
+            expect(await details(runtime.handlers.searchCards({q: "Sol Ring", select}))).toMatchObject({status: "error", edges: [], error: {code: "unsupported_source_record", retryable: false}});
+        }
+    } finally {runtime.close(); fixture.dispose();}
+});

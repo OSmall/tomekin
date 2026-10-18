@@ -236,3 +236,21 @@ test.each([
         expect(retained.validation_evidence.checks.deck_evaluation.status).toBe("applicable");
     } finally {app.dispose();}
 });
+
+
+test("readiness and source-age warnings describe only committed current datasets", async () => {
+    const app = setup();
+    try {
+        // This superseded snapshot is incompatible and old; the replacement is compatible and has no source date.
+        app.db.update(scryfallBulkDataImport).set({importContractRevision: 0, sourceUpdatedAt: new Date("2020-01-01")}).where(eq(scryfallBulkDataImport.bulkDataType, "oracle_cards")).run();
+        const replacementId = "00000000-0000-4000-8000-000000000001";
+        app.db.insert(scryfallBulkDataImport).values({id: replacementId, bulkDataType: "oracle_cards", status: "succeeded", importContractRevision: requiredScryfallImportContractRevisions.oracle_cards, startedAt: new Date("2026-10-17"), completedAt: new Date("2026-10-17"), sourceUpdatedAt: null, importedRecordCount: 1, warningsJson: [], blockingErrorsJson: []}).run();
+        app.db.insert(scryfallBulkDataImport).values({id: crypto.randomUUID(), bulkDataType: "oracle_cards", status: "failed", importContractRevision: 0, startedAt: new Date("2026-10-19"), completedAt: new Date("2026-10-19"), sourceUpdatedAt: new Date("2020-01-01"), importedRecordCount: 0, warningsJson: [], blockingErrorsJson: []}).run();
+        expect(unwrap(await app.handlers.summarizeReferenceSupport())).toMatchObject({ready: true, reimportRequired: [], warnings: []});
+        const saved = await initial(app);
+        const checked = unwrap(await app.handlers.validateFormatLegality({candidate_id: saved.candidate_id, expected_updated_at: saved.updated_at}));
+        expect(checked).toMatchObject({scryfallSourceUpdatedAt: null, warnings: [], evidence: {status: "applicable"}});
+        const evidence = (await readCandidateJson(app.handlers.getDeckCandidate, saved.candidate_id)).validation_evidence.checks.format_legality;
+        expect(evidence.dependencies.reference_imports).toMatchObject([{id: replacementId, source_updated_at: null}]);
+    } finally {app.dispose();}
+});

@@ -5,12 +5,12 @@ import {createTestRootLoggerFromEnv, mapRawScryfallAllCardToCardPrintingImportRe
 import {applySqliteMigrations, openDatabase, closeDatabase, createSqliteScryfallRepository} from "@tomekin/sqlite";
 export const log: Logger = createTestRootLoggerFromEnv();
 export const id = (n: number) => n === 1 ? "6ad8011d-3471-4369-9d68-b264cc027487" : n === 2 ? "073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a" : `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
-export async function createLookupFixture(options: {text?: string; tagAnnotation?: string; tags?: boolean; ready?: boolean; incompatible?: "oracle_cards" | "all_cards" | "oracle_tags"} = {}): Promise<{databasePath: string; reimportOracle: () => Promise<void>; reimportTags: () => Promise<void>; recordFailedImport: () => Promise<void>; dispose: () => void}> {
+export async function createLookupFixture(options: {text?: string; tagAnnotation?: string; tags?: boolean; ready?: boolean; incompatible?: "oracle_cards" | "all_cards" | "oracle_tags"; now?: () => Date} = {}): Promise<{databasePath: string; reimportOracle: () => Promise<void>; reimportTags: () => Promise<void>; recordFailedImport: () => Promise<void>; dispose: () => void}> {
     const directory = mkdtempSync(join(tmpdir(), "tomekin-lookup-"));
     const databasePath = join(directory, "test.sqlite");
     applySqliteMigrations(databasePath, {log});
     let tick = 0;
-    const clock = {now: () => new Date(Date.UTC(2026, 0, 1) + ++tick)};
+    const clock = {now: options.now ?? (() => new Date(Date.UTC(2026, 0, 1) + ++tick))};
     const identityRecords = JSON.parse(readFileSync(new URL("../test/fixtures/oracle-cards-minimal.json", import.meta.resolve("@tomekin/sqlite")), "utf8")).map((raw: unknown) => mapRawScryfallOracleCardToCardIdentityImportRecord(RawScryfallOracleCardSchema.parse(raw)));
     if (options.text !== undefined) identityRecords.find((row: {identity: {id: string}}) => row.identity.id === id(1)).identity.oracleText = options.text;
     const printingRecords = JSON.parse(readFileSync(new URL("../test/fixtures/all-cards-minimal.json", import.meta.resolve("@tomekin/sqlite")), "utf8")).map((raw: unknown) => mapRawScryfallAllCardToCardPrintingImportRecord(RawScryfallAllCardSchema.parse(raw)));
