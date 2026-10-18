@@ -32,6 +32,21 @@ occurrence unconsumed. Lookup requires compatible Oracle Cards and All Cards imp
 It performs no network fallback, automatic hydration, ownership lookup or final Availability proof.
 Read `docs/card-query.md` for the complete field, cursor and error contract.
 
+## Tag and Set Vocabulary
+
+Use `browse_tags` with an explicit operation: `{type: "search", query: "mana ramp"}` for slug/label/alias search,
+`{type: "lookup", slugs: ["mana-rock"]}` for complete known definitions, or `{type: "list"}` for catalogue listing.
+Definitions include all aliases. Hierarchy is absent unless lookup requests `hierarchy: {}` (immediate parents,
+children and edges); explicitly request `depth: 2` or `3` for bounded deeper exploration. Repeat the operation with
+`first`/`after` until `hasNextPage` is false; recover execution stops with `error.cursor`. Successful empty search,
+known-slug `not_found`, and `reference_data_unready` have different meanings. Successful tag replacement invalidates
+old cursors. Tags support discovery; assess Deck Roles and quality from the card in its candidate context.
+`lookup_cards` selected tags still include every reachable inherited ancestor, independently of catalogue depth.
+
+Use `search_card_sets` with a code/name query for existing imported Set metadata. Load no raw catalogue at startup.
+The literal `mana-rock`, `ramp` and `recursion` slugs were verified from the public 2026-10-17 Oracle Tags bulk
+snapshot; source UUIDs and snapshot provenance are recorded in `docs/card-query.md` under Tag and Set discovery.
+
 ## Local Discovery
 
 Use this reference for the `query_cards` tool. Card Query is structured card retrieval over local Card Identity,
@@ -138,9 +153,9 @@ Sortable properties:
 - `in` is exact list matching where `=` is valid; do not use it for booleans.
 - `colorIdentitySubsetOf` works only with `identity.colorIdentity`. It means legal within the given Commander Color
   Identity.
-- `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `search_card_identity_tags` first.
+- `hasTagInHierarchy` works only with `tag.id` and a resolved tag UUID. Use `browse_tags` first.
 - For deck-building concepts such as draw, ramp, removal, recursion, protection, sacrifice, or tokens, call
-  `search_card_identity_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
+  `browse_tags` first and query with `hasTagInHierarchy` using the chosen tag ID.
 - `hasTagInHierarchy` matches the chosen tag and descendant taggings. Use it for normal concept search, especially broad
   functional concepts represented by Inherited Card Identity Tags.
 - For multi-tag concept searches such as draw plus ramp, use independent `hasTagInHierarchy` predicates in an outer
@@ -449,7 +464,7 @@ Text search in Oracle text or type line:
 
 Tag workflow:
 
-1. Call `search_card_identity_tags` for the user's concept, such as `ramp` or `recursion`.
+1. Call `browse_tags` with `operation: {type: "search", query: "ramp"}` (or the user's concept).
 2. Pick the intended exact tag ID.
 3. Query with `hasTagInHierarchy`.
 

@@ -53,7 +53,7 @@ skill preserves the lifecycle and authority constraints.
 ## Retrieve Evidence Economically
 
 - Load `query-cards` before non-trivial filters or after any validation error.
-- Use `query_cards`, `search_card_identity_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
+- Use `query_cards`, `browse_tags`, and batched `lookup_cards` with explicit selections to assemble and compare coherent packages.
 - Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
   cards.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.
