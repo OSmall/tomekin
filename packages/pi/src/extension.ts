@@ -1,5 +1,5 @@
 import {Type, type TSchema} from "@sinclair/typebox";
-import {agentToolMutates, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
+import {agentToolMutates, agentToolPreservesCompleteOutput, retrievalCancellationEnvelope, agentToolResultDetails, isRetrievalEnvelope, serializeAgentToolDetails, agentToolContracts, agentToolInputJsonSchema, createRootLogger, resolveLogConfigFromEnv, type Logger} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
@@ -62,7 +62,7 @@ export function createCoreTool(name: string, options: {readonly createRuntime?: 
                 if (signal.aborted && name !== "lookup_cards" && !agentToolMutates(name)) return cancelledOutput("Work settled after cancellation; result discarded.");
                 const details = agentToolResultDetails(result);
                 options.log.info({component: "agent_tool", operation: "pi_tool_call", tool: name, status: result.isOk() ? "succeeded" : "failed"}, "Pi tool call completed");
-                return projectOutput(details, name.includes("deck_candidate"));
+                return projectOutput(details, agentToolPreservesCompleteOutput(name));
             } catch {
                 options.log.warn({component: "agent_tool", operation: "pi_tool_call", tool: name, status: "failed"}, "Pi tool call failed unexpectedly");
                 return failureOutput(agentToolMutates(name) ? "unknown_write_outcome" : "tool_error", agentToolMutates(name) ? "The write outcome is unknown. Inspect candidate list/get and reconcile before retrying." : "The approved tool could not complete.");

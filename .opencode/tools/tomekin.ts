@@ -106,7 +106,7 @@ export const get_format_constraints = tool({
 });
 
 export const validate_format_legality = tool({
-    description: "Validate deterministic Format deck construction checks over resolved Card Identity IDs using the authoritative Deck Building Brief Format.",
+    description: agentToolContracts.validate_format_legality.description,
     args: argsOf("validate_format_legality"),
   async execute(args) {
     return runTool("validate_format_legality", args, (handlers) => handlers.validateFormatLegality(args));
@@ -114,7 +114,7 @@ export const validate_format_legality = tool({
 });
 
 export const evaluate_deck_candidate = tool({
-    description: "Return a Format-aware aggregate review with legality, power/play-experience context, mana curve, and land count. Use Card Query separately for owned-card evidence.",
+    description: agentToolContracts.evaluate_deck_candidate.description,
     args: argsOf("evaluate_deck_candidate"),
   async execute(args) {
     return runTool("evaluate_deck_candidate", args, (handlers) => handlers.evaluateDeckCandidate(args));

@@ -13,8 +13,8 @@ import {
     CreateDeckCandidateInputSchema, EditDeckCandidateInputSchema, summarizeDeckCandidate
 } from "./deck-candidate";
 import {GetDeckCandidateViewArgsSchema, readCandidateView} from "./deck-candidate-views";
-
-import {assessDeckLegality, type DeckLegalityCard} from "./format-legality";
+import {assessDeckLegality} from "./format-legality";
+import {DeckCheckInputSchema, DeckCheckArgsSchema, type CapturedDeckCheck, type DeckCheckName} from "./deck-checks";
 import type {ScryfallBulkDataImport, ScryfallBulkDataType} from "./scryfall-sync";
 
 export const AgentToolNameSchema = z.enum([
@@ -43,14 +43,7 @@ export const GetCardIdentityArgsSchema = z.object({idOrName: z.string().min(1)})
 export const SearchCardIdentityTagsArgsSchema = z.object({query: z.string().optional(), limit: z.number().int().positive().max(100).optional()});
 export const SearchCardSetsArgsSchema = z.object({query: z.string().optional(), limit: z.number().int().positive().max(100).optional()});
 export const ResolveDecklistCardsArgsSchema = z.object({names: z.array(z.string().min(1)).min(1)});
-export const ValidateDeckCandidateArgsSchema = z.strictObject({
-    cards: z.array(z.object({
-        cardIdentityId: z.uuid(),
-        quantity: z.number().int().positive(),
-        section: DeckCandidateCardSectionSchema,
-    })).min(1),
-    brief: DeckBuildingBriefSchema,
-});
+export const ValidateDeckCandidateArgsSchema = DeckCheckInputSchema;
 export const RenderDeckCandidateArgsSchema = z.strictObject({
     candidate_id:z.uuid(), output:z.enum(["report","portable_decklist"]).default("report"),
     first:z.number().int().min(0).max(200).optional(), after:z.string().min(1).optional(),
@@ -72,8 +65,8 @@ export const agentToolContracts = {
     summarize_reference_support: {description: "Report local reference-data readiness.", inputSchema: EmptyAgentToolArgsSchema},
     get_format_constraints: {description: "Return deterministic construction constraints for a Deck Format.", inputSchema: GetFormatConstraintsArgsSchema},
     resolve_decklist_cards: {description: "Resolve proposed card names to local Card Identities.", inputSchema: ResolveDecklistCardsArgsSchema},
-    validate_format_legality: {description: "Validate deterministic Format construction and legality.", inputSchema: ValidateDeckCandidateArgsSchema},
-    evaluate_deck_candidate: {description: "Evaluate a candidate's legality, power context, mana curve, and land count.", inputSchema: ValidateDeckCandidateArgsSchema},
+    validate_format_legality: {description: "Explicitly check Format legality using candidate_id and expected_updated_at, with optional transient changes, or initial cards and Brief. Saved checks conditionally publish latest reusable evidence; trials remain transient.", inputSchema: DeckCheckArgsSchema},
+    evaluate_deck_candidate: {description: "Explicitly evaluate legality, power context, mana curve and land count from saved candidate_id/expected_updated_at or initial cards/Brief. Optional changes are a transient trial. Saved evidence publishes only for matching inputs. Collection Availability is separate.", inputSchema: DeckCheckArgsSchema},
     render_deck_candidate: {description: "Generate a saved candidate report or selected-only canonical Portable Decklist. Returns complete ordered path/value records; repeat candidate_id/output with first/after. No editable report input and no implicit checks.", inputSchema: RenderDeckCandidateArgsSchema},
     create_deck_candidate: {description: "Persist provisional or selected structured construction progress. Server assigns IDs; no implicit validation. Inspect list/get before retrying an uncertain create.", inputSchema: CreateDeckCandidateArgsSchema},
     edit_deck_candidate: {description: "Atomically apply targeted changes with the last-read exact updated_at. Omitted fields survive; quantities are absolute. Reload after conflicts or uncertain outcomes. No implicit deck check.", inputSchema: EditDeckCandidateArgsSchema},
@@ -83,7 +76,7 @@ export const agentToolContracts = {
 } as const;
 
 export function agentToolInputJsonSchema(name: AgentToolName): Record<string, unknown> {
-    return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
+    return z.toJSONSchema(name === "hypergeometric_calculator" ? HypergeometricCalculatorRequestSchema : name === "validate_format_legality" || name === "evaluate_deck_candidate" ? DeckCheckInputSchema : agentToolContracts[name].inputSchema, {unrepresentable: "any"}) as Record<string, unknown>;
 }
 export type AgentToolRepositories = {
   readonly cardLookup?: CardLookupRepository;
@@ -160,30 +153,31 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
     async validateFormatLegality(input: unknown) {
         const parsed = safeSync(() => ValidateDeckCandidateArgsSchema.parse(input));
         if (parsed.isErr()) return parsed;
-        const args = parsed.value;
-      const rows = await rowsWithDetails(repositories, args.cards);
-      if (rows.isErr()) return rows;
+      const rows = await captureCheck(repositories,parsed.value,"format_legality");
+      if (rows.isErr()) return err(rows.error);
         const assessment = assessDeckLegality({
-            format: args.brief.format,
+            format: rows.value.brief.format,
             cards: rows.value.cards,
-            brief: args.brief,
-            scryfallSourceUpdatedAt: latestOracleCardsSourceTimestamp(rows.value.referenceImports),
+            brief: rows.value.brief,
+            now:new Date(rows.value.checked_at),
+            scryfallSourceUpdatedAt: latestOracleCardsSourceTimestamp(rows.value.reference.imports),
         });
         return assessment.isErr()
             ? err({type: "tool_error", message: assessment.error.message} as const)
-            : ok(assessment.value);
+            : settleCheck(repositories,rows.value,"format_legality",assessment.value);
     },
     async evaluateDeckCandidate(input: unknown) {
         const parsed = safeSync(() => ValidateDeckCandidateArgsSchema.parse(input));
         if (parsed.isErr()) return parsed;
-        const args = parsed.value;
-      const rows = await rowsWithDetails(repositories, args.cards);
-      if (rows.isErr()) return rows;
+      const rows = await captureCheck(repositories,parsed.value,"deck_evaluation");
+      if (rows.isErr()) return err(rows.error);
+        const args={brief:rows.value.brief};
         const assessed = assessDeckLegality({
             format: args.brief.format,
             cards: rows.value.cards,
             brief: args.brief,
-            scryfallSourceUpdatedAt: latestOracleCardsSourceTimestamp(rows.value.referenceImports),
+            now:new Date(rows.value.checked_at),
+            scryfallSourceUpdatedAt: latestOracleCardsSourceTimestamp(rows.value.reference.imports),
         });
         if (assessed.isErr()) return err({type: "tool_error", message: assessed.error.message} as const);
         const gameChangers = rows.value.cards.filter((row) => row.card.gameChanger).map((row) => row.card.name);
@@ -194,7 +188,7 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
           if (row.section === "mainboard" && !/\bLand\b/i.test(row.card.typeLine)) curve[String(row.card.manaValue)] = (curve[String(row.card.manaValue)] ?? 0) + row.quantity;
         return curve;
       }, {});
-      return ok({
+      return settleCheck(repositories,rows.value,"deck_evaluation",{
           legality: assessed.value,
           powerAndExperience: args.brief.format === "commander"
               ? {
@@ -246,39 +240,32 @@ export function createAgentToolHandlers(repositories: AgentToolRepositories, opt
   };
 }
 
-async function rowsWithDetails(repositories: AgentToolRepositories, cards: readonly {
-    cardIdentityId: string;
-    quantity: number;
-    section: "commander" | "mainboard" | "sideboard";
-}[]): Promise<Result<{
-    readonly cards: readonly DeckLegalityCard[];
-    readonly referenceImports: readonly ScryfallBulkDataImport[];
-}, AgentToolError>> {
-    const ready = await requireReferenceData(repositories.cardReference);
-    if (ready.isErr()) return err(ready.error);
-  const details = await repositories.cardReference.listCardIdentitiesByIds(cards.map((card) => card.cardIdentityId));
-  if (details.isErr()) return err({type: "tool_error", message: details.error.message});
-    const resolved: DeckLegalityCard[] = [];
-    for (const card of cards) {
-    const detail = details.value.find((candidate) => candidate.identity.id === card.cardIdentityId);
-        if (!detail) return err({type: "tool_error", message: `Unresolved Card Identity: ${card.cardIdentityId}.`});
-        resolved.push({
-            card: detail.identity,
-            quantity: card.quantity,
-            section: card.section,
-            legalities: detail.legalities,
-            parts: detail.parts
-        });
-    }
-    return ok({cards: resolved, referenceImports: ready.value.imports});
+async function captureCheck(repositories:AgentToolRepositories,input:import("./deck-checks").DeckCheckInput,check:DeckCheckName) {
+    const captured=await repositories.deckCandidates.captureDeckCheck(input,check);
+    if(captured.isErr()) return captured;
+    const reference=captured.value.reference;
+    const missing=reference.missing.filter(type=>type==="oracle_cards");
+    const reimportRequired=reference.reimportRequired.filter(type=>type==="oracle_cards");
+    const ready=referenceReadiness({...reference,missing,reimportRequired,ready:missing.length===0&&reimportRequired.length===0});
+    return ready.isErr()?err(ready.error):ok(captured.value);
+}
+async function settleCheck<T extends object>(repositories:AgentToolRepositories,capture:CapturedDeckCheck,check:DeckCheckName,result:T):Promise<Result<T & {evidence:import("./deck-checks").CheckExecutionEvidence},import("./deck-candidate").DeckCandidateRepositoryError>> {
+    if(!capture.candidate_id) return ok({...result,evidence:{status:"transient" as const,checked_at:capture.checked_at}});
+    if(capture.trial) return ok({...result,evidence:{status:"transient" as const,checked_at:capture.checked_at}});
+    const evidence={checked_at:capture.checked_at,dependencies:capture.dependencies!,result};
+    const published=await repositories.deckCandidates.publishDeckCheck(capture.candidate_id,check,evidence);
+    return published.isErr()?err(published.error):ok({...result,evidence:{status:published.value,checked_at:capture.checked_at}});
 }
 
 async function requireReferenceData(cardReference: CardReferenceRepository): Promise<Result<ReferenceDataStatus, AgentToolError>> {
     const support = await cardReference.summarizeReferenceSupport();
     if (support.isErr()) return err({type: "tool_error", message: support.error.message});
-    if (support.value.ready) return ok(support.value);
-    const missing = support.value.missing;
-    const reimportRequired = support.value.reimportRequired;
+    return referenceReadiness(support.value);
+}
+function referenceReadiness(support:ReferenceDataStatus):Result<ReferenceDataStatus,AgentToolError> {
+    if (support.ready) return ok(support);
+    const missing = support.missing;
+    const reimportRequired = support.reimportRequired;
     const requirements = [
         missing.length > 0 ? `missing: ${missing.join(", ")}` : null,
         reimportRequired.length > 0 ? `reimport required: ${reimportRequired.join(", ")}` : null,
@@ -318,4 +305,9 @@ export function agentToolMutates(name: string): boolean {
         "validate_format_legality",
         "evaluate_deck_candidate",
     ].includes(name);
+}
+
+/** Candidate reasoning and explicit findings must survive adapter serialization. */
+export function agentToolPreservesCompleteOutput(name:string):boolean {
+    return name.includes("deck_candidate") || name === "validate_format_legality";
 }
