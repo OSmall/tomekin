@@ -198,9 +198,7 @@ opaque candidate/cursor IDs never substitute for inspectable permission.
 
 ### Owned and missing evidence
 
-Row browsing establishes policy-compliant matching row quantities, not joint allocation across a complete deck. The
-current final Available, Committed and Missing conclusions remain best-effort agent reasoning until the deterministic
-whole-demand Availability service ships. A candidate save does not reserve copies, move cards or publish final
+Row browsing establishes policy-compliant matching row quantities, not joint allocation across a complete deck. Use `check_collection_availability` for deterministic whole-demand proof, with separate Missing-owned and Policy Shortfall. A candidate save does not reserve copies, move cards or publish final
 Availability proof.
 
 ## Validation, Rendering, and Persistence
@@ -278,7 +276,7 @@ reject affected continuation even when candidate content timestamps stay unchang
 unchanged Brief-only view. There is no persisted cursor/result store. An oversized indivisible record fails explicitly;
 there is no truncated rationale or serialized preview.
 
-`render_deck_candidate({candidate_id, output: "report" | "portable_decklist", first?, after?})` uses the same recoverable
+`render_deck_candidate({candidate_id, output: "report" | "portable_decklist" | "collection_pull_list", first?, after?})` uses the same recoverable
 output contract and loads saved records. It accepts no authored report sections, names or independent decklist.
 Only selected membership and canonical names feed the Portable Decklist. Pool alternatives are never selected copies.
 
@@ -405,3 +403,43 @@ Card Sets and Printings, and Oracle Tags. Tomekin does not claim live prices, cu
 combo detection, gameplay simulation, mulligan or casting analysis, goldfishing, or deterministic strategic optimality.
 The bounded uniform-sampling calculation above supports explicit opening-sample events only.
 Live search and explicit bulk sync perform Scryfall network requests; the agent receives no arbitrary network capability.
+
+
+### Final Availability and Collection Pull Lists
+
+`check_collection_availability` accepts the saved/initial check forms plus optional `requirements`, `first` and `after`.
+It loads all selected sections together; pool alternatives demand no copies. Optional requirements use
+`{oracle_id, section, quantity, copy_requirements}` and must cover every selected identity/section quantity exactly.
+They can split one membership into narrower Printing/copy demands, but cannot omit or add selected quantity.
+These restrictions belong to this check's evidence, not selected membership persistence.
+
+The check maximizes joint proven owned coverage, then eligible coverage, then uncommitted coverage. All capacities are
+exact safe integers; a source row cannot supply more than its quantity. Per-requirement `owned`/`eligible` are delivered
+quantities from this same allocation: `missing_owned = quantity - owned`, `policy_shortfall = owned - eligible`.
+Compatible supply summaries overlap between requirements and must not be added into a deck total. Unknown requirement
+metadata contributes possible compatible supply, not proven ownership; unknown policy metadata contributes no eligible
+proof. `metadata_uncertain` and undated compatible quantities remain visible, including strict recent-copy checks.
+Strict recent intent is loaded through the whole Brief and rejects a wider confirmed date policy.
+
+A complete computation may establish a recorded shortage. The successful bounded path/value envelope distinguishes
+`check_completion: complete` from `witness_completion: partial`; recover all pages to inspect the complete witness.
+`allocations` contain only eligible pulls, while `ownership_allocations` are diagnostic proof of owned coverage and
+are never instructions to take excluded/protected copies. Every allocation retains demand/section, allocated/source
+quantity, actual Printing, location, source deck commitment and all used row metadata. Canonical requirement ordering
+and source-row-number/ID ordering select a deterministic equal-optimum witness, without assigning strategic priority.
+No/empty Collection and unconfirmed policy are distinct. Ownership concerns recorded Collection data; it makes no
+claim about all real possessions. Unconfirmed permission returns null eligibility and sufficiency.
+
+Only explicit non-trial saved checks publish latest `collection_availability` evidence in the candidate's existing
+validation evidence. Applicability binds selected inputs, actual requirements, Brief policy/recent intent, active
+Collection, successful Oracle/Printing imports and evaluator version. Relevant concurrent changes prevent publication;
+pool-only maintenance preserves matching proof. Evidence bookkeeping leaves candidate content timestamps unchanged.
+Initial and revised trials return findings without saving memberships or evidence. No automatic checks run on reads,
+exports or candidate edits. Interrupted computations return partial-check errors without final deficit/sufficiency
+claims; retry the complete original request. There is no partial allocation cache.
+
+`get_deck_candidate` views `availability` and `collection_pull_list`, and render output `collection_pull_list`, use the
+existing bounded fixed-baseline record recovery. Absent/outdated evidence emits an explanation without usable pulls.
+Successful Collection replacement invalidates old scope even with matching names: reconfirm and recheck. A Pull List
+never reserves, moves or reassigns cards; the user chooses physical copies, including permitted borrowing from named
+Existing Decks. Existing Format checks remain separate.

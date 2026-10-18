@@ -373,7 +373,6 @@ export function agentToolMutates(name: string): boolean {
         "validate_format_legality",
         "evaluate_deck_candidate",
         "check_collection_availability",
-  "check_collection_availability",
     ].includes(name);
 }
 

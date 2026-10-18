@@ -193,7 +193,7 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Local SQLite persistence for Scryfall reference data, Collection snapshots, and saved Deck Candidates.
 - Structured candidate create/edit with provisional plans, assessed options, selected memberships and exact timestamp
   concurrency checks. Saves and reads do not automatically validate a deck.
-- Explicit saved-candidate legality/evaluation by ID and last-read timestamp, isolated transient trials, and latest
+- Explicit saved-candidate legality/evaluation/Collection Availability by ID and last-read timestamp, isolated transient trials, and latest
   check-specific evidence with absent/applicable/outdated reads. Evidence publication preserves content timestamps.
 - Compact candidate summaries and complete paged Brief/selection/pool/plan/reasoning/report views. Saved rendering uses
   selected canonical names; developer JSON/Mermaid exports preserve current reasoning without running checks.
@@ -228,8 +228,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
   explicit scoped predicates and does not prove the new policy or actual owned-Printing restrictions.
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.
-- Final Available, Committed, and Missing classifications are best-effort agent conclusions from scoped Card Query
-  evidence, not a persisted Availability or Collection Pull List service.
+- Final Availability checks cover the complete selected demand against recorded Collection rows under the Brief policy.
+  Bounded Collection Pull Lists recover complete witnesses; imported data does not establish physical possession.
 - ManaBox List rows are not currently skipped and summarized; an unsupported location type fails the readable import
   and preserves the previous Collection snapshot ([issue #39](https://github.com/OSmall/tomekin/issues/39)).
 
