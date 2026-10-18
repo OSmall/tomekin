@@ -222,3 +222,12 @@ UTF-8 sizing contract, with revision checks around evaluation and final emission
 policy and relevant successful imports; they contain no results. New exact UTC date text preserves milliseconds without
 changing legacy timestamp units. The active pointer commits/rolls back with Collection replacement. No provider scan,
 historical Collection rows, duplicate identity columns, saved search or standalone policy handle is introduced.
+
+## Workflow instruction boundary
+
+One canonical `skills/` tree owns operational instructions in both adapters. `tomekin-deck-building` coordinates
+retrieval, authorization, create/edit, explicit checks and final outputs; `deck-shape-methodology` owns common contextual
+reasoning. Discovery and Format architecture/tuning compose it, with templates/calculator examples retained by Format
+owners. Services enforce structure, facts and requested deterministic checks; the agent owns strategic assessment and
+confirmation covering the actual result. No approval token, persisted Opportunity or separate workflow engine is added.
+The [workflow demonstration](evaluation/workflows.md) exercises these seams with synthetic data and actual transports.

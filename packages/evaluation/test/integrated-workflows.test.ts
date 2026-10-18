@@ -12,3 +12,12 @@ test("discovery qualifies transient directions and resumes incomplete constructi
     expect(result.statistics.sixtyCard).toBeCloseTo(0.399499625744, 11);
     expect(result.statistics.minimumCopies).toBe(7);
 }, 30_000);
+
+import {auditWorkflowSurfaces} from "../src/workflows";
+test("Pi and OpenCode expose the same product capabilities and load one canonical workflow skill tree", async () => {
+    const audit = await auditWorkflowSurfaces();
+    expect(audit.capabilitiesMatch).toBe(true);
+    expect(audit.legacyDisabled).toBe(true);
+    expect(audit.retiredNormalCapabilities).toEqual([]);
+    expect(audit.loadedCanonicalSkills).toHaveLength(8);
+});

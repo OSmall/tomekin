@@ -265,8 +265,9 @@ bun run typecheck
 
 The canonical [deck-shape methodology](skills/deck-shape-methodology/SKILL.md) supplies shared reasoning for discovery,
 construction and tuning. The [Commander skill](skills/commander-deck-architecture/SKILL.md) owns its adopted contextual
-starting profile and compact example; 60-card guidance remains in its Format skills. This reasoning foundation does
-not add tools or complete the [remaining executable workflow integration](https://github.com/OSmall/tomekin/issues/64).
+starting profile and compact example; 60-card guidance remains in its Format skills. Format-owned calculator examples use the implemented exact tool. The [four-workflow demonstration](docs/evaluation/workflows.md)
+exercises current retrieval, durable incomplete construction, partial tuning, explicit checks and joint assembly through
+isolated SQLite and supported adapters. Deterministic evidence does not establish live-model quality.
 
 ## Future Direction
 
@@ -274,7 +275,8 @@ Possible future directions include friendlier setup, packaging around stable com
 the same portable core. They are possibilities rather than alpha promises; see
 [`docs/future-direction.md`](./docs/future-direction.md).
 
-For reproducible synthetic workflow and pre-migration candidate measurements, run `bun run evaluate:baseline`.
+For current deterministic workflow evidence run `bun run evaluate:workflows`; for candidate timing measurements run
+`bun run evaluate:performance`. The pinned pre-migration comparison remains `bun run evaluate:legacy`.
 [The evaluation protocol](docs/evaluation/README.md) describes the recorded artifact, limitations and legacy comparator.
 
 ### Inspect a saved Deck Plan

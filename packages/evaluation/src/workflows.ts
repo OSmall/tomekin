@@ -1,7 +1,9 @@
 import {createLocalAgentToolRuntime} from "@tomekin/agent";
 import {createProviderDispatchOwner} from "@tomekin/core";
 import {openDatabase, closeDatabase, createSqliteCollectionRepository} from "@tomekin/sqlite";
-import {createCoreTool, createPiWorkerTransport} from "@tomekin/pi";
+import {readFileSync, realpathSync, readdirSync} from "node:fs";
+import {fileURLToPath} from "node:url";
+import {createMethodologyReadTool, resolvePiToolNames, createCoreTool, createPiWorkerTransport} from "@tomekin/pi";
 import {createFixture, id, log} from "./fixtures";
 
 // These are deliberately synthetic cards, not claims about public card rules or strategic quality.
@@ -109,4 +111,26 @@ export async function runWorkflowIntegration() {
         return {kind: "integrated-workflows-v1", discovery, construction, tuning, assembly, adapters, statistics, limits: "Synthetic rules and deterministic decisions; no live model, source coverage, actual gameplay, castability, win rate or human/account acceptance claim."};
     } finally {restore(); runtime?.close(); await transport.close(); closeDatabase(db); fixture.dispose();}
 }
-if (import.meta.main) console.log(JSON.stringify(await runWorkflowIntegration(), null, 2));
+export async function auditWorkflowSurfaces() {
+    const moduleUrl = new URL("../../../.opencode/tools/tomekin.ts", import.meta.url).href;
+    const tools = await import(moduleUrl);
+    const openCode = Object.keys(tools).filter(name => tools[name] && typeof tools[name].execute === "function").sort();
+    const pi = resolvePiToolNames({}).filter(name => name !== "read" && name !== "ask_user").sort();
+    const root = fileURLToPath(new URL("../../../", import.meta.url));
+    const read = createMethodologyReadTool({workspacePath: root});
+    const agent = readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8");
+    if (!agent.includes("skill: allow") || !agent.includes("load the native")) throw new Error("OpenCode skill routing unavailable");
+    for (const name of openCode) if (!agent.includes(`"tomekin_${name}": allow`)) throw new Error(`OpenCode permission missing: ${name}`);
+    const loadedCanonicalSkills = [];
+    for (const name of readdirSync(`${root}/skills`)) {
+        const path = `skills/${name}/SKILL.md`;
+        const result = await read.execute("workflow-skill", {path}, new AbortController().signal) as any;
+        const canonical = readFileSync(`${root}/${path}`, "utf8");
+        const openCodePath = `${root}/.opencode/${path}`;
+        if (realpathSync(openCodePath) !== realpathSync(`${root}/${path}`) || result.content[0].text.trimEnd() !== canonical.trimEnd()) throw new Error(`Different skill source: ${name}`);
+        loadedCanonicalSkills.push(name);
+    }
+    const retired = ["get_card_identity", "resolve_decklist_cards", "summarize_reference_support", "save_deck_candidate", "query_cards"];
+    return {capabilitiesMatch: JSON.stringify(pi) === JSON.stringify(openCode), legacyDisabled: !pi.includes("legacy_query_cards" as any) && !tools.legacy_query_cards, retiredNormalCapabilities: openCode.filter(name => retired.includes(name)), loadedCanonicalSkills, limits: "Actual Pi constrained reads and OpenCode exports, permissions and canonical skill targets; no live native-model skill invocation or reasoning-quality claim."};
+}
+if (import.meta.main) console.log(JSON.stringify({...(await runWorkflowIntegration()), audit: await auditWorkflowSurfaces()}, null, 2));

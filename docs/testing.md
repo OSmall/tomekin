@@ -51,7 +51,7 @@ SQLite integration tests should cover repository-boundary behaviour, including:
 - Failed import non-destructiveness.
 - Current Collection snapshot replacement.
 - Card Query Collection-scope quantities, exact-location filtering, and owned-row hydration.
-- Deck Candidate save, reopen, list, and transactional card-row replacement.
+- Deck Candidate create/edit, reopen, list, atomic reconciliation and retained alternatives.
 - SQLite migrations that rebuild tables referenced by foreign keys, using a populated pre-migration fixture and
   `PRAGMA foreign_key_check` assertions.
 
@@ -242,17 +242,18 @@ final change set.
 The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
 profiles and retained departures, factual qualification and modal competition, whole-contribution swaps, section-aware
 selected coverage versus active alternatives, current reasoning/evidence and explicit checking boundaries. These are
-reasoning invariants, not new CI quality scores. Foundation routing does not constitute the remaining executable
-four-workflow acceptance owned by [#64](https://github.com/OSmall/tomekin/issues/64).
+reasoning invariants, not new CI quality scores. The [deterministic four-workflow demonstration](evaluation/workflows.md) exercises the current public seams and actual
+adapter paths; live-model reasoning and human acceptance remain separate manual evidence.
 
 ## Synthetic workflow baseline
 
-`bun run evaluate:baseline` measures discovery, construction, tuning and assembly through isolated public handlers and
-actual adapter transport/serialization. The default test suite includes its fixed coverage, same-row evidence, clipping,
-long-text and three-card-save assertions. See [the evaluation protocol and captured artifact](evaluation/README.md) for
-fixture cardinalities, cold/warm conditions, known limits and the separately runnable legacy comparator. These synthetic
-measurements establish no live-model, production latency, strategic-quality or whole-deck Availability claim.
-
+`bun run evaluate:workflows` executes the current synthetic discovery/construction/tuning/assembly demonstration.
+Default tests assert facts reuse, transient discovery, incomplete save/resume, partial acceptance, complete joint
+allocation and actual adapter parity. The capability audit compares actual OpenCode exports/permissions with Pi's
+registry, reads canonical files through Pi's restricted tool, and verifies OpenCode's native-skill targets resolve to
+the same files. It does not claim native model invocation. See [the demonstration and limits](evaluation/workflows.md).
+`bun run evaluate:performance` records current mutation/check timing separately. `evaluate:baseline` retains a historical
+measurement workload and `evaluate:legacy` recreates pinned old behavior; neither is current reasoning acceptance.
 
 ## Structured candidate write coverage
 
