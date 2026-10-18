@@ -5,9 +5,11 @@
 Use these frozen scenarios to evaluate Deck Opportunity discovery, fresh construction, and Deck Tuning without
 requiring one exact decklist. They are the manual live-model quality gate and do not run under `bun test`.
 
-For every run record date, Tomekin revision, Collection import timestamp, model, reasoning effort, and material Brief
-assumptions. Run the initial reference pass with Sol at one fixed reasoning effort. Compare Terra only at that same
-effort after Sol passes.
+For every run record date, Tomekin revision, Collection import timestamp, exact provider/model, reasoning effort, and
+material Brief assumptions. For matched Pi/OpenCode acceptance use the same model and effort in both harnesses under
+the account holder's explicit choice; record any unavailable combination as unmatched. Follow the
+[real-session parity protocol](../evaluation/real-session-parity.md) and its sanitized result template. Model comparisons
+are separate runs after the fixed reference pair; no historical model nickname selects an account or model implicitly.
 
 ## Critical Invariants
 
