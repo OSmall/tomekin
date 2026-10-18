@@ -42,3 +42,5 @@ export function resultToOpencodeOutput<T>(result: {
 }): string {
   return serializeAgentToolDetails(agentToolResultDetails(result));
 }
+
+export * from "./input-schema";

@@ -51,9 +51,13 @@ complete outcome. Shared card selectors, projection/envelope types, cursor codec
 are reusable by subsequent retrieval tools. No migration, result cache or cursor store is added.
 
 Lookup failures remain on Result's error side with their complete wire envelope. Shared adapter serialization unwraps
-that envelope without flattening readiness/validation/recovery details. OpenCode bundles an older Zod metadata registry,
-so its annotated selector is built with the host schema instance from Core's one canonical fact-description map; actual
-serialized-schema tests cover `minProperties`, closed properties and complete meanings. Pi uses Core's JSON Schema.
+that envelope without flattening readiness/validation/recovery details. OpenCode installations may use an independent
+Zod metadata registry. `createCanonicalOpenCodeInputSchema` in `@tomekin/opencode` delegates selector validation to Core
+and attaches Core's generated JSON Schema through a schema-local conversion override. Reuse it for further card, copy
+and row selectors. Both installed Zod versions declare and honor this override before registry lookup. The adapter uses
+a fresh custom schema to avoid converter-specific metadata clone-parent traversal. Supported host converters preserve
+this complete representation regardless of registry identity. Actual serialized-schema tests, including an isolated
+consumer registry, cover `minProperties`, closed properties and complete meanings. Pi uses Core's JSON Schema.
 
 ### SQLite adapter
 
