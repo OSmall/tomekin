@@ -36,7 +36,7 @@ test("Collection scope uses one actual row conjunction and exact Printing mode n
         expect(identity.edges[0].node.collection_evidence.summary.eligible_quantity).toBe(4);
         const printing = envelope(await runtime.handlers.searchCards({...base, collection_scope: {match: "printing"}}));
         expect(printing.edges).toHaveLength(1);
-        expect(printing.pageInfo.hasNextPage).toBe(false);
+        expect(Boolean(printing.next_cursor)).toBe(false);
         expect(printing.edges[0].node.collection_evidence.copies.map((r: any) => r.printing_id)).toEqual([id(2), id(2)]);
         // Foil and a reliable recent date occur together only on the binder row. The undated nonfoil row is not proof.
         const impossible = envelope(await runtime.handlers.searchCards({...base, collection_scope: {copy_requirements: {finish: ["nonfoil"], added_at_from: "2026-10-17T00:00:00Z"}}}));
@@ -53,7 +53,7 @@ test("ownership evidence distinguishes unconfirmed policy, missing Collection, i
     try {
         const args = {references: [{kind: "oracle_id", value: id(1)}], select: {oracle_id: true}, collection_evidence: {mode: "copies", select: {quantity: true}}};
         const unconfirmed = envelope(await f.runtime.handlers.lookupCards(args));
-        expect(unconfirmed).toMatchObject({collection_context: {state: "ready", effective_policy: null}, edges: [{node: {collection_evidence: {summary: {owned_quantity: 6, eligible_quantity: null, uncertain_quantity: null, policy_status: "unconfirmed"}, copies: []}}}]});
+        expect(unconfirmed).toMatchObject({collection_context: {state: "ready", policy_id: null}, edges: [{node: {collection_evidence: {summary: {owned_quantity: 6, eligible_quantity: null, uncertain_quantity: null, policy_status: "unconfirmed"}, copies: []}}}]});
         const uncertain = envelope(await f.runtime.handlers.lookupCards({...args, collection_policy: {kind: "explicit", policy: {...f.policy, copy_requirements: {added_at_from: "2026-10-17T00:00:00Z"}}}}));
         expect(uncertain.edges[0].node.collection_evidence).toMatchObject({summary: {owned_quantity: 6, eligible_quantity: 2, uncertain_quantity: 2}, copies: [{collection_card_id: id(110)}]});
         await f.replace([]);
@@ -74,14 +74,14 @@ test("scoped provider scan fills through nonmatches and resumes the raw Printing
         const args = {q: "f:commander", select: {printing_id: true}, collection_scope: {}, collection_policy: {kind: "explicit", policy: f.policy}, first: 1};
         const first = envelope(await runtime.handlers.searchCards(args));
         expect(first.edges.map((e: any) => e.node.card.printing_id)).toEqual([id(201)]);
-        expect(first.pageInfo.hasNextPage).toBe(true);
+        expect(Boolean(first.next_cursor)).toBe(true);
         expect(requests).toHaveLength(2);
-        const second = envelope(await runtime.handlers.searchCards({...args, after: first.pageInfo.endCursor, select: {oracle_id: true}}));
+        const second = envelope(await runtime.handlers.searchCards({...args, after: first.next_cursor, select: {oracle_id: true}}));
         expect(second.edges).toHaveLength(1);
-        expect(second.pageInfo.hasNextPage).toBe(false);
+        expect(Boolean(second.next_cursor)).toBe(false);
         expect(second.edges[0].node.card).toEqual({oracle_id: id(1)});
         const zero = envelope(await runtime.handlers.searchCards({...args, first: 0}));
-        expect(zero).toMatchObject({edges: [], pageInfo: {hasNextPage: true, endCursor: null}});
+        expect(structuredClone(zero)).toMatchObject({edges: [], next_cursor: expect.any(String)});
     } finally {runtime.close(); f.dispose();}
 });
 
@@ -112,12 +112,12 @@ test("dependent cursors bind Collection and policy but ignore failed and unrelat
         const args = {q: "f:commander", select: {oracle_id: true}, collection_evidence: {mode: "summary"}, first: 1};
         const one = envelope(await runtime.handlers.searchCards(args));
         await f.recordFailedImport(); await f.reimportTags();
-        const after = one.pageInfo.endCursor;
+        const after = one.next_cursor;
         expect(envelope(await runtime.handlers.searchCards({...args, after})).status).toBe("ok");
         expect(envelope(await runtime.handlers.searchCards({...args, after, collection_evidence: {mode: "copies", select: {quantity: true}}})).error.code).toBe("invalid_cursor");
         const fixed = {...args, collection_policy: {kind: "explicit", policy: f.policy}};
         const bound = envelope(await runtime.handlers.searchCards(fixed));
-        expect(envelope(await runtime.handlers.searchCards({...fixed, after: bound.pageInfo.endCursor, collection_policy: {kind: "explicit", policy: {...f.policy, allowed_locations: []}}})).error.code).toBe("invalid_cursor");
+        expect(envelope(await runtime.handlers.searchCards({...fixed, after: bound.next_cursor, collection_policy: {kind: "explicit", policy: {...f.policy, allowed_locations: []}}})).error.code).toBe("invalid_cursor");
         await f.replace();
         const stale = envelope(await runtime.handlers.searchCards({...args, after}));
         expect(stale).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "collection_import_changed", recovery: "reconfirm_scope"}});
@@ -148,9 +148,9 @@ test("candidate Brief policy changes stale evidence while unrelated label edits 
         const args = {references: [{kind: "name", value: "Sol Ring"}, {kind: "name", value: "Sol Ring"}], select: {name: true}, collection_policy: {kind: "candidate", candidate_id: created.candidate_id}, collection_evidence: {mode: "summary"}, first: 1};
         const first = envelope(await f.runtime.handlers.lookupCards(args));
         const edit = (await f.runtime.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: created.updated_at, changes: {label: "Rename"}}))._unsafeUnwrap();
-        expect(envelope(await f.runtime.handlers.lookupCards({...args, after: first.pageInfo.endCursor})).status).toBe("ok");
+        expect(envelope(await f.runtime.handlers.lookupCards({...args, after: first.next_cursor})).status).toBe("ok");
         (await f.runtime.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: edit.updated_at, changes: {brief: {collectionAccessPolicy: {...f.policy, allowed_locations: []}}}}))._unsafeUnwrap();
-        expect(envelope(await f.runtime.handlers.lookupCards({...args, after: first.pageInfo.endCursor}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "candidate_policy_changed", recovery: "reconfirm_scope"}});
+        expect(envelope(await f.runtime.handlers.lookupCards({...args, after: first.next_cursor}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "candidate_policy_changed", recovery: "reconfirm_scope"}});
     } finally {f.dispose();}
 });
 
@@ -180,12 +180,12 @@ test("same-tick successful reference replacement stales search and lookup eviden
         await f.reimportOracle();
         // Synthetic same-tick successful replacement with a UUID below the prior import. Row order remains authoritative.
         f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ?, started_at = ?, completed_at = ? WHERE bulk_data_type = 'oracle_cards' AND id != ?").run(id(0), old.started_at, old.completed_at, old.id);
-        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, lookup.pageInfo.endCursor], [runtime.handlers.searchCards, searchInput, search.pageInfo.endCursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed", recovery: "restart"}});
+        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, lookup.next_cursor], [runtime.handlers.searchCards, searchInput, search.next_cursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed", recovery: "restart"}});
         const nextLookup = envelope(await runtime.handlers.lookupCards(lookupInput));
         const nextSearch = envelope(await runtime.handlers.searchCards(searchInput));
         await f.reimportOracle();
         f.db.$client.prepare("UPDATE scryfall_bulk_data_import SET started_at = 0, completed_at = 0 WHERE bulk_data_type = 'oracle_cards' AND id NOT IN (?, ?)").run(old.id, id(0));
-        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, nextLookup.pageInfo.endCursor], [runtime.handlers.searchCards, searchInput, nextSearch.pageInfo.endCursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed"}});
+        for (const [handler, args, after] of [[runtime.handlers.lookupCards, lookupInput, nextLookup.next_cursor], [runtime.handlers.searchCards, searchInput, nextSearch.next_cursor]] as const) expect(envelope(await handler({...args, after}))).toMatchObject({edges: [], error: {code: "stale_cursor", reason: "reference_import_changed"}});
     } finally {runtime.close(); f.dispose();}
 });
 
@@ -206,7 +206,7 @@ test("copy selectors, scope validation and mandatory Collection context budget f
     let dispatched = 0;
     const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log, search: {responseBudgetBytes: 500, provider: {id: "fixture", async dispatch() {dispatched++; return {status: 200, body: {object: "list", data: [], has_more: false}};}}}});
     try {
-        const base = {q: "f:commander", select: {oracle_id: true}, collection_policy: {kind: "explicit", policy: f.policy}, collection_evidence: {mode: "summary"}};
+        const base = {q: "f:commander", include_collection_policy:true, select: {oracle_id: true}, collection_policy: {kind: "explicit", policy: f.policy}, collection_evidence: {mode: "summary"}};
         expect(envelope(await runtime.handlers.searchCards(base))).toMatchObject({edges: [], error: {code: "response_budget_too_small"}});
         expect(dispatched).toBe(0);
         const input = {references: [{kind: "name", value: "Sol Ring"}], select: {oracle_id: true}};

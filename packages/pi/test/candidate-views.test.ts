@@ -15,7 +15,8 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         expect(schema.properties.view.enum).not.toContain("state");
         let after:string|undefined;
         let description:string|undefined;
-        let firstCursor:string|undefined;
+        const prefix=await tool.execute("prefix",{id:fixture.candidateId,view:"json",first:0},new AbortController().signal) as PiToolOutput;
+        const firstCursor=JSON.parse(prefix.content[0]!.text).next_cursor;
         let sawLarge=false;
         do{
             const output=await tool.execute("page",{id:fixture.candidateId,view:"json",first:200,...after?{after}:{}},new AbortController().signal) as PiToolOutput;
@@ -26,8 +27,7 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
             expect(Buffer.byteLength(output.content[0]!.text)).toBeLessThanOrEqual(51200);
             sawLarge ||= output.content[0]!.text.length>16000;
             description??=page.edges.find((e:any)=>e.node.path.join(".")==="plan.description")?.node.value;
-            firstCursor??=page.pageInfo.endCursor;
-            after=page.pageInfo.hasNextPage?page.pageInfo.endCursor:undefined;
+            after=Boolean(page.next_cursor)?page.next_cursor:undefined;
         }while(after);
         expect(sawLarge).toBe(true);
         expect(description).toBe(completeCandidateDescription);

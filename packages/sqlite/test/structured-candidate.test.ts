@@ -1255,20 +1255,20 @@ test("complete candidate reasoning is recoverable through baseline-bound views b
         const changed = unwrap(await app.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: created.updated_at, changes: {plan: {schema_version: 1, description}}}));
         const first = unwrap(await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", first: 2}));
         expect(first.status).toBe("ok");
-        expect(first.pageInfo.hasNextPage).toBe(true);
+        expect(Boolean(first.next_cursor)).toBe(true);
         const records = [...first.edges];
-        let cursor = first.pageInfo.endCursor;
+        let cursor = first.next_cursor;
         while (cursor) {
             const page = unwrap(await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", first: 2, after: cursor}));
             records.push(...page.edges);
-            cursor = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
+            cursor = Boolean(page.next_cursor) ? page.next_cursor : null;
         }
         expect(records.find((e: any) => e.node.path.join(".") === "plan.description").node.value).toBe(description);
         expect(records.find((e: any) => e.node.path.join(".") === "plan.contributions.0").node.value).toMatchObject({rationale: "Reliable repeatable mana", qualifications: ["One activation each turn"], evidence: [{reference: "Card facts", note: "A mana ability"}]});
-        const wrongView = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "pool", after: first.pageInfo.endCursor});
+        const wrongView = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "pool", after: first.next_cursor});
         expect(wrongView.isErr()).toBe(true);
         await app.handlers.editDeckCandidate({candidate_id: created.candidate_id, expected_updated_at: changed.updated_at, changes: {label: "New baseline"}});
-        const stale = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", after: first.pageInfo.endCursor});
+        const stale = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "json", after: first.next_cursor});
         expect(stale.isErr()).toBe(true);
         expect(stale.error.envelope.error.code).toBe("stale_cursor");
     } finally { app.dispose(); }
@@ -1303,8 +1303,8 @@ test("large views enforce the complete escaped byte budget, reconstruct exact JS
         const changed=unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{plan:{schema_version:1,description}}}));
         const zero=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"json",first:0}));
         expect(zero.edges).toEqual([]);
-        expect(zero.pageInfo.hasNextPage).toBe(true);
-        let after=zero.pageInfo.endCursor,restored:any,large=false;
+        expect(Boolean(zero.next_cursor)).toBe(true);
+        let after=zero.next_cursor,restored:any,large=false;
         do{
             const page=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"json",first:200,after}));
             expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(51200);
@@ -1315,14 +1315,14 @@ test("large views enforce the complete escaped byte budget, reconstruct exact JS
                 for(const key of path.slice(0,-1))parent=parent[key];
                 parent[path[path.length-1]]=value;
             }
-            after=page.pageInfo.hasNextPage?page.pageInfo.endCursor:null;
+            after=Boolean(page.next_cursor)?page.next_cursor:null;
         }while(after);
         expect(large).toBe(true);
         expect(restored).toEqual(unwrap(await createSqliteDeckCandidateRepository(app.db,{now:()=>new Date()}).getDeckCandidate(created.candidate_id)));
         const oversized='🦉'.repeat(18000);
         unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:changed.updated_at,changes:{plan:{schema_version:1,description:oversized}}}));
         const first=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200}));
-        const failed=await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200,after:first.pageInfo.endCursor});
+        const failed=await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200,after:first.next_cursor});
         expect(failed.isErr()).toBe(true);
         expect(failed.error.envelope).toMatchObject({status:"error",edges:[],error:{code:"record_too_large",required_bytes:expect.any(Number),limit_bytes:51200}});
         expect(failed.error.envelope).not.toHaveProperty("pageInfo");

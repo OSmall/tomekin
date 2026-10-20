@@ -1,3 +1,5 @@
+import {createHash} from "node:crypto";
+import {deflateRawSync, inflateRawSync} from "node:zlib";
 import type {CollectionContext} from "./collection-browse";
 import {z} from "zod";
 import {collectionRetrievalShape, type CollectionEvidence, type CollectionRetrievalContext} from "./collection-retrieval";
@@ -22,7 +24,7 @@ export const cardFactDescriptions = {
 export type CardFact = keyof typeof cardFactDescriptions;
 export const printingFacts = new Set<CardFact>(["printing_id", "set", "set_id", "set_name", "set_type", "collector_number", "lang", "printed_name", "finishes", "promo_types", "tcgplayer_id", "cardmarket_id", "printing_layout"]);
 const selectionShape = Object.fromEntries(Object.entries(cardFactDescriptions).map(([name, description]) => [name, z.literal(true).describe(description).optional()])) as {[K in CardFact]: z.ZodOptional<z.ZodLiteral<true>>};
-export const CardSelectionSchema = z.strictObject(selectionShape).refine((value) => Object.keys(value).length > 0, "Select at least one fact.").meta({minProperties: 1});
+export const CardSelectionSchema = z.strictObject({...selectionShape, tags: z.union([z.literal(true), z.strictObject({mode:z.literal("compact"),slugs:z.array(z.string().min(1)).min(1).optional()})]).describe("true: complete annotations; compact: direct/inherited slugs and prominence, optionally restricted to named slugs.").optional()}).refine((value) => Object.keys(value).length > 0, "Select at least one fact.").meta({minProperties: 1});
 export type CardSelection = z.infer<typeof CardSelectionSchema>;
 export const CardReferenceSchema = z.discriminatedUnion("kind", [
     z.strictObject({kind: z.literal("oracle_id"), value: z.uuid()}),
@@ -42,7 +44,14 @@ export type RetrievalErrorCode = "invalid_request" | "invalid_cursor" | "stale_c
 export type RetrievalIssue = {path: (string | number)[]; code: string; field?: string; reference_indices?: number[]};
 export type RetrievalProblem = {code: RetrievalErrorCode; message: string; retryable: boolean; cursor?: string; retry_after_ms?: number; issues?: RetrievalIssue[]; missing_datasets?: string[]; reimport_required_datasets?: string[]; reason?: string; required_bytes?: number; limit_bytes?: number; recovery?: "restart" | "reconfirm_scope"};
 export type RetrievalProvenance = {collection_import?: {import_id: string; imported_at: string}; provider?: {name: string; retrieved_at: string}; reference_imports: {dataset: string; import_id: string; completed_at: string | null; source_updated_at: string | null}[]};
-export type RetrievalSuccess<N> = {status: "ok"; edges: {node: N}[]; pageInfo: {startCursor: string | null; endCursor: string | null; hasNextPage: boolean; hasPreviousPage: boolean}; stop_reason: "first" | "response_budget" | "source_exhausted"; metadata: RetrievalMetadata; provenance?: RetrievalProvenance; collection_context?: CollectionRetrievalContext | CollectionContext};
+/**
+ * Agent-efficient continuation envelope with opaque first/after pagination.
+ * One continuation is returned while more results remain; exhaustion returns null.
+ * Relay does not prescribe the internal cursor encoding.
+ * @see https://relay.dev/graphql/connections.htm
+ * @see https://github.com/OSmall/tomekin/issues/29#issuecomment-6230187644
+ */
+export type RetrievalSuccess<N> = {status: "ok"; edges: {node: N}[]; next_cursor: string | null; stop_reason: "first" | "response_budget" | "source_exhausted"; metadata: RetrievalMetadata; provenance?: RetrievalProvenance; collection_context?: CollectionRetrievalContext | CollectionContext};
 export type RetrievalFailure<N> = {status: "error"; edges: {node: N}[]; error: RetrievalProblem; metadata: RetrievalMetadata; provenance?: RetrievalProvenance; collection_context?: CollectionRetrievalContext | CollectionContext};
 export type RetrievalEnvelope<N> = RetrievalSuccess<N> | RetrievalFailure<N>;
 /** Expected failures stay on Result's error side; adapters expose the envelope intact. */
@@ -51,24 +60,65 @@ export const retrievalResponseBudgetBytes = 51_200;
 export const retrievalScanDeadlineMs = 120_000;
 export const compactJsonBytes = (value: unknown): number => new TextEncoder().encode(JSON.stringify(value)).byteLength;
 
-export type RetrievalCursor = {version: 1; tool: string; source: string; bindings: unknown; revisions: Record<string, string | null>; position: unknown};
-const cursorSchema = z.strictObject({version: z.literal(1), tool: z.string(), source: z.string(), bindings: z.unknown(), revisions: z.record(z.string(), z.string().nullable()), position: z.unknown()});
-/** No hidden search store or results; tokens retain only validated bindings and source position. */
-export function encodeRetrievalCursor(cursor: RetrievalCursor): string { return Buffer.from(JSON.stringify(cursor)).toString("base64url"); }
+/** Internal cursor context. Wire tokens retain fingerprints, never the supplied bindings. */
+export type RetrievalCursor = {version: 2; tool: string; source: string; bindings: unknown; scope?: string | null; revisions: Record<string, string | null>; position: unknown};
+const cursorTools = ["search_cards", "lookup_cards", "browse_tags", "browse_collection_cards", "get_deck_candidate", "check_collection_availability"] as const;
+const revisionKeys = ["oracle_cards", "all_cards", "oracle_tags", "collection", "collection_policy", "policy", "baseline"] as const;
+const digestSchema = z.string().regex(/^[A-Za-z0-9_-]{22}$/);
+const wireCursorSchema = z.tuple([
+    z.number().int().min(0).max(cursorTools.length - 1), z.string().min(1).max(128), digestSchema, digestSchema.nullable(),
+    z.array(z.tuple([z.number().int().min(0).max(revisionKeys.length - 1), z.string().max(128).nullable()])).max(revisionKeys.length), z.unknown(),
+]);
+function canonical(value: unknown): unknown {
+    if (Array.isArray(value)) return value.map(canonical);
+    if (value !== null && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([,v]) => v !== undefined).sort(([a],[b]) => a.localeCompare(b, "en")).map(([k,v]) => [k,canonical(v)]));
+    return value;
+}
+/** A bounded consistency check, not an authorization credential or a saved-result key. */
+export const cursorFingerprint = (value: unknown): string => createHash("sha256").update(JSON.stringify(canonical(value))).digest().subarray(0,16).toString("base64url");
+function scopeOf(bindings: unknown) {
+    return Object.fromEntries(Object.entries((bindings ?? {}) as Record<string,unknown>).filter(([k]) => ["collection_scope", "collection_policy", "collection_evidence"].includes(k)));
+}
+export const cursorBindingsMatch = (cursor: RetrievalCursor, bindings: unknown): boolean => cursor.bindings === cursorFingerprint(bindings);
+export const cursorScopeMatches = (cursor: RetrievalCursor, bindings: unknown): boolean => cursor.scope === (Object.keys(scopeOf(bindings)).length ? cursorFingerprint(scopeOf(bindings)) : null);
+/** Version 2: deflated positional JSON. Offline token comparisons are recorded by evaluate:economy. */
+export function encodeRetrievalCursor(cursor: RetrievalCursor): string {
+    const tool = cursorTools.indexOf(cursor.tool as typeof cursorTools[number]);
+    const revisions = Object.entries(cursor.revisions).sort(([a],[b]) => revisionKeys.indexOf(a as any)-revisionKeys.indexOf(b as any)).map(([k,v]) => {
+        const key = revisionKeys.indexOf(k as typeof revisionKeys[number]);
+        if (key < 0) throw new Error("Unknown cursor dependency.");
+        return [key,v];
+    });
+    const scope = scopeOf(cursor.bindings);
+    const wire = [tool,cursor.source,cursorFingerprint(cursor.bindings),Object.keys(scope).length ? cursorFingerprint(scope) : null,revisions,cursor.position];
+    return `2.${deflateRawSync(JSON.stringify(wire)).toString("base64url")}`;
+}
 export function decodeRetrievalCursor(token: string): {cursor?: RetrievalCursor; problem?: RetrievalProblem} {
     try {
-        if (!/^[A-Za-z0-9_-]+$/.test(token)) throw new Error("encoding");
-        const bytes = Buffer.from(token, "base64url");
-        if (bytes.toString("base64url") !== token) throw new Error("encoding");
-        const raw = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
-        if (typeof raw !== "object" || raw === null || !Number.isInteger(raw.version)) throw new Error("version");
-        if (raw.version !== 1) return {problem: {code: "invalid_cursor", message: "Unsupported cursor version.", retryable: false, reason: "unsupported_version"}};
-        const parsed = cursorSchema.safeParse(raw);
+        if (!token.startsWith("2.")) {
+            try {const legacy = JSON.parse(Buffer.from(token,"base64url").toString("utf8")); if (Number.isInteger(legacy.version)) return {problem:{code:"invalid_cursor",message:"Cursor format changed. Restart without after.",retryable:false,reason:"unsupported_version",recovery:"restart"}};} catch {}
+            throw new Error("encoding");
+        }
+        const encoded = token.slice(2);
+        if (encoded.length > 8192 || !/^[A-Za-z0-9_-]+$/.test(encoded)) throw new Error("encoding");
+        const bytes = Buffer.from(encoded,"base64url");
+        if (bytes.toString("base64url") !== encoded) throw new Error("encoding");
+        const raw = JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(inflateRawSync(bytes,{maxOutputLength:4096})));
+        const parsed = wireCursorSchema.safeParse(raw);
         if (!parsed.success) throw new Error("shape");
-        return {cursor: parsed.data};
-    } catch { return {problem: {code: "invalid_cursor", message: "Malformed continuation cursor.", retryable: false, reason: "malformed"}}; }
+        const [tool,source,bindings,scope,entries,position] = parsed.data;
+        if (new Set(entries.map(([k])=>k)).size !== entries.length) throw new Error("duplicate dependency");
+        const revisions = Object.fromEntries(entries.map(([k,v])=>[revisionKeys[k]!,v]));
+        return {cursor:{version:2,tool:cursorTools[tool]!,source,bindings,scope,revisions,position}};
+    } catch {return {problem:{code:"invalid_cursor",message:"Malformed continuation cursor. Restart without after.",retryable:false,reason:"malformed",recovery:"restart"}};}
 }
 export type CardTags = {direct: {slug: string; weight: CardIdentityTaggingWeight; annotation: string | null}[]; inherited: {slug: string; weight: CardIdentityTaggingWeight}[]};
+export function projectCardTags(tags: CardTags, selection: CardSelection["tags"]) {
+    if (selection === true) return tags;
+    const wanted = selection?.slugs ? new Set(selection.slugs) : null;
+    const selected = (tag: {slug:string}) => !wanted || wanted.has(tag.slug);
+    return {direct:tags.direct.filter(selected).map(({slug,weight})=>({slug,weight})), inherited:tags.inherited.filter(selected).map(({slug,weight})=>({slug,weight}))};
+}
 export type LocalLookupRecord = {detail: CardIdentityDetail; printing?: CardPrinting; set?: CardSet; promoTypes?: string[]; tags?: CardTags};
 /** Import records are newest committed insertion first; wall-clock timestamps do not establish replacement authority. */
 export type CardLookupSnapshot = {imports: readonly ScryfallBulkDataImport[]; records: readonly (LocalLookupRecord | null)[]};
@@ -88,7 +138,7 @@ export function projectLocalCard(record: LocalLookupRecord, select: CardSelectio
         if (field === "produced_mana") card.produced_mana = colorArray(identity.producedMana);
     }
     if (select.card_faces || (select.oracle_text && parts.length > 0)) card.card_faces = [...parts].sort((a, b) => a.partIndex - b.partIndex).map((part) => projectFace(part, !!select.card_faces));
-    if (select.tags && !tagUnavailable) card.tags = record.tags ?? {direct: [], inherited: []};
+    if (select.tags && !tagUnavailable) card.tags = projectCardTags(record.tags ?? {direct: [], inherited: []}, select.tags);
     if (record.printing && record.set) {
         const p = record.printing, s = record.set;
         const facts = {printing_id: p.id, set: s.code, set_id: s.id, set_name: s.name, set_type: s.setType, collector_number: p.collectorNumber, lang: p.language, printed_name: p.printedName, finishes: p.finishes, promo_types: record.promoTypes ?? [], tcgplayer_id: p.tcgplayerId, cardmarket_id: p.cardmarketId, printing_layout: p.layout};

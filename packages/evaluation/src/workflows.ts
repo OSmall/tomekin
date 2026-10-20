@@ -27,7 +27,7 @@ async function allPages(call: (args: any) => Promise<any>, args: any): Promise<a
         const page = value(await call({...args, ...(after ? {after} : {})}));
         if (page.status !== "ok") throw new Error(JSON.stringify(page));
         nodes.push(...page.edges.map((edge: any) => edge.node));
-        after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : undefined;
+        after = Boolean(page.next_cursor) ? page.next_cursor : undefined;
     } while (after);
     return nodes;
 }

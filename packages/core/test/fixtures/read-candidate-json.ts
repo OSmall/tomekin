@@ -11,7 +11,7 @@ export async function readCandidateJson(read: (input: any) => Promise<any>, id: 
             for(const key of path.slice(0,-1)) parent=parent[key];
             parent[path.at(-1)]=value;
         }
-        after=page.pageInfo.hasNextPage ? page.pageInfo.endCursor : undefined;
+        after=Boolean(page.next_cursor) ? page.next_cursor : undefined;
     } while(after);
     return restored;
 }

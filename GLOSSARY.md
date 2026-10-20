@@ -263,6 +263,11 @@ specific tagging. _Avoid_: Umbrella tag, ancestor tag, broader tag, direct tag, 
 The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific
 meaning such as prominence or annotation. _Avoid_: Card tag link, tag assignment
 
+**Tag Snowballing**:
+An exploratory card-research method that uses Card Identity Tags learned from seed cards and discovery results to find
+further relevant cards and search directions. Tag prominence guides investigation, while card rules and the Deck Plan
+inform contextual judgment of fit. _Avoid_: Tag scoring algorithm, automatic role assignment
+
 **Card Identity Relationship**:
 A named relationship between two Card Identities, such as similarity, reference, comparison, or an effect appearing with
 or without a creature body. A Card Identity Relationship connects cards directly and is distinct from a Card Identity

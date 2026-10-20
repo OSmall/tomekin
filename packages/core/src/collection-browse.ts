@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {err, ok, type Result} from "neverthrow";
 import {CollectionPolicyInputSchema, CopyRequirementsSchema, UtcInstantSchema, evaluateCopyRequirements, evaluateOwnedRow, resolveCollectionPolicy, validDateRequirements, type CollectionBrowseRepository, type CollectionPolicyInput, type CollectionAccessPolicy, type CollectionPolicySnapshot, type OwnedRowFacts, type ResolvedCollectionPolicy} from "./collection-policy";
-import {compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type RetrievalCursor, type RetrievalEnvelope, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError} from "./card-retrieval";
+import {compactJsonBytes, decodeRetrievalCursor, cursorFingerprint, cursorBindingsMatch, cursorScopeMatches, encodeRetrievalCursor, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type RetrievalCursor, type RetrievalEnvelope, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError} from "./card-retrieval";
 import {requiredScryfallImportContractRevisions} from "./scryfall-sync";
 import type {CardLookupOptions} from "./card-lookup";
 
@@ -15,6 +15,7 @@ const selectionShape = Object.fromEntries(Object.entries(collectionCopyFactDescr
 export const CollectionCopySelectionSchema = z.strictObject(selectionShape).refine(value => Object.keys(value).length > 0, "Select at least one copy fact.").meta({minProperties: 1});
 export type CollectionCopySelection = z.infer<typeof CollectionCopySelectionSchema>;
 export const BrowseCollectionCardsArgsSchema = z.strictObject({
+    include_collection_policy: z.boolean().optional().describe("Inspect the resolved policy explicitly; otherwise only policy_id is returned."),
     collection_import_id: z.uuid(), policy: CollectionPolicyInputSchema,
     oracle_ids: z.array(z.uuid()).min(1).optional(), printing_ids: z.array(z.uuid()).min(1).optional(),
     date_state: z.enum(["any", "known", "unknown"]).default("any"), added_at_from: UtcInstantSchema.optional(), added_at_before: UtcInstantSchema.optional(),
@@ -38,7 +39,7 @@ export function projectCollectionCopy(row: OwnedRowFacts, select: CollectionCopy
     for (const key of Object.keys(select) as CollectionCopyFact[]) (result as Record<string, unknown>)[key] = row[key];
     return result;
 }
-export type CollectionContext = {state: "ready" | "no_collection" | "reimport_required"; collection_import_id: string | null; effective_policy: ResolvedCollectionPolicy | null; policy_status: "confirmed" | "unconfirmed"};
+export type CollectionContext = {state: "ready" | "no_collection" | "reimport_required"; collection_import_id: string | null; policy_id: string | null; effective_policy?: ResolvedCollectionPolicy | null; policy_status: "confirmed" | "unconfirmed"};
 export type CollectionBrowseExtras = {collection_context: CollectionContext; date_coverage: {undated: "present" | "unchecked" | "absent"; completion: "complete" | "partial"; legacy_precision_lost: boolean}};
 export type CollectionBrowseSuccess = RetrievalSuccess<CollectionCopyResult> & CollectionBrowseExtras;
 export type CollectionPolicyLoader = (input: CollectionPolicyInput) => Promise<Result<CollectionAccessPolicy | null, {message: string}>>;
@@ -47,7 +48,7 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
     const now = options.now ?? (() => performance.now()), started = now(), budget = options.responseBudgetBytes ?? retrievalResponseBudgetBytes, deadline = options.scanDeadlineMs ?? retrievalScanDeadlineMs;
     const parsed = BrowseCollectionCardsArgsSchema.safeParse(input), first = parsed.success ? parsed.data.first ?? 50 : 50;
     let edges: {node: CollectionCopyResult}[] = [], positions: number[] = [], start = 0, safe = 0;
-    let context: CollectionContext = {state: "no_collection", collection_import_id: null, effective_policy: null, policy_status: "unconfirmed"};
+    let context: CollectionContext = {state: "no_collection", collection_import_id: null, policy_id: null, policy_status: "unconfirmed"};
     let coverage: CollectionBrowseExtras["date_coverage"] = {undated: "unchecked", completion: "partial", legacy_precision_lost: false};
     let provenance: RetrievalEnvelope<CollectionCopyResult>["provenance"];
     const metadata = () => ({requested_count: first, returned_count: edges.length, response_budget_bytes: budget, provider_total: null, scoped_total: null});
@@ -59,19 +60,19 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
             if (compactJsonBytes(envelope) > budget) throw new Error("Adapter cannot carry a minimal Collection browse error.");
         }
         options.log?.info({operation: "browse_collection_cards", status: envelope.status, selectedFields: parsed.success ? Object.keys(parsed.data.select) : [], returnedCount: envelope.edges.length, outputBytes: compactJsonBytes(envelope), ...(envelope.status === "error" ? {errorCode: envelope.error.code, requiredBytes: envelope.error.required_bytes, limitBytes: envelope.error.limit_bytes} : {}), durationMs: now() - started}, "Collection browse completed");
-        options.log?.debug({operation: "browse_collection_cards", after: parsed.success ? parsed.data.after : undefined, cursors: envelope.status === "error" ? envelope.error.cursor : envelope.pageInfo}, "Collection browse continuation");
+        options.log?.debug({operation: "browse_collection_cards", after: parsed.success ? parsed.data.after : undefined, cursors: envelope.status === "error" ? envelope.error.cursor : envelope.next_cursor}, "Collection browse continuation");
         return envelope.status === "error" ? err({type: "retrieval_error", message: envelope.error.message, envelope}) : ok(envelope as CollectionBrowseSuccess);
     };
     if (!parsed.success) return finish(failure({code: "invalid_request", message: "Invalid Collection browse request.", retryable: false, issues: parsed.error.issues.map(issue => ({path: issue.path.map(part => typeof part === "symbol" ? String(part) : part), code: issue.code}))}));
     const args = parsed.data;
-    const {select: _select, first: _first, after: _after, ...boundArgs} = args;
+    const {select: _select, first: _first, after: _after, include_collection_policy: _inspect, ...boundArgs} = args;
     const fixed = {...boundArgs, include_provenance: args.include_provenance ?? false};
     let incoming: RetrievalCursor | undefined;
     if (args.after) {
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return finish(failure(decoded.problem));
         incoming = decoded.cursor!;
-        const reason = incoming.tool !== "browse_collection_cards" ? "tool_mismatch" : incoming.source !== "local_collection" ? "source_mismatch" : JSON.stringify(incoming.bindings) !== JSON.stringify(fixed) ? "scope_mismatch" : null;
+        const reason = incoming.tool !== "browse_collection_cards" ? "tool_mismatch" : incoming.source !== "local_collection" ? "source_mismatch" : !cursorBindingsMatch(incoming, fixed) ? "scope_mismatch" : null;
         if (reason) return finish(failure({code: "invalid_cursor", reason, message: "Cursor does not match this Collection browse request.", retryable: false}));
         const pos = incoming.position as {next_index?: unknown} | null;
         if (!pos || Object.keys(pos).length !== 1 || !Number.isSafeInteger(pos.next_index) || (pos.next_index as number) < 0) return finish(failure({code: "invalid_cursor", reason: "malformed", message: "Malformed Collection browse position.", retryable: false}));
@@ -80,20 +81,20 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
     const snapshotResult = await repository.readCollectionPolicySnapshot();
     if (snapshotResult.isErr()) return finish(failure({code: "local_error", message: snapshotResult.error.message, retryable: false}));
     const snapshot = snapshotResult.value;
-    context = {state: snapshot.activeImport ? "ready" : snapshot.legacySnapshot ? "reimport_required" : "no_collection", collection_import_id: snapshot.activeImport?.id ?? null, effective_policy: null, policy_status: "unconfirmed"};
+    context = {state: snapshot.activeImport ? "ready" : snapshot.legacySnapshot ? "reimport_required" : "no_collection", collection_import_id: snapshot.activeImport?.id ?? null, policy_id: null, policy_status: "unconfirmed"};
     if (snapshot.activeImport?.id !== args.collection_import_id) return finish(failure({code: incoming ? "stale_cursor" : "invalid_request", reason: "collection_import_changed", message: snapshot.legacySnapshot ? "Reimport the legacy Collection to establish a reliable active snapshot." : "Requested Collection snapshot is not active. Reconfirm scope.", retryable: false, recovery: "reconfirm_scope"}));
     const loaded = await loadPolicy(args.policy);
     if (loaded.isErr()) return finish(failure({code: "invalid_request", reason: "invalid_policy", message: loaded.error.message, retryable: false}));
     const resolved = resolveCollectionPolicy(loaded.value, snapshot);
     if (resolved.isErr()) return finish(failure({code: "invalid_request", reason: resolved.error.reason, message: resolved.error.message, retryable: false, recovery: "reconfirm_scope"}));
     const policy = resolved.value;
-    context = {...context, effective_policy: policy, policy_status: "confirmed"};
+    context = {...context, policy_id: cursorFingerprint(policy), ...(args.include_collection_policy ? {effective_policy: policy} : {}), policy_status: "confirmed"};
     const validIds = await repository.collectionCardIdsExist(policy.excluded_collection_card_ids);
     if (validIds.isErr()) return finish(failure({code: "local_error", message: validIds.error.message, retryable: false}));
     if (!validIds.value) return finish(failure({code: "invalid_request", reason: "unknown_collection_card", message: "An excluded Collection row is absent from this snapshot.", retryable: false}));
     const revisions = snapshotRevisions(snapshot);
-    revisions.policy = JSON.stringify(policy);
-    if (incoming && JSON.stringify(incoming.revisions) !== JSON.stringify(revisions)) {
+    revisions.policy = cursorFingerprint(policy);
+    if (incoming && cursorFingerprint(incoming.revisions) !== cursorFingerprint(revisions)) {
         const reason = incoming.revisions.policy !== revisions.policy ? "candidate_policy_changed" : incoming.revisions.collection !== revisions.collection ? "collection_import_changed" : "reference_import_changed";
         return finish(failure({code: "stale_cursor", reason, message: "A bound Collection, policy, or reference import changed.", retryable: false, recovery: reason === "reference_import_changed" ? "restart" : "reconfirm_scope"}));
     }
@@ -102,8 +103,8 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
     const incompatible = ["oracle_cards", "all_cards"].filter(dataset => latest.has(dataset) && latest.get(dataset)!.importContractRevision !== requiredScryfallImportContractRevisions[dataset as "oracle_cards" | "all_cards"]);
     if (missing.length || incompatible.length) return finish(failure({code: "reference_data_unready", message: "Collection browsing requires compatible Oracle Cards and All Cards imports.", retryable: false, missing_datasets: missing, reimport_required_datasets: incompatible}));
     if (args.include_provenance) provenance = {reference_imports: [...latest.values()].map(item => ({dataset: item.bulkDataType, import_id: item.id, completed_at: item.completedAt?.toISOString() ?? null, source_updated_at: item.sourceUpdatedAt?.toISOString() ?? null}))};
-    const cursor = (position: number) => encodeRetrievalCursor({version: 1, tool: "browse_collection_cards", source: "local_collection", bindings: fixed, revisions, position: {next_index: position}});
-    const page = (hasNextPage: boolean, stop_reason: RetrievalSuccess<CollectionCopyResult>["stop_reason"]): CollectionBrowseSuccess => ({status: "ok", edges: [...edges], pageInfo: {startCursor: positions.length ? cursor(positions[0]!) : null, endCursor: positions.length ? cursor(positions.at(-1)!) : null, hasNextPage, hasPreviousPage: start > 0}, stop_reason, metadata: metadata(), ...extras()});
+    const cursor = (position: number) => encodeRetrievalCursor({version: 2, tool: "browse_collection_cards", source: "local_collection", bindings: fixed, revisions, position: {next_index: position}});
+    const page = (hasNextPage: boolean, stop_reason: RetrievalSuccess<CollectionCopyResult>["stop_reason"]): CollectionBrowseSuccess => ({status: "ok", edges: [...edges], next_cursor: hasNextPage ? cursor(positions.at(-1) ?? safe) : null, stop_reason, metadata: metadata(), ...extras()});
     const recover = (problem: RetrievalProblem) => {
         let tokenPosition = safe;
         let envelope = failure({...problem, cursor: cursor(tokenPosition)});
@@ -112,7 +113,7 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
     };
     if (compactJsonBytes(failure({code: "scan_timeout", message: "Collection browse deadline reached.", retryable: true, cursor: cursor(start)})) > budget) return finish(failure({code: "cursor_too_large", message: "Self-contained Collection continuation exceeds the response budget.", retryable: false, limit_bytes: budget}));
     if (compactJsonBytes(page(false, "source_exhausted")) > budget) return finish(failure({code: "response_budget_too_small", message: "Mandatory Collection context exceeds the response budget.", retryable: false}));
-    let offset = start;
+    let offset = start, budgetLookahead = false;
     // Keep both conjuncts: browse criteria never replace constraints carried in copy_requirements.
     const dateCriteria = {date_state: args.date_state === "any" ? undefined : args.date_state, added_at_from: args.added_at_from, added_at_before: args.added_at_before};
     const consistent = async () => {
@@ -120,7 +121,7 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
         const currentPolicy = await loadPolicy(args.policy);
         if (current.isErr() || currentPolicy.isErr()) return false;
         const p = resolveCollectionPolicy(currentPolicy.value, current.value);
-        return p.isOk() && JSON.stringify({...snapshotRevisions(current.value), policy: JSON.stringify(p.value)}) === JSON.stringify(revisions);
+        return p.isOk() && JSON.stringify({...snapshotRevisions(current.value), policy: cursorFingerprint(p.value)}) === JSON.stringify(revisions);
     };
     const settle = async (envelope: ReturnType<typeof page> | ReturnType<typeof recover>) => {
         if (await consistent()) {
@@ -155,11 +156,14 @@ export async function browseCollectionCards(repository: CollectionBrowseReposito
             if (row.added_at === null && evaluation.decision !== "excluded") coverage.undated = "present";
             const matches = evaluation.decision === "eligible" && evaluateCopyRequirements(args.copy_requirements, row).decision === "eligible" && evaluateCopyRequirements(dateCriteria, row).decision === "eligible";
             if (!matches) {safe = ++offset; continue;}
-            if (edges.length >= first) return settle(page(true, "first"));
+            if (edges.length >= first || budgetLookahead) return settle(page(true, budgetLookahead ? "response_budget" : "first"));
             const node = projectCollectionCopy(row, args.select);
             edges.push({node}); positions.push(offset + 1);
             const candidate = page(true, edges.length === first ? "first" : "response_budget");
             if (compactJsonBytes(candidate) > budget) {
+                if (compactJsonBytes(page(false,"source_exhausted")) <= budget) {
+                    budgetLookahead = true; safe = ++offset; continue;
+                }
                 edges.pop(); positions.pop();
                 const retained = edges, retainedPositions = positions;
                 edges = [{node}]; positions = [offset + 1];

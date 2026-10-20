@@ -17,7 +17,7 @@ test("OpenCode serializes closed Collection selectors with an independent metada
         const result = await tools.browse_collection_cards.execute(args as never);
         const parsed = JSON.parse(result);
         expect(result).toBe(JSON.stringify(parsed));
-        expect(parsed).toMatchObject({status: "ok", edges: [{node: {collection_card_id: id(111)}}], collection_context: {effective_policy: {confirmed: true}}});
+        expect(parsed).toMatchObject({status: "ok", edges: [{node: {collection_card_id: id(111)}}], collection_context: {policy_id: expect.any(String)}});
         expect(JSON.parse(await tools.browse_collection_cards.execute({...args, select: {unknown: true}} as never))).toMatchObject({status: "error", error: {code: "invalid_request"}});
     } finally {restore(); f.dispose();}
 });

@@ -25,6 +25,11 @@ fetches provider pages and filters them locally until the requested result count
 a scan budget is reached. It does not send Collection identifiers to Scryfall. In-memory identifier sets suffice
 initially; bitmap filtering is a possible later optimisation.
 
+An implemented refinement is recorded in
+[ADR 0021](./0021-agent-efficient-retrieval-continuations.md): compact agent-facing continuation and context replace
+repeated request/policy contents and full pagination metadata. The pagination details below retain the historical decision; ADR 0021 and docs/card-query.md own
+the current compact continuation and context contract.
+
 The adopted pagination refinement from [issue #29](https://github.com/OSmall/tomekin/issues/29#issuecomment-6230187644)
 uses ordinary `first`/`after` requests, complete `edges[].node` outcomes, page-level cursors and explicit success/error
 envelopes. Lookup now implements stateless next-input-occurrence positions, preserving duplicates and misses. Live source positions retain provider page/next-page identity and raw provider-ID anchors for refetch; they store no

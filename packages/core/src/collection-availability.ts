@@ -22,7 +22,7 @@ import { DeckCandidateCardSectionSchema } from "./deck-candidate";
 import { snapshotRevisions } from "./collection-browse";
 import {
     compactJsonBytes,
-    decodeRetrievalCursor,
+    decodeRetrievalCursor, cursorFingerprint,
     encodeRetrievalCursor,
     retrievalResponseBudgetBytes,
     retrievalScanDeadlineMs,
@@ -717,9 +717,10 @@ export function availabilityPage(
             });
         offset = c.position as number;
     }
+    const {effective_policy, ...compactCollectionContext} = result.collection_context;
     const token = (position: number) =>
         encodeRetrievalCursor({
-            version: 1,
+            version: 2,
             tool: "check_collection_availability",
             source: "allocation",
             bindings: {},
@@ -736,15 +737,10 @@ export function availabilityPage(
         witness_completion:
             end === records.length && offset === 0 ? "complete" : "partial",
         summary: result.summary,
-        collection_context: result.collection_context,
+        collection_context: {...compactCollectionContext,policy_id:effective_policy ? cursorFingerprint(effective_policy) : null},
         evidence,
         edges: records.slice(offset, end).map((node) => ({ node })),
-        pageInfo: {
-            startCursor: token(offset),
-            endCursor: token(end),
-            hasPreviousPage: offset > 0,
-            hasNextPage: end < records.length,
-        },
+        next_cursor: end < records.length ? token(end) : null,
         stop_reason,
         metadata: metadata(end - offset),
     });

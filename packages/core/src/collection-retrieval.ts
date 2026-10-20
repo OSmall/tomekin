@@ -1,3 +1,4 @@
+import {cursorFingerprint} from "./card-retrieval";
 import {z} from "zod";
 import {CollectionLocationReferenceSchema, CollectionPolicyInputSchema, CopyRequirementsSchema, evaluateCopyRequirements, evaluateOwnedRow, resolveCollectionPolicy, type CollectionBrowseRepository, type CollectionPolicySnapshot, type ResolvedCollectionPolicy} from "./collection-policy";
 import type {CollectionPolicyLoader} from "./collection-browse";
@@ -13,9 +14,9 @@ type CopyFact = keyof typeof copyDescriptions;
 export const CopySelectionSchema = z.strictObject(Object.fromEntries(Object.entries(copyDescriptions).map(([key, description]) => [key, z.literal(true).describe(description).optional()])) as {[K in CopyFact]: z.ZodOptional<z.ZodLiteral<true>>}).refine(value => Object.keys(value).length > 0, "Select at least one copy fact.").meta({minProperties: 1});
 export const CollectionEvidenceInputSchema = z.discriminatedUnion("mode", [z.strictObject({mode: z.literal("summary")}), z.strictObject({mode: z.literal("copies"), select: CopySelectionSchema})]);
 export const CollectionScopeSchema = z.strictObject({match: z.enum(["identity", "printing"]).default("identity"), locations: z.array(z.union([CollectionLocationReferenceSchema, z.strictObject({id: z.uuid()})])).optional(), copy_requirements: CopyRequirementsSchema.default({})});
-export const collectionRetrievalShape = {collection_scope: CollectionScopeSchema.optional(), collection_policy: CollectionPolicyInputSchema.optional(), collection_evidence: CollectionEvidenceInputSchema.optional()};
-export type CollectionRetrievalArgs = {collection_scope?: z.infer<typeof CollectionScopeSchema> | undefined; collection_policy?: z.infer<typeof CollectionPolicyInputSchema> | undefined; collection_evidence?: z.infer<typeof CollectionEvidenceInputSchema> | undefined};
-export type CollectionRetrievalContext = {state: "ready" | "no_collection" | "reimport_required"; collection_import_id: string | null; match: "identity" | "printing"; effective_policy: ResolvedCollectionPolicy | null};
+export const collectionRetrievalShape = {include_collection_policy: z.boolean().optional().describe("Explicitly inspect the complete resolved policy; ordinary discovery returns only its identifier."), collection_scope: CollectionScopeSchema.optional(), collection_policy: CollectionPolicyInputSchema.optional(), collection_evidence: CollectionEvidenceInputSchema.optional()};
+export type CollectionRetrievalArgs = {include_collection_policy?: boolean | undefined; collection_scope?: z.infer<typeof CollectionScopeSchema> | undefined; collection_policy?: z.infer<typeof CollectionPolicyInputSchema> | undefined; collection_evidence?: z.infer<typeof CollectionEvidenceInputSchema> | undefined};
+export type CollectionRetrievalContext = {state: "ready" | "no_collection" | "reimport_required"; collection_import_id: string | null; match: "identity" | "printing"; policy_id: string | null; effective_policy?: ResolvedCollectionPolicy | null};
 export type CollectionEvidence = {summary: {owned_quantity: number; eligible_quantity: number | null; uncertain_quantity: number | null; policy_status: "confirmed" | "unconfirmed"}; copies?: ({collection_card_id: string; printing_id: string; quantity: number} & Record<string, unknown>)[]};
 export type CollectionRetrievalDependencies = {repository: CollectionBrowseRepository; loadPolicy: CollectionPolicyLoader};
 export class CollectionRetrievalFailure extends Error {constructor(readonly problem: RetrievalProblem, readonly context?: CollectionRetrievalContext) {super(problem.message);}}
@@ -45,7 +46,7 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
     };
     const initial = await read();
     const {snapshot, imports} = initial;
-    const revisions: Record<string, string | null> = {collection: snapshot.activeImport?.id ?? (snapshot.legacySnapshot ? "legacy" : null), collection_policy: initial.policy ? JSON.stringify(initial.policy) : null};
+    const revisions: Record<string, string | null> = {collection: snapshot.activeImport?.id ?? (snapshot.legacySnapshot ? "legacy" : null), collection_policy: initial.policy ? cursorFingerprint(initial.policy) : null};
     if (snapshot.activeImport) for (const dataset of ["oracle_cards", "all_cards"]) revisions[dataset] = imports.get(dataset)?.id ?? null;
     const compare = (current: Record<string, string | null>, original: Record<string, string | null>) => {
         for (const [key, revision] of Object.entries(original)) if (key in current && current[key] !== revision) return fail({code: "stale_cursor", reason: key === "collection" ? "collection_import_changed" : key === "collection_policy" ? "candidate_policy_changed" : "reference_import_changed", message: "A bound Collection, reference import, or effective policy changed.", recovery: key === "collection" || key === "collection_policy" ? "reconfirm_scope" : "restart", retryable: false});
@@ -54,7 +55,7 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
         for (const key of Object.keys(revisions)) if (!(key in incoming)) return fail({code: "invalid_cursor", reason: "malformed", message: "Cursor lacks required Collection dependencies.", retryable: false});
         compare(revisions, incoming);
     }
-    if (snapshot.legacySnapshot && !snapshot.activeImport) throw new CollectionRetrievalFailure({code: "reference_data_unready", reason: "collection_reimport_required", message: "Reimport the legacy Collection to establish a reliable active snapshot.", recovery: "reconfirm_scope", retryable: false}, {state: "reimport_required", collection_import_id: null, match, effective_policy: null});
+    if (snapshot.legacySnapshot && !snapshot.activeImport) throw new CollectionRetrievalFailure({code: "reference_data_unready", reason: "collection_reimport_required", message: "Reimport the legacy Collection to establish a reliable active snapshot.", recovery: "reconfirm_scope", retryable: false}, {state: "reimport_required", collection_import_id: null, match, policy_id: null});
     let policy: ResolvedCollectionPolicy | null = null;
     if (initial.policy) {
         const resolved = resolveCollectionPolicy(initial.policy, snapshot);
@@ -74,11 +75,11 @@ export async function prepareCollectionRetrieval(args: CollectionRetrievalArgs, 
         const incompatible = ["oracle_cards", "all_cards"].filter(dataset => imports.has(dataset) && imports.get(dataset)!.importContractRevision !== requiredScryfallImportContractRevisions[dataset as "oracle_cards" | "all_cards"]);
         if (missing.length || incompatible.length) return fail({code: "reference_data_unready", message: "Collection evidence requires compatible Oracle Cards and All Cards imports. Run bun run sync:scryfall.", missing_datasets: missing, reimport_required_datasets: incompatible, retryable: false});
     }
-    const context: CollectionRetrievalContext = {state: snapshot.activeImport ? "ready" : "no_collection", collection_import_id: snapshot.activeImport?.id ?? null, match, effective_policy: policy};
+    const context: CollectionRetrievalContext = {state: snapshot.activeImport ? "ready" : "no_collection", collection_import_id: snapshot.activeImport?.id ?? null, match, policy_id: policy ? cursorFingerprint(policy) : null, ...(args.include_collection_policy ? {effective_policy:policy} : {})};
     const assertCurrent = async () => {
         let current: Awaited<ReturnType<typeof read>>;
         try { current = await read(); } catch (e) {if (e instanceof CollectionRetrievalFailure && e.problem.reason === "invalid_policy") return fail({...e.problem, code: "stale_cursor", reason: "candidate_policy_changed", recovery: "reconfirm_scope"}); throw e;}
-        const currentRevisions: Record<string, string | null> = {collection: current.snapshot.activeImport?.id ?? (current.snapshot.legacySnapshot ? "legacy" : null), collection_policy: current.policy ? JSON.stringify(current.policy) : null};
+        const currentRevisions: Record<string, string | null> = {collection: current.snapshot.activeImport?.id ?? (current.snapshot.legacySnapshot ? "legacy" : null), collection_policy: current.policy ? cursorFingerprint(current.policy) : null};
         for (const dataset of ["oracle_cards", "all_cards"]) if (dataset in revisions) currentRevisions[dataset] = current.imports.get(dataset)?.id ?? null;
         compare(currentRevisions, revisions);
     };

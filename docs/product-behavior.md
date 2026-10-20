@@ -194,7 +194,7 @@ permission; browse returns `unconfirmed_policy`. It is distinct from an explicit
 
 Successful replacement invalidates prior policy/row/location references and continuation; list locations and reconfirm
 scope. Failed attempts preserve active references and usable continuation. Relevant successful reference replacement
-also invalidates dependent browse cursors. Results expose the effective policy, bounded completion and undated coverage;
+also invalidates dependent browse cursors. Results expose a compact policy identifier, bounded completion and undated coverage; explicit `include_collection_policy` inspection returns the resolved policy;
 opaque candidate/cursor IDs never substitute for inspectable permission.
 
 ### Owned and missing evidence
@@ -265,7 +265,7 @@ qualifications and evidence. The pool view has one deduplicated `options` array 
 options by Card Identity; section-aware selected quantities come only from memberships.
 
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
-JSON bytes, complete `edges[].node`, `pageInfo` and stop reason. Each node is `{path, value}` in `path_value_v1` format.
+JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node is `{path, value}` in `path_value_v1` format.
 Apply records in order: an empty path sets the root; other paths assign an object key or array index. Explicit empty
 containers preserve empty objects/arrays. Array entities retain complete local reasoning. For `json`, this reconstructs
 the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
@@ -457,3 +457,17 @@ existing bounded fixed-baseline record recovery. Absent/outdated evidence emits 
 Successful Collection replacement invalidates old scope even with matching names: reconfirm and recheck. A Pull List
 never reserves, moves or reassigns cards; the user chooses physical copies, including permitted borrowing from named
 Existing Decks. Existing Format checks remain separate.
+
+## Economical research and existing-candidate review
+
+Broad discovery uses compact Tag Snowballing before contender rules inspection. Compact tag projections expose all
+associations for learning or only requested slugs for comparison, preserving direct/inherited prominence without source
+annotations. The model judges contextual fit; no quality score, weight threshold or fixed shortlist quota is imposed.
+Scoped Collection discovery trusts actual-owned-copy eligibility, including foil and other supported same-row criteria.
+Quantities and physical sourcing use directed evidence; whole-deck Availability remains a separate joint check.
+
+An existing candidate's Brief and explicit user authorization are reused when applicable. Review begins with summary and
+needed focused views, then missing facts. Pool-only research retains justified alternatives and selected membership; it
+finishes without automatically fetching full witnesses/reports or invoking construction/assembly finalization.
+All paginated Agent Tools return one compact continuation while more results remain. Changed search conditions or bound
+dependencies require restart, with ordinary permission checks still applied on every call.

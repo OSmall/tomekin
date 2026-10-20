@@ -173,7 +173,7 @@ test("Availability exposes closed public check inputs and settles complete struc
                     ...input,
                     cards: [{ ...input.cards[0], quantity: 8 }],
                     requirements: [{ ...input.requirements[0], quantity: 8 }],
-                    after: output.details.pageInfo.endCursor,
+                    after: output.details.next_cursor,
                 },
                 new AbortController().signal,
             );

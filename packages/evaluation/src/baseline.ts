@@ -229,7 +229,7 @@ async function readCandidateJson(runtime: ReturnType<typeof createLocalAgentTool
             for(const key of path.slice(0,-1))parent=parent[key];
             parent[path.at(-1)!]=value;
         }
-        after=page.pageInfo.hasNextPage?page.pageInfo.endCursor:undefined;
+        after=Boolean(page.next_cursor)?page.next_cursor ?? undefined:undefined;
     }while(after);
     return restored as DeckCandidate;
 }

@@ -21,6 +21,8 @@ test("OpenCode publishes closed typed selection and carries the exact complete b
         const parsed = JSON.parse(output);
         expect(output).toBe(JSON.stringify(parsed));
         expect(parsed.edges[0].node.card.tags.direct[1].annotation).toBe(annotation);
+        const compact = JSON.parse(await tools.lookup_cards.execute({...args,select:{tags:{mode:"compact",slugs:["mana"]}}}));
+        expect(compact).toMatchObject({status:"ok",next_cursor:null,edges:[{node:{card:{tags:{direct:[],inherited:[{slug:"mana",weight:"strong"}]}}}}]});
         const invalid = JSON.parse(await tools.lookup_cards.execute({...args, select: {name: false}} as never));
         expect(invalid).toMatchObject({status: "error", edges: [], error: {code: "invalid_request", retryable: false, issues: [{path: ["select", "name"]}]}});
         expect(readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8")).toContain('"tomekin_lookup_cards": allow');

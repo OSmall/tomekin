@@ -4,8 +4,8 @@ import {z} from "zod";
 import {
     CardSelectionSchema,
     compactJsonBytes,
-    decodeRetrievalCursor,
-    encodeRetrievalCursor,
+    decodeRetrievalCursor, cursorBindingsMatch, cursorScopeMatches,
+    encodeRetrievalCursor, projectCardTags,
     printingFacts,
     retrievalResponseBudgetBytes,
     retrievalScanDeadlineMs,
@@ -88,13 +88,9 @@ export class ProviderFailure extends Error {
     }
 }
 const positionSchema = z.strictObject({
-    url: z.string(),
-    page: z.number().int().positive(),
-    atPageEnd: z.boolean(),
-    lastId: z.string().min(1).nullable(),
-    nextPage: z.string().nullable(),
+    page: z.number().int().positive(), atPageEnd: z.boolean(), afterId: z.string().min(1).nullable(),
 });
-type Position = z.infer<typeof positionSchema>;
+type Position = z.infer<typeof positionSchema> & {url:string; nextPage:string|null};
 const endpoint = "https://api.scryfall.com/cards/search";
 const controls = [
     "q",
@@ -174,11 +170,11 @@ export async function searchCards(
         url: endpoint,
         page: 1,
         atPageEnd: false,
-        lastId: null,
+        afterId: null,
         nextPage: null,
     };
     let bindings: Record<string, unknown> = {},
-        hasPreviousPage = false;
+        budgetLookahead = false;
     const metadata = () => ({
         requested_count: first,
         returned_count: edges.length,
@@ -188,12 +184,14 @@ export async function searchCards(
     });
     const token = (pos: Position) =>
         encodeRetrievalCursor({
-            version: 1,
+            version: 2,
             tool: "search_cards",
             source: options.provider.id,
             bindings,
             revisions,
-            position: pos,
+            position: pos.atPageEnd && pos.nextPage
+                ? {page:pos.page+1,atPageEnd:false,afterId:null}
+                : {page:pos.page,atPageEnd:pos.atPageEnd,afterId:pos.afterId},
         });
     const failure = (
         error: RetrievalProblem,
@@ -249,12 +247,7 @@ export async function searchCards(
     ): RetrievalSuccess<CardResult> => ({
         status: "ok",
         edges: [...edges],
-        pageInfo: {
-            startCursor: positions[0] ? token(positions[0]) : null,
-            endCursor: positions.at(-1) ? token(positions.at(-1)!) : null,
-            hasNextPage: more,
-            hasPreviousPage,
-        },
+        next_cursor: more ? token(positions.at(-1) ?? safe) : null,
         stop_reason: reason,
         metadata: metadata(),
         ...(provenance ? {provenance} : {}),
@@ -318,7 +311,7 @@ export async function searchCards(
                       }
                     : {
                           stopReason: response.stop_reason,
-                          recovery: response.pageInfo.hasNextPage,
+                          recovery: Boolean(response.next_cursor),
                       }),
             },
             "Provider search completed",
@@ -328,11 +321,11 @@ export async function searchCards(
                 q: bindings.q,
                 after: parsed.success ? parsed.data.after : undefined,
                 safePosition: safe,
-                cursorVersion: 1,
+                cursorVersion: 2,
                 cursors:
                     response.status === "error"
                         ? response.error.cursor
-                        : response.pageInfo,
+                        : response.next_cursor,
                 revisions,
             },
             "Search continuation positions",
@@ -378,8 +371,8 @@ export async function searchCards(
                     ? "tool_mismatch"
                     : c.source !== options.provider.id
                       ? "provider_mismatch"
-                      : JSON.stringify(c.bindings) !== JSON.stringify(bindings)
-                        ? JSON.stringify(collectionRequestBindings((c.bindings ?? {}) as typeof args)) !== JSON.stringify(collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch"
+                      : !cursorBindingsMatch(c, bindings)
+                        ? !cursorScopeMatches(c, collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch"
                         : null;
         if (reason)
             return finish(
@@ -393,16 +386,6 @@ export async function searchCards(
         const pos = positionSchema.safeParse(c.position);
         if (
             !pos.success ||
-            !validateSearchPageUrl(pos.data.url, bindings, pos.data.page) ||
-            (pos.data.nextPage !== null &&
-                !validateSearchPageUrl(
-                    pos.data.nextPage,
-                    bindings,
-                    pos.data.page + 1,
-                )) ||
-            (pos.data.atPageEnd &&
-                pos.data.lastId === null &&
-                pos.data.page < 1) ||
             Object.keys(c.revisions).some(
                 (key) => !["oracle_cards", "oracle_tags", "all_cards", "collection", "collection_policy"].includes(key),
             )
@@ -415,9 +398,12 @@ export async function searchCards(
                     reason: "malformed",
                 }),
             );
-        safe = pos.data;
+        const resumed = new URL(initial);
+        if (pos.data.page > 1) resumed.searchParams.set("page",String(pos.data.page));
+        // Completed positions without a known next page are refetched to establish exhaustion safely.
+        safe = {...pos.data,atPageEnd:false,url:resumed.href,nextPage:null};
         revisions = c.revisions;
-        hasPreviousPage = true;
+
     }
     try {
         collection = await prepareCollectionRetrieval(args, options.collection, args.after ? revisions : undefined);
@@ -551,6 +537,12 @@ export async function searchCards(
         if (Object.keys(revisions).length) await readRevisions();
         await collection?.assertCurrent();
         check();
+        while (compactJsonBytes(page(more,stop)) > budget && edges.length) {
+            const required = compactJsonBytes(page(more,stop));
+            safe = before.pop()!; edges.pop(); positions.pop();
+            if (!edges.length) throw new ProviderFailure({code:"record_too_large",message:"A complete card exceeds the response budget.",retryable:false,required_bytes:required,limit_bytes:budget});
+            more = true; stop = "response_budget";
+        }
         return finish(page(more, stop));
     };
     try {
@@ -563,7 +555,7 @@ export async function searchCards(
                     url: safe.nextPage,
                     page: safe.page + 1,
                     atPageEnd: false,
-                    lastId: null,
+                    afterId: null,
                     nextPage: null,
                 };
             }
@@ -593,7 +585,7 @@ export async function searchCards(
                     retryable: true,
                     retry_after_ms: reply.retryAfterMs ?? 31_000,
                 });
-            if (reply.status === 404 && safe.page === 1 && !safe.lastId)
+            if (reply.status === 404 && safe.page === 1 && !safe.afterId)
                 return await finalize(false, "source_exhausted");
             if (reply.status !== 200)
                 throw new ProviderFailure({
@@ -644,9 +636,9 @@ export async function searchCards(
             const data = body.data as Record<string, unknown>[],
                 nextPage = body.has_more ? (body.next_page as string) : null;
             let start = 0;
-            if (safe.lastId !== null) {
+            if (safe.afterId !== null) {
                 const indices = data.flatMap((card, i) =>
-                    card?.id === safe.lastId ? [i] : [],
+                    card?.id === safe.afterId ? [i] : [],
                 );
                 if (indices.length !== 1)
                     throw new ProviderFailure({
@@ -681,10 +673,7 @@ export async function searchCards(
                         });
                     const record = snapshot.value.records[0];
                     if (record)
-                        node.card.tags = record.tags ?? {
-                            direct: [],
-                            inherited: [],
-                        };
+                        node.card.tags = projectCardTags(record.tags ?? {direct:[],inherited:[]}, args.select.tags);
                     else
                         node.unavailable_fields = {
                             tags: "identity_not_in_local_reference_data",
@@ -694,13 +683,13 @@ export async function searchCards(
                     node.unavailable_fields = {tags: tagUnavailable};
                 const matches = collection ? await collection.evaluate(node, raw.id as string, check) : true;
                 check();
-                if (matches && edges.length === first)
-                    return await finalize(true, "first");
+                if (matches && (edges.length === first || budgetLookahead))
+                    return await finalize(true, budgetLookahead ? "response_budget" : "first");
                 const consumed: Position = {
                     url: safe.url,
                     page: safe.page,
                     atPageEnd: i === data.length - 1,
-                    lastId: raw.id as string,
+                    afterId: raw.id as string,
                     nextPage: i === data.length - 1 ? nextPage : null,
                 };
                 ensurePosition(consumed);
@@ -710,6 +699,7 @@ export async function searchCards(
                 edges.push({node});
                 safe = consumed;
                 if (compactJsonBytes(page(true, "response_budget")) > budget) {
+                    if (compactJsonBytes(page(false,"source_exhausted")) <= budget) {budgetLookahead = true; continue;}
                     edges.pop();
                     positions.pop();
                     before.pop();
@@ -831,7 +821,7 @@ export function projectProviderCard(
         !raw ||
         raw.object !== "card" ||
         typeof raw.id !== "string" ||
-        !raw.id ||
+        !raw.id || raw.id.length > 128 ||
         typeof raw.oracle_id !== "string" ||
         !raw.oracle_id ||
         !CardIdentityLayoutSchema.safeParse(raw.layout).success

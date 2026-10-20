@@ -74,7 +74,7 @@ both harnesses nevertheless execute the same request/result/error contract.
 Known-card retrieval uses the Core `CardLookupRepository` snapshot port. Its SQLite implementation reads exact
 identity/Printing/Set relationships, complete parts/legalities and selected tag enrichment in a synchronous read
 transaction. The service preflights closed selectors and whole-original-batch Printing compatibility, then binds
-successful import revisions and sizes self-contained continuation before reading records. A second revision check
+successful import revisions and sizes compact fingerprint-bound continuation before reading records. A second revision check
 prevents mixing snapshots during preflight. It projects only requested facts and advances one input occurrence per
 complete outcome. Shared card selectors, projection/envelope types, cursor codec and compact transport serialization
 are reusable by subsequent retrieval tools. No migration, result cache or cursor store is added.
@@ -248,3 +248,14 @@ reasoning. Discovery and Format architecture/tuning compose it, with templates/c
 owners. Services enforce structure, facts and requested deterministic checks; the agent owns strategic assessment and
 confirmation covering the actual result. No approval token, persisted Opportunity or separate workflow engine is added.
 The [workflow demonstration](evaluation/workflows.md) exercises these seams with synthetic data and actual transports.
+
+## Agent-context economy
+
+The shared retrieval codec emits version 2 deflated positional tuples: bounded request/scope fingerprints, relevant
+dependency revisions and tool-specific position. Policies are fingerprinted, and raw query/reference inputs and source
+URLs remain outside cursors. Search reconstructs provider pages from repeated native inputs; source anchoring and
+restart checks remain explicit. Success exposes one next_cursor, null at exhaustion, across search, lookup, catalogue,
+owned-row browsing, candidate views/rendering and Availability witnesses. No saved cursor/result store is added.
+Ordinary Collection search/browse context uses policy_id; full resolved policy is an explicit inspection projection.
+The canonical query-cards skill owns staged research; root/discovery/tuning workflows route to it.
+See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [economy evidence](evaluation/economy.md).

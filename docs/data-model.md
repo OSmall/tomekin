@@ -22,7 +22,7 @@ currently require a persisted-model migration.
 - Deck Candidates are the only persisted deck-building result. Deck Opportunity shortlists and Deck Change Proposals
   remain transient.
 - Card Query requests and results are transient. Queries do not create saved filters or cached product records.
-- Local lookup cursors encode original reference occurrences, source position and relevant successful import IDs.
+- Local lookup cursors encode a fingerprint of the ordered references, source position and relevant successful import IDs.
   They contain no result objects and have no persisted search/cursor record. Failed imports do not replace bindings.
 - Latest final Collection Availability evidence belongs in candidate `check_evidence_json`, with dependency-based
   applicability. Pull Lists derive from applicable evidence; there is no separate Availability, policy or trial store.

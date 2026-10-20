@@ -253,7 +253,7 @@ The corpus also owns Commander tuning scenarios for nominated-card review, struc
 multi-role cards, commander or Color Identity changes, protected cards, different Addition Pools, and partial
 acceptance. Across those scenarios, the current quality gate requires an explicit Addition Pool and assumptions,
 paired additions and cuts, aggregate re-analysis, preserved deck size, deterministic legality validation when a
-revised Deck Candidate is built, evidence-backed explanations, and no persistence before confirmation of the exact
+revised Deck Candidate is built, evidence-backed explanations, and persistence only when existing or new authorization covers the exact
 final change set.
 
 The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
@@ -374,3 +374,13 @@ gate and sanitized result format for #26. `bun run evaluate:parity:prepare` crea
 from committed public reference files and synthetic owned rows; it performs no live network/model/profile operation.
 Its focused test uses the approved shared-handler/isolated-SQLite seam. The small fixture supports provisional and
 shortage behavior, not a completed legal deck; positive manual corpus inputs and human review remain separate gates.
+
+## Research economy coverage
+
+`bun run evaluate:economy` counts serialized request and complete model-visible response tokens under pinned
+js-tiktoken 1.0.21/o200k_base, including actual OpenCode and Pi fallback/Worker serialization. Matched fixture tests
+compare the actual pre-change source baseline and current rich/staged workflows with identical required facts.
+Component counts are independently tokenized diagnostics, not additive billing estimates. Public handler tests cover
+compact tag modes, foil-scoped membership without evidence, explicit policy inspection, bounded cursors and context
+restart. Scenario 17 separately tests live-agent methodology and human outcome review. See
+[economy protocol and results](evaluation/economy.md).

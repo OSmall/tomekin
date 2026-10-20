@@ -130,8 +130,8 @@ Missing Cards. Partially accept the resulting proposal.
 
 Accept when searches remain inside the stated Addition Pool, Collection evidence uses the confirmed location scope,
 every proposed addition has a cut, and partial acceptance triggers deck-size, role, package, curve, and legality
-re-analysis. The agent must show the exact resulting change set and persistence target, then wait for separate
-confirmation before saving.
+re-analysis. The agent shows the exact resulting change set and persistence target. Existing authorization covering
+that result counts; ask only when it does not cover the actual save.
 
 ## Methodology Foundation Expectations
 
@@ -296,3 +296,19 @@ actual partial-acceptance aggregate; existing authorization covering the actual 
 proof before completion; and context-specific sampling assumptions without casting claims. Use the Commander Meren
 and 60-card examples from their canonical Format skills rather than copying a mandatory decklist here. Record human
 observations and conditions independently. No deterministic harness run completes the live-session parity gate.
+
+## Scenario 17: Economical Tag Snowballing And Pool Research
+
+On matched copies of the same starting candidate and Collection, ask for deep Collection-first option research while
+preserving selected cards. Record model/effort, prompt, baseline revision and complete model-facing tool text.
+
+Accept when broad discovery uses compact all-tag associations to learn vocabulary and requested-tag evidence for focused
+comparisons, broadens useful branches with independent functional searches, and inspects actual rules for contenders.
+The agent trusts scoped membership (including an owned-foil restriction), retrieves quantities/source rows for directed
+questions, reuses known facts/Brief/authorization, and saves justified alternatives without changing selection. It uses
+ordinary continuation and restarts on changed context, with honest incomplete coverage and useful grounded recommendations.
+No fixed card count, prominence cutoff or deterministic quality score establishes success.
+
+Compare cumulative request/response text tokens, cursor/context/evidence contributions and repeated facts alongside
+human-assessed breadth, rules qualifications and outcome usefulness. Record stopped/failed/incomplete runs honestly.
+This is an explicit live-agent/manual gate; deterministic fixture results do not establish it passed.

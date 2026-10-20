@@ -28,6 +28,9 @@ for (const mode of ["fallback", "Worker"] as const) test(`Pi ${mode} preserves c
         expect(envelope.status).toBe("ok");
         expect(envelope.edges[0].node.card.tags.direct[1].annotation).toBe(annotation);
         expect(envelope).not.toHaveProperty("truncated");
+        const compact = await definition.execute("compact", {...args, select:{tags:{mode:"compact",slugs:["mana"]}}}, new AbortController().signal) as PiToolOutput;
+        expect(JSON.parse(compact.content[0]!.text)).toMatchObject({status:"ok",next_cursor:null,edges:[{node:{card:{tags:{direct:[],inherited:[{slug:"mana",weight:"strong"}]}}}}]});
+        expect(compact.content[0]!.text).not.toContain("annotation");
         const invalid = await definition.execute("invalid", {...args, select: {name: false}}, new AbortController().signal) as PiToolOutput;
         expect(JSON.parse(invalid.content[0]!.text)).toEqual(invalid.details);
         expect(invalid.details).toMatchObject({status: "error", edges: [], error: {code: "invalid_request", issues: [{path: ["select", "name"], code: "invalid_value"}]}});

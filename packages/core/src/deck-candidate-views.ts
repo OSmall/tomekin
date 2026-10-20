@@ -3,7 +3,7 @@ import {createHash} from "node:crypto";
 import {err, ok} from "neverthrow";
 import {z} from "zod";
 import {type DeckCandidate, roleSelectedCopies, summarizeDeckCandidate} from "./deck-candidate";
-import {compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
+import {compactJsonBytes, decodeRetrievalCursor, cursorBindingsMatch, cursorScopeMatches, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
 import {renderCandidateReportParts, renderPortableDecklist} from "./deck-candidate-rendering";
 
 export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
@@ -75,14 +75,14 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return failure(decoded.problem);
         const cursor = decoded.cursor!;
-        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || JSON.stringify(cursor.bindings) !== JSON.stringify({id:candidate.id,view:args.view}) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view or record position.", retryable:false});
+        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || !cursorBindingsMatch(cursor, {id:candidate.id,view:args.view}) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view or record position.", retryable:false});
         if (cursor.revisions.baseline !== baseline) return failure({code:"stale_cursor", message:"Candidate/view baseline changed. Restart this view without after.", retryable:false, recovery:"restart"});
         offset = cursor.position as number;
     }
-    const token = (position: number) => encodeRetrievalCursor({version:1,tool:"get_deck_candidate",source:"candidate",bindings:{id:candidate.id,view:args.view},revisions:{baseline},position});
+    const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:{id:candidate.id,view:args.view},revisions:{baseline},position});
     const page = (end: number, stop_reason: RetrievalSuccess<CandidateViewRecord>["stop_reason"]) => ({status:"ok" as const, ...context,
         edges:records.slice(offset,end).map(node => ({node})),
-        pageInfo:{startCursor:token(offset),endCursor:token(end),hasPreviousPage:offset>0,hasNextPage:end<records.length},stop_reason,metadata:metadata(end-offset)});
+        next_cursor:end<records.length?token(end):null,stop_reason,metadata:metadata(end-offset)});
     let end = offset;
     while (end < records.length && end-offset < first) {
         // Tentative pages must reserve their eventual stop metadata before accepting a record.
