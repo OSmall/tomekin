@@ -21,8 +21,8 @@ async function observe(name: WorkflowName) {
         const collected = [...first.edges];
         const pageBytes = [utf8Bytes(JSON.stringify(first))];
         let page = first;
-        while (page.pageInfo.hasNextPage) {
-            page = (await stage(`continuation${pageBytes.length}`, () => runtime.handlers.lookupCards({...args, after: page.pageInfo.endCursor})))._unsafeUnwrap();
+        while (Boolean(page.next_cursor)) {
+            page = (await stage(`continuation${pageBytes.length}`, () => runtime.handlers.lookupCards({...args, after: page.next_cursor})))._unsafeUnwrap();
             pageBytes.push(utf8Bytes(JSON.stringify(page)));
             collected.push(...page.edges);
         }

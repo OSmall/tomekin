@@ -1,0 +1,564 @@
+{
+  "protocol": "agent-economy-live-observation-v1",
+  "observedLocalDate": "2026-10-21",
+  "model": "openai-codex/gpt-6.1-sol",
+  "reasoningEffort": "medium",
+  "baselineRevision": "d16556954a10443e5e207a032dfe75e3e88dd377",
+  "currentRevision": "Issue #107 implementation committed alongside this observation; extension digest records executed bundle.",
+  "adapter": "production Pi fallback with finite injected synthetic provider",
+  "tokenizer": {
+    "package": "js-tiktoken",
+    "version": "1.0.21",
+    "encoding": "o200k_base",
+    "counting": "Sum each tool_execution_start args serialized with JSON.stringify and each message_end toolResult content[].text once. Ignore streaming updates and archival details. All-tool totals include methodology reads, reads/edits and validation failures. Successful-research totals exclude failed browse_tags/search_cards/lookup_cards calls."
+  },
+  "nativeUsageNote": "Raw sums from assistant message_end usage counters. These include repeated cached context and are separate from tool-text counts. Reasoning is reported separately and is not added to totalTokens. No externally verified billing or pricing claim.",
+  "bounds": {
+    "toolCallStopThreshold": 30,
+    "elapsedStopSeconds": 240,
+    "hardStopSeconds": 250
+  },
+  "fixture": {
+    "candidateId": "01a15988-d5b4-7000-bd94-5d5f2ff0e349",
+    "prompt": "Review existing Deck Candidate 01a15988-d5b4-7000-bd94-5d5f2ff0e349 and research useful additional options for its Deck Card Pool. Its Brief and policy are already confirmed: Casual 60, sacrifice/death engine, both Allowed 1 and Allowed 2 binders, no deck borrowing, selected 60 cards must remain unchanged. This authorizes saving justified pool-only options and contributions, not selection changes. Compare conditional access, actual net card advantage, creature supply and death payoffs, inspecting rules for promising contenders. Explain useful options, qualifications, rejected misleading fits and incomplete coverage. This is a bounded synthetic fixture, not real MTG card data or a completed playable deck. Discover synthetic tag vocabulary through browse_tags. The injected fixture provider supports queries otag:<one discovered synthetic slug> and o:\"draw two cards\" (independent functional search); these enumerate that exact finite synthetic population. Native controls/pagination work normally. There is no live Scryfall or whole-Collection census. Use your judgment; do not use a fixed weight threshold or shortlist quota.",
+    "sourceCards": [
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000100",
+        "oracle_id": "00000000-0000-4000-8000-000000000001",
+        "name": "Feast Reader",
+        "oracle_text": "As an additional cost to cast this spell, sacrifice a creature. Draw two cards.",
+        "tags": [
+          "synthetic-feast",
+          "synthetic-access"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000101",
+        "oracle_id": "00000000-0000-4000-8000-000000000002",
+        "name": "Focused Reader",
+        "oracle_text": "Draw two cards.",
+        "tags": [
+          "synthetic-access"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000102",
+        "oracle_id": "00000000-0000-4000-8000-000000000003",
+        "name": "Feast Outlet",
+        "oracle_text": "Sacrifice another creature: You gain 1 life.",
+        "tags": [
+          "synthetic-feast",
+          "synthetic-sacrifice"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000103",
+        "oracle_id": "00000000-0000-4000-8000-000000000004",
+        "name": "Feast Reward",
+        "oracle_text": "Whenever another creature you control dies, each opponent loses 1 life.",
+        "tags": [
+          "synthetic-feast",
+          "synthetic-reward"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000104",
+        "oracle_id": "00000000-0000-4000-8000-000000000005",
+        "name": "Misleading Seed",
+        "oracle_text": "When this enters, look at the top card of your library. Put it on the bottom.",
+        "tags": [
+          "synthetic-feast",
+          "synthetic-access"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000105",
+        "oracle_id": "00000000-0000-4000-8000-000000000006",
+        "name": "Patient Supplier",
+        "oracle_text": "{2}: Create a 1/1 colorless creature token.",
+        "tags": [
+          "synthetic-fodder",
+          "synthetic-sacrifice"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Creature"
+      },
+      {
+        "object": "card",
+        "id": "00000000-0000-4000-8000-000000000124",
+        "oracle_id": "00000000-0000-4000-8000-000000000025",
+        "name": "Synthetic Meadow",
+        "oracle_text": "{T}: Add {G}.",
+        "tags": [
+          "synthetic-mana"
+        ],
+        "layout": "normal",
+        "cmc": 1,
+        "type_line": "Basic Land"
+      }
+    ],
+    "initialSelected": [
+      {
+        "card_identity_id": "00000000-0000-4000-8000-000000000001",
+        "quantity": 4,
+        "section": "mainboard"
+      },
+      {
+        "card_identity_id": "00000000-0000-4000-8000-000000000003",
+        "quantity": 4,
+        "section": "mainboard"
+      },
+      {
+        "card_identity_id": "00000000-0000-4000-8000-000000000004",
+        "quantity": 4,
+        "section": "mainboard"
+      },
+      {
+        "card_identity_id": "00000000-0000-4000-8000-000000000025",
+        "quantity": 48,
+        "section": "mainboard"
+      }
+    ]
+  },
+  "observations": [
+    {
+      "mode": "baseline",
+      "exitCode": 0,
+      "stopped": null,
+      "toolCalls": 21,
+      "logSha256": "4d3e08afe56948770d9e2f989eb9f3a483d466d01ea2643ea74f7e46a310226a",
+      "extensionSha256": "f4c57bc6ab22a72743b7ea7e06c3a4b7eab050fd38a9cdf8a8bed66255640683",
+      "toolText": {
+        "requests": 2911,
+        "responses": 31837,
+        "researchRequests": 1432,
+        "researchResponses": 21242,
+        "total": 34748,
+        "researchTotal": 22674,
+        "successfulResearchTotal": 21128
+      },
+      "nativeUsageAsReported": {
+        "input": 87249,
+        "output": 3997,
+        "cacheRead": 460672,
+        "cacheWrite": 0,
+        "reasoning": 215,
+        "totalTokens": 551918
+      },
+      "errors": [
+        {
+          "tool": "search_cards",
+          "requestTokens": 94,
+          "responseTokens": 162,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        },
+        {
+          "tool": "search_cards",
+          "requestTokens": 95,
+          "responseTokens": 163,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        },
+        {
+          "tool": "search_cards",
+          "requestTokens": 96,
+          "responseTokens": 164,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        },
+        {
+          "tool": "search_cards",
+          "requestTokens": 95,
+          "responseTokens": 163,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        },
+        {
+          "tool": "search_cards",
+          "requestTokens": 95,
+          "responseTokens": 163,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        },
+        {
+          "tool": "search_cards",
+          "requestTokens": 94,
+          "responseTokens": 162,
+          "reason": "Missing required collection_scope.match; corrected on retry."
+        }
+      ],
+      "discovery": {
+        "searches": 7,
+        "searchFields": [
+          "oracle_id",
+          "name",
+          "mana_cost",
+          "mana_value",
+          "type_line",
+          "oracle_text"
+        ],
+        "searchesWithCollectionEvidence": 7,
+        "distinctIdentities": 7,
+        "rulesOccurrences": 16,
+        "distinctRulesIdentities": 7,
+        "repeatedRulesOccurrences": 9,
+        "repeatedSelectedFields": 32
+      },
+      "selectionPreserved": true,
+      "selected": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Outlet"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Reward"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "quantity": 48,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Synthetic Meadow"
+        }
+      ],
+      "options": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "comparison_note": null,
+          "card_name": "Feast Outlet"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "comparison_note": null,
+          "card_name": "Feast Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "comparison_note": null,
+          "card_name": "Feast Reward"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000002",
+          "comparison_note": "Pool-only alternative for less conditional access. Synthetic rules say Draw two cards, without sacrifice cost; unlike Feast Reader it neither consumes fodder nor independently produces a death. Two eligible recorded copies in Allowed 2 (separate quantity-one rows). No selection change or whole-deck Availability proof.",
+          "card_name": "Focused Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000006",
+          "comparison_note": "Pool-only repeatable creature-supply alternative: {2} per 1/1 token, with no printed tap or once-per-turn limit. Supplies Feast Reader/Feast Outlet and thereby Feast Reward, but is not itself an outlet or death payoff despite its sacrifice tag. One eligible recorded copy in Allowed 2. No selection change.",
+          "card_name": "Patient Supplier"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "comparison_note": null,
+          "card_name": "Synthetic Meadow"
+        }
+      ],
+      "contributions": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Four selected synthetic access/death enablers. Requires sacrificing a creature as an additional casting cost, so needs an existing body and can consume scarce engine pieces. Draw two is not automatically two net cards: draw-transaction accounting spends the casting card and, with nontoken fodder, another card; token or already-doomed fodder improves the exchange. Death can trigger Feast Reward.",
+          "qualifications": [
+            "Sacrifice paid up front; countering the spell would not refund that cost under ordinary sacrifice-as-cost reasoning.",
+            "Synthetic Creature with bare draw text is incomplete real-MTG rules; transaction accounting excludes any retained body and is not a playability claim.",
+            "Four selected copies do not establish four unconditional draw sources or a sustainable creature supply."
+          ],
+          "evidence": [
+            {
+              "reference": "search_cards:otag:synthetic-feast",
+              "note": "Full synthetic rules inspected, including additional sacrifice cost."
+            }
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000002",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Access alternative not requiring a pre-existing creature. In draw-transaction accounting, two drawn minus one casting card gives +1, whereas Feast Reader also consumes a creature; avoids sacrificing an engine piece when fodder is scarce.",
+          "qualifications": [
+            "Zero selected copies: supplies no current mainboard coverage.",
+            "Does not replace Feast Reader's sacrifice/death-enabling function; a future substitution must review lost outlet access.",
+            "Creature type with bare draw text and null power/toughness is a synthetic abstraction, not an executable real-card design. Accounting excludes any putative retained creature body; do not claim actual gameplay resolution.",
+            "Two eligible copies in Allowed 2 are retrieval evidence, not joint Availability or reservations."
+          ],
+          "evidence": [
+            {
+              "reference": "lookup_cards:00000000-0000-4000-8000-000000000002",
+              "note": "Full rules: Draw two cards. Mana cost {1}; null power/toughness. Matching owned rows 201 and 227 each quantity one in Allowed 2."
+            },
+            {
+              "reference": "search_cards:o:\"draw two cards\"",
+              "note": "Independent functional discovery corroborates the access alternative; no prominence cutoff used."
+            }
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Four selected repeatable sacrifice outlets: sacrifice another creature to gain 1 life. No printed mana/tap restriction; enables controlled deaths for Feast Reward, but produces neither creatures nor cards.",
+          "qualifications": [
+            "Cannot sacrifice itself to its own another-creature ability.",
+            "Consumes creatures needed by Feast Reader; life gain is not opponent damage or net card advantage.",
+            "Search summary reports only one eligible recorded copy against four selected; not a joint Availability check."
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Four selected death payoffs: another creature you control dying makes each opponent lose 1 life. Converts supplied bodies plus outlets into a finite attrition route; tokens qualify under the printed creature condition.",
+          "qualifications": [
+            "Does not trigger on its own death, supply fodder, sacrifice creatures, draw cards, or gain life.",
+            "Without continuing creature supply, repeatable outlet access alone does not sustain this route.",
+            "Search summary reports one eligible recorded copy against four selected; not a joint Availability check."
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000006",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Repeatable fodder supply: spend {2} to create a 1/1 token, then use a separate outlet. Tokens reduce expenditure of actual creature cards to Feast Reader and can feed Feast Outlet while Feast Reward turns deaths into opponent life loss. Also provides potential token pressure rather than only engine consumption.",
+          "qualifications": [
+            "Zero selected copies: current repeatable-supply gap remains.",
+            "No sacrifice ability, death trigger, or draw effect; synthetic-sacrifice association is not an outlet contribution.",
+            "Each token costs two mana; using it for a death consumes the same body that could attack or block. Requires separate outlet and payoff; supplier removal stops further production.",
+            "No printed tap or turn restriction, but repeatability is mana-limited, not free or an established deterministic combo.",
+            "One eligible quantity-one row in Allowed 2; synthetic creature has null power/toughness, so no completed-playability claim."
+          ],
+          "evidence": [
+            {
+              "reference": "lookup_cards:00000000-0000-4000-8000-000000000006",
+              "note": "Full rules {2}: Create a 1/1 colorless creature token. Mana cost {1}. Actual owned row 205 quantity one in Allowed 2; both fodder and sacrifice tags inspected."
+            }
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Fixture-selected engine piece or supporting mana; static synthetic baseline."
+        }
+      ],
+      "finalText": "Saved **two pool-only options** and qualified contributions to candidate `01a15988-d5b4-7000-bd94-5d5f2ff0e349`. **All 60 selected cards remain unchanged.**\n\n| Added option | Useful contribution | Qualification |\n|---|---|---|\n| **Focused Reader** | Draw-two access without sacrificing a creature; two eligible copies in Allowed 2. | Does not provide Feast Reader’s death-enabling function. |\n| **Patient Supplier** | Repeatable `{2}` token production feeds the sacrifice/death engine; one eligible copy in Allowed 2. | Supplies bodies, not sacrifice access. Requires mana, a separate outlet and a payoff. |\n\n### Engine comparison\n- **Feast Reader:** conditional access requiring an existing creature. Two cards drawn is not automatically two net cards: counting the casting card and a sacrificed nontoken card, the draw transaction is card-neutral before retained-body or death benefits. Token fodder improves that exchange.\n- **Feast Outlet:** repeatable sacrifice access, but consumes supply for life gain—not cards or opponent damage.\n- **Feast Reward:** converts other controlled creatures’ deaths into opponent life loss; creates neither bodies nor deaths itself.\n- **Focused Reader:** draw transaction is +1 without a sacrifice cost, but cannot replace the lost death-enabling function by itself.\n\nThese are synthetic accounting comparisons: bare draw text on incomplete Creature records does not establish real-MTG playability.\n\n### Rejected misleading fits\n- **Misleading Seed:** looking at and bottoming the top card draws nothing; its tags do not justify an access contribution.\n- **Patient Supplier’s sacrifice tag:** does not make it an outlet.\n\n### Remaining limits\nThe selected configuration still lacks repeatable creature production; pool alternatives supply **zero selected coverage**. Retrieval also found only one eligible copy each of Outlet and Reward against four selected—not a joint Availability determination.\n\nAll six discovered tag searches and the independent draw-two search were exhausted. This covers the supplied finite search populations, **not a whole-Collection census**. No completed-deck, legality or assemblability claim was made."
+    },
+    {
+      "mode": "current",
+      "exitCode": 0,
+      "stopped": null,
+      "toolCalls": 20,
+      "logSha256": "6dc235b747ff5b90a93a146d2f868920384f1fefaa9152fac1545bcb84b841f1",
+      "extensionSha256": "98e4c30d5473449833c7d879f46ff81585e172f3ae2a940468d021154af7617e",
+      "toolText": {
+        "requests": 2662,
+        "responses": 14126,
+        "researchRequests": 825,
+        "researchResponses": 2650,
+        "total": 16788,
+        "researchTotal": 3475,
+        "successfulResearchTotal": 3475
+      },
+      "nativeUsageAsReported": {
+        "input": 65821,
+        "output": 3953,
+        "cacheRead": 426368,
+        "cacheWrite": 0,
+        "reasoning": 444,
+        "totalTokens": 496142
+      },
+      "errors": [
+        {
+          "tool": "edit_deck_candidate",
+          "requestTokens": 879,
+          "responseTokens": 151,
+          "reason": "Comparison notes exceeded 500 Unicode code points; shortened on retry."
+        }
+      ],
+      "discovery": {
+        "searches": 7,
+        "searchFields": [
+          "oracle_id",
+          "name",
+          "mana_value",
+          "tags"
+        ],
+        "searchesWithCollectionEvidence": 0,
+        "distinctIdentities": 7,
+        "rulesOccurrences": 7,
+        "distinctRulesIdentities": 7,
+        "repeatedRulesOccurrences": 0,
+        "repeatedSelectedFields": 28
+      },
+      "selectionPreserved": true,
+      "selected": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Outlet"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "quantity": 4,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Feast Reward"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "quantity": 48,
+          "section": "mainboard",
+          "sort_order": 0,
+          "note": null,
+          "card_name": "Synthetic Meadow"
+        }
+      ],
+      "options": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "comparison_note": null,
+          "card_name": "Feast Outlet"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "comparison_note": null,
+          "card_name": "Feast Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "comparison_note": null,
+          "card_name": "Feast Reward"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000002",
+          "comparison_note": "Pool-only access without Feast Reader's creature-sacrifice cost. Draw two minus one card cast yields +1 hand card, without consuming a board creature; any retained Creature body needs separate accounting under this synthetic rules abstraction. Loses Reader's sacrifice/death-enabling function. Eligible under confirmed binder policy; no selected coverage or joint Availability claim.",
+          "card_name": "Focused Reader"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000006",
+          "comparison_note": "Pool-only renewable fodder: {1} deployment, {2} per 1/1 token; no tap/turn limit stated. Feeds Feast Reader or Feast Outlet and thereby Feast Reward. Generates board material, not draws. Despite its sacrifice tag it is not an outlet. Mana-limited and needs external engine pieces. Eligible under confirmed binder policy; no selected coverage or joint Availability claim.",
+          "card_name": "Patient Supplier"
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "comparison_note": null,
+          "card_name": "Synthetic Meadow"
+        }
+      ],
+      "contributions": [
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000001",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Fixture-selected engine piece or supporting mana; static synthetic baseline."
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000002",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Creature-independent access when spare bodies are absent. Draw two minus one card cast is +1 hand card. Unlike Feast Reader it does not also consume a creature, but does not enable a sacrifice/death event. Any retained Creature body requires separate material accounting.",
+          "qualifications": [
+            "Pool-only: zero selected Mainboard coverage.",
+            "Bare draw text on a Creature is a fixture abstraction, not a specified playable triggered ability.",
+            "Neither a sacrifice outlet, renewable fodder generator nor death payoff."
+          ],
+          "evidence": [
+            {
+              "reference": "lookup_cards:00000000-0000-4000-8000-000000000002",
+              "note": "Creature, {1}; Draw two cards."
+            },
+            {
+              "reference": "search_cards:o:\"draw two cards\"",
+              "note": "Independent functional search exhausted under confirmed two-binder policy."
+            }
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000003",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Fixture-selected engine piece or supporting mana; static synthetic baseline."
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000004",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Fixture-selected engine piece or supporting mana; static synthetic baseline."
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000006",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Renewable expendable creatures without spending more hand cards. Tokens pay Feast Reader's sacrifice cost or feed Feast Outlet; their deaths trigger Feast Reward. Addresses supply rather than adding another payoff dependent on scarce bodies.",
+          "qualifications": [
+            "Pool-only: selected list still lacks this renewable supply.",
+            "{1} deployment plus {2} per token; mana-limited, with no tap/turn limit stated.",
+            "Not an outlet despite its tag, not card draw, not a death payoff.",
+            "Needs external outlet and payoff for drain; sacrificing Supplier forfeits future production."
+          ],
+          "evidence": [
+            {
+              "reference": "lookup_cards:00000000-0000-4000-8000-000000000006",
+              "note": "Creature, {1}; {2}: Create a 1/1 colorless creature token."
+            },
+            {
+              "reference": "search_cards:otag:synthetic-fodder",
+              "note": "Scoped discovery exhausted under confirmed two-binder policy; eligibility is not joint Availability."
+            }
+          ]
+        },
+        {
+          "card_identity_id": "00000000-0000-4000-8000-000000000025",
+          "role_id": "01a15988-d5b4-7001-955b-ea19ed93586f",
+          "rationale": "Fixture-selected engine piece or supporting mana; static synthetic baseline."
+        }
+      ],
+      "finalText": "Saved **two pool-only options with qualified contributions**. The selected 60 and confirmed Brief/policy remain unchanged.\n\n### Useful additions\n- **Focused Reader:** Draws two without Feast Reader’s additional creature-sacrifice cost. Spending one hand card and drawing two yields **+1 hand card**; Feast Reader also consumes a board creature, offsetting that gain in material unless death benefits compensate. Focused Reader preserves bodies but loses the sacrifice event. These synthetic Creature cards’ bare draw text leaves retained-body/resolution accounting unspecified.\n- **Patient Supplier:** Costs `{1}`, then `{2}` per 1/1 token, with no stated tap or turn limit. Supplies expendable bodies without spending further hand cards. Tokens feed Feast Reader or Feast Outlet and trigger Feast Reward when they die. This is renewable **board material**, not draw—and Supplier is **not an outlet**, despite its tag.\n\nBoth were discovered under the confirmed two-binder policy; no deck borrowing was used.\n\n### Misleading fits and dependencies\n- **Misleading Seed:** Looking at the top card and putting it on the bottom provides neither draw nor net card advantage. Its strong access/engine tags do not justify inclusion here.\n- **Feast Outlet:** Sacrifices another creature for life, not cards; needs supply and a separate payoff.\n- **Feast Reward:** Converts other controlled creatures’ deaths into opponent life loss, but supplies neither bodies nor sacrifice access.\n\n### Remaining gaps\nThe unchanged fixture contains four copies each of Reader, Outlet and Reward plus 48 Meadows. Renewable supply remains **absent from selection**; pool options repair no active coverage. The broad “Engine support: 60” count is not meaningful functional coverage.\n\nAll six discovered synthetic-tag searches and the independent draw-two search exhausted their scoped results. No additional death payoff emerged. This was not a whole-Collection census, playable-deck assessment, or joint Availability check."
+    }
+  ],
+  "humanAcceptance": "Pending account-holder outcome review. No LLM judge or aggregate quality score is used.",
+  "limitations": [
+    "One non-deterministic paired observation on a tiny synthetic population, not a universal savings forecast or real-Collection recommendation-quality pass.",
+    "All seven researched identities received rules inspection in both runs; the live saving is compact discovery and avoided repeated rules/evidence, not a smaller final shortlist.",
+    "The baseline had six malformed search attempts; successful-research totals isolate their effect. Current run retried one overlong comparison note.",
+    "Current saves qualified contributions for new options; baseline additionally rewrites existing selected-card contributions. Final texts and persisted contributions are included for human assessment.",
+    "No live Scryfall, production Collection, completed Format-sized build, native question-UI acceptance or broader #26 parity claim."
+  ]
+}

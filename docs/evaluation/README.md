@@ -76,3 +76,7 @@ automatic deck checks; requested explicit final checks remain necessary. See [th
 limits](candidate-performance-v1.md) and [captured report](candidate-performance-v1.json). The original baseline stays
 immutable; the separate [matched pinned legacy rerun](candidate-performance-legacy-v1.json) does not replace it.
 No benchmark timing is a CI threshold, live-session latency guarantee or explanation of the historical six-minute case.
+
+The current [research economy protocol](economy.md) adds pinned offline token counts and an actual pre-change source
+comparison. Its text-token measurements replace bytes/4 estimates for that protocol only; historical reports retain
+their original labels. Live-agent outcome acceptance remains separate.

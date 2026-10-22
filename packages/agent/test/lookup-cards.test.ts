@@ -8,9 +8,9 @@ test("lookup preserves exact references, ordered misses and duplicates across pa
     try {
         const references = [{kind: "name", value: "Sol Ring"}, {kind: "oracle_id", value: id(99)}, {kind: "printing_id", value: id(2)}, {kind: "name", value: "Sol Ring"}];
         const first = (await runtime.handlers.lookupCards({references, select: {name: true}, first: 2}))._unsafeUnwrap();
-        expect(first).toMatchObject({status: "ok", edges: [{node: {status: "found", card: {oracle_id: id(1), name: "Sol Ring"}}}, {node: {status: "not_found", reference: references[1]}}], metadata: {returned_count: 2, lookup: {input_count: 4, start_index: 0, next_index: 2}}, pageInfo: {hasNextPage: true, hasPreviousPage: false}});
-        const next = (await runtime.handlers.lookupCards({references, select: {oracle_id: true}, after: first.pageInfo.endCursor}))._unsafeUnwrap();
-        expect(next).toMatchObject({status: "ok", edges: [{node: {status: "found", card: {oracle_id: id(1), printing_id: id(2)}}}, {node: {status: "found", card: {oracle_id: id(1)}}}], pageInfo: {hasNextPage: false, hasPreviousPage: true}, metadata: {lookup: {start_index: 2, next_index: 4}}});
+        expect(structuredClone(first)).toMatchObject({status: "ok", edges: [{node: {status: "found", card: {oracle_id: id(1), name: "Sol Ring"}}}, {node: {status: "not_found", reference: references[1]}}], metadata: {returned_count: 2, lookup: {input_count: 4, start_index: 0, next_index: 2}}, next_cursor: expect.any(String)});
+        const next = (await runtime.handlers.lookupCards({references, select: {oracle_id: true}, after: first.next_cursor}))._unsafeUnwrap();
+        expect(next).toMatchObject({status: "ok", edges: [{node: {status: "found", card: {oracle_id: id(1), printing_id: id(2)}}}, {node: {status: "found", card: {oracle_id: id(1)}}}], next_cursor: null, metadata: {lookup: {start_index: 2, next_index: 4}}});
         expect(next.edges[1]!.node).toEqual({status: "found", card: {oracle_id: id(1)}});
     } finally { runtime.close(); fixture.dispose(); }
 });
@@ -68,13 +68,12 @@ test("lookup zero-first does not consume occurrences and exact names do not matc
     try {
         const references = [{kind: "name", value: "sol ring"}, {kind: "name", value: "Bala Ged Recovery"}];
         const zero = (await runtime.handlers.lookupCards({references, select: {name: true}, first: 0}))._unsafeUnwrap();
-        expect(zero).toMatchObject({edges: [], pageInfo: {startCursor: null, endCursor: null, hasNextPage: true, hasPreviousPage: false}, metadata: {lookup: {next_index: 0}}});
+        expect(structuredClone(zero)).toMatchObject({edges: [], next_cursor: expect.any(String), metadata: {lookup: {next_index: 0}}});
         const first = (await runtime.handlers.lookupCards({references, select: {name: true}, first: 1}))._unsafeUnwrap();
-        const last = (await runtime.handlers.lookupCards({references, select: {name: true}, after: first.pageInfo.endCursor}))._unsafeUnwrap();
+        const last = (await runtime.handlers.lookupCards({references, select: {name: true}, after: first.next_cursor}))._unsafeUnwrap();
         expect(first.edges[0]!.node).toMatchObject({status: "not_found", reference: references[0]});
         expect(last.edges[0]!.node).toMatchObject({status: "not_found", reference: references[1]});
-        const end = (await runtime.handlers.lookupCards({references, select: {oracle_id: true}, first: 0, after: last.pageInfo.endCursor}))._unsafeUnwrap();
-        expect(end).toMatchObject({edges: [], pageInfo: {startCursor: null, endCursor: null, hasNextPage: false, hasPreviousPage: true}, stop_reason: "source_exhausted"});
+        expect(last.next_cursor).toBeNull();
     } finally {runtime.close(); fixture.dispose();}
 });
 
@@ -82,10 +81,10 @@ test("lookup binds fixed inputs and relevant successful imports, including first
     const fixture = await createLookupFixture();
     const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
     try {
-        const references = [{kind: "name", value: "Sol Ring"}, {kind: "oracle_id", value: id(1)}];
+        const references = [{kind: "name", value: "Sol Ring"}, {kind: "oracle_id", value: id(1)}, {kind:"name",value:"Little Girl"}];
         const args = {references, select: {name: true}, first: 1};
         const page = (await runtime.handlers.lookupCards(args))._unsafeUnwrap();
-        const after = page.pageInfo.endCursor;
+        const after = page.next_cursor;
         for (const request of [{...args, references: [...references].reverse(), after}, {...args, include_provenance: true, after}, {...args, after: "broken"}, {...args, after: Buffer.from('{"version":99}').toString("base64url")}]) {
             expect((await runtime.handlers.lookupCards(request))._unsafeUnwrapErr().envelope.error.code).toBe("invalid_cursor");
         }
@@ -95,7 +94,7 @@ test("lookup binds fixed inputs and relevant successful imports, including first
         expect(optional.edges[0]!.node).toMatchObject({unavailable_fields: {tags: "dataset_not_imported"}});
         await fixture.reimportTags();
         expect((await runtime.handlers.lookupCards({...args, after})).isOk()).toBe(true);
-        const staleTags = (await runtime.handlers.lookupCards({...args, after: optional.pageInfo.endCursor}))._unsafeUnwrapErr().envelope;
+        const staleTags = (await runtime.handlers.lookupCards({...args, after: optional.next_cursor}))._unsafeUnwrapErr().envelope;
         expect(staleTags.error).toMatchObject({code: "stale_cursor", reason: "reference_import_changed", recovery: "restart"});
         expect(staleTags.error).not.toHaveProperty("cursor");
         await fixture.reimportOracle();
@@ -118,9 +117,9 @@ test("lookup splits complete escaped UTF-8 outcomes and resumes every occurrence
             starts.push(page.metadata.lookup!.start_index);
             for (const edge of page.edges) if (edge.node.status === "found") expect((edge.node.card.tags as any).direct[1].annotation).toBe(annotation);
             nodes.push(...page.edges.map((edge) => edge.node));
-            if (!page.pageInfo.hasNextPage) break;
+            if (!Boolean(page.next_cursor)) break;
             expect(page.stop_reason).toBe("response_budget");
-            after = page.pageInfo.endCursor!;
+            after = page.next_cursor!;
         }
         expect(starts).toEqual([0, 2, 3]);
         expect(nodes.map((node) => node.status)).toEqual(["found", "not_found", "found", "found"]);
@@ -144,13 +143,13 @@ test("oversized selected content returns an intact structured error and safe rec
     } finally {runtime.close(); fixture.dispose();}
 });
 
-test("cursor preflight rejects oversized self-contained bindings without a recovery token", async () => {
+test("large reference text stays out of continuation and an oversized outcome retains safe recovery", async () => {
     const fixture = await createLookupFixture();
     const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
     try {
         const failed = (await runtime.handlers.lookupCards({references: [{kind: "name", value: 'Unresolved "🧙" '.repeat(8_000)}], select: {oracle_id: true}}))._unsafeUnwrapErr().envelope;
-        expect(failed).toMatchObject({edges: [], error: {code: "cursor_too_large", retryable: false, limit_bytes: 51_200}});
-        expect(failed.error).not.toHaveProperty("cursor");
+        expect(failed).toMatchObject({edges: [], error: {code: "record_too_large", retryable: false, limit_bytes: 51_200}});
+        expect(failed.error.cursor!.length).toBeLessThan(500);
         expect(Buffer.byteLength(JSON.stringify(failed), "utf8")).toBeLessThanOrEqual(51_200);
     } finally {runtime.close(); fixture.dispose();}
 });

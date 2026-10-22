@@ -1,7 +1,7 @@
 import {collectionRequestBindings, prepareCollectionRetrieval, CollectionRetrievalFailure, type CollectionRetrievalSession, type CollectionRetrievalDependencies, type CollectionRetrievalContext} from "./collection-retrieval";
 import {err, ok, type Result} from "neverthrow";
 import {requiredScryfallImportContractRevisions, type ScryfallBulkDataImport} from "./scryfall-sync";
-import {LookupCardsArgsSchema, compactJsonBytes, decodeRetrievalCursor, encodeRetrievalCursor, printingFacts, projectLocalCard, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type CardLookupRepository, type CardReference, type CardFact, type LookupOutcome, type RetrievalEnvelope, type RetrievalFailure, type RetrievalMetadata, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError, type RetrievalCursor, type RetrievalIssue} from "./card-retrieval";
+import {LookupCardsArgsSchema, compactJsonBytes, decodeRetrievalCursor, cursorBindingsMatch, cursorScopeMatches, encodeRetrievalCursor, printingFacts, projectLocalCard, retrievalResponseBudgetBytes, retrievalScanDeadlineMs, type CardLookupRepository, type CardReference, type CardFact, type LookupOutcome, type RetrievalEnvelope, type RetrievalFailure, type RetrievalMetadata, type RetrievalProblem, type RetrievalSuccess, type RetrievalToolError, type RetrievalCursor, type RetrievalIssue} from "./card-retrieval";
 import type {Logger} from "./logging";
 
 export type CardLookupOptions = {responseBudgetBytes?: number; scanDeadlineMs?: number; now?: () => number; log?: Logger; collection?: CollectionRetrievalDependencies | undefined};
@@ -37,8 +37,8 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
             bytes = compactJsonBytes(envelope);
             if (bytes > budget) throw new Error("Adapter response budget cannot carry a minimal structured lookup error.");
         }
-        log?.info({operation: "lookup_cards", status: envelope.status, selectedFields: parsed.success ? Object.keys(parsed.data.select) : [], returnedCount: envelope.edges.length, outputBytes: bytes, lookupReadMs, projectionMs, finalSerializationMs: performance.now() - serializationStarted, ...(envelope.status === "error" ? {errorCode: envelope.error.code, requiredBytes: envelope.error.required_bytes, limitBytes: envelope.error.limit_bytes} : {}), durationMs: Math.round(now() - started), recovery: envelope.status === "error" ? !!envelope.error.cursor : envelope.pageInfo.hasNextPage}, "Local lookup completed");
-        log?.debug({operation: "lookup_cards", after: parsed.success ? parsed.data.after : undefined, cursors: envelope.status === "error" ? envelope.error.cursor : envelope.pageInfo}, "Lookup continuation positions");
+        log?.info({operation: "lookup_cards", status: envelope.status, selectedFields: parsed.success ? Object.keys(parsed.data.select) : [], returnedCount: envelope.edges.length, outputBytes: bytes, lookupReadMs, projectionMs, finalSerializationMs: performance.now() - serializationStarted, ...(envelope.status === "error" ? {errorCode: envelope.error.code, requiredBytes: envelope.error.required_bytes, limitBytes: envelope.error.limit_bytes} : {}), durationMs: Math.round(now() - started), recovery: envelope.status === "error" ? !!envelope.error.cursor : Boolean(envelope.next_cursor)}, "Local lookup completed");
+        log?.debug({operation: "lookup_cards", after: parsed.success ? parsed.data.after : undefined, cursors: envelope.status === "error" ? envelope.error.cursor : envelope.next_cursor}, "Lookup continuation positions");
         if (envelope.status === "error") return err({type: "retrieval_error" as const, message: envelope.error.message, envelope});
         return ok(envelope);
     };
@@ -56,7 +56,7 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return finish(failure(decoded.problem));
         incoming = decoded.cursor!;
-        const reason = incoming.tool !== "lookup_cards" ? "tool_mismatch" : incoming.source !== "local_reference" ? "source_mismatch" : JSON.stringify(incoming.bindings) !== JSON.stringify(bindings) ? JSON.stringify(collectionRequestBindings((incoming.bindings ?? {}) as typeof args)) !== JSON.stringify(collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch" : null;
+        const reason = incoming.tool !== "lookup_cards" ? "tool_mismatch" : incoming.source !== "local_reference" ? "source_mismatch" : !cursorBindingsMatch(incoming, bindings) ? !cursorScopeMatches(incoming, collectionRequestBindings(args)) ? "scope_mismatch" : "query_mismatch" : null;
         if (reason) return finish(failure({code: "invalid_cursor", message: "Cursor does not match this lookup request.", reason, retryable: false}));
         const pos = incoming.position as {next_index?: unknown} | null;
         if (!pos || Object.keys(pos).length !== 1 || !Number.isInteger(pos.next_index) || (pos.next_index as number) < 0 || (pos.next_index as number) > inputCount) return finish(failure({code: "invalid_cursor", message: "Malformed lookup position.", reason: "malformed", retryable: false}));
@@ -85,8 +85,8 @@ export async function lookupCards(repository: CardLookupRepository, input: unkno
     const tagUnavailable = !tagsImport ? "dataset_not_imported" : tagsImport.importContractRevision !== requiredScryfallImportContractRevisions.oracle_tags ? "dataset_incompatible" : undefined;
     const used = Object.keys(revisions).flatMap((dataset) => imports.get(dataset) ? [imports.get(dataset)!] : []);
     if (args.include_provenance) provenance = {...collection?.provenance, reference_imports: used.map((item) => ({dataset: item.bulkDataType, import_id: item.id, completed_at: item.completedAt?.toISOString() ?? null, source_updated_at: item.sourceUpdatedAt?.toISOString() ?? null}))};
-    const cursor = (next: number) => encodeRetrievalCursor({version: 1, tool: "lookup_cards", source: "local_reference", bindings, revisions, position: {next_index: next}});
-    const page = (stop: RetrievalSuccess<LookupOutcome>["stop_reason"]): RetrievalSuccess<LookupOutcome> => ({status: "ok", edges: [...edges], pageInfo: {startCursor: edges.length ? cursor(start + 1) : null, endCursor: edges.length ? cursor(start + edges.length) : null, hasNextPage: start + edges.length < inputCount, hasPreviousPage: start > 0}, stop_reason: stop, metadata: metadata(), ...(provenance ? {provenance} : {}), ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {})});
+    const cursor = (next: number) => encodeRetrievalCursor({version: 2, tool: "lookup_cards", source: "local_reference", bindings, revisions, position: {next_index: next}});
+    const page = (stop: RetrievalSuccess<LookupOutcome>["stop_reason"]): RetrievalSuccess<LookupOutcome> => ({status: "ok", edges: [...edges], next_cursor: start + edges.length < inputCount ? cursor(start + edges.length) : null, stop_reason: stop, metadata: metadata(), ...(provenance ? {provenance} : {}), ...((collection?.context ?? collectionErrorContext) ? {collection_context: (collection?.context ?? collectionErrorContext)!} : {})});
     const recover = (problem: RetrievalProblem) => {
         let envelope = failure({...problem, cursor: cursor(start + edges.length)});
         while (compactJsonBytes(envelope) > budget && edges.length) { edges.pop(); envelope = failure({...problem, cursor: cursor(start + edges.length)}); }

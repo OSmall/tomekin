@@ -30,7 +30,9 @@ Determine from the conversation or a concise clarification:
 
 Do not infer an Addition Pool from words such as “right now.” Reuse established context rather than asking an exhaustive
 questionnaire. A user-nominated candidate review can proceed with material assumptions when deck context is sufficient;
-an open review needs a concise confirmed tuning brief and an explicit Addition Pool.
+an open review needs a concise tuning Brief and explicit Addition Pool. Reuse the existing Brief and explicit
+authorization when applicable; clarify only changed or unresolved constraints. For pool-only research use the root
+Review And Pool Research route and query-cards Staged Retrieval.
 
 When no direction is stated, improve execution of the established game plan while preserving its intended Commander
 Bracket and play experience. Do not silently turn a thematic deck into generic goodstuff.

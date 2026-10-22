@@ -120,11 +120,11 @@ async function observe(name: WorkflowName) {
             collected = [...first.edges],
             pageBytes = [utf8Bytes(JSON.stringify(first))];
         let page: RetrievalSuccess<CardResult> = first;
-        while (page.pageInfo.hasNextPage) {
+        while (Boolean(page.next_cursor)) {
             const next = await stage("ordinaryContinuation", () =>
                 runtime.handlers.searchCards({
                     ...args,
-                    after: page.pageInfo.endCursor!,
+                    after: page.next_cursor!,
                 }),
             );
             if (next.isErr())

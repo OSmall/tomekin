@@ -16,6 +16,23 @@ const card = (id: string) => ({
     name: `Card ${id}`,
     layout: "normal",
 });
+test("search cursors carry bounded positions and reconstruct requests across provider pages", async () => {
+    await withSearch(async (runtime, requests, set) => {
+        const q = Array.from({length: 2000}, (_,i) => `name:${i.toString(36)}`).join(" or ");
+        set(url => {
+            const page = Number(new URL(url).searchParams.get("page") ?? 1);
+            return {status:200,body:{object:"list",data:page===1?[card("a"),card("b")]:[card("c")],has_more:page===1,...(page===1?{next_page:`https://api.scryfall.com/cards/search?q=${encodeURIComponent(q)}&page=2&format=json`}:{}),total_cards:3}};
+        });
+        const args = {q,select:{oracle_id:true},first:1};
+        const a = await details(runtime.handlers.searchCards(args));
+        expect(a.next_cursor.length).toBeLessThan(500);
+        const b = await details(runtime.handlers.searchCards({...args,after:a.next_cursor}));
+        const c = await details(runtime.handlers.searchCards({...args,after:b.next_cursor}));
+        expect([a,b,c].flatMap(p=>p.edges.map((e:any)=>e.node.card.oracle_id))).toEqual(["oracle-a","oracle-b","oracle-c"]);
+        expect(c.next_cursor).toBeNull();
+        expect(requests.every(url=>new URL(url).searchParams.get("q")===q)).toBe(true);
+    });
+});
 test("searches without local imports and resumes by raw Printing anchor without losing or replaying cards", async () => {
     const dir = mkdtempSync(join(tmpdir(), "provider-search-")),
         databasePath = join(dir, "test.sqlite"),
@@ -51,24 +68,24 @@ test("searches without local imports and resumes by raw Printing anchor without 
         const first = agentToolResultDetails(
             await runtime.handlers.searchCards(input),
         ) as any;
-        expect(first).toMatchObject({
+        expect(structuredClone(first)).toMatchObject({
             status: "ok",
             edges: [{node: {card: {oracle_id: "oracle-a", name: "Card a"}}}],
-            pageInfo: {hasNextPage: true},
+            next_cursor: expect.any(String),
             metadata: {scoped_total: null},
         });
         const second = agentToolResultDetails(
             await runtime.handlers.searchCards({
                 ...input,
                 first: 2,
-                after: first.pageInfo.endCursor,
+                after: first.next_cursor,
             }),
         ) as any;
         expect(second.edges.map((e: any) => e.node.card.oracle_id)).toEqual([
             "oracle-b",
             "oracle-c",
         ]);
-        expect(second.pageInfo.hasNextPage).toBe(false);
+        expect(Boolean(second.next_cursor)).toBe(false);
         expect(new URL(requests[0]!).searchParams.get("q")).toBe(input.q);
         expect(new URL(requests[0]!).searchParams.has("unique")).toBe(false);
     } finally {
@@ -150,7 +167,7 @@ test("follows exact supplied next_page across empty pages and never rereads a co
         const a = await details(
             runtime.handlers.searchCards({...request, first: 1}),
         );
-        expect(a.pageInfo.hasNextPage).toBe(true);
+        expect(Boolean(a.next_cursor)).toBe(true);
         expect(requests).toEqual([
             "https://api.scryfall.com/cards/search?q=fixture",
             page2,
@@ -161,11 +178,11 @@ test("follows exact supplied next_page across empty pages and never rereads a co
             runtime.handlers.searchCards({
                 ...request,
                 first: 1,
-                after: a.pageInfo.endCursor,
+                after: a.next_cursor,
             }),
         );
         expect(b.edges[0].node.card.oracle_id).toBe("oracle-c");
-        expect(requests).toEqual([page2, page3]);
+        expect(requests.map(url=>Number(new URL(url).searchParams.get("page")))).toEqual([2,3]);
         expect(b.metadata.scoped_total).toBeNull();
     }));
 test("zero-first establishes another match without consuming it and empty exhaustion is successful", async () =>
@@ -173,10 +190,10 @@ test("zero-first establishes another match without consuming it and empty exhaus
         const zero = await details(
             runtime.handlers.searchCards({...request, first: 0}),
         );
-        expect(zero).toMatchObject({
+        expect(structuredClone(zero)).toMatchObject({
             status: "ok",
             edges: [],
-            pageInfo: {hasNextPage: true, startCursor: null, endCursor: null},
+            next_cursor: expect.any(String),
         });
         set(() => ({
             status: 200,
@@ -188,7 +205,7 @@ test("zero-first establishes another match without consuming it and empty exhaus
         expect(empty).toMatchObject({
             status: "ok",
             edges: [],
-            pageInfo: {hasNextPage: false},
+            next_cursor: null,
             stop_reason: "source_exhausted",
             metadata: {provider_total: 0, scoped_total: null},
         });
@@ -206,7 +223,7 @@ test("missing and duplicate raw Printing anchors fail explicitly instead of gues
             const failed = await details(
                 runtime.handlers.searchCards({
                     ...request,
-                    after: a.pageInfo.endCursor,
+                    after: a.next_cursor,
                 }),
             );
             expect(failed.status).toBe("error");
@@ -303,8 +320,8 @@ test("UTF-8 whole-object byte pages traverse exactly once and oversized records 
                 received.push(
                     ...response.edges.map((e: any) => e.node.card.oracle_id),
                 );
-                after = response.pageInfo.hasNextPage
-                    ? response.pageInfo.endCursor
+                after = Boolean(response.next_cursor)
+                    ? response.next_cursor
                     : undefined;
             } while (after);
             expect(received).toEqual(source.map((c) => c.oracle_id));
@@ -338,7 +355,7 @@ test("UTF-8 whole-object byte pages traverse exactly once and oversized records 
         },
         {responseBudgetBytes: 2400},
     ));
-test("large fixed bindings fail preflight and upstream URL changes never dispatch", async () =>
+test("large query inputs stay out of cursors and invalid upstream URLs never dispatch", async () =>
     withSearch(
         async (runtime, requests, set) => {
             const failed = await details(
@@ -347,8 +364,8 @@ test("large fixed bindings fail preflight and upstream URL changes never dispatc
                     select: {oracle_id: true},
                 }),
             );
-            expect(failed.error.code).toBe("cursor_too_large");
-            expect(requests).toEqual([]);
+            expect(failed.status).toBe("ok");
+            expect(requests).toHaveLength(1);
             set(() => ({
                 status: 200,
                 body: {
@@ -366,7 +383,7 @@ test("large fixed bindings fail preflight and upstream URL changes never dispatc
                 code: "provider_error",
                 reason: "invalid_response",
             });
-            expect(requests).toHaveLength(1);
+            expect(requests).toHaveLength(2);
         },
         {responseBudgetBytes: 2400},
     ));
@@ -488,7 +505,7 @@ test("tag enrichment binds successful import or known absence and retains depend
                 q: "fixture",
                 select: {name: true},
                 first: 0,
-                after: absent.pageInfo.endCursor,
+                after: absent.next_cursor,
             }),
         );
         expect(retained.status).toBe("ok");
@@ -497,7 +514,7 @@ test("tag enrichment binds successful import or known absence and retains depend
             runtime.handlers.searchCards({
                 q: "fixture",
                 select: {name: true},
-                after: absent.pageInfo.endCursor,
+                after: absent.next_cursor,
             }),
         );
         expect(stale).toMatchObject({
@@ -510,7 +527,7 @@ test("tag enrichment binds successful import or known absence and retains depend
             runtime.handlers.searchCards({
                 q: "fixture",
                 select: {name: true},
-                after: pure.pageInfo.endCursor,
+                after: pure.next_cursor,
             }),
         );
         expect(unrelated.status).toBe("ok");
@@ -566,41 +583,18 @@ test("native controls pass through unchanged including false and conflicting que
             expect(params.get(key)).toBe(String(input[key]));
         expect(Object.keys(result.edges)).toHaveLength(0);
     }));
-test("dynamic supplied positions that outgrow the envelope stop at a representable safe position", async () =>
-    withSearch(
-        async (runtime, requests, set) => {
-            const next =
-                "https://api.scryfall.com/cards/search?q=fixture&page=2&pretty=" +
-                "x".repeat(5000);
-            set(() => ({
-                status: 200,
-                body: {
-                    object: "list",
-                    data: [],
-                    has_more: true,
-                    next_page: next,
-                },
-            }));
-            const failed = await details(runtime.handlers.searchCards(request));
-            expect(failed.error.code).toBe("cursor_too_large");
-            expect(typeof failed.error.cursor).toBe("string");
-            expect(
-                Buffer.byteLength(JSON.stringify(failed)),
-            ).toBeLessThanOrEqual(2400);
-            set(() => ({
-                status: 200,
-                body: {object: "list", data: [card("a")], has_more: false},
-            }));
-            const resumed = await details(
-                runtime.handlers.searchCards({
-                    ...request,
-                    after: failed.error.cursor,
-                }),
-            );
-            expect(resumed.edges[0].node.card.oracle_id).toBe("oracle-a");
-        },
-        {responseBudgetBytes: 2400},
-    ));
+test("long supplied page URLs stay out of cursors while empty-page recovery remains complete", async () =>
+    withSearch(async (runtime, requests, set) => {
+        const next = "https://api.scryfall.com/cards/search?q=fixture&page=2&pretty="+"x".repeat(5000);
+        set(url=>Number(new URL(url).searchParams.get("page")??1)===1
+            ? {status:200,body:{object:"list",data:[],has_more:true,next_page:next}}
+            : {status:200,body:{object:"list",data:[card("a")],has_more:false}});
+        const first = await details(runtime.handlers.searchCards({...request,first:0}));
+        expect(first.next_cursor.length).toBeLessThan(500);
+        const resumed = await details(runtime.handlers.searchCards({...request,after:first.next_cursor}));
+        expect(resumed.edges[0].node.card.oracle_id).toBe("oracle-a");
+        expect(resumed.next_cursor).toBeNull();
+    },{responseBudgetBytes:2400}));
 test("cooperative cancellation returns complete edges and the source position before unreturned matches", async () => {
     const controller = new AbortController();
     await withSearch(async (runtime, requests, set) => {
@@ -776,7 +770,7 @@ test("search logs exact bytes and stage/count diagnostics with deliberate debug 
         ])
             expect(typeof completed[stage]).toBe("number");
         expect(debug.q).toBe('  o:"語" ');
-        expect(typeof debug.cursors.endCursor).toBe("string");
+        expect(debug.cursors).toBeNull();
         expect(
             records.some(
                 (record) =>
@@ -813,7 +807,7 @@ test("Printing anchors preserve multiple Printings of the same Oracle identity",
                 runtime.handlers.searchCards({
                     ...request,
                     first: 1,
-                    after: a.pageInfo.endCursor,
+                    after: a.next_cursor,
                 }),
             );
         expect(a.edges[0].node.card.oracle_id).toBe("same-oracle");
@@ -838,7 +832,7 @@ test("accepted live drift can omit a moved record while a retained anchor still 
         const changed = await details(
             runtime.handlers.searchCards({
                 ...request,
-                after: first.pageInfo.endCursor,
+                after: first.next_cursor,
             }),
         );
         expect(
@@ -888,7 +882,7 @@ test("newer provider identities have unavailable local enrichment and tag reads 
             runtime.handlers.searchCards({
                 q: "fixture",
                 select: {name: true},
-                after: first.pageInfo.endCursor,
+                after: first.next_cursor,
             }),
         );
         expect(stale.error.code).toBe("stale_cursor");

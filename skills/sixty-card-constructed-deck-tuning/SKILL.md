@@ -33,7 +33,9 @@ Determine from the conversation or concise clarification:
 - Protected or identity-defining cards, requested change count or budget, and user-reported gameplay observations.
 
 A user-nominated card review may proceed with stated material assumptions when the deck context is sufficient. An open
-review needs a concise confirmed tuning Brief and explicit Addition Pool. Do not infer the Addition Pool from phrases
+review needs a concise tuning Brief and explicit Addition Pool. Reuse the existing Brief and explicit authorization
+when applicable; clarify only changed or unresolved constraints. Pool-only research follows the root Review And Pool
+Research route and query-cards Staged Retrieval. Do not infer the Addition Pool from phrases
 such as “right now.”
 
 ## Diagnose The Foundation

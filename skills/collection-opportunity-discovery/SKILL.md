@@ -49,17 +49,17 @@ never proves a strict restriction. Inspect completion/undated coverage before cl
 ## Discover And Qualify Directions
 
 1. State the decision being supported. Search bounded functional packages or Mana Value bands using `search_cards`,
-   native `q`, `unique: "cards"` and explicit typed `select`. Request full text immediately where fit depends on it.
+   native `q`, `unique: "cards"` and explicit typed `select`. Follow query-cards Staged Retrieval for broad searches; inspect rules for contenders after compact discovery.
 2. Inspect seed facts/tags, validate literal slugs through `browse_tags`, then complement seed/tag snowballing with
    independent functional/Oracle-text searches. Tags and prominence suggest options; facts establish contextual fit.
-3. Reuse suitable returned facts and batch only missing shortlist facts through `lookup_cards`. Request scoped summary
-   or actual-row copies evidence for inspected examples. Representative provider Printings do not enumerate owned versions.
+3. Reuse suitable returned facts and batch only missing shortlist facts through `lookup_cards`. Trust scoped membership; request summary quantities
+   or actual-row copies only when the comparison needs quantities or physical sourcing. Representative provider Printings do not enumerate owned versions.
 4. Compare plausible repeatable activities, advantage mechanisms and winning directions, their enabling resources,
    rewards and resilience. Use a compact comparison when useful: decisive facts/qualifications, mana, scoped ownership,
    unresolved needs. Continue where an unresolved gap could materially change the recommendation.
 
 A direction qualifies as a **Deck Opportunity** when it has a plausible repeatable plan and winning direction,
-inspected examples of important functions, scoped Collection evidence, and explicit gaps/dependencies. A full deck,
+inspected examples of important functions, policy-scoped Collection membership, and explicit gaps/dependencies. A full deck,
 whole-deck Availability proof or exhaustive search is unnecessary. Discovery hits remain transient; assessed options
 enter a candidate-owned Deck Card Pool only after contextual contributions are justified, and selection is separate.
 Use a useful shortlist justified by the decision and evidence. Report unexplored approaches, incomplete scans and

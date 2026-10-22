@@ -390,10 +390,11 @@ test("bounded complete witness recovery is stateless and rejects changed require
                 check_completion: "complete",
                 witness_completion: "partial",
             });
-            initial ??= page.pageInfo.endCursor!;
+            expect(page.collection_context).not.toHaveProperty("effective_policy");
+            initial ??= page.next_cursor!;
             seen.push(...page.edges.map((e: any) => e.node));
-            after = page.pageInfo.hasNextPage
-                ? page.pageInfo.endCursor!
+            after = Boolean(page.next_cursor)
+                ? page.next_cursor!
                 : undefined;
         } while (after);
         expect(
@@ -576,7 +577,7 @@ test("same-tick lower-ID successful reference replacement invalidates Availabili
         const stale = (
             await f.runtime.handlers.checkCollectionAvailability({
                 ...input,
-                after: before.pageInfo.endCursor,
+                after: before.next_cursor,
             })
         )._unsafeUnwrapErr();
         expect(stale.envelope.error.code).toBe("stale_cursor");
@@ -820,7 +821,7 @@ test("a whole oversized witness fails before that row and preserves the complete
         const prefix = (
             await f.runtime.handlers.checkCollectionAvailability(input)
         )._unsafeUnwrap();
-        expect(prefix.pageInfo.hasNextPage).toBe(true);
+        expect(Boolean(prefix.next_cursor)).toBe(true);
         expect(prefix.check_completion).toBe("complete");
         expect(Buffer.byteLength(JSON.stringify(prefix))).toBeLessThanOrEqual(
             51200,
@@ -828,7 +829,7 @@ test("a whole oversized witness fails before that row and preserves the complete
         const error = (
             await f.runtime.handlers.checkCollectionAvailability({
                 ...input,
-                after: prefix.pageInfo.endCursor,
+                after: prefix.next_cursor,
             })
         )._unsafeUnwrapErr().envelope;
         const recovery = error.error.cursor;
@@ -942,8 +943,8 @@ test("large saved Availability findings remain completely recoverable through re
                             .allocated_quantity;
                 }
                 pages++;
-                after = page.pageInfo.hasNextPage
-                    ? page.pageInfo.endCursor!
+                after = Boolean(page.next_cursor)
+                    ? page.next_cursor!
                     : undefined;
             } while (after);
             expect(pages).toBeGreaterThan(1);

@@ -182,19 +182,19 @@ test("view continuations bind included evidence and canonical names without stal
         const json=unwrap(await app.handlers.getDeckCandidate({id,view:"json",first:1}));
         const briefPage=unwrap(await app.handlers.getDeckCandidate({id,view:"brief",first:1}));
         unwrap(await app.handlers.validateFormatLegality({candidate_id:id,expected_updated_at:saved.updated_at}));
-        const changedEvidence=await app.handlers.getDeckCandidate({id,view:"json",after:json.pageInfo.endCursor});
+        const changedEvidence=await app.handlers.getDeckCandidate({id,view:"json",after:json.next_cursor});
         expect(changedEvidence.isErr()).toBe(true);
         expect(changedEvidence.error.envelope.error.code).toBe("stale_cursor");
-        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.pageInfo.endCursor})).status).toBe("ok");
+        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.next_cursor})).status).toBe("ok");
         const selected=unwrap(await app.handlers.getDeckCandidate({id,view:"selected",first:0}));
         app.db.update(cardIdentity).set({name:"Canonical Forest"}).where(eq(cardIdentity.id,forest)).run();
-        const renamed=await app.handlers.getDeckCandidate({id,view:"selected",after:selected.pageInfo.endCursor});
+        const renamed=await app.handlers.getDeckCandidate({id,view:"selected",after:selected.next_cursor});
         expect(renamed.error.envelope.error.code).toBe("stale_cursor");
         const checked=unwrap(await app.handlers.getDeckCandidate({id,view:"assessments",first:1}));
         app.db.insert(scryfallBulkDataImport).values({id:crypto.randomUUID(),bulkDataType:"oracle_cards",importContractRevision:requiredScryfallImportContractRevisions.oracle_cards,status:"succeeded",startedAt:new Date("2026-10-19"),completedAt:new Date("2026-10-19"),sourceUpdatedAt:new Date("2026-10-19"),importedRecordCount:1,warningsJson:[],blockingErrorsJson:[]}).run();
-        const outdated=await app.handlers.getDeckCandidate({id,view:"assessments",after:checked.pageInfo.endCursor});
+        const outdated=await app.handlers.getDeckCandidate({id,view:"assessments",after:checked.next_cursor});
         expect(outdated.error.envelope.error.code).toBe("stale_cursor");
-        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.pageInfo.endCursor})).status).toBe("ok");
+        expect(unwrap(await app.handlers.getDeckCandidate({id,view:"brief",after:briefPage.next_cursor})).status).toBe("ok");
     }finally{app.dispose();}
 });
 

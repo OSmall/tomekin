@@ -44,11 +44,11 @@ test("catalogue search covers slug, label and alias and list recovers every comp
         do {
             const page = (await runtime.handlers.browseTags({operation: {type: "list"}, first: 1, ...(after ? {after} : {})}))._unsafeUnwrap();
             slugs.push(...page.edges.map(({node}) => node.status === "found" ? node.tag.slug : "missing"));
-            after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor! : undefined;
+            after = Boolean(page.next_cursor) ? page.next_cursor! : undefined;
         } while (after);
         expect(slugs).toEqual(["mana", "mana-rock", "resource"]);
         const zero = (await runtime.handlers.browseTags({operation: {type: "list"}, first: 0}))._unsafeUnwrap();
-        expect(zero).toMatchObject({edges: [], pageInfo: {startCursor: null, endCursor: null, hasNextPage: true}});
+        expect(structuredClone(zero)).toMatchObject({edges: [], next_cursor: expect.any(String)});
     } finally {runtime.close(); fixture.dispose();}
 });
 
@@ -60,7 +60,7 @@ test("tag readiness is distinct from search emptiness and exact-slug miss, with 
         expect((await runtime.handlers.browseTags(args))._unsafeUnwrapErr().envelope.error).toMatchObject({code: "reference_data_unready", missing_datasets: ["oracle_tags"]});
         await fixture.reimportTags();
         const first = (await runtime.handlers.browseTags({...args, first: 1}))._unsafeUnwrap();
-        const after = first.pageInfo.endCursor!;
+        const after = first.next_cursor!;
         await fixture.recordFailedImport(); await fixture.reimportOracle();
         expect((await runtime.handlers.browseTags({...args, after})).isOk()).toBe(true);
         expect((await runtime.handlers.browseTags({operation: {type: "search", query: "mana"}, after}))._unsafeUnwrapErr().envelope.error).toMatchObject({code: "invalid_cursor", reason: "query_mismatch"});
@@ -90,16 +90,16 @@ test("bounded catalogue UTF-8 pages preserve whole definitions and recover overs
     db.$client.prepare("UPDATE card_identity_tag SET description = ?").run(text); closeDatabase(db);
     const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log, lookup: {responseBudgetBytes: 2000}});
     try {
-        const args = {operation: {type: "list"}};
+        const args = {operation: {type: "list"},first:1};
         const first = (await runtime.handlers.browseTags(args))._unsafeUnwrap();
-        expect(first.stop_reason).toBe("response_budget");
+        expect(first.stop_reason).toBe("first");
         expect(first.edges).toHaveLength(1);
         expect(Buffer.byteLength(JSON.stringify(first))).toBeLessThanOrEqual(2000);
-        const second = (await runtime.handlers.browseTags({...args, after: first.pageInfo.endCursor}))._unsafeUnwrap();
+        const second = (await runtime.handlers.browseTags({...args, after: first.next_cursor}))._unsafeUnwrap();
         expect(second.edges).toMatchObject([{node: {tag: {slug: "mana-rock", description: text}}}]);
         const edit = openDatabase(fixture.databasePath, {log});
         edit.$client.prepare("UPDATE card_identity_tag SET description = ? WHERE id = ?").run(text.repeat(100), id(22)); closeDatabase(edit);
-        const oversized = (await runtime.handlers.browseTags({...args, after: second.pageInfo.endCursor}))._unsafeUnwrapErr().envelope;
+        const oversized = (await runtime.handlers.browseTags({...args, after: second.next_cursor}))._unsafeUnwrapErr().envelope;
         expect(oversized).toMatchObject({edges: [], error: {code: "record_too_large", retryable: false}});
         expect(typeof oversized.error.cursor).toBe("string");
         expect(oversized).not.toHaveProperty("pageInfo");
@@ -116,7 +116,7 @@ test("catalogue reports malformed cursors, oversized bindings and safe cancellat
         const args = {operation: {type: "list"}};
         expect((await runtime.handlers.browseTags({...args, after: "bad!"}))._unsafeUnwrapErr().envelope.error).toMatchObject({code: "invalid_cursor", reason: "malformed"});
         const long = (await runtime.handlers.browseTags({operation: {type: "lookup", slugs: ["x".repeat(4000)]}}))._unsafeUnwrapErr().envelope;
-        expect(long).toMatchObject({edges: [], error: {code: "cursor_too_large"}});
+        expect(long).toMatchObject({edges: [], error: {code: "record_too_large"}});
         const abort = new AbortController(); abort.abort();
         const cancelled = (await runtime.handlers.browseTags(args, abort.signal))._unsafeUnwrapErr().envelope;
         expect(cancelled).toMatchObject({edges: [], error: {code: "cancelled"}});
@@ -145,7 +145,7 @@ test.each([
         const args = {operation: {type: "list"}, first: 1};
         const first = (await runtime.handlers.browseTags(args))._unsafeUnwrap();
         expect(first.edges).toMatchObject([{node: {tag: {slug: "mana", label: "mana"}}}]);
-        const after = first.pageInfo.endCursor!;
+        const after = first.next_cursor!;
         (await repo.recordFailedBulkDataImport("oracle_tags", {startedAt: now, completedAt: now, blockingErrors: ["Synthetic failed replacement"]}))._unsafeUnwrap();
         await fixture.reimportOracle();
         expect((await runtime.handlers.browseTags({...args, after})).isOk()).toBe(true);

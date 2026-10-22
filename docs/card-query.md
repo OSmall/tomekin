@@ -30,22 +30,29 @@ those dependencies. A newer provider identity absent locally uses `identity_not_
 Provenance is opt-in: provider name/retrieval time and only the local dependencies actually used.
 
 `first` defaults to 175 and accepts 0–200. Repeat fixed q, native controls and effective `include_provenance` with
-`after`; `select` and `first` may change. Successful envelopes have complete edges, pageInfo and a stop reason.
-`hasNextPage=true` establishes another qualifying card, including on zero-first calls; no card is consumed by
+`after`; `select` and `first` may change. Successful envelopes have complete edges, one `next_cursor` and a stop reason.
+A non-null `next_cursor` establishes another qualifying card, including on zero-first calls; no card is consumed by
 lookahead. Empty source exhaustion is successful. `provider_total` is the latest supplied count, or null;
 `scoped_total` remains null even at exhaustion because live traversal is not a frozen census.
 
-Stateless versioned tokens contain request/provider bindings, relevant import revisions and source URL/page,
-page-completion flag and raw Printing (`Card.id`) anchor. Mid-page continuation refetches the page and resumes after
-exactly one occurrence of the anchor. A missing anchor is `cursor_anchor_not_found`; duplicate anchors are
-`provider_error/duplicate_anchor`. Page-end continuation follows the retained supplied next_page without rereading
-the old page. Empty pages follow supplied next_page sequentially. No numbered-page synthesis, result buffer,
-search store or token expiry is introduced. Static fixtures prove no local loss/replay; upstream changes can still
-repeat or omit records, or remove an anchor.
+Version 2 stateless tokens encode a compact positional tuple using raw DEFLATE plus base64url with a `2.` prefix.
+They contain bounded request/scope fingerprints, relevant dependency revisions (policy contents are fingerprinted), and
+source position. Search position is `page`, `atPageEnd`, `afterId` (raw provider Printing ID). Fixed arguments are
+resubmitted; queries, reference batches, policies and provider URLs are absent from tokens. Canonical object-key ordering
+avoids false mismatches; ordered reference arrays remain ordered. Context fingerprints are 128-bit SHA-256 prefixes,
+consistency checks rather than authorization credentials. Dependency identifiers/kinds retain earlier enrichment bindings
+when selectors change; unrelated imports remain irrelevant. Version 1 tokens return actionable restart guidance.
+
+Mid-page continuation reconstructs the provider request from fixed native controls plus page, then resumes after exactly
+one occurrence of `afterId`. Missing/duplicate anchors fail explicitly. A completed position with a known next page is
+normalized to that next page before encoding, avoiding a completed-page refetch. A completed position whose exhaustion
+must be established on recovery refetches its page. Within a call, validated supplied next_page links still advance
+through empty pages. No result buffer, cursor store or token expiry is introduced. Live source drift can still repeat,
+omit or move records; these checks do not freeze Scryfall.
 
 The complete compact escaped JSON envelope has a default 51,200 UTF-8-byte budget. One 120-second budget covers
 admission, HTTP, local enrichment, projection and lookahead. A result, face text or tag list is indivisible. Failure
-returns complete partial edges and one optional safe `error.cursor`, without pageInfo; metadata growth rolls back
+returns complete partial edges and one optional safe `error.cursor`, without a success continuation; metadata growth rolls back
 removed edges and recovery position together. Oversized records stay unconsumed. Oversized self-contained positions
 fail explicitly; neither automatic narrowing instructions nor spill files are used. Cooperative cancellation can return
 safe progress; a killed Worker has no new delivered position and uses the last received cursor/original request.
@@ -110,7 +117,10 @@ list finish evaluation before a card is emitted. A row represents quantity, rath
 objects or an allocated amount. These retrieval summaries and rows do not reserve copies or establish final joint
 whole-deck Availability.
 
-One response-level `collection_context` records `state`, `collection_import_id`, `match`, and `effective_policy`.
+One response-level `collection_context` records `state`, `collection_import_id`, `match`, and compact `policy_id`.
+Set `include_collection_policy: true` to inspect the complete resolved `effective_policy`; this presentation flag may
+change on continuation. Broad scoped discovery trusts eligible membership and omits per-card evidence. Actual owned
+Finish requirements such as `copy_requirements: {finish: ["foil"]}` already filter without evidence payloads.
 No imported Collection is `no_collection` with a null ID; imported empty is `ready` with its successful import ID.
 Both have zero recorded ownership, without claiming knowledge of all physical possessions. Legacy snapshots without
 an authoritative active import return `reference_data_unready/collection_reimport_required` and
@@ -143,7 +153,7 @@ exact case-sensitive canonical whole identity name. Faces and fuzzy spellings do
 occurrence produces a found card or `not_found` with its original reference, including duplicates and local misses.
 A miss establishes neither invalidity nor nonownership. There is no provider fallback or automatic hydration.
 
-`select` is a closed nonempty object: every property is optional literal `true`. Both actual adapter JSON Schemas
+`select` is a closed nonempty object: scalar facts are optional literal `true`; `tags` also accepts the compact object selector below. Both actual adapter JSON Schemas
 enumerate meanings, prohibit additional properties and publish `minProperties: 1`. Selection names are:
 
 - Identity: `oracle_id`, `name`, `layout`, `mana_cost`, `mana_value`, `type_line`, `oracle_text`, `colors`,
@@ -173,24 +183,21 @@ with no tags return both empty arrays. Unexpected repository failures remain err
 requires compatible successful Oracle Cards and All Cards imports; missing/incompatible core data returns
 `reference_data_unready` with dataset lists and the explicit sync command. Failed attempts preserve usable imports.
 
-Successful responses contain `status: "ok"`, complete `edges: [{node: LookupOutcome}]`, `pageInfo` with
-`startCursor`, `endCursor`, `hasNextPage`, `hasPreviousPage`, `stop_reason` (`first`, `response_budget`,
-`source_exhausted`), and metadata. `first` defaults to 50, accepts integer 0–200 and counts every outcome. A zero
-request consumes nothing, returns null cursors, and reports whether input occurrences remain. Page cursors correspond
-to the first/last emitted outcome; an exhausted empty page has null cursors. Metadata includes requested/returned
-counts, `response_budget_bytes`, null provider/scoped totals, and `lookup: {input_count,start_index,next_index}`.
-Indices are zero-based positions in the original batch; `next_index` is the next unconsumed occurrence.
+Successful responses contain `status: "ok"`, complete `edges: [{node: LookupOutcome}]`, one `next_cursor`,
+`stop_reason` (`first`, `response_budget`, `source_exhausted`), metadata and opt-in provenance. Zero-first consumes
+nothing and returns a continuation if input occurrences remain; exhausted traversal returns null. Metadata retains
+requested/returned counts and ordered input/next-position counts.
 
-Continue using the same ordinary request with returned `endCursor` as `after`. Repeat references and the effective
-`include_provenance` setting exactly; selection and `first` may change. Omitted provenance means false. Versioned
-opaque tokens contain fixed bindings, successful import IDs (including optional tag absence when first selected),
-and next input position; they contain no results and use no saved cursor/search store or arbitrary expiry.
-Previously bound optional imports remain dependencies when selection later omits them. Unrelated/failed imports do
-not invalidate a cursor; successful replacement of any bound import returns `stale_cursor` and restart guidance.
+Continue with the same ordered references, fixed Collection inputs and provenance, passing `next_cursor` as `after`.
+Selections, policy inspection and `first` may change. Compact stateless tokens carry request fingerprints, relevant
+successful import revisions and next input position. They contain no reference batch or result records and use no saved
+cursor/search store or arbitrary expiry. Core Oracle/All Cards imports always bind; optional tag dependencies introduced
+during traversal remain bound even after tag selection is removed. Failed/unrelated imports do not invalidate;
+successful replacement of a bound dependency returns `stale_cursor` with restart guidance.
 Local records and import revisions are read in one SQLite view; imports are checked again after cursor preflight.
 
 Failures carry `status: "error"`, complete partial `edges`, `error: {code,message,retryable,...}` and metadata;
-they have no `pageInfo`. Input, readiness and invalid/stale cursor failures have no recovery cursor. Recoverable
+they have no success `next_cursor`. Input, readiness and invalid/stale cursor failures have no recovery cursor. Recoverable
 execution stops carry a sole `error.cursor` before the first unreturned occurrence. Errors include `invalid_request`,
 `invalid_cursor`, `stale_cursor`, `reference_data_unready`, `local_error`, `scan_timeout`, `cancelled`,
 `record_too_large`, `cursor_too_large` and `response_budget_too_small`. Validation issues have paths/stable codes;
@@ -202,13 +209,22 @@ Both are runtime configuration, not agent request parameters. Exact escaped JSON
 metadata and counts. Complete outcomes, rules text, face lists and tag lists are indivisible. A fitting prefix stops
 before its next outcome; an oversized individual outcome returns `record_too_large` with measured required/limit
 bytes and safe recovery. Error fitting rolls back unreturned outcomes when metadata grows. Requests whose
-self-contained bindings cannot return usable continuation fail preflight with `cursor_too_large`; an adapter unable
+mandatory recovery context cannot return usable continuation fail preflight with `cursor_too_large`; an adapter unable
 to carry a minimal structured error rejects clearly. There is no preview, spill file or hidden cursor store.
 
 `include_provenance: true` adds response-level `reference_imports` with only used datasets/import IDs and nullable
 completion/source-update timestamps. It is omitted by default. No Collection context/evidence is exposed in this
 slice. Info logging records selected fact names, status/counts, whole UTF-8 bytes and timing; deliberate debug logging
 records incoming/outgoing continuation positions, without complete production result-body logging.
+
+## Compact Card Identity Tag evidence
+
+`select.tags: true` retains the full direct/inherited associations and source annotations. For broad vocabulary learning,
+use `select.tags: {mode: "compact"}`: all direct/inherited slugs and prominence, without annotations. Add a nonempty
+`slugs` list to return only those requested associations. Compact selection is equally available in search and lookup.
+No q parsing, inferred matched-tag claim, ranking algorithm or prominence cutoff is introduced. Inherited associations
+retain strongest supporting prominence; direct associations take precedence. Missing/incompatible reference data and
+identities absent locally remain explicitly unavailable, distinct from a successfully empty requested set.
 
 ## Tag and Set discovery
 
@@ -234,9 +250,8 @@ Cycles and repeated paths are deduplicated. Per-card `lookup_cards` tags still i
 the catalogue exploration bound does not narrow inherited card facts. Tags are discovery facts, not Deck Roles
 or strategic quality judgments.
 
-`first` defaults to 50 and accepts 0–200. Repeat the same operation with `pageInfo.endCursor` as `after`;
-`first` may change. Search/list traversal is complete under an unchanged tag import. Use `hasNextPage` to
-continue and `error.cursor` after recoverable execution stops. Catalogue uses the same compact 51,200-byte
+`first` defaults to 50 and accepts 0–200. Repeat the same operation with `next_cursor` as `after`;
+`first` may change. Search/list traversal is complete under an unchanged tag import. Continue while `next_cursor` is non-null, and `error.cursor` after recoverable execution stops. Catalogue uses the same compact 51,200-byte
 success/error envelope and 120-second deadline as lookup, with whole definitions/requested hierarchies indivisible.
 Oversized records remain unconsumed. Cursors bind only the successful compatible `oracle_tags` import and operation;
 failed attempts and unrelated imports do not invalidate them. Rows, aliases, edges and import binding share a SQLite

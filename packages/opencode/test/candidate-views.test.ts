@@ -19,7 +19,8 @@ test("actual OpenCode candidate schema and output expose complete recoverable vi
         expect(Buffer.byteLength(output)).toBeLessThanOrEqual(51200);
         expect(page.edges.find((e:any)=>e.node.path.join(".")==="plan.description").node.value).toBe(completeCandidateDescription);
         expect(page).not.toHaveProperty("truncated");
-        const mismatch=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"pool",after:page.pageInfo.endCursor} as never));
+        const prefix=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"json",first:0} as never));
+        const mismatch=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"pool",after:prefix.next_cursor} as never));
         expect(mismatch).toMatchObject({status:"error",edges:[],error:{code:"invalid_cursor"}});
         const rendered=JSON.parse(await tools.render_deck_candidate.execute({candidate_id:fixture.candidateId,output:"portable_decklist"} as never));
         expect(rendered.edges.map((e:any)=>typeof e.node.value==="string"?e.node.value:"").join("")).toBe("Mainboard\n1 Sol Ring\n");

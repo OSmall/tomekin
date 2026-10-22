@@ -269,6 +269,7 @@ bun run typecheck
 - [`GLOSSARY.md`](./GLOSSARY.md): canonical glossary and domain language.
 - [`GLOSSARY-MAP.md`](./GLOSSARY-MAP.md): routes shared and package-specific domain documentation.
 - [`docs/product-scope.md`](./docs/product-scope.md): product promise, supported scope, boundaries, and non-goals.
+- [`docs/evaluation/economy.md`](./docs/evaluation/economy.md): measured staged retrieval, compact cursor/context costs and bounded live comparison.
 - [`docs/product-behavior.md`](./docs/product-behavior.md): current user-observable workflows, confirmations, outputs,
   imports, and authority limits.
 - [`docs/card-query.md`](./docs/card-query.md): public Card Query request, result, relationship, quantity, and compilation

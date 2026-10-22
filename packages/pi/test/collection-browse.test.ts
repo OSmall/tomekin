@@ -17,7 +17,7 @@ for (const mode of ["fallback", "Worker"] as const) test(`Pi ${mode} preserves c
     const transport = mode === "Worker" ? createPiWorkerTransport({workerUrl: new URL("../src/tomekin-worker.ts", import.meta.url).href}) : undefined;
     const tool = createCoreTool("browse_collection_cards", {log, ...(transport ? {transport, databasePath: f.databasePath} : {createRuntime: () => createLocalAgentToolRuntime({databasePath: f.databasePath, log})})});
     try {
-        const longName = 'Synthetic Æ 🧙 "name" '.repeat(120);
+        const longName = 'Synthetic Æ 🧙 "name" '.repeat(850);
         // Setup a long source location; the schema and exact policy carry it unchanged.
         f.db.$client.prepare("UPDATE collection_location SET name = ? WHERE id = ?").run(longName, id(100));
         const args = {collection_import_id: f.imported.id, policy: {kind: "explicit", policy: {...f.policy, allowed_locations: [{id: id(100), type: "binder", name: longName}]}}, select: {location: true}, first: 1};

@@ -1,6 +1,6 @@
 ---
 name: tomekin-deck-building
-description: Use when discovering, building, or revising an MTG deck with Tomekin tools. Confirm the Deck Building Brief and Collection scope, route to opportunity discovery, fresh construction, or Format-specific tuning, save construction progress, then explicitly validate and finish safely.
+description: Use when discovering, building, or revising an MTG deck with Tomekin tools. Reuse or establish the Deck Building Brief and Collection scope, route to opportunity discovery, fresh construction, or Format-specific tuning, save construction progress, then explicitly validate and finish safely.
 ---
 
 # Tomekin Deck Building
@@ -20,11 +20,14 @@ card facts, discovery, construction or tuning are needed.
 1. Use startup/setup diagnostics and tool readiness errors for reference status. Local `lookup_cards` needs compatible
    Oracle Cards and All Cards imports; absent tags are reported as unavailable enrichment. Pure live `search_cards` requires no local import; explicitly enabled `legacy_query_cards`
    requires all three datasets. Follow the actionable sync instruction when a required dataset is unavailable.
-2. Draft a best-effort Deck Building Brief with `draft_deck_building_brief`.
-3. Ask the user to confirm or edit the Brief before substantial discovery or full construction.
+2. Reuse the existing candidate Brief and explicit user instructions when they cover the task. For a new or materially
+   changed task, draft a best-effort Brief with `draft_deck_building_brief`.
+3. Resolve only missing or changed constraints before substantial work. Existing authorization counts; a drafting tool
+   reminder does not require reconfirming an already established agreement.
 4. Keep strength and pilot complexity explicit: `powerLevel` or Commander Bracket describes strength, while
    `playExperience` describes desired gameplay feel and complexity.
-5. When Collection evidence matters, call `list_collection_locations`, confirm exact sources and restrictions, and
+5. For Collection-first work, reuse an applicable confirmed policy. If scope is absent or the snapshot changed, inspect
+   `list_collection_locations` and establish exact sources/restrictions. Then
    retain the active-import-bound `collectionAccessPolicy` in the Brief. Use `browse_collection_cards` with that
    candidate's Brief policy or an explicit confirmed policy for actual-row eligibility. Preserve the same permission
    through the final Availability recheck. Legacy `legacy_query_cards` still requires procedural exact
@@ -32,7 +35,7 @@ card facts, discovery, construction or tuning are needed.
 6. If the Format is absent or ambiguous, ask one focused Format question before drafting. Do not silently default to
    Commander.
 7. For a sufficiently contextualised nominated-card tuning review, state material assumptions and proceed. For open
-   tuning, confirm a concise tuning Brief and explicit Addition Pool first.
+   tuning, establish a concise tuning Brief and explicit Addition Pool, reusing applicable existing agreement.
 8. Rule Zero exceptions must be explicit in the confirmed Brief and labelled in output.
 
 ## Route By Intent
@@ -61,11 +64,20 @@ skill preserves the lifecycle and authority constraints.
   explicitly or through the candidate Brief. Optional summary/copies evidence reports complete matching actual rows,
   separate from representative Printing facts. Repeat fixed scope/policy/evidence mode with ordinary after cursors.
   Use query-cards for the exact selectors and recovery contract; retrieval summaries do not replace final joint proof.
-- Keep broad discovery queries bounded and compact. Fetch full tags and physical Collection rows only for shortlisted
-  cards.
+- Follow query-cards Staged Retrieval for every broad search: learn compact tags, broaden, shortlist through judgment,
+  then batch missing rules facts. Trust scoped membership; request quantities or source rows for directed questions.
 - Treat local Oracle text and direct and Inherited Card Identity Tags as evidence, not infallible role assignments.
 - Do not call a card Available, Committed, or Missing until Collection evidence has been checked under the confirmed
   allow-list.
+
+## Review And Pool Research
+
+For an existing-candidate review or pool-only research, read summary first, then the needed `brief`, `selected`,
+`options`, `plan` or other focused views. Reuse known facts and applicable checks. Retrieve complete Availability
+witnesses/reports when the requested outcome needs them. Finish needed continuation before mutation or restart against
+the changed baseline. Preserve selected membership in pool-only tasks and retain reasoned Card Contributions for saved
+options. Report assessed additions, unchanged selection and material gaps/coverage limits. This route finishes without
+invoking full construction/assembly finalization; use that route when delivering a completed selected deck.
 
 ## Recent Source Additions
 
