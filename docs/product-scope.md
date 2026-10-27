@@ -37,6 +37,8 @@ language is in [Card Query](./card-query.md).
 - Prioritize collection-first deck building before broader MTG assistant behavior.
 - Prefer explainable recommendations over opaque optimization.
 - Treat user priorities as inputs rather than fixed assumptions.
+- Use everyday deck-building language in user interactions and outputs, introducing specialist terms only when they
+  help the user understand a choice; users need no knowledge of backend components or internal domain terminology.
 - Keep Format language and core services extensible.
 - Keep deterministic facts and validation in product services while leaving contextual strategy to the agent.
 - Keep external and persistence authority narrow and explicit.
