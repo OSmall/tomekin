@@ -6,13 +6,18 @@ import {type DeckCandidate, roleSelectedCopies, summarizeDeckCandidate} from "./
 import {compactJsonBytes, decodeRetrievalCursor, cursorBindingsMatch, cursorScopeMatches, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
 import {renderCandidateReportParts, renderPortableDecklist} from "./deck-candidate-rendering";
 
-export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
+export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "action_analysis", "search_research", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
 export const GetDeckCandidateViewArgsSchema = z.strictObject({
     id: z.uuid(), view: z.enum(candidateViewValues).default("summary"),
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(),
+    details: z.literal("problems").optional(),
     role_id: z.uuid().optional(), card_identity_id: z.uuid().optional(),
-}).refine(v => v.view !== "summary" || (v.first === undefined && v.after === undefined), {message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]})
-  .refine(v => (v.role_id === undefined && v.card_identity_id === undefined) || v.view === "pool" || v.view === "options", {message:"role_id and card_identity_id are only supported for pool and options views.", path:["view"]});
+}).check((c) => {
+    const v = c.value;
+    if (v.details && v.view !== "availability") c.issues.push({code:"custom", input:v, continue:true, message:"details is supported only for the availability view.", path:["details"]});
+    if (v.view === "summary" && (v.first !== undefined || v.after !== undefined)) c.issues.push({code:"custom", input:v, continue:true, message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]});
+    if ((v.role_id !== undefined || v.card_identity_id !== undefined) && v.view !== "pool" && v.view !== "options") c.issues.push({code:"custom", input:v, continue:true, message:"role_id and card_identity_id are only supported for pool and options views.", path:["view"]});
+});
 export type CandidateViewArgs = z.infer<typeof GetDeckCandidateViewArgsSchema>;
 /** Values assign complete values; text fragments establish and append a string in index order. */
 export type CandidateViewRecord = {path: (string | number)[]; kind: "value"; value: unknown; text?: never; index?: never; final?: never} | {path: (string | number)[]; kind: "text_fragment"; text: string; index: number; final: boolean; value?: never};
@@ -96,13 +101,24 @@ function encodeRecords(raw: {path: (string | number)[]; value: unknown}[]): Cand
     return result;
 }
 function recordsFor(candidate: DeckCandidate, args: CandidateViewArgs): CandidateViewRecord[] {
-    const {view} = args;
+    const {view, details} = args;
     const filters = args;
     if(view === "availability" || view === "collection_pull_list") {
         const evidence=candidate.validation_evidence?.checks?.collection_availability;
         if(!evidence || evidence.status==="absent") return encodeRecords([{path:[],value:{evidence_status:"absent",message:"Explicit Availability check required before assembly."}}]);
         if(evidence.status!=="applicable") return encodeRecords([{path:[],value:{evidence_status:"outdated",checked_at:evidence.checked_at,message:"Reconfirm current scope and explicitly recheck Availability before assembly."}}]);
-        return encodeRecords([{path:["evidence"],value:{status:evidence.status,checked_at:evidence.checked_at,dependencies:evidence.dependencies}},...availabilityRecords(evidence.result as AvailabilityResult,view==="collection_pull_list")]);
+        const result = evidence.result as AvailabilityResult;
+        const evidenceRecord = {path:["evidence"],value:{status:evidence.status,checked_at:evidence.checked_at,dependencies:evidence.dependencies}};
+        if (details === "problems") {
+            const problems = result.requirements.filter(r => r.missing_owned > 0 || r.eligible === null || r.eligible < r.quantity);
+            return encodeRecords([evidenceRecord, {path:["context"],value:{summary:result.summary,collection_context:result.collection_context,check_completion:result.check_completion}},
+                {path:["requirements"],value:[]}, ...problems.map((r, i) => ({path:["requirements",i],value:{...r,
+                    card_name:candidate.cards.find(c => c.cardIdentityId === r.oracle_id)?.cardName ?? null,
+                    reasons:[...new Set([...r.reasons, ...(r.missing_owned > 0 ? ["missing_owned"] : []), ...(r.policy_shortfall !== null && r.policy_shortfall > 0 ? ["policy_shortfall"] : []), ...(r.eligible === null ? ["eligibility_unconfirmed"] : [])])],
+                }}))]);
+        }
+        return encodeRecords([evidenceRecord,...availabilityRecords(result,view==="collection_pull_list")]);
+
     }
     let value: unknown;
     if (view === "brief") value = candidate.brief;
@@ -110,6 +126,8 @@ function recordsFor(candidate: DeckCandidate, args: CandidateViewArgs): Candidat
     else if (view === "options") value = candidateOptionDetails(candidate, filters);
     else if (view === "pool") value = candidatePoolView(candidate, filters);
     else if (view === "plan") value = candidate.plan;
+    else if (view === "action_analysis") value = candidate.plan?.action_analysis_markdown ?? null;
+    else if (view === "search_research") value = candidate.plan?.search_research_markdown ?? null;
     else if (view === "assessments") value = {assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
     else if (view === "report") value = renderCandidateReportParts(candidate);
@@ -132,9 +150,9 @@ function recordsFor(candidate: DeckCandidate, args: CandidateViewArgs): Candidat
 export function readCandidateView(candidate: DeckCandidate, args: CandidateViewArgs) {
     const first = args.first ?? 50;
     const records = recordsFor(candidate, args);
-    const bindings = {id:candidate.id,view:args.view,format:"path_value_text_v2",role_id:args.role_id ?? null,card_identity_id:args.card_identity_id ?? null};
+    const bindings = {id:candidate.id,view:args.view,format:"path_value_text_v2",...(args.details ? {details:args.details} : {}),...(args.role_id ? {role_id:args.role_id} : {}),...(args.card_identity_id ? {card_identity_id:args.card_identity_id} : {})};
     // Bind exactly the included view plus content timestamp. Included names/check evidence can change without a content edit; unrelated data must not stale a Brief-only view.
-    const baseline = createHash("sha256").update(JSON.stringify({updated_at:candidate.updatedAt,view:args.view,records})).digest("hex");
+    const baseline = createHash("sha256").update(JSON.stringify({updated_at:candidate.updatedAt,view:args.view,...(args.details ? {details:args.details} : {}),records})).digest("hex");
     const context: CandidateViewContext = {candidate_id:candidate.id, updated_at:candidate.updatedAt, view:args.view, baseline, record_format:"path_value_text_v2"};
     let offset = 0;
     const metadata = (returned_count: number) => ({requested_count:first, returned_count, response_budget_bytes:retrievalResponseBudgetBytes, provider_total:null, scoped_total:records.length});
@@ -148,6 +166,7 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         offset = cursor.position as number;
     }
     const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:bindings,revisions:{baseline},position});
+
     const page = (end: number, stop_reason: RetrievalSuccess<CandidateViewRecord>["stop_reason"]) => ({status:"ok" as const, ...context,
         edges:records.slice(offset,end).map(node => ({node})),
         next_cursor:end<records.length?token(end):null,stop_reason,metadata:metadata(end-offset)});

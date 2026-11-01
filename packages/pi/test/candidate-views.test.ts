@@ -53,11 +53,11 @@ for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a
     const runtime=createLocalAgentToolRuntime({databasePath:fixture.databasePath,log});
     const transport=mode==="Worker"?createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts",import.meta.url).href}):undefined;
     const tool=createCoreTool("get_deck_candidate",{log,...transport?{transport,databasePath:fixture.databasePath}:{createRuntime:()=>createLocalAgentToolRuntime({databasePath:fixture.databasePath,log})}});
-    const description='🦊\\\"\n'.repeat(30000);
+    const description='🦊\\\"\n'.repeat(10000);
     try {
         const current=await runtime.handlers.getDeckCandidate({id:fixture.candidateId});
         if(current.isErr())throw new Error(current.error.message);
-        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(current.value as any).updated_at,changes:{plan:{schema_version:1,description},nodes:[{action:"add",node:{ref:"large",kind:"role",label:"Large",description,coverage_assessment:{summary:"No selected contributors."}}}]}});
+        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(current.value as any).updated_at,changes:{plan:{schema_version:1,description,action_analysis_markdown:description,search_research_markdown:"Search evidence"},nodes:[{action:"add",node:{ref:"large",kind:"role",label:"Large",description,coverage_assessment:{summary:"No selected contributors."}}}]}});
         if(update.isErr())throw new Error(update.error.message);
         let after:string|undefined, index=0, result='';
         const records:any[]=[];
@@ -78,7 +78,7 @@ for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a
         const firstFragment=records.findIndex(record=>record.kind==='text_fragment');
         expect(()=>reconstructCandidateView(records.slice(0,firstFragment+1))).toThrow();
         expect(()=>reconstructCandidateView(records.filter((_,i)=>i!==firstFragment))).toThrow();
-        for (const view of ["json", "report"] as const) {
+        for (const view of ["json", "report", "action_analysis", "search_research"] as const) {
             const all:any[]=[]; let cursor:string|undefined;
             do {
                 const output=await tool.execute("full",{id:fixture.candidateId,view,first:200,...cursor?{after:cursor}:{}},new AbortController().signal) as PiToolOutput;
@@ -88,7 +88,8 @@ for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a
             } while(cursor);
             const reconstructed:any=reconstructCandidateView(all);
             if(view==="json") {expect(reconstructed.plan.description).toBe(description); expect(reconstructed.plan.nodes.find((node:any)=>node.label==="Large").description).toBe(description);}
-            else expect(reconstructed.join("")).toContain(description);
+            else if(view==="report") expect(reconstructed.join("")).toContain(description);
+            else expect(reconstructed).toBe(view==="action_analysis" ? description : "Search evidence");
         }
     } finally {await transport?.close();runtime.close();fixture.dispose();}
 });

@@ -265,7 +265,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.
 - Final Availability checks cover the complete selected demand against recorded Collection rows under the Brief policy.
-  Bounded Collection Pull Lists recover complete witnesses; imported data does not establish physical possession.
+  The default check returns the complete summary without witness rows; focused saved problems explain shortages and
+  uncertainty. Bounded Collection Pull Lists recover sourcing witnesses; imported data does not establish physical possession.
 - ManaBox List rows are not currently skipped and summarized; an unsupported location type fails the readable import
   and preserves the previous Collection snapshot ([issue #39](https://github.com/OSmall/tomekin/issues/39)).
 

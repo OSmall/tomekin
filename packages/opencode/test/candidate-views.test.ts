@@ -42,7 +42,7 @@ test("OpenCode recovers a fragmented escaped strategy",async()=>{
     try {
         const summary=await runtime.handlers.getDeckCandidate({id:fixture.candidateId});
         if(summary.isErr())throw new Error(summary.error.message);
-        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(summary.value as any).updated_at,changes:{plan:{schema_version:1,description}}});
+        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(summary.value as any).updated_at,changes:{plan:{schema_version:1,description,action_analysis_markdown:description,search_research_markdown:"Search evidence"}}});
         if(update.isErr())throw new Error(update.error.message);
         let after:string|undefined; const records:any[]=[];
         do {
@@ -51,6 +51,12 @@ test("OpenCode recovers a fragmented escaped strategy",async()=>{
             expect(Buffer.byteLength(output)).toBeLessThanOrEqual(51200);
             records.push(...page.edges.map((edge:any)=>edge.node)); after=page.next_cursor??undefined;
         } while(after);
-        expect((reconstructCandidateView(records) as any).plan.description).toBe(description);
+        expect((reconstructCandidateView(records) as any).plan.action_analysis_markdown).toBe(description);
+        const research:any[]=[]; after=undefined;
+        do {
+            const page=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"action_analysis",first:2,...after?{after}:{}} as never));
+            expect(page.status).toBe("ok"); research.push(...page.edges.map((edge:any)=>edge.node)); after=page.next_cursor??undefined;
+        } while(after);
+        expect(reconstructCandidateView(research)).toBe(description);
     } finally {restore();runtime.close();fixture.dispose();}
 });

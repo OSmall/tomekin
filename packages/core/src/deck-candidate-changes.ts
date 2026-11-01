@@ -73,6 +73,8 @@ export function constructDeckCandidate(
                           plan: {
                               schema_version: 1,
                               description: input.plan.description,
+                              action_analysis_markdown: input.plan.action_analysis_markdown,
+                              search_research_markdown: input.plan.search_research_markdown,
                           },
                       }
                     : {}),
@@ -154,6 +156,8 @@ export function reviseDeckCandidate(
             schema_version: 1,
             candidate_id: candidate.id,
             description: changes.plan.description,
+            action_analysis_markdown: null,
+            search_research_markdown: null,
             nodes: [],
             contributions: [],
             relationships: [],
@@ -161,6 +165,10 @@ export function reviseDeckCandidate(
     }
     if (changes.plan?.description && candidate.plan)
         candidate.plan.description = changes.plan.description;
+    if (candidate.plan && changes.plan) {
+        if (changes.plan.action_analysis_markdown !== undefined) candidate.plan.action_analysis_markdown = changes.plan.action_analysis_markdown;
+        if (changes.plan.search_research_markdown !== undefined) candidate.plan.search_research_markdown = changes.plan.search_research_markdown;
+    }
     if (changes.assessments)
         candidate.assessments = {
             ...candidate.assessments,
@@ -434,8 +442,9 @@ export function reviseDeckCandidate(
                     );
                 if (key === "plan")
                     return (
-                        candidate.plan?.description !==
-                        baseline.plan?.description
+                        candidate.plan?.description !== baseline.plan?.description ||
+                        candidate.plan?.action_analysis_markdown !== baseline.plan?.action_analysis_markdown ||
+                        candidate.plan?.search_research_markdown !== baseline.plan?.search_research_markdown
                     );
                 if (key === "assessments")
                     return (
