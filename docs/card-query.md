@@ -66,11 +66,19 @@ There is no automatic retry loop. Host HTTP observation has an independent 120-s
 One active Tomekin provider process per user/state root is enforced with an exclusive owner directory under
 `${XDG_STATE_HOME:-~/.local/state}/tomekin/scryfall`. Pi and OpenCode sessions must share this state root; a second
 active provider process fails with actionable setup guidance, even with another database/worktree. Keep one provider
-process active at a time. Minimal durable control metadata records only provider/version, wall cooldown deadline and
-uncertain-dispatch state; it contains no q, cursors or cards. An interrupted owner, uncertain state or corrupt recovery
+process active at a time. Minimal durable control metadata records provider/version, wall cooldown deadline, the last
+settled start time and lane interval, and uncertain-dispatch state; it contains no q, cursors or cards. A clean settled
+exit retains only any real cooldown and remaining start spacing; it does not create a recovery cooldown. Search starts
+remain at least 500 ms apart and sync/reference starts at least 100 ms apart, including lane changes and process
+replacement. An interrupted owner, uncertain state or corrupt recovery
 state establishes a fresh 31-second quiet period and retains any longer known deadline, reanchored to monotonic time.
 Uncertain ownership fails closed for inspection. A crash between receiving an unrecorded longer header and durable
 publication cannot reconstruct that unseen value; recovery does not claim otherwise. Persistence failure closes admission.
+
+Initialization logs distinguish retained cooldown, uncertain requests, recovered ownership and corrupt or unreadable state.
+Admission logs distinguish required and measured delay, with a cooldown or spacing reason; a 429 logs its established
+cooldown. These diagnostics do not include query, card or cursor payloads. The reproduced clean-exit defect does not
+establish the cause of the earlier Alesha session wait.
 
 Info logs contain selected-property names, stage timings, provider/raw/returned counts and exact application/adapter
 bytes. Debug deliberately includes q, full incoming/outgoing cursors and decoded positions/import bindings. Operational
@@ -233,29 +241,31 @@ identities absent locally remain explicitly unavailable, distinct from a success
 ```json
 {"operation":{"type":"search","query":"mana ramp"},"first":25}
 {"operation":{"type":"lookup","slugs":["mana-rock","recursion"]}}
-{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{}}}
+{"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{}},"select":["description","label"]}
 {"operation":{"type":"lookup","slugs":["ramp"],"hierarchy":{"depth":2}}}
 {"operation":{"type":"list"},"first":50}
 ```
 
 Search matches literal case-insensitive substrings in slugs, labels and aliases; `%` and `_` remain literals.
 Search/list results are ordered by slug then UUID. Exact known-slug lookup preserves supplied order, duplicates
-and explicit `not_found` occurrences. Every found node has `status: "found"` and a complete `tag` definition:
-`id`, `slug`, `label`, nullable `description`, `source_page_uri`, and all `aliases`.
+and explicit `not_found` occurrences. Every found node has `status: "found"` and a `tag` with its `slug` and complete
+nullable `description` by default. An explicit nonempty `select` chooses from `description`, `id`, `label`, `aliases`,
+and `source_page_uri`; slug is always present. Omitted fields are not claims that metadata or a description is absent.
+A selected null description means no description was supplied by the import.
 No hierarchy appears by default. Lookup's optional `hierarchy: {}` requests one level of immediate parents,
 children and connecting relationships. Explicit `depth` accepts integers 1–3. The result's `hierarchy` contains
-`depth`, complete parent/child definitions reachable in each direction within that depth, and deduplicated
+`depth`, parent/child nodes with the same selected fields, reachable in each direction within that depth, and deduplicated
 `relationships: [{parent_slug,child_slug}]`. A depth boundary is deliberate, not a claim that no further graph exists.
 Cycles and repeated paths are deduplicated. Per-card `lookup_cards` tags still include all reachable ancestors;
 the catalogue exploration bound does not narrow inherited card facts. Tags are discovery facts, not Deck Roles
 or strategic quality judgments.
 
-`first` defaults to 50 and accepts 0–200. Repeat the same operation with `next_cursor` as `after`;
+`first` defaults to 50 and accepts 0–200. Repeat the same operation and effective selection with `next_cursor` as `after`;
 `first` may change. Search/list traversal is complete under an unchanged tag import. Continue while `next_cursor` is non-null, and `error.cursor` after recoverable execution stops. Catalogue uses the same compact 51,200-byte
-success/error envelope and 120-second deadline as lookup, with whole definitions/requested hierarchies indivisible.
-Oversized records remain unconsumed. Cursors bind only the successful compatible `oracle_tags` import and operation;
+success/error envelope and 120-second deadline as lookup, with selected definition fields and requested hierarchies indivisible.
+Oversized records remain unconsumed. Cursors bind the successful compatible `oracle_tags` import, operation and effective selection;
 failed attempts and unrelated imports do not invalidate them. Rows, aliases, edges and import binding share a SQLite
-read transaction. A replacement tag import yields `stale_cursor` with restart recovery. Missing/incompatible tag data
+read transaction. Changed selections and older cursors without a selection binding require a restart; a replacement tag import yields `stale_cursor` with restart recovery. Missing/incompatible tag data
 returns `reference_data_unready`, distinct from successful empty search/list and a known-slug miss. No provider call,
 startup catalogue dump, second reference store or saved search/cursor store is introduced.
 

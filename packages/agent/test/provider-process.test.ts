@@ -1,5 +1,5 @@
 import {expect, test} from "bun:test";
-import {mkdtempSync, rmSync} from "node:fs";
+import {mkdirSync, mkdtempSync, rmSync, writeFileSync} from "node:fs";
 import {join} from "node:path";
 import {tmpdir} from "node:os";
 
@@ -42,4 +42,37 @@ test("one provider process owns all databases and an interrupted owner restarts 
         await first.exited;
         rmSync(directory, {recursive: true, force: true});
     }
+});
+
+test("settled request survives clean process exit without an uncertain recovery cooldown", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "provider-clean-"));
+    const module = new URL("../src/provider.ts", import.meta.url).href;
+    const run = (code: string) => Bun.spawn([process.execPath, "-e", `import {getProcessCardSearchProvider} from ${JSON.stringify(module)};${code}`], {
+        env: {...process.env, XDG_STATE_HOME: directory}, stdout: "pipe", stderr: "pipe",
+    });
+    try {
+        const first = run(`globalThis.fetch=async()=>new Response('{}',{status:200});await getProcessCardSearchProvider().dispatch('https://api.scryfall.com/cards/search?q=test',{remainingMs:10000});`);
+        expect(await first.exited).toBe(0);
+        const second = run(`globalThis.fetch=async()=>new Response('{}',{status:200});try { await getProcessCardSearchProvider().dispatch('https://api.scryfall.com/cards/search?q=test',{remainingMs:1}); console.log(JSON.stringify({code:'success'})); } catch (e) { console.log(JSON.stringify(e.problem)); }`);
+        expect(await second.exited).toBe(0);
+        expect(JSON.parse(await new Response(second.stdout).text()).code).not.toBe("rate_limited");
+    } finally { rmSync(directory, {recursive: true, force: true}); }
+});
+
+
+test("corrupt state retains conservative recovery and reports its cause", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "provider-corrupt-"));
+    const stateDir = join(directory, "tomekin", "scryfall");
+    mkdirSync(stateDir, {recursive: true});
+    writeFileSync(join(stateDir, "control.json"), "not json");
+    const module = new URL("../src/provider.ts", import.meta.url).href;
+    const code = `import {getProcessCardSearchProvider} from ${JSON.stringify(module)};const log={warn:o=>console.log(JSON.stringify(o)),info:o=>console.log(JSON.stringify(o)),child(){return this}};try{await getProcessCardSearchProvider(log).dispatch('https://api.scryfall.com/cards/search?q=private',{remainingMs:1})}catch(e){console.log(JSON.stringify(e.problem))}`;
+    try {
+        const child = Bun.spawn([process.execPath, "-e", code], {env: {...process.env, XDG_STATE_HOME: directory}, stdout: "pipe", stderr: "pipe"});
+        expect(await child.exited).toBe(0);
+        const output = await new Response(child.stdout).text();
+        expect(output).toContain('"reason":"unreadable_or_corrupt_state"');
+        expect(output).toContain('"code":"rate_limited"');
+        expect(output).not.toContain("private");
+    } finally { rmSync(directory, {recursive: true, force: true}); }
 });
