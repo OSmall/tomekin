@@ -14,9 +14,10 @@ test("discovery qualifies transient directions and resumes incomplete constructi
 }, 30_000);
 
 import {auditWorkflowSurfaces} from "../src/workflows";
-test("Pi and OpenCode expose the same product capabilities and load one canonical workflow skill tree", async () => {
+test("Pi and OpenCode expose shared product capabilities and load one canonical workflow skill tree", async () => {
     const audit = await auditWorkflowSurfaces();
     expect(audit.capabilitiesMatch).toBe(true);
+    expect(audit.piOnlyCapabilities).toEqual(["ask_user", "calculate", "codemode", "read"]);
     expect(audit.legacyDisabled).toBe(true);
     expect(audit.retiredNormalCapabilities).toEqual([]);
     expect(audit.loadedCanonicalSkills).toHaveLength(8);
