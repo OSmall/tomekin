@@ -109,11 +109,13 @@ export async function auditWorkflowSurfaces() {
     const moduleUrl = new URL("../../../.opencode/tools/tomekin.ts", import.meta.url).href;
     const tools = await import(moduleUrl);
     const openCode = Object.keys(tools).filter(name => tools[name] && typeof tools[name].execute === "function").sort();
-    const pi = resolvePiToolNames({}).filter(name => name !== "read" && name !== "ask_user").sort();
+    const piOnly = ["read", "ask_user", "calculate", "codemode", "todo", "context_status"];
+    const allPi = resolvePiToolNames({});
+    const pi = allPi.filter(name => !piOnly.includes(name)).sort();
     const root = fileURLToPath(new URL("../../../", import.meta.url));
     const read = createMethodologyReadTool({workspacePath: root});
     const agent = readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8");
-    if (!agent.includes("skill: allow") || !agent.includes("load the native")) throw new Error("OpenCode skill routing unavailable");
+    if (!agent.includes("skill: allow") || !/load the native/i.test(agent)) throw new Error("OpenCode skill routing unavailable");
     for (const name of openCode) if (!agent.includes(`"tomekin_${name}": allow`)) throw new Error(`OpenCode permission missing: ${name}`);
     const loadedCanonicalSkills = [];
     for (const name of readdirSync(`${root}/skills`)) {
@@ -125,6 +127,6 @@ export async function auditWorkflowSurfaces() {
         loadedCanonicalSkills.push(name);
     }
     const retired = ["get_card_identity", "resolve_decklist_cards", "summarize_reference_support", "save_deck_candidate", "query_cards"];
-    return {capabilitiesMatch: JSON.stringify(pi) === JSON.stringify(openCode), legacyDisabled: !pi.includes("legacy_query_cards" as any) && !tools.legacy_query_cards, retiredNormalCapabilities: openCode.filter(name => retired.includes(name)), loadedCanonicalSkills, limits: "Actual Pi constrained reads and OpenCode exports, permissions and canonical skill targets; no live native-model skill invocation or reasoning-quality claim."};
+    return {capabilitiesMatch: JSON.stringify(pi) === JSON.stringify(openCode), piOnlyCapabilities: allPi.filter(name => piOnly.includes(name)).sort(), legacyDisabled: !pi.includes("legacy_query_cards" as any) && !tools.legacy_query_cards, retiredNormalCapabilities: openCode.filter(name => retired.includes(name)), loadedCanonicalSkills, limits: "Actual Pi constrained reads and OpenCode exports, permissions and canonical skill targets; no live native-model skill invocation or reasoning-quality claim."};
 }
 if (import.meta.main) console.log(JSON.stringify({...(await runWorkflowIntegration()), audit: await auditWorkflowSurfaces()}, null, 2));

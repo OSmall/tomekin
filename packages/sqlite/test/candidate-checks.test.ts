@@ -245,6 +245,9 @@ test.each([
 test("readiness and source-age warnings describe only committed current datasets", async () => {
     const app = setup();
     try {
+        // Keep the unrelated current imports undated so their age does not depend on wall-clock time.
+        app.db.update(scryfallBulkDataImport).set({sourceUpdatedAt: null}).where(eq(scryfallBulkDataImport.bulkDataType, "oracle_tags")).run();
+        app.db.update(scryfallBulkDataImport).set({sourceUpdatedAt: null}).where(eq(scryfallBulkDataImport.bulkDataType, "all_cards")).run();
         // This superseded snapshot is incompatible and old; the replacement is compatible and has no source date.
         app.db.update(scryfallBulkDataImport).set({importContractRevision: 0, sourceUpdatedAt: new Date("2020-01-01")}).where(eq(scryfallBulkDataImport.bulkDataType, "oracle_cards")).run();
         const replacementId = "00000000-0000-4000-8000-000000000001";
