@@ -16,6 +16,14 @@ Reuse this guidance while it remains in context. For a substantial request use t
 - **Pool-only research:** Investigate the requested options, preserve selected membership and report assessed alternatives and gaps without finalizing a deck.
 - **Direct question:** Answer a Collection or numerical question with the relevant tools and evidence; load `probability-analysis` for modeling or `card-research` for substantial card investigation as needed.
 
+## Recent additions
+
+For relative dates, establish the user's timezone and resolve a UTC interval. Distinguish strict copy eligibility from
+exploratory inspiration in the Brief. Strict eligibility requires matching policy date bounds; inspiration can use
+other permitted copies of discovered identities. Browse matching dated rows and, unless declined, separately inspect
+unknown-date rows within the same scope; label their dates unknown and report unchecked coverage. Refresh and reconfirm
+the Collection scope after successful Collection replacement; failed imports preserve the active policy.
+
 ## Prepare a selected direction
 
 1. Inspect the anchor's exact Oracle facts and analyze actions: costs, prerequisites, timing, direct and indirect events, player scope, frequency, useful output, competing plays, vulnerabilities and likely early/middle/later development. Distinguish conditional possibility from reliable output; qualify material rules uncertainty and claim external verification only when performed. Explain proposed Win Routes and obtain the user's agreement to the initial action analysis before saving it.
@@ -39,6 +47,6 @@ Edits use the exact latest `expected_updated_at`; omitted fields stay unchanged 
 
 ## Finish the requested result
 
-For a completed selected deck, read actual final membership and relevant facts, Brief, strategy, qualified coverage, mana and pending review. Explicitly run applicable `validate_format_legality`, `evaluate_deck_candidate` and joint `check_collection_availability` on the saved candidate and whole Brief policy. Trial checks concern the trial only. Availability's default is a complete aggregate summary; read saved `availability` with `details: "problems"` for affected requirements and detailed witnesses or a Collection Pull List for sourcing. Keep shortages, policy exclusions and uncertainty distinct. Refresh checks when relevant inputs or reference data change.
+For a completed selected deck, read actual final membership and relevant facts, Brief, strategy, qualified coverage, mana and pending review. Use `get_format_constraints` for applicable construction rules; resolve material local reference misses and legality discrepancies before claiming completion. Explicitly run applicable `validate_format_legality`, `evaluate_deck_candidate` and joint `check_collection_availability` on the saved candidate and whole Brief policy. Trial checks concern the trial only. Availability's default is a complete aggregate summary; read saved `availability` with `details: "problems"` for affected requirements and detailed witnesses or a Collection Pull List for sourcing. Keep shortages, policy exclusions and uncertainty distinct. Refresh checks when relevant inputs or reference data change.
 
 Explain actual results, evidence, intentional trade-offs, material gaps and research limits. Generate a Portable Decklist with selected quantities/names and necessary Format sections only; put role prose outside it. A Pull List does not move or reserve cards. Finish an explanation, discovery or pool-only request at its own outcome rather than claiming a completed deck.
