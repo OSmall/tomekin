@@ -20,8 +20,9 @@ Collection-policy filtering and owned-copy evidence are not provided by this sea
 `browse_tags` provides explicit slug/label/alias search, known-slug definitions and recoverable catalogue listing.
 Hierarchy appears only when requested for lookup: one parent/child level by default, explicitly up to three.
 Missing tag data is a readiness error; empty search and known-slug misses are separate successful outcomes.
-Complete definitions and requested graph records survive adapter transport without preview clipping. Catalogue
-pagination binds the successful tag import; per-card inherited tags remain complete at every depth.
+Slug and complete nullable description are returned by default; optional field selection adds or replaces those facts.
+Requested fields and graph records survive adapter transport without preview clipping. Catalogue pagination binds the
+selection and successful tag import; per-card inherited tags remain complete at every depth.
 `search_card_sets` discovers existing imported Set code/name metadata and depends only on All Cards readiness.
 
 ## Known-card facts
