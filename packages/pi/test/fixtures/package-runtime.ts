@@ -50,7 +50,8 @@ try {
     const composed = await invoke("codemode", {code: `const page = JSON.parse(await tools.lookup_cards({references: [{kind: "name", value: "Sol Ring"}], select: {name: true}})); text(JSON.stringify(page));`});
     const arithmetic = await invoke("calculate", {expression: "sqrt(16) + 3^2"});
 
-    const skill = await invoke("read", {path: "skills/tomekin-deck-building/SKILL.md", limit: 2});
+    const skill = await invoke("read", {path: "skills/deck-development/SKILL.md", limit: 2});
+    const references = await Promise.all(["skills/card-research/codemode.md", "skills/card-research/legacy-query.md"].map(path => invoke("read", {path, limit: 2})));
     const denied = await invoke("read", {path: "package.json"});
     const todoAdd = await invoke("todo", {action: "add", text: "Research"});
     session.sessionManager.appendMessage({role: "toolResult", toolCallId: "saved-todo", toolName: "todo", content: todoAdd.content, details: todoAdd.details, isError: false, timestamp: Date.now()});
@@ -67,7 +68,7 @@ try {
     console.log(JSON.stringify({
         version: VERSION, beforeReload, afterReload, errors, systemPrompt, todoAdd: todoAdd.details, todoList: todoList.details, todoToggle: todoToggle.details, todoClear: todoClear.details, context: context.details,
         lookup: lookup.details, afterReloadLookup: afterReloadLookup.details,
-        calculator: calculator.details, arithmetic: arithmetic.details, arithmeticSchema: session.agent.state.tools.find(tool => tool.name === "calculate")!.parameters, composed: composed.content, skill: skill.content, denied: denied.details,
+        calculator: calculator.details, arithmetic: arithmetic.details, arithmeticSchema: session.agent.state.tools.find(tool => tool.name === "calculate")!.parameters, composed: composed.content, skill: skill.content, references: references.map(result => result.content), denied: denied.details,
         skills: resourceLoader.getSkills().skills.map(skill => skill.name),
         contexts: resourceLoader.getAgentsFiles().agentsFiles.length,
         prompts: resourceLoader.getPrompts().prompts.length,

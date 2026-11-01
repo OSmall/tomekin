@@ -134,7 +134,7 @@ Collection import read user-supplied local files.
 
 `packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness. Callers pass an explicit
 database path and logger, invoke handlers, then close the runtime.
-`skills/` contains the eight canonical Tomekin skills, rooted at `tomekin-deck-building`. `packages/opencode` and
+`skills/` contains five canonical Tomekin skills, with `deck-development` routing deck work. `packages/opencode` and
 `.opencode/` remain a thin OpenCode adapter: it translates tool input and output, uses the shared runtime per call, and
 reaches canonical skills through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
@@ -253,12 +253,13 @@ historical Collection rows, duplicate identity columns, saved search or standalo
 
 ## Workflow instruction boundary
 
-One canonical `skills/` tree owns operational instructions in both adapters. `tomekin-deck-building` coordinates
-retrieval, authorization, create/edit, explicit checks and final outputs; `deck-shape-methodology` owns common contextual
-reasoning. Discovery and Format architecture/tuning compose it, with templates/calculator examples retained by Format
-owners. Services enforce structure, facts and requested deterministic checks; the agent owns strategic assessment and
-confirmation covering the actual result. No approval token, persisted Opportunity or separate workflow engine is added.
-The [workflow demonstration](evaluation/workflows.md) exercises these seams with synthetic data and actual transports.
+One canonical `skills/` tree owns operational instructions in both adapters. `deck-development` routes by requested
+outcome and owns construction, review and resumption; `card-research` and `probability-analysis` own shared methods,
+while `commander` and `sixty-card-constructed` hold Format-specific guidance. Pi's constrained reader can access their
+conditional companion references. OpenCode consumes the same native skill targets; Pi-specific code mode and general
+arithmetic are not implied OpenCode capabilities. Services enforce structure, facts and requested deterministic checks;
+the agent owns contextual strategy. The [workflow demonstration](evaluation/workflows.md) exercises product seams with
+synthetic data, not live model reasoning.
 
 ## Agent-context economy
 
@@ -268,7 +269,7 @@ URLs remain outside cursors. Search reconstructs provider pages from repeated na
 restart checks remain explicit. Success exposes one next_cursor, null at exhaustion, across search, lookup, catalogue,
 owned-row browsing, candidate views/rendering and Availability witnesses. No saved cursor/result store is added.
 Ordinary Collection search/browse context uses policy_id; full resolved policy is an explicit inspection projection.
-The canonical query-cards skill owns staged research; root/discovery/tuning workflows route to it.
+The canonical card-research skill owns staged retrieval and research coverage.
 See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [economy evidence](evaluation/economy.md).
 
 ### Pi general arithmetic dependency

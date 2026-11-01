@@ -211,7 +211,7 @@ supplies feedback. The current developer uses macOS arm64; Windows/Linux executi
 
 Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
 live Pi process or LLM. The separate matched real-session parity evaluation (#26), described in the README and its own
-protocol, covers initial, reload, and resume orientation and a correctly shaped Card Query after loading the query-cards
+protocol, covers initial, reload, and resume orientation and a correctly shaped Card Query after loading the card-research
 skill. It is not a dependency-upgrade gate. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
 
 ## Exact Output Tests
@@ -262,7 +262,7 @@ paired additions and cuts, aggregate re-analysis, preserved deck size, determini
 revised Deck Candidate is built, evidence-backed explanations, and persistence only when existing or new authorization covers the exact
 final change set.
 
-The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
+The same corpus includes human-reviewed shared deck-development methodology expectations: meaningful Commander starting
 profiles and retained departures, factual qualification and modal competition, whole-contribution swaps, section-aware
 selected coverage versus active alternatives, current reasoning/evidence and explicit checking boundaries. These are
 reasoning invariants, not new CI quality scores. The [deterministic four-workflow demonstration](evaluation/workflows.md) exercises the current public seams and actual

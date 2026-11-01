@@ -1,1 +1,0 @@
-../../../skills/deck-shape-methodology/SKILL.md

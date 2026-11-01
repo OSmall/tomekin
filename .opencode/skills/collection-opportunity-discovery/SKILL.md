@@ -1,1 +1,0 @@
-../../../skills/collection-opportunity-discovery/SKILL.md

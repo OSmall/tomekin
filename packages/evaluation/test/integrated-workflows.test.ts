@@ -19,5 +19,5 @@ test("Pi and OpenCode expose the same product capabilities and load one canonica
     expect(audit.capabilitiesMatch).toBe(true);
     expect(audit.legacyDisabled).toBe(true);
     expect(audit.retiredNormalCapabilities).toEqual([]);
-    expect(audit.loadedCanonicalSkills).toHaveLength(8);
+    expect(audit.loadedCanonicalSkills.sort()).toEqual(["card-research", "commander", "deck-development", "probability-analysis", "sixty-card-constructed"]);
 });
