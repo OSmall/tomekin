@@ -53,6 +53,17 @@ source time rather than the time the derived JSON was written. The exact input f
 model settings and any further changes belong in the evidence record. This preparation establishes neither a complete
 deck nor live-model behavior.
 
+The temporary directory also contains `generate-inputs.py` (SHA-256
+`ef8deb581ebdb1709dc86cfd1e41c829528745196fd7e023a28db5a56e4abfa7`). Given the two hashed public gzip snapshots,
+run it with the Oracle gzip path, tags gzip path and a new output directory as its three arguments. A separate
+regeneration produced byte-identical hashes for all four derived input files. This script, the snapshots, derived files
+and databases are temporary local artifacts, not committed fixtures; preserve them with the manifest if the planned
+run will occur later. Recreate a database by applying migrations to a new path, importing `oracle.json` as
+`oracle_cards`, `selected-printings.json` as `all_cards`, `tags.json` as `oracle_tags`, and the CSV as ManaBox, using
+the existing CLI commands. Set the derived JSON files' modification times to the respective recorded source times
+before import: the local-import command uses file modification time for source freshness. Database/import identifiers
+and file hashes will differ on recreation. Do not reuse a working copy as a fresh baseline.
+
 ## Session 1: construction, recovery, explanation and pool research
 
 Use Tatyova, Benthic Druid as the Commander anchor, subject to checking that it is outside the final worked examples and
