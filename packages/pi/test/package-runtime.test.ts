@@ -27,6 +27,8 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.lookup).toEqual(actual.afterReloadLookup);
         expect(JSON.stringify(actual.lookup)).toContain("Sol Ring");
         expect(actual.lookup.error).toBeUndefined();
+        expect(actual.arithmetic.result).toBe(13);
+        expect(actual.arithmeticSchema).toMatchObject({type: "object", additionalProperties: false, required: ["expression"], properties: {expression: {type: "string", maxLength: 512}}});
         expect(actual.calculator.error).toBeUndefined();
         expect(actual.calculator.probability).toBeCloseTo(2 / 3, 12);
         expect(JSON.stringify(actual.skill)).toContain("tomekin-deck-building");
@@ -35,7 +37,7 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.skills).not.toContain("ask-user");
         expect(actual.contexts).toBe(0);
         expect(actual.prompts).toBe(0);
-        expect(actual.extensions).toHaveLength(3);
+        expect(actual.extensions).toHaveLength(4);
         expect(actual.systemPrompt).toContain("Collection-first Magic: The Gathering assistant");
         expect(actual.systemPrompt).toContain("tomekin-deck-building");
         expect(actual.systemPrompt).not.toContain("expert coding assistant");
@@ -44,6 +46,7 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.todoToggle.todos[0].done).toBe(true);
         expect(actual.todoClear.todos).toHaveLength(0);
         expect(actual.context).toHaveProperty("estimatedTokens");
+        expect(JSON.stringify(actual.composed)).toContain("Sol Ring");
     } finally {
         child.kill();
         await child.exited;

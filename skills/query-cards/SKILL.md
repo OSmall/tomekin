@@ -146,3 +146,5 @@ Source contracts: #72 authoring, #28 projection, #29 original continuation, #82 
 `TOMEKIN_ENABLE_LEGACY_QUERY=true`; OpenCode also requires an allow permission. Read the workspace-relative
 `skills/query-cards/legacy-query.md` only for that legacy CQL2 workflow. It covers local relationships, procedural
 Collection allow-lists and non-paginated legacy limits. Those expressions are not native search q.
+
+For Pi code-mode composition and durable cursor checkpoints, read [codemode.md](codemode.md) when batching or resuming a traversal.

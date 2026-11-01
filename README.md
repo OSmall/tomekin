@@ -58,14 +58,14 @@ Pi's native TUI may separately download its `fd`/`rg` helpers when absent. Set `
 and catalog network refreshes during an offline startup check; this does not make authenticated model calls work offline.
 Helper acquisition and behavior remain Pi-owned.
 
-The session exposes the approved Tomekin Agent Tools, a skill-only `read`, `ask_user`, the pinned Pi todo extension,
-and `context_status`. It does not grant coding, shell, general filesystem, network, raw-database or MCP tools. Pi discovers
-canonical `skills/`; ambient resources remain disabled. The launcher loads only the reviewed `pi-ask-user@0.15.0` file
-and the official todo example shipped with the pinned Pi version. It preserves other settings while clearing the profile's
-package list. A compact Tomekin system prompt replaces Pi's coding orientation while preserving native skill discovery.
-The agent uses a checklist for substantial requests and checks estimated context capacity before a substantial pass;
-unknown estimates remain unknown. After compaction it recovers the actual candidate, Resume note and needed research pages.
-Pi retains ownership of login, settings and conversation data within this clone-local profile.
+The session exposes the approved Tomekin Agent Tools, a skill-only `read`, `ask_user`, restricted native `codemode`,
+the pinned Pi todo extension and `context_status`. It does not grant coding, shell, general filesystem, network,
+raw-database or MCP tools. Pi discovers canonical `skills/`; ambient resources remain disabled. The launcher loads
+the reviewed `pi-ask-user@0.15.0` file and the official todo example shipped with the pinned Pi version. It preserves
+other settings while clearing the profile's package list. A compact Tomekin system prompt replaces Pi's coding orientation
+while preserving native skill discovery. For substantial requests the agent uses a checklist and checks estimated context
+capacity; unknown estimates remain unknown. After compaction it recovers the actual candidate, Resume note and needed
+research pages. Pi retains ownership of login, settings and conversation data within this clone-local profile.
 Existing standalone caches and profile data are retained. Downgrades and cross-version profile/session compatibility
 are unsupported in this developer phase; deliberate downgrade recovery is manual.
 
@@ -88,6 +88,9 @@ lookup. It performs no network fallback; opt-in Collection summaries/copies eval
 `browse_collection_cards` reads bounded actual owned rows under an explicit confirmed policy or a candidate's Brief,
 including reliable source-added dates and independently searchable unknown dates. Successful reimport requires scope
 reconfirmation; failed attempts preserve current references. See the [Collection contract](docs/card-query.md#collection-policy-and-owned-row-browsing).
+
+Pi also provides `calculate` for bounded scalar arithmetic without Collection or reference data. See the
+[general calculator contract](docs/product-behavior.md#general-calculator-pi) for supported expressions and limits.
 
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
 explicit decimal target. It works without imported card data and does not save records. See the

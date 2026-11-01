@@ -10,7 +10,7 @@ const basePiToolNames = [
     "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
     "search_card_sets", "get_format_constraints",
     "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
-    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user", "todo", "context_status",
+    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "calculate", "read", "ask_user", "codemode", "todo", "context_status",
 ] as const;
 
 export function resolvePiToolNames(environment: Record<string, string | undefined> = process.env): readonly (typeof basePiToolNames[number] | "legacy_query_cards")[] {
@@ -80,6 +80,7 @@ export function createPiSpawnConfiguration(options: {
             "--skill", join(options.workspacePath, "skills"),
             "--system-prompt", tomekinPiBootstrap,
             "--tools", resolvePiToolNames(environment).join(","),
+            "--extension", join(options.workspacePath, "packages", "pi", "src", "codemode.ts"),
             "--extension", options.askUserExtensionPath ?? resolveAskUserExtensionPath(),
             "--extension", options.todoExtensionPath ?? resolveTodoExtensionPath(),
             "--extension", options.extensionPath,

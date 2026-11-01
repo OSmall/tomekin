@@ -67,7 +67,7 @@ describe("Pi launcher", () => {
             "--tools", expectedPiToolNames.join(","),
         ]));
         const extensions = configuration.args.flatMap((argument, index) => argument === "--extension" ? [configuration.args[index + 1]] : []);
-        expect(extensions).toEqual(["/dependencies/pi-ask-user/index.ts", "/dependencies/pi/examples/extensions/todo.ts", "/cache/tomekin-extension.mjs"]);
+        expect(extensions).toEqual([join("/clone", "packages", "pi", "src", "codemode.ts"), "/dependencies/pi-ask-user/index.ts", "/dependencies/pi/examples/extensions/todo.ts", "/cache/tomekin-extension.mjs"]);
         expect(configuration.env.TOMEKIN_DB_PATH).toBe("/isolated.sqlite");
     });
 

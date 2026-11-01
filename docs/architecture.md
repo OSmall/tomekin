@@ -154,7 +154,12 @@ skills while retaining disabled ambient skill and context-file discovery. A Bun-
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
 cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
-approved model-visible registry (including `ask_user`, `todo` and `context_status`) at session start. The launcher supplies a compact Tomekin system prompt in place of Pi’s coding orientation; Pi still assembles its native skill catalog. `context_status` reports estimated usage or unknown, and the orientation directs recovery from actual saved candidate research after compaction. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
+approved model-visible registry (including `ask_user`, `todo`, `context_status` and native `codemode`) at session start.
+Codemode has model calls disabled and composes approved tools. Checkpoints commit only after successful, complete output;
+truncation leaves the prior checkpoint intact. The launcher supplies a compact Tomekin system prompt in place of Pi's coding
+orientation; Pi still assembles its native skill catalog. `context_status` reports estimated usage or unknown, and the
+orientation directs recovery from actual saved candidate research after compaction. `packages/core` owns the shared Agent
+Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.
 
@@ -265,3 +270,17 @@ owned-row browsing, candidate views/rendering and Availability witnesses. No sav
 Ordinary Collection search/browse context uses policy_id; full resolved policy is an explicit inspection projection.
 The canonical query-cards skill owns staged research; root/discovery/tuning workflows route to it.
 See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [economy evidence](evaluation/economy.md).
+
+### Pi general arithmetic dependency
+
+Pi's approved `calculate` tool uses Math.js 15.2.0 behind an explicit scalar-expression allowlist and fixed input and
+syntax limits. The parser does not expose assignments, property access, general code, filesystem or network tools. The
+model receives only a finite floating-point result or an actionable error. This is a Pi capability; the shared
+hypergeometric calculator remains independently available to both adapters.
+
+For this selection, npm's October 23–29, 2026 figures reported 5,290,071 weekly downloads for Math.js and 542,242 for
+expr-eval. Math.js 15.2.0 was modified April 2026 and supports Node 18 or later; expr-eval 2.0.2 was last modified June
+2022. Math.js is broader and adds more dependencies, but offers active maintenance and a documented expression parser.
+Tomekin accepts only a small inspected syntax subset, avoiding exposure of its general parser functions. Bun 1.3.14 and
+the pinned Pi package are exercised by the actual package launch/reload test. Download figures are an adoption signal,
+not a security guarantee.

@@ -54,7 +54,7 @@ describe("Pi reference-status transport", () => {
             "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
             "search_card_sets", "get_format_constraints",
             "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
-            "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user", "todo", "context_status",
+        "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "calculate", "read", "ask_user", "codemode", "todo", "context_status",
         ]);
         expect(() => auditPiToolRegistry(expectedPiToolNames)).not.toThrow();
     });
@@ -162,7 +162,7 @@ describe("Pi reference-status transport", () => {
             on: (event, registered) => { if (event === "session_start") listener = registered as () => void; },
             getActiveTools: () => ["bash", ...expectedPiToolNames],
         });
-        expect(registered).toEqual(expectedPiToolNames.filter((name) => name !== "ask_user" && name !== "todo"));
+        expect(registered).toEqual(expectedPiToolNames.filter((name) => name !== "ask_user" && name !== "todo" && name !== "codemode"));
         expect(listener).toBeDefined();
         expect(listener!).toThrow("unexpected tool bash");
     });
