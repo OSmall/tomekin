@@ -390,3 +390,6 @@ Component counts are independently tokenized diagnostics, not additive billing e
 compact tag modes, foil-scoped membership without evidence, explicit policy inspection, bounded cursors and context
 restart. Scenario 17 separately tests live-agent methodology and human outcome review. See
 [economy protocol and results](evaluation/economy.md).
+
+The [Collection-scoped search measurement](evaluation/scoped-search-128.md) compares complete synthetic
+provider traversals with and without tag enrichment and records its limits.

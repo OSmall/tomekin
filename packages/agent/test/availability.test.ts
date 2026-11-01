@@ -762,6 +762,7 @@ test("publication rejects selected races, permits pool maintenance and makes rei
         expect(pulls.edges).toEqual([
             {
                 node: {
+                    kind: "value",
                     path: [],
                     value: {
                         evidence_status: "outdated",

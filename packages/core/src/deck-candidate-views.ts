@@ -17,9 +17,39 @@ export const GetDeckCandidateViewArgsSchema = z.strictObject({
     if (v.view === "summary" && (v.first !== undefined || v.after !== undefined)) c.issues.push({code:"custom", input:v, continue:true, message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]});
 });
 export type CandidateViewArgs = z.infer<typeof GetDeckCandidateViewArgsSchema>;
-/** Apply these records in order to an empty value; paths are object keys/array indices. Values are complete, never previews. */
-export type CandidateViewRecord = {path: (string | number)[]; value: unknown};
-export type CandidateViewContext = {candidate_id: string; updated_at: string; view: string; baseline: string; record_format: "path_value_v1"};
+/** Values assign complete values; text fragments establish and append a string in index order. */
+export type CandidateViewRecord = {path: (string | number)[]; kind: "value"; value: unknown; text?: never; index?: never; final?: never} | {path: (string | number)[]; kind: "text_fragment"; text: string; index: number; final: boolean; value?: never};
+/** Reconstruct one exhausted traversal, rejecting missing, interleaved, or incomplete fragments. */
+export function reconstructCandidateView(records: CandidateViewRecord[]): unknown {
+    let root: any;
+    let pending: {path: string; index: number; text: string} | undefined;
+    const assign = (path: (string | number)[], value: unknown) => {
+        if (!path.length) {root = value; return;}
+        let parent = root;
+        for (const key of path.slice(0,-1)) parent = parent[key];
+        parent[path.at(-1)!] = value;
+    };
+    for (const record of records) {
+        if (record.kind === "value") {
+            if (pending) throw new Error("Incomplete candidate text fragments");
+            assign(record.path, record.value);
+            continue;
+        }
+        const path = JSON.stringify(record.path);
+        if (!pending) {
+            if (record.index !== 0) throw new Error("Candidate text fragments must start at zero");
+            pending = {path, index:0, text:""};
+        }
+        if (pending.path !== path || pending.index !== record.index) throw new Error("Candidate text fragments are out of order");
+        pending.text += record.text;
+        pending.index++;
+        if (record.final) {assign(record.path, pending.text); pending = undefined;}
+    }
+    if (pending) throw new Error("Incomplete candidate text fragments");
+    return root;
+}
+
+export type CandidateViewContext = {candidate_id: string; updated_at: string; view: string; baseline: string; record_format: "path_value_text_v2"};
 
 export function candidateOptionDetails(candidate: DeckCandidate) {
     return candidate.options.map(option => ({...option,
@@ -33,22 +63,51 @@ export function candidatePoolView(candidate: DeckCandidate) {
         option_ids: candidate.plan!.contributions.filter(c => c.role_id === role.id).map(c => c.card_identity_id),
     }))};
 }
+function encodeRecords(raw: {path: (string | number)[]; value: unknown}[]): CandidateViewRecord[] {
+    const result: CandidateViewRecord[] = [];
+    // Reserve ample room for the escaped envelope, cursor and path. Only split objects that need it.
+    const valueLimit = 44_000, fragmentLimit = 16_000;
+    function emit(value: unknown, path: (string | number)[]) {
+        if (compactJsonBytes({path, value}) <= valueLimit) {
+            result.push({kind:"value", path, value});
+        } else if (typeof value === "string") {
+            const fragments: string[] = [];
+            let part = "", bytes = 0;
+            for (const char of value) {
+                const size = Buffer.byteLength(JSON.stringify(char), "utf8") - 2;
+                if (bytes + size > fragmentLimit && part) { fragments.push(part); part = ""; bytes = 0; }
+                part += char; bytes += size;
+            }
+            if (part) fragments.push(part);
+            fragments.forEach((text, index) => result.push({kind:"text_fragment", path, index, text, final:index === fragments.length - 1}));
+        } else if (Array.isArray(value)) {
+            result.push({kind:"value",path,value:[]});
+            value.forEach((item, i) => emit(item, [...path,i]));
+        } else if (value !== null && typeof value === "object") {
+            result.push({kind:"value",path,value:{}});
+            for (const [key,item] of Object.entries(value)) emit(item,[...path,key]);
+        } else result.push({kind:"value",path,value});
+    }
+    raw.forEach(record => emit(record.value,record.path));
+    return result;
+}
 function recordsFor(candidate: DeckCandidate, view: string, details?: "problems"): CandidateViewRecord[] {
     if(view === "availability" || view === "collection_pull_list") {
         const evidence=candidate.validation_evidence?.checks?.collection_availability;
-        if(!evidence || evidence.status==="absent") return [{path:[],value:{evidence_status:"absent",message:"Explicit Availability check required before assembly."}}];
-        if(evidence.status!=="applicable") return [{path:[],value:{evidence_status:"outdated",checked_at:evidence.checked_at,message:"Reconfirm current scope and explicitly recheck Availability before assembly."}}];
+        if(!evidence || evidence.status==="absent") return encodeRecords([{path:[],value:{evidence_status:"absent",message:"Explicit Availability check required before assembly."}}]);
+        if(evidence.status!=="applicable") return encodeRecords([{path:[],value:{evidence_status:"outdated",checked_at:evidence.checked_at,message:"Reconfirm current scope and explicitly recheck Availability before assembly."}}]);
         const result = evidence.result as AvailabilityResult;
         const evidenceRecord = {path:["evidence"],value:{status:evidence.status,checked_at:evidence.checked_at,dependencies:evidence.dependencies}};
         if (details === "problems") {
             const problems = result.requirements.filter(r => r.missing_owned > 0 || r.eligible === null || r.eligible < r.quantity);
-            return [evidenceRecord, {path:["context"],value:{summary:result.summary,collection_context:result.collection_context,check_completion:result.check_completion}},
+            return encodeRecords([evidenceRecord, {path:["context"],value:{summary:result.summary,collection_context:result.collection_context,check_completion:result.check_completion}},
                 {path:["requirements"],value:[]}, ...problems.map((r, i) => ({path:["requirements",i],value:{...r,
                     card_name:candidate.cards.find(c => c.cardIdentityId === r.oracle_id)?.cardName ?? null,
                     reasons:[...new Set([...r.reasons, ...(r.missing_owned > 0 ? ["missing_owned"] : []), ...(r.policy_shortfall !== null && r.policy_shortfall > 0 ? ["policy_shortfall"] : []), ...(r.eligible === null ? ["eligibility_unconfirmed"] : [])])],
-                }}))];
+                }}))]);
         }
-        return [evidenceRecord,...availabilityRecords(result,view==="collection_pull_list")];
+        return encodeRecords([evidenceRecord,...availabilityRecords(result,view==="collection_pull_list")]);
+
     }
     let value: unknown;
     if (view === "brief") value = candidate.brief;
@@ -60,7 +119,7 @@ function recordsFor(candidate: DeckCandidate, view: string, details?: "problems"
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
     else if (view === "report") value = renderCandidateReportParts(candidate);
     else value = candidate;
-    const records: CandidateViewRecord[] = [];
+    const records: {path: (string | number)[]; value: unknown}[] = [];
     // Containers are explicit, including empty arrays/objects. Array entities retain all local reasoning together.
     function visit(value: unknown, path: (string | number)[]) {
         if (Array.isArray(value)) {
@@ -72,7 +131,7 @@ function recordsFor(candidate: DeckCandidate, view: string, details?: "problems"
         } else records.push({path, value});
     }
     visit(value,[]);
-    return records;
+    return encodeRecords(records);
 }
 
 export function readCandidateView(candidate: DeckCandidate, args: CandidateViewArgs) {
@@ -80,7 +139,7 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
     const records = recordsFor(candidate, args.view, args.details);
     // Bind exactly the included view plus content timestamp. Included names/check evidence can change without a content edit; unrelated data must not stale a Brief-only view.
     const baseline = createHash("sha256").update(JSON.stringify({updated_at:candidate.updatedAt,view:args.view,...(args.details ? {details:args.details} : {}),records})).digest("hex");
-    const context: CandidateViewContext = {candidate_id:candidate.id, updated_at:candidate.updatedAt, view:args.view, baseline, record_format:"path_value_v1"};
+    const context: CandidateViewContext = {candidate_id:candidate.id, updated_at:candidate.updatedAt, view:args.view, baseline, record_format:"path_value_text_v2"};
     let offset = 0;
     const metadata = (returned_count: number) => ({requested_count:first, returned_count, response_budget_bytes:retrievalResponseBudgetBytes, provider_total:null, scoped_total:records.length});
     const failure = (problem: RetrievalProblem) => err({type:"retrieval_error" as const, message:problem.message, envelope:{status:"error" as const, ...context, edges:[], error:problem, metadata:metadata(0)} satisfies RetrievalFailure<CandidateViewRecord> & CandidateViewContext});
@@ -88,11 +147,11 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return failure(decoded.problem);
         const cursor = decoded.cursor!;
-        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || !cursorBindingsMatch(cursor, {id:candidate.id,view:args.view,...(args.details ? {details:args.details} : {})}) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view or record position.", retryable:false});
+        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || !cursorBindingsMatch(cursor, {id:candidate.id,view:args.view,format:"path_value_text_v2",...(args.details ? {details:args.details} : {})}) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view, representation or record position. Restart this view without after.", retryable:false, recovery:"restart"});
         if (cursor.revisions.baseline !== baseline) return failure({code:"stale_cursor", message:"Candidate/view baseline changed. Restart this view without after.", retryable:false, recovery:"restart"});
         offset = cursor.position as number;
     }
-    const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:{id:candidate.id,view:args.view,...(args.details ? {details:args.details} : {})},revisions:{baseline},position});
+    const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:{id:candidate.id,view:args.view,format:"path_value_text_v2",...(args.details ? {details:args.details} : {})},revisions:{baseline},position});
     const page = (end: number, stop_reason: RetrievalSuccess<CandidateViewRecord>["stop_reason"]) => ({status:"ok" as const, ...context,
         edges:records.slice(offset,end).map(node => ({node})),
         next_cursor:end<records.length?token(end):null,stop_reason,metadata:metadata(end-offset)});
