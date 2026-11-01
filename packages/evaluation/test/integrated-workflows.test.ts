@@ -20,5 +20,5 @@ test("Pi and OpenCode expose shared product capabilities and load one canonical 
     expect(audit.piOnlyCapabilities).toEqual(["ask_user", "calculate", "codemode", "context_status", "read", "todo"]);
     expect(audit.legacyDisabled).toBe(true);
     expect(audit.retiredNormalCapabilities).toEqual([]);
-    expect(audit.loadedCanonicalSkills).toHaveLength(8);
+    expect(audit.loadedCanonicalSkills.sort()).toEqual(["card-research", "commander", "deck-development", "probability-analysis", "sixty-card-constructed"]);
 });

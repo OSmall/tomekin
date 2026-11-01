@@ -1,1 +1,0 @@
-../../../skills/commander-deck-tuning/SKILL.md

@@ -495,3 +495,11 @@ dependencies require restart, with ordinary permission checks still applied on e
 ### Current reasoning review
 
 Candidates carry a persisted `pending` or `reviewed` reasoning-review state, independent of legality, Availability and strategic adequacy. Existing candidates default to pending. Changes to selected quantities or sections, the Brief, or current strategic reasoning reopen review; unrelated alternative maintenance does not. The edit result identifies directly affected contributions and roles after selected membership changes. Reconcile indirect dependencies and the actual saved selection before acknowledging `reviewed` in a separate edit using the latest `expected_updated_at`. Review-only edits preserve deterministic check freshness; a stale acknowledgement conflicts and material changes cannot be acknowledged in the same edit. Reviewed reasoning may still record gaps.
+
+## Deck workflow guidance
+
+The canonical skills route by requested outcome: Collection-backed opportunity discovery, chosen-anchor construction,
+tuning, explanation, focused pool research, or direct questions. A selected anchor begins action analysis; the user
+agrees its initial analysis before it is saved. Authorized later research can progress and save at stage boundaries.
+Saved Resume and research views support recovery. Current selected membership determines coverage and Availability;
+completion claims additionally require contextual review and applicable explicit checks.

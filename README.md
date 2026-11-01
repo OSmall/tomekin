@@ -103,8 +103,8 @@ for controlled inputs, exact new-path gates and sanitized results; `bun run eval
 public-reference/synthetic-owned fixtures without running a model or accessing an account.
 
 Within that separate parity evaluation, check initial sessions, extension reload, and resumed sessions: Pi identifies as Tomekin, loads
-`tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `search_cards` call after
-loading `query-cards` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
+`deck-development` when its workflow is needed, and completes a correctly shaped `search_cards` call after
+loading `card-research` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
 the spinner and terminal input remain responsive, Escape cancels a read, and dispatched candidate writes settle and are not reported cancelled.
 
 ### Upgrading an existing pre-Card-Set database
@@ -303,11 +303,12 @@ bun run typecheck
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 - [`docs/research/`](./docs/research/): saved research notes and prototypes.
 
-The canonical [deck-shape methodology](skills/deck-shape-methodology/SKILL.md) supplies shared reasoning for discovery,
-construction and tuning. The [Commander skill](skills/commander-deck-architecture/SKILL.md) owns its adopted contextual
-starting profile and compact example; 60-card guidance remains in its Format skills. Format-owned calculator examples use the implemented exact tool. The [four-workflow demonstration](docs/evaluation/workflows.md)
-exercises current retrieval, durable incomplete construction, partial tuning, explicit checks and joint assembly through
-isolated SQLite and supported adapters. Deterministic evidence does not establish live-model quality.
+The canonical [deck-development skill](skills/deck-development/SKILL.md) routes discovery, construction,
+tuning, explanation and resumption. [Card research](skills/card-research/SKILL.md) and
+[probability analysis](skills/probability-analysis/SKILL.md) own shared methods;
+[Commander](skills/commander/SKILL.md) and [60-card Constructed](skills/sixty-card-constructed/SKILL.md)
+supply Format-specific guidance. The [workflow demonstration](docs/evaluation/workflows.md) exercises product seams
+with synthetic data. Deterministic evidence does not establish live-model quality.
 
 ## Future Direction
 

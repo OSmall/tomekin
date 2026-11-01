@@ -1,1 +1,0 @@
-../../../skills/sixty-card-constructed-deck-tuning/SKILL.md
