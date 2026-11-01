@@ -1,6 +1,8 @@
 import {test,expect} from "bun:test";
 import {tool} from "@opencode-ai/plugin";
 import {createLocalAgentToolHandlers} from "@tomekin/opencode";
+import {createLocalAgentToolRuntime} from "@tomekin/agent";
+import {reconstructCandidateView} from "@tomekin/core";
 import * as tools from "../../../.opencode/tools/tomekin";
 import {createCandidateViewFixture,completeCandidateDescription} from "../../agent/test/fixtures/candidate-views";
 import {log} from "../../agent/test/fixtures/lookup";
@@ -25,4 +27,26 @@ test("actual OpenCode candidate schema and output expose complete recoverable vi
         const rendered=JSON.parse(await tools.render_deck_candidate.execute({candidate_id:fixture.candidateId,output:"portable_decklist"} as never));
         expect(rendered.edges.map((e:any)=>typeof e.node.value==="string"?e.node.value:"").join("")).toBe("Mainboard\n1 Sol Ring\n");
     }finally{restore();fixture.dispose();}
+});
+
+
+test("OpenCode recovers a fragmented escaped strategy",async()=>{
+    const fixture=await createCandidateViewFixture();
+    const runtime=createLocalAgentToolRuntime({databasePath:fixture.databasePath,log});
+    const restore=tools.configureAgentToolRuntimeForTests({log,createHandlers:options=>createLocalAgentToolHandlers({...options,databasePath:fixture.databasePath})});
+    const description='🦊\\"\n'.repeat(18000);
+    try {
+        const summary=await runtime.handlers.getDeckCandidate({id:fixture.candidateId});
+        if(summary.isErr())throw new Error(summary.error.message);
+        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(summary.value as any).updated_at,changes:{plan:{schema_version:1,description}}});
+        if(update.isErr())throw new Error(update.error.message);
+        let after:string|undefined; const records:any[]=[];
+        do {
+            const output=await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"json",first:20,...after?{after}:{}} as never);
+            const page=JSON.parse(output); expect(page.status).toBe("ok");
+            expect(Buffer.byteLength(output)).toBeLessThanOrEqual(51200);
+            records.push(...page.edges.map((edge:any)=>edge.node)); after=page.next_cursor??undefined;
+        } while(after);
+        expect((reconstructCandidateView(records) as any).plan.description).toBe(description);
+    } finally {restore();runtime.close();fixture.dispose();}
 });

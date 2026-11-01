@@ -104,7 +104,7 @@ assessment. Repeated copies use membership quantities. Cuts retain assessed opti
 
 Read `get_deck_candidate` for a compact summary. Recover complete focused `brief`, `selected`, `options`, `pool`,
 `plan`, `assessments`, `json`, `availability` or `collection_pull_list` views with `first`/`after`. Repeat `id` and
-`view`, apply ordered path/value records, and concatenate report/decklist strings. A changed baseline requires restart. Use `edit_deck_candidate`
+`view`, apply ordered value assignments and assemble each text fragment sequence by its zero-based index through its final fragment, then concatenate reconstructed report/decklist strings. An incomplete or out-of-order sequence is not a complete read. A changed baseline requires restart. Use `edit_deck_candidate`
 with `candidate_id`, the exact last-read `expected_updated_at`, and typed `changes`. Quantities are absolute; omissions
 preserve stored values and optional fields can explicitly clear with `null`. Coordinate related additions/removals in one
 edit. The tools enforce record integrity without implicitly checking legality, evaluation or Availability.
