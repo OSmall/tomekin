@@ -154,7 +154,7 @@ skills while retaining disabled ambient skill and context-file discovery. A Bun-
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
 cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
-approved model-visible registry (including Pi's `ask_user`) at session start. Before each agent turn, it appends its controlled Tomekin
+approved model-visible registry (including Pi's `ask_user` and native `codemode`) at session start. Codemode is registered with model calls disabled; it can compose only the approved tools. Session checkpoints are committed only when a script succeeds and its complete output fits the outer response limit; truncation explicitly fails and leaves the prior checkpoint intact. Before each agent turn, it appends its controlled Tomekin
 bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.

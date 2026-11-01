@@ -11,7 +11,7 @@ import {createPiWorkerTransport, type PiWorkerTransport} from "./worker-transpor
 const MAX_CORE_RESULT_CHARACTERS = 16_000;
 const MAX_READ_LINES = 2_000;
 const MAX_READ_BYTES = 50 * 1024;
-const coreToolNames = expectedPiToolNames.filter((name) => name !== "read" && name !== "ask_user");
+const coreToolNames = expectedPiToolNames.filter((name) => name !== "read" && name !== "ask_user" && name !== "codemode");
 
 type ResultLike = {isOk(): boolean; isErr(): boolean; value?: unknown; error?: {readonly type?: string; readonly message: string}};
 type ReferenceRuntime = {readonly handlers: {summarizeReferenceSupport(): Promise<ResultLike>}; close(): void};

@@ -23,7 +23,7 @@ try {
     settingsManager.setProjectTrusted(false);
     const resourceLoader = new DefaultResourceLoader({
         cwd: workspace, agentDir, settingsManager,
-        additionalExtensionPaths: [resolveAskUserExtensionPath(), extension],
+        additionalExtensionPaths: [join(workspace, "packages", "pi", "src", "codemode.ts"), resolveAskUserExtensionPath(), extension],
         additionalSkillPaths: [join(workspace, "skills")],
         noExtensions: true, noSkills: true, noContextFiles: true, noPromptTemplates: true, noThemes: true,
     });
@@ -45,6 +45,8 @@ try {
     };
     const lookup = await invoke("lookup_cards", {references: [{kind: "name", value: "Sol Ring"}], select: {name: true, oracle_text: true}});
     const calculator = await invoke("hypergeometric_calculator", {operation: "probability", populationSize: 4, populationSuccesses: 2, sampleSize: 2, event: {kind: "exactly", count: 1}});
+    session.agent.state.messages.push({role: "assistant", content: [{type: "toolCall", id: "package-smoke-codemode", name: "codemode", arguments: {}}], api: "openai-responses", provider: "fixture", model: "fixture", usage: {input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: {input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0}}, stopReason: "toolUse", timestamp: Date.now()});
+    const composed = await invoke("codemode", {code: `const page = JSON.parse(await tools.lookup_cards({references: [{kind: "name", value: "Sol Ring"}], select: {name: true}})); text(JSON.stringify(page));`});
     const skill = await invoke("read", {path: "skills/tomekin-deck-building/SKILL.md", limit: 2});
     const denied = await invoke("read", {path: "package.json"});
     const beforeReload = session.getActiveToolNames();
@@ -54,7 +56,7 @@ try {
     console.log(JSON.stringify({
         version: VERSION, beforeReload, afterReload, errors,
         lookup: lookup.details, afterReloadLookup: afterReloadLookup.details,
-        calculator: calculator.details, skill: skill.content, denied: denied.details,
+        calculator: calculator.details, composed: composed.content, skill: skill.content, denied: denied.details,
         skills: resourceLoader.getSkills().skills.map(skill => skill.name),
         contexts: resourceLoader.getAgentsFiles().agentsFiles.length,
         prompts: resourceLoader.getPrompts().prompts.length,

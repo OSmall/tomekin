@@ -59,8 +59,8 @@ and catalog network refreshes during an offline startup check; this does not mak
 Helper acquisition and behavior remain Pi-owned.
 
 The session exposes the approved Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
-Pi's interactive `ask_user` tool. It does not give the model coding, shell, general filesystem, network, raw-database,
-MCP, task, discovery, or todo tools. The launcher explicitly registers the canonical `skills/` directory
+Pi's interactive `ask_user` tool and restricted native `codemode` for composing approved tools. It does not give the model coding, shell, general filesystem, network, raw-database,
+MCP, task, or todo tools. The launcher explicitly registers the canonical `skills/` directory
 as Pi skills while ambient extension, skill, context-file, prompt, theme, and MCP discovery remain disabled.
 The launcher selects only the Bun-installed `pi-ask-user@0.15.0/index.ts` file, excluding its bundled skills, prompts, and themes.
 It preserves other Pi settings while clearing the profile's package list so Pi does not independently install or update extensions. Tomekin adds a

@@ -35,7 +35,8 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.skills).not.toContain("ask-user");
         expect(actual.contexts).toBe(0);
         expect(actual.prompts).toBe(0);
-        expect(actual.extensions).toHaveLength(2);
+        expect(actual.extensions).toHaveLength(3);
+        expect(JSON.stringify(actual.composed)).toContain("Sol Ring");
     } finally {
         child.kill();
         await child.exited;
