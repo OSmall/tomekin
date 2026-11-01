@@ -45,18 +45,36 @@ SQLite database path and applies migrations from `packages/sqlite/drizzle/`.
 
 ### Pi interactive deck-building session
 
-On macOS arm64, `bun run tomekin` launches Pi v0.85.1 through your terminal using a persistent clone-local Pi profile
-at `.data/pi`. The launcher downloads only the pinned, SHA-256-verified standalone artifact into Tomekin's own
-`.data/tomekin-pi-runtime/` cache and keeps the normal Tomekin database (or `TOMEKIN_DB_PATH`) unchanged.
+`bun run tomekin` launches Pi v1.4.0 through Bun using a persistent clone-local Pi profile at `.data/pi`.
+Pi is an exact dependency of `packages/pi`, installed with the rest of the workspace through `bun install --frozen-lockfile`.
+The launcher uses Pi's public modular entrypoint; its bundled npm CLI still fails under Bun 1.3.14.
+Tomekin builds its extension and Worker into `.data/tomekin-pi-runtime/1.4.0/` before starting the inherited terminal session.
+Use `bun run tomekin --version` to inspect and verify the installed Pi version.
+
+This path removes the macOS arm64 download restriction. It has been exercised on macOS arm64 with Bun 1.3.14;
+Linux and Windows compatibility remain unverified. The current workflow targets developers cloning the repository
+and running Bun commands; Pi supplies the interactive interface for this phase.
+Pi's native TUI may separately download its `fd`/`rg` helpers when absent. Set `PI_OFFLINE=1` to skip those downloads
+and catalog network refreshes during an offline startup check; this does not make authenticated model calls work offline.
+Helper acquisition and behavior remain Pi-owned.
 
 The session exposes the approved Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
 Pi's interactive `ask_user` tool. It does not give the model coding, shell, general filesystem, network, raw-database,
 MCP, task, discovery, or todo tools. The launcher explicitly registers the canonical `skills/` directory
-as Pi skills while ambient skill and context-file discovery remain disabled. The clone-local profile selects only the
-reviewed `pi-ask-user@0.15.0` extension entry point, not its bundled skills, prompts, or themes. Tomekin adds a
+as Pi skills while ambient extension, skill, context-file, prompt, theme, and MCP discovery remain disabled.
+The launcher selects only the Bun-installed `pi-ask-user@0.15.0/index.ts` file, excluding its bundled skills, prompts, and themes.
+It preserves other Pi settings while clearing the profile's package list so Pi does not independently install or update extensions. Tomekin adds a
 controlled per-turn orientation that directs the assistant to read the root deck-building skill before product-tool
-use. Pi retains ownership of login, settings, and conversation data within this clone-local profile. Other platforms fail clearly until
-a reviewed artifact is added.
+use. Pi retains ownership of login, settings, and conversation data within this clone-local profile.
+Existing standalone caches and profile data are retained. Downgrades and cross-version profile/session compatibility
+are unsupported in this developer phase; deliberate downgrade recovery is manual.
+
+For a maintainer upgrade, change the exact Pi dependency and `supportedPiVersion` in `packages/pi/src/runtime-version.ts`,
+regenerate `bun.lock`, and run the launcher/adapter tests, full suite, and typecheck. There is no integrated CLI launch
+test or mandatory manual terminal smoke-test gate for dependency upgrades in this developer phase; normal use supplies feedback.
+Normal launches use that installed version; Pi's self-updater is not Tomekin's upgrade mechanism.
+Model catalogs, provider support, and authentication remain Pi concerns. Catalogs may refresh independently for existing
+providers, while new provider protocols or authentication flows can require a dependency upgrade.
 
 `browse_tags` discovers imported tag vocabulary with explicit search, known-slug lookup, optional bounded hierarchy,
 and recoverable catalogue listing. `search_card_sets` discovers codes/names from existing imported Set metadata.
@@ -75,13 +93,13 @@ The shared `hypergeometric_calculator` computes bounded sampling probabilities o
 explicit decimal target. It works without imported card data and does not save records. See the
 [calculator contract](docs/product-behavior.md#hypergeometric-calculator) for inputs, precision and sampling limits.
 
-The separate account-holder-consented manual acceptance check covers authentication, one harmless request, a successful
+The separate account-holder-consented matched real-session parity evaluation (#26) covers authentication, one harmless request, a successful
 and expected-failure tool call, answer/cancel behaviour, refresh/recovery/logout, and clean shutdown without exposing
 tokens. OpenCode remains supported. The profile and database remain intact after each run. Follow the [matched real-session parity protocol](docs/evaluation/real-session-parity.md)
 for controlled inputs, exact new-path gates and sanitized results; `bun run evaluate:parity:prepare` prepares isolated
 public-reference/synthetic-owned fixtures without running a model or accessing an account.
 
-For each initial session, extension reload, and resumed session, also confirm that Pi identifies as Tomekin, loads
+Within that separate parity evaluation, check initial sessions, extension reload, and resumed sessions: Pi identifies as Tomekin, loads
 `tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `search_cards` call after
 loading `query-cards` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
 the spinner and terminal input remain responsive, Escape cancels a read, and dispatched candidate writes settle and are not reported cancelled.

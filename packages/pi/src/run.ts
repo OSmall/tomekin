@@ -1,8 +1,13 @@
 import {launchTomekinPi} from "./launcher";
 import {runDeckCandidateExportCommand} from "@tomekin/cli";
 import {createRootLogger,resolveLogConfigFromEnv} from "@tomekin/core";
+import {assertPiVersion} from "./runtime-version";
 const args=process.argv.slice(2);
-if(args[0] === "deck-candidate") {
+if(args.length === 1 && args[0] === "--version") {
+    const {VERSION} = await import("@earendil-works/pi-coding-agent");
+    assertPiVersion(VERSION);
+    process.stdout.write(`${VERSION}\n`);
+}else if(args[0] === "deck-candidate") {
     if(args[1] !== "export-plan") {
         process.stderr.write("Usage: tomekin deck-candidate export-plan <id> --format json|mermaid --projection strategy|selected|pool --output <path>\n");
         process.exitCode=1;

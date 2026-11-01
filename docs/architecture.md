@@ -139,10 +139,17 @@ database path and logger, invoke handlers, then close the runtime.
 reaches canonical skills through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
 
-`packages/pi` is a sibling interactive adapter. Its launcher verifies the pinned Pi standalone binary before execution,
-uses `.data/tomekin-pi-runtime/` only for Tomekin-owned runtime artifacts, and inherits the user's terminal streams.
-It sets Pi's persistent clone-local profile to `.data/pi`, selecting only the reviewed `pi-ask-user` extension entry
-point and no package skills, prompts, or themes. The launcher explicitly registers `skills/` as Pi-native
+`packages/pi` is a sibling interactive adapter following [ADR 0022](./adr/0022-bun-managed-pi-modular-entrypoint.md).
+Its exact `@earendil-works/pi-coding-agent` dependency and transitive
+graph are managed by Bun and the workspace lockfile. The launcher builds Tomekin's extension and Worker, then starts a
+Bun child whose thin wrapper calls the public modular `main`; the Node-specific npm CLI bundle is not invoked.
+The wrapper verifies the expected Pi version. `.data/tomekin-pi-runtime/<version>/` holds Tomekin's bundles rather than
+a downloaded Pi executable, and the child inherits the user's terminal streams. There is no platform-specific artifact
+selection, although only macOS arm64 has execution evidence.
+Pi's persistent clone-local profile remains `.data/pi`. The launcher selects the reviewed local `pi-ask-user/index.ts`
+file explicitly and disables ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
+It preserves non-package Pi settings and clears independent package installation; malformed settings fail before rewrite.
+The launcher explicitly registers `skills/` as Pi-native
 skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates the approved
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after

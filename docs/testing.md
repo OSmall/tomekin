@@ -198,15 +198,21 @@ full-source success, protected user content, exact identity membership, rejected
 
 ## Pi Launcher Done Bar
 
-Pi launcher tests use injected or pure process and download seams. They verify platform/artifact selection, checksum and
-version rejection, cache decisions, inherited terminal spawn configuration, restricted tool registry auditing, staged
-Worker entries, Result transport, and runtime closure without a live Pi process or network request. Worker tests prove
-that a slow delegated task leaves an independent Pi-side event responsive. The developer-run terminal checklist in
-the README separately covers TUI rendering, normal exit, Ctrl-C, terminal recovery, and orphan-process inspection.
+Pi launcher tests use injected process seams and temporary profiles. They verify exact dependency/version agreement,
+version rejection, inherited Bun child/terminal configuration, explicit reviewed extension-file selection, preservation
+of Pi settings, rejection of invalid settings, and build failure before profile changes.
+The package-runtime integration starts an isolated Bun subprocess with the actual Pi SDK, production extension/Worker
+bundles and question extension. It checks the active tool registry, SQLite-backed lookup, calculator output, scoped skill
+reads, resource isolation and extension reload without a model/account/network request. These checks do not establish
+authentication or cross-platform compatibility, and do not launch the interactive CLI. Worker tests prove
+that a slow delegated task leaves an independent Pi-side event responsive. Dependency upgrades in the current developer
+phase require no automated integrated-CLI launch test or formal manual terminal smoke-test gate; normal developer use
+supplies feedback. The current developer uses macOS arm64; Windows/Linux execution remains unverified.
 
 Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
-live Pi process or LLM. The developer-run terminal checklist in the README covers initial, reload, and resume orientation
-and a correctly shaped Card Query after loading the query-cards skill. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
+live Pi process or LLM. The separate matched real-session parity evaluation (#26), described in the README and its own
+protocol, covers initial, reload, and resume orientation and a correctly shaped Card Query after loading the query-cards
+skill. It is not a dependency-upgrade gate. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
 
 ## Exact Output Tests
 

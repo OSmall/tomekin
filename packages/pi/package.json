@@ -7,6 +7,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.4.0",
     "@sinclair/typebox": "0.34.41",
     "@tomekin/agent": "workspace:*",
     "@tomekin/core": "workspace:*",

@@ -45,9 +45,10 @@ Tomekin supports three distinct ways to reach or revise a Deck Candidate.
 
 ### Restricted interactive Pi session
 
-On macOS arm64, `bun run tomekin` starts Pi through the inherited terminal using a persistent clone-local profile at
-`.data/pi`. Tomekin verifies the pinned Pi v0.85.1 standalone artifact's checksum and reported version before it runs;
-its separate clone-local runtime cache contains only Tomekin-owned artifacts. The default Tomekin database remains
+`bun run tomekin` starts the exact Bun-managed Pi v1.4.0 package through its public modular entrypoint in a Bun child,
+using the inherited terminal and persistent clone-local profile at `.data/pi`. The child rejects a mismatched Pi version
+with instructions to reinstall the committed lockfile. `bun run tomekin --version` reports the verified installed version.
+Its separate clone-local runtime cache contains Tomekin's extension and Worker bundles. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
 The session exposes the approved Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
@@ -65,9 +66,17 @@ with ordinary `first`/`after` recovery. Location inspection preserves complete n
 scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
-only the reviewed `pi-ask-user@0.15.0` extension entry point and no bundled resources. Pi
-login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. Unsupported platforms and failed artifact verification
-fail before the session begins.
+only the reviewed local `pi-ask-user@0.15.0/index.ts` extension file and no bundled resources. Ambient extensions, MCP,
+project approval, prompt templates, and themes are disabled alongside ambient skills and context files.
+The launcher clears Pi-managed packages while preserving other settings; invalid settings fail without being overwritten.
+Pi login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. The launcher has no
+platform-specific executable selection; macOS arm64 is verified and other platforms await execution evidence.
+Dependency, bundle, and settings errors prevent session startup.
+Normal upgrades use reviewed dependency changes and retain the existing profile and Tomekin data. This developer phase
+has no downgrade or cross-version profile/session compatibility guarantee; deliberate downgrade recovery is manual.
+Model catalog refresh and provider/authentication behavior remain Pi-owned.
+Pi may acquire missing `fd`/`rg` terminal helpers independently; `PI_OFFLINE=1` suppresses those downloads and catalog
+refreshes. Their acquisition and behavior remain Pi-owned; these helpers are outside Tomekin's model-visible Agent Tool registry.
 
 ### Collection Opportunity discovery through construction
 

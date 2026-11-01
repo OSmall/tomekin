@@ -94,6 +94,8 @@ into a full collection-management system.
 
 ## Technology And Architecture
 
-A later product may use a web-based, multi-user hosted interface instead of or alongside the current local agent
-harness. Database, AI model provider, user interface, hosting, and deployment choices remain open until product needs
-justify them.
+The preferred longer-term product direction is a hosted website with an embedded deck-building chatbot, centralized
+server, and user accounts. Pi currently supplies a developer-facing agent interface over Tomekin's tools; that choice
+does not commit the eventual product to Pi's terminal interface or to distributing a bundled Pi application.
+Database, agent integration, account/authentication, user interface, hosting, and deployment choices remain open until
+product needs justify them. This direction does not change the current local, clone-based alpha scope.
