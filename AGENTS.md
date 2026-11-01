@@ -25,6 +25,12 @@ GitHub Issues is the only live tracker for committed work and specifications. Do
 directory, Todos document, Design Branches document, or any equivalent shadow backlog. Git history is the archive for
 delivered implementation plans.
 
+## Dependency Selection
+
+Prefer widely used, actively maintained dependencies. Before recommending or adding one, compare adoption,
+maintenance and compatibility with the supported runtime. Explain the trade-off when choosing a less-established
+package over established alternatives.
+
 ## Agent skills
 
 The Matt Pocock engineering skills are installed per contributor, not bundled with this repository. Install them
