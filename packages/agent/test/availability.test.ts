@@ -68,6 +68,26 @@ test("final Availability jointly allocates complete selected sections and publis
                 sufficient: false,
             },
         });
+        expect(page.edges).toEqual([]);
+        expect(page.witness_completion).toBe("partial");
+        expect(page.next_cursor).toBeTruthy();
+        const detail = (await f.runtime.handlers.checkCollectionAvailability({
+            candidate_id: saved.candidate_id,
+            expected_updated_at: saved.updated_at,
+            first: 50,
+        }))._unsafeUnwrap();
+        expect(detail.summary).toEqual(page.summary);
+        expect(detail.edges.length).toBeGreaterThan(0);
+        const resumed = (await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id,expected_updated_at:saved.updated_at,first:50,after:page.next_cursor}))._unsafeUnwrap();
+        expect(resumed.edges).toEqual(detail.edges);
+        const problems = (await f.runtime.handlers.getDeckCandidate({
+            id: saved.candidate_id, view: "availability", details: "problems",
+        }))._unsafeUnwrap();
+        expect(values(problems, "requirements")).toEqual([
+            expect.objectContaining({oracle_id: id(1), card_name: "Sol Ring", quantity: 4, owned: 4, eligible: 2, policy_shortfall: 2}),
+            expect.objectContaining({oracle_id: id(1), card_name: "Sol Ring", quantity: 3, owned: 2, eligible: 0, missing_owned: 1}),
+        ]);
+        expect(problems.edges.some((e: any) => ["allocations", "ownership_allocations"].includes(e.node.path[0]))).toBe(false);
         const state = await readCandidateJson(
             f.runtime.handlers.getDeckCandidate,
             saved.candidate_id,
@@ -91,7 +111,7 @@ test("final Availability jointly allocates complete selected sections and publis
             result: { summary: { required: 7, owned: 6, eligible: 2 } },
         });
         expect(
-            page.edges
+            detail.edges
                 .filter(
                     (e: any) =>
                         e.node.path[0] === "allocations" &&
@@ -151,6 +171,34 @@ const values = (page: any, path: string) =>
         .filter((e: any) => e.node.path[0] === path && e.node.path.length === 2)
         .map((e: any) => e.node.value);
 
+test("saved problem views exclude covered demand, expose uncertainty and bind continuation selectors", async () => {
+    const f = await createCollectionFixture();
+    try {
+        const saved = await saveAssembly(f);
+        await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id, expected_updated_at:saved.updated_at});
+        const covered = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id, view:"availability", details:"problems"}))._unsafeUnwrap();
+        expect(values(covered, "requirements")).toEqual([]);
+        expect(covered.edges.find((e:any) => e.node.path[0] === "context")?.node.value.summary.sufficient).toBe(true);
+        const changed = (await f.runtime.handlers.editDeckCandidate({candidate_id:saved.candidate_id, expected_updated_at:saved.updated_at, changes:{brief:{collectionAccessPolicy:{...f.policy,copy_requirements:{condition:["mint"]}}}}}))._unsafeUnwrap();
+        await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id, expected_updated_at:changed.updated_at});
+        const first = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"availability",details:"problems",first:1}))._unsafeUnwrap();
+        const mismatch = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"availability",after:first.next_cursor}))._unsafeUnwrapErr();
+        expect(mismatch.envelope.error.code).toBe("invalid_cursor");
+        let after = first.next_cursor, found: any[] = [];
+        while (after) {
+            const page = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"availability",details:"problems",first:1,after}))._unsafeUnwrap();
+            found.push(...values(page,"requirements"));
+            after = page.next_cursor;
+        }
+        expect(found).toEqual([expect.objectContaining({card_name:"Sol Ring",quantity:2,owned:2,eligible:0,policy_shortfall:2,reasons:expect.arrayContaining(["unknown_policy:condition","policy_shortfall"])})]);
+        const unconfirmed = (await f.runtime.handlers.editDeckCandidate({candidate_id:saved.candidate_id,expected_updated_at:changed.updated_at,changes:{brief:{collectionAccessPolicy:null}}}))._unsafeUnwrap();
+        await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id,expected_updated_at:unconfirmed.updated_at});
+        const uncertain = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id,view:"availability",details:"problems"}))._unsafeUnwrap();
+        expect(values(uncertain,"requirements")).toEqual([expect.objectContaining({eligible:null,policy_shortfall:null,reasons:expect.arrayContaining(["eligibility_unconfirmed"])})]);
+        expect(uncertain.edges.find((e:any) => e.node.path[0] === "context")?.node.value.summary.sufficient).toBeNull();
+    } finally { f.dispose(); }
+});
+
 test("overlapping exact Printing demands reassign broad demand, prefer uncommitted copies and preserve source deck borrowing", async () => {
     const f = await createCollectionFixture();
     try {
@@ -174,6 +222,7 @@ test("overlapping exact Printing demands reassign broad demand, prefer uncommitt
         };
         const input = {
             brief: brief(policy),
+            first: 50,
             cards: [selected("mainboard"), selected("sideboard")],
             requirements: [
                 requirement("mainboard", 1, { printing_ids: [id(2), id(500)] }),
@@ -271,6 +320,7 @@ test("no Collection, empty import, unconfirmed permission, strict recent intent 
             await f.runtime.handlers.checkCollectionAvailability({
                 brief: brief({ ...f.policy, copy_requirements: {} }),
                 cards: [selected()],
+                first: 50,
                 requirements: [
                     requirement("mainboard", 1, { condition: ["mint"] }),
                 ],
@@ -313,6 +363,7 @@ test("no Collection, empty import, unconfirmed permission, strict recent intent 
                     },
                 },
                 cards: [selected("mainboard", 5)],
+                first: 50,
             })
         )._unsafeUnwrap();
         expect(strict.summary).toMatchObject({
@@ -527,6 +578,7 @@ test("small exhaustive independent match enumeration confirms joint owned, eligi
                     await f.runtime.handlers.checkCollectionAvailability({
                         brief: brief(policy),
                         cards: sections.map((section) => selected(section)),
+                        first: 50,
                         requirements,
                     })
                 )._unsafeUnwrap();
@@ -623,6 +675,8 @@ test("publication rejects selected races, permits pool maintenance and makes rei
     try {
         let saved = await saveAssembly(f);
         const candidate_id = saved.candidate_id;
+        const absent = (await f.runtime.handlers.getDeckCandidate({id: candidate_id, view: "availability", details: "problems"}))._unsafeUnwrap();
+        expect(absent.edges[0]!.node.value).toMatchObject({evidence_status: "absent", message: expect.stringContaining("check")});
         const pending = f.runtime.handlers.checkCollectionAvailability({
             candidate_id,
             expected_updated_at: saved.updated_at,
@@ -696,6 +750,9 @@ test("publication rejects selected races, permits pool maintenance and makes rei
             outdated.validation_evidence.checks.collection_availability.status,
         ).toBe("outdated");
         expect(outdated.updatedAt).toBe(saved.updated_at);
+        const problems = (await f.runtime.handlers.getDeckCandidate({id: candidate_id, view: "availability", details: "problems"}))._unsafeUnwrap();
+        expect(problems.edges[0]!.node.value).toMatchObject({evidence_status: "outdated", message: expect.stringContaining("recheck")});
+        expect(problems.edges).toHaveLength(1);
         const pulls = (
             await f.runtime.handlers.renderDeckCandidate({
                 candidate_id,
@@ -779,6 +836,7 @@ test("unfinished checks publish no proof, large capacities do not expand physica
             await f.runtime.handlers.checkCollectionAvailability({
                 brief: brief({ ...f.policy, copy_requirements: {} }),
                 cards: [selected("mainboard", 2000000001)],
+                first: 50,
             })
         )._unsafeUnwrap();
         expect(huge.summary).toMatchObject({
@@ -817,6 +875,7 @@ test("a whole oversized witness fails before that row and preserves the complete
         const input = {
             brief: brief({ ...f.policy, copy_requirements: {} }),
             cards: [selected("mainboard", 3)],
+            first: 50,
         };
         const prefix = (
             await f.runtime.handlers.checkCollectionAvailability(input)
