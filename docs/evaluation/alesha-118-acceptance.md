@@ -53,16 +53,39 @@ source time rather than the time the derived JSON was written. The exact input f
 model settings and any further changes belong in the evidence record. This preparation establishes neither a complete
 deck nor live-model behavior.
 
-The temporary directory also contains `generate-inputs.py` (SHA-256
-`ef8deb581ebdb1709dc86cfd1e41c829528745196fd7e023a28db5a56e4abfa7`). Given the two hashed public gzip snapshots,
-run it with the Oracle gzip path, tags gzip path and a new output directory as its three arguments. A separate
-regeneration produced byte-identical hashes for all four derived input files. This script, the snapshots, derived files
-and databases are temporary local artifacts, not committed fixtures; preserve them with the manifest if the planned
-run will occur later. Recreate a database by applying migrations to a new path, importing `oracle.json` as
-`oracle_cards`, `selected-printings.json` as `all_cards`, `tags.json` as `oracle_tags`, and the CSV as ManaBox, using
-the existing CLI commands. Set the derived JSON files' modification times to the respective recorded source times
-before import: the local-import command uses file modification time for source freshness. Database/import identifiers
-and file hashes will differ on recreation. Do not reuse a working copy as a fresh baseline.
+To reproduce the inputs from the workspace root, fetch the two static public snapshots and run the checked-in
+[`prepare-118-fixture.py`](../../packages/evaluation/prepare-118-fixture.py) with Python 3. The output directory must
+not exist. These steps do not invoke a live card-search API or a model:
+
+```sh
+curl -fL -o /private/tmp/tomekin-118-oracle-20261015.jsonl.gz https://data.scryfall.io/oracle-cards/oracle-cards-20261015210157.jsonl.gz
+curl -fL -o /private/tmp/tomekin-118-tags-20261015.jsonl.gz https://data.scryfall.io/oracle-tags/oracle-tags-20261015210033.jsonl.gz
+shasum -a 256 /private/tmp/tomekin-118-oracle-20261015.jsonl.gz /private/tmp/tomekin-118-tags-20261015.jsonl.gz
+python3 packages/evaluation/prepare-118-fixture.py /private/tmp/tomekin-118-oracle-20261015.jsonl.gz /private/tmp/tomekin-118-tags-20261015.jsonl.gz /private/tmp/tomekin-118-recreated
+```
+
+The Oracle and tag gzip SHA-256 hashes must respectively be
+`458490e4c0d1d1cdcf141b3378eb93080333f093ea6fa49184eb641cc914af85` and
+`0a57c86fbb7dfc75d24d0fbf1b4e1bf505cd046ab82c965e8c6e44651afae4fd`. A separate regeneration produced byte-identical
+hashes for all four derived input files in the prepared manifest. Source files may expire; preserve them and the manifest
+for later use. The generator writes only into its new output directory and never selects an existing database.
+
+Create a database only in the new output directory. The local import command uses file modification time for source
+freshness, so set the derived reference inputs' times to their respective snapshot times before import:
+
+```sh
+TZ=UTC touch -t 202610152101.57 /private/tmp/tomekin-118-recreated/oracle.json /private/tmp/tomekin-118-recreated/selected-printings.json
+TZ=UTC touch -t 202610152100.33 /private/tmp/tomekin-118-recreated/tags.json
+TOMEKIN_DB_PATH=/private/tmp/tomekin-118-recreated/baseline.sqlite bun run db:sqlite:migration:apply
+bun run import:scryfall -- --db /private/tmp/tomekin-118-recreated/baseline.sqlite oracle_cards /private/tmp/tomekin-118-recreated/oracle.json
+bun run import:scryfall -- --db /private/tmp/tomekin-118-recreated/baseline.sqlite all_cards /private/tmp/tomekin-118-recreated/selected-printings.json
+bun run import:scryfall -- --db /private/tmp/tomekin-118-recreated/baseline.sqlite oracle_tags /private/tmp/tomekin-118-recreated/tags.json
+bun run import:collection -- --db /private/tmp/tomekin-118-recreated/baseline.sqlite manabox /private/tmp/tomekin-118-recreated/synthetic-collection.csv
+cp /private/tmp/tomekin-118-recreated/baseline.sqlite /private/tmp/tomekin-118-recreated/work.sqlite
+```
+
+Database and import IDs and database file hashes differ on recreation. Inspect the new imports and locations through
+Tomekin, record them, and leave the baseline untouched. Do not reuse a working copy as a fresh baseline.
 
 ## Session 1: construction, recovery, explanation and pool research
 
