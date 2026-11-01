@@ -71,6 +71,7 @@ export function createSqliteDeckCandidateRepository(
                                 selectedChangedAt: now,
                                 briefChangedAt: now,
                                 planChangedAt: now,
+                                reasoningReview: candidate.reasoning_review,
                                 assessmentsJson: candidate.assessments,
                             })
                             .run();
@@ -123,6 +124,7 @@ export function createSqliteDeckCandidateRepository(
                                 selectedChangedAt: candidate.selectedChangedAt,
                                 briefChangedAt: candidate.briefChangedAt,
                                 planChangedAt: candidate.planChangedAt,
+                                reasoningReview: candidate.reasoning_review,
                                 assessmentsJson: candidate.assessments,
                             })
                             .where(eq(deckCandidate.id, candidate.id))
@@ -226,6 +228,7 @@ function writeResult(
         updated_at: candidate.updatedAt,
         created_ids: createdIds,
         changed_references: changedReferences,
+        reasoning_review: candidate.reasoning_review,
         summary: `${verb}: ${changedReferences.length} targeted record/field changes; ${candidate.options.length} assessed options, ${candidate.memberships.reduce((sum, m) => sum + m.quantity, 0)} selected copies.`,
         validation_evidence:
             summarizeDeckCandidate(candidate).validation_evidence,
@@ -625,6 +628,7 @@ function readCandidate(db: Store, id: string, versions:DeckCheckVersions=deckChe
         selectedChangedAt: row.selectedChangedAt ?? updatedAt,
         briefChangedAt: row.briefChangedAt ?? updatedAt,
         planChangedAt: row.planChangedAt ?? updatedAt,
+        reasoning_review: row.reasoningReview,
         assessments: (row.assessmentsJson ??
             {}) as DeckCandidate["assessments"],
         plan: plan

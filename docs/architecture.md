@@ -266,3 +266,17 @@ owned-row browsing, candidate views/rendering and Availability witnesses. No sav
 Ordinary Collection search/browse context uses policy_id; full resolved policy is an explicit inspection projection.
 The canonical query-cards skill owns staged research; root/discovery/tuning workflows route to it.
 See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [economy evidence](evaluation/economy.md).
+
+### Pi general arithmetic dependency
+
+Pi's approved `calculate` tool uses Math.js 15.2.0 behind an explicit scalar-expression allowlist and fixed input and
+syntax limits. The parser does not expose assignments, property access, general code, filesystem or network tools. The
+model receives only a finite floating-point result or an actionable error. This is a Pi capability; the shared
+hypergeometric calculator remains independently available to both adapters.
+
+For this selection, npm's October 23–29, 2026 figures reported 5,290,071 weekly downloads for Math.js and 542,242 for
+expr-eval. Math.js 15.2.0 was modified April 2026 and supports Node 18 or later; expr-eval 2.0.2 was last modified June
+2022. Math.js is broader and adds more dependencies, but offers active maintenance and a documented expression parser.
+Tomekin accepts only a small inspected syntax subset, avoiding exposure of its general parser functions. Bun 1.3.14 and
+the pinned Pi package are exercised by the actual package launch/reload test. Download figures are an adoption signal,
+not a security guarantee.

@@ -27,6 +27,8 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.lookup).toEqual(actual.afterReloadLookup);
         expect(JSON.stringify(actual.lookup)).toContain("Sol Ring");
         expect(actual.lookup.error).toBeUndefined();
+        expect(actual.arithmetic.result).toBe(13);
+        expect(actual.arithmeticSchema).toMatchObject({type: "object", additionalProperties: false, required: ["expression"], properties: {expression: {type: "string", maxLength: 512}}});
         expect(actual.calculator.error).toBeUndefined();
         expect(actual.calculator.probability).toBeCloseTo(2 / 3, 12);
         expect(JSON.stringify(actual.skill)).toContain("tomekin-deck-building");

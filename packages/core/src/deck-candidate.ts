@@ -287,6 +287,7 @@ const briefPatch = z.strictObject({
 });
 export const DeckCandidateChangesSchema = z.strictObject({
     label: text.optional(),
+    reasoning_review: z.enum(["pending", "reviewed"]).optional(),
     brief: briefPatch.optional(),
     plan: z
         .strictObject({
@@ -353,6 +354,7 @@ export type DeckCandidateState = {
     selectedChangedAt: string;
     briefChangedAt: string;
     planChangedAt: string;
+    reasoning_review: "pending" | "reviewed";
     plan: CandidatePlan | null;
     options: CandidateOption[];
     memberships: CandidateMembership[];
@@ -370,6 +372,7 @@ export type DeckCandidateSummary = {
     selected_quantities: Record<DeckCandidateCardSection, number>;
     pool_size: number;
     research: {action_analysis: {present: boolean; bytes: number}; search_research: {present: boolean; bytes: number}};
+    reasoning_review: "pending" | "reviewed";
     roles: {
         id: string;
         label: string;
@@ -384,6 +387,7 @@ export type CandidateWriteResult = {
     updated_at: string;
     created_ids: Record<string, string>;
     changed_references: string[];
+    reasoning_review: "pending" | "reviewed";
     summary: string;
     validation_evidence: DeckCandidateSummary["validation_evidence"];
     research: DeckCandidateSummary["research"];
@@ -450,6 +454,7 @@ export function summarizeDeckCandidate(
             action_analysis: {present: candidate.plan?.action_analysis_markdown != null, bytes: Buffer.byteLength(candidate.plan?.action_analysis_markdown ?? "", "utf8")},
             search_research: {present: candidate.plan?.search_research_markdown != null, bytes: Buffer.byteLength(candidate.plan?.search_research_markdown ?? "", "utf8")},
         },
+        reasoning_review: candidate.reasoning_review,
         roles: (candidate.plan?.nodes ?? [])
             .filter(
                 (node): node is Extract<CandidateNode, { kind: "role" }> =>

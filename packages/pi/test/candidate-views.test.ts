@@ -93,3 +93,16 @@ for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a
         }
     } finally {await transport?.close();runtime.close();fixture.dispose();}
 });
+
+for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} transports reasoning review acknowledgments`,async()=>{
+    const fixture=await createCandidateViewFixture();
+    const transport=mode==="Worker"?createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts",import.meta.url).href}):undefined;
+    const options={log,...transport?{transport,databasePath:fixture.databasePath}:{createRuntime:()=>createLocalAgentToolRuntime({databasePath:fixture.databasePath,log})}};
+    const read=createCoreTool("get_deck_candidate",options), edit=createCoreTool("edit_deck_candidate",options);
+    try {
+        const before=JSON.parse((await read.execute("read",{id:fixture.candidateId},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(before.reasoning_review).toBe("pending");
+        const result=JSON.parse((await edit.execute("review",{candidate_id:fixture.candidateId,expected_updated_at:before.updated_at,changes:{reasoning_review:"reviewed"}},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(result.reasoning_review).toBe("reviewed");
+    } finally {await transport?.close();fixture.dispose();}
+});

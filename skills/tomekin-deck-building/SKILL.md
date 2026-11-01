@@ -76,7 +76,7 @@ For an existing-candidate review or pool-only research, read summary first, then
 `options`, `plan` or other focused views. Reuse known facts and applicable checks. Retrieve complete Availability
 witnesses/reports when the requested outcome needs them. Finish needed continuation before mutation or restart against
 the changed baseline. Preserve selected membership in pool-only tasks and retain reasoned Card Contributions for saved
-options. Report assessed additions, unchanged selection and material gaps/coverage limits. This route finishes without
+options. When reasoning review is pending, trace material gained and lost functions and indirect dependencies against the actual saved selection, including retained alternatives and partial acceptance. Update affected reasoning or retain it when still valid; record genuine gaps. After reviewing, acknowledge `reasoning_review: reviewed` in a separate edit with the latest timestamp. Reviewed is not proof of strategic adequacy or a substitute for checks. Report assessed additions, unchanged selection and material gaps/coverage limits. This route finishes without
 invoking full construction/assembly finalization; use that route when delivering a completed selected deck.
 
 ## Recent Source Additions

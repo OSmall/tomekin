@@ -332,6 +332,17 @@ are not unique and exact-once retries are not guaranteed. Inspect ambiguous matc
 mutations, ignores cancellation once dispatched and waits for their settlement during shutdown. Unexpected Worker failure
 reports `unknown_write_outcome`. Neither the Worker lane nor a candidate ID replaces concurrency checks or authorization.
 
+## General Calculator (Pi)
+
+The Pi-only `calculate` tool evaluates one scalar expression without opening a Collection or requiring reference data.
+It accepts finite numeric literals, parentheses, `+`, `-`, `*`, `/`, `^`, `%`, constants `pi` and `e`, and the functions
+`abs`, `sqrt`, `exp`, `log`, `log10`, `floor`, `ceil`, `round`, `min`, and `max`. For example, `sqrt(16) + 3^2`
+returns `13`. Expressions are limited to 512 characters and 128 syntax nodes; functions accept one to eight arguments.
+Assignments, property access, collections, arbitrary functions, non-real and non-finite results are rejected with an
+`invalid_expression` error. Results use floating-point arithmetic, not exact rational arithmetic. Use the unchanged
+`hypergeometric_calculator` for its supported sampling and minimum-count questions. A calculation does not establish
+that its assumptions, independence, castability or strategic conclusions are correct.
+
 ## Hypergeometric Calculator
 
 `hypergeometric_calculator` is one shared Agent Tool exposed through Pi and OpenCode. It models a uniformly chosen
@@ -482,3 +493,7 @@ needed focused views, then missing facts. Pool-only research retains justified a
 finishes without automatically fetching full witnesses/reports or invoking construction/assembly finalization.
 All paginated Agent Tools return one compact continuation while more results remain. Changed search conditions or bound
 dependencies require restart, with ordinary permission checks still applied on every call.
+
+### Current reasoning review
+
+Candidates carry a persisted `pending` or `reviewed` reasoning-review state, independent of legality, Availability and strategic adequacy. Existing candidates default to pending. Changes to selected quantities or sections, the Brief, or current strategic reasoning reopen review; unrelated alternative maintenance does not. The edit result identifies directly affected contributions and roles after selected membership changes. Reconcile indirect dependencies and the actual saved selection before acknowledging `reviewed` in a separate edit using the latest `expected_updated_at`. Review-only edits preserve deterministic check freshness; a stale acknowledgement conflicts and material changes cannot be acknowledged in the same edit. Reviewed reasoning may still record gaps.
