@@ -80,7 +80,7 @@ Admission logs distinguish required and measured delay, with a cooldown or spaci
 cooldown. These diagnostics do not include query, card or cursor payloads. The reproduced clean-exit defect does not
 establish the cause of the earlier Alesha session wait.
 
-Info logs contain selected-property names, stage timings, provider/raw/returned counts and exact application/adapter
+Info logs contain selected-property names, stage timings, provider/raw/returned counts, tag-enrichment read counts and exact application/adapter
 bytes. Debug deliberately includes q, full incoming/outgoing cursors and decoded positions/import bindings. Operational
 logs do not dump complete results. Production defaults to info and retains credential redaction.
 
