@@ -10,9 +10,9 @@ export const candidateViewValues = ["summary", "brief", "selected", "options", "
 export const GetDeckCandidateViewArgsSchema = z.strictObject({
     id: z.uuid(), view: z.enum(candidateViewValues).default("summary"),
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(),
-}).superRefine((v, c) => {
-    if (v.view === "summary" && (v.first !== undefined || v.after !== undefined)) c.addIssue({code:"custom", message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]});
-});
+    role_id: z.uuid().optional(), card_identity_id: z.uuid().optional(),
+}).refine(v => v.view !== "summary" || (v.first === undefined && v.after === undefined), {message:"Use view json for recoverable full-state records; summary does not accept pagination.", path:["view"]})
+  .refine(v => (v.role_id === undefined && v.card_identity_id === undefined) || v.view === "pool" || v.view === "options", {message:"role_id and card_identity_id are only supported for pool and options views.", path:["view"]});
 export type CandidateViewArgs = z.infer<typeof GetDeckCandidateViewArgsSchema>;
 /** Values assign complete values; text fragments establish and append a string in index order. */
 export type CandidateViewRecord = {path: (string | number)[]; kind: "value"; value: unknown; text?: never; index?: never; final?: never} | {path: (string | number)[]; kind: "text_fragment"; text: string; index: number; final: boolean; value?: never};
@@ -48,15 +48,22 @@ export function reconstructCandidateView(records: CandidateViewRecord[]): unknow
 
 export type CandidateViewContext = {candidate_id: string; updated_at: string; view: string; baseline: string; record_format: "path_value_text_v2"};
 
-export function candidateOptionDetails(candidate: DeckCandidate) {
-    return candidate.options.map(option => ({...option,
+export function candidateOptionDetails(candidate: DeckCandidate, filters: {role_id?: string | undefined; card_identity_id?: string | undefined} = {}) {
+    return candidate.options.filter(option =>
+        (filters.card_identity_id === undefined || option.card_identity_id === filters.card_identity_id) &&
+        (filters.role_id === undefined || candidate.plan?.contributions.some(c => c.card_identity_id === option.card_identity_id && c.role_id === filters.role_id))
+    ).map(option => ({...option,
         memberships: candidate.memberships.filter(m => m.card_identity_id === option.card_identity_id),
-        contributions: candidate.plan?.contributions.filter(c => c.card_identity_id === option.card_identity_id) ?? [],
+        contributions: candidate.plan?.contributions.filter(c => c.card_identity_id === option.card_identity_id && (filters.role_id === undefined || c.role_id === filters.role_id)) ?? [],
     }));
 }
-export function candidatePoolView(candidate: DeckCandidate) {
-    return {options: candidateOptionDetails(candidate), roles: (candidate.plan?.nodes ?? []).filter(n => n.kind === "role").map(role => ({role,
+export function candidatePoolView(candidate: DeckCandidate, filters: {role_id?: string | undefined; card_identity_id?: string | undefined} = {}) {
+    const roles = (candidate.plan?.nodes ?? []).filter(n => n.kind === "role").filter(n =>
+        (filters.role_id === undefined || n.id === filters.role_id) &&
+        (filters.role_id !== undefined || filters.card_identity_id === undefined || candidate.plan?.contributions.some(c => c.role_id === n.id && c.card_identity_id === filters.card_identity_id)));
+    return {options: candidateOptionDetails(candidate, filters), roles: roles.map(role => ({role,
         selected_copies: roleSelectedCopies(candidate, role),
+        ...(filters.card_identity_id === undefined ? {} : {counts_scope: "whole_role" as const}),
         option_ids: candidate.plan!.contributions.filter(c => c.role_id === role.id).map(c => c.card_identity_id),
     }))};
 }
@@ -88,7 +95,9 @@ function encodeRecords(raw: {path: (string | number)[]; value: unknown}[]): Cand
     raw.forEach(record => emit(record.value,record.path));
     return result;
 }
-function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord[] {
+function recordsFor(candidate: DeckCandidate, args: CandidateViewArgs): CandidateViewRecord[] {
+    const {view} = args;
+    const filters = args;
     if(view === "availability" || view === "collection_pull_list") {
         const evidence=candidate.validation_evidence?.checks?.collection_availability;
         if(!evidence || evidence.status==="absent") return encodeRecords([{path:[],value:{evidence_status:"absent",message:"Explicit Availability check required before assembly."}}]);
@@ -98,8 +107,8 @@ function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord
     let value: unknown;
     if (view === "brief") value = candidate.brief;
     else if (view === "selected") value = candidate.memberships;
-    else if (view === "options") value = candidateOptionDetails(candidate);
-    else if (view === "pool") value = candidatePoolView(candidate);
+    else if (view === "options") value = candidateOptionDetails(candidate, filters);
+    else if (view === "pool") value = candidatePoolView(candidate, filters);
     else if (view === "plan") value = candidate.plan;
     else if (view === "assessments") value = {assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
@@ -122,7 +131,8 @@ function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord
 
 export function readCandidateView(candidate: DeckCandidate, args: CandidateViewArgs) {
     const first = args.first ?? 50;
-    const records = recordsFor(candidate, args.view);
+    const records = recordsFor(candidate, args);
+    const bindings = {id:candidate.id,view:args.view,format:"path_value_text_v2",role_id:args.role_id ?? null,card_identity_id:args.card_identity_id ?? null};
     // Bind exactly the included view plus content timestamp. Included names/check evidence can change without a content edit; unrelated data must not stale a Brief-only view.
     const baseline = createHash("sha256").update(JSON.stringify({updated_at:candidate.updatedAt,view:args.view,records})).digest("hex");
     const context: CandidateViewContext = {candidate_id:candidate.id, updated_at:candidate.updatedAt, view:args.view, baseline, record_format:"path_value_text_v2"};
@@ -133,11 +143,11 @@ export function readCandidateView(candidate: DeckCandidate, args: CandidateViewA
         const decoded = decodeRetrievalCursor(args.after);
         if (decoded.problem) return failure(decoded.problem);
         const cursor = decoded.cursor!;
-        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || !cursorBindingsMatch(cursor, {id:candidate.id,view:args.view,format:"path_value_text_v2"}) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view, representation or record position. Restart this view without after.", retryable:false, recovery:"restart"});
+        if (cursor.tool !== "get_deck_candidate" || cursor.source !== "candidate" || !cursorBindingsMatch(cursor, bindings) || !Number.isSafeInteger(cursor.position) || (cursor.position as number) < 0 || (cursor.position as number) > records.length) return failure({code:"invalid_cursor", message:"Cursor does not match this candidate/view, representation or record position. Restart this view without after.", retryable:false, recovery:"restart"});
         if (cursor.revisions.baseline !== baseline) return failure({code:"stale_cursor", message:"Candidate/view baseline changed. Restart this view without after.", retryable:false, recovery:"restart"});
         offset = cursor.position as number;
     }
-    const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:{id:candidate.id,view:args.view,format:"path_value_text_v2"},revisions:{baseline},position});
+    const token = (position: number) => encodeRetrievalCursor({version:2,tool:"get_deck_candidate",source:"candidate",bindings:bindings,revisions:{baseline},position});
     const page = (end: number, stop_reason: RetrievalSuccess<CandidateViewRecord>["stop_reason"]) => ({status:"ok" as const, ...context,
         edges:records.slice(offset,end).map(node => ({node})),
         next_cursor:end<records.length?token(end):null,stop_reason,metadata:metadata(end-offset)});

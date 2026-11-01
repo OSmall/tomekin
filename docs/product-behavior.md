@@ -272,13 +272,13 @@ check time. Ordinary reads do not invoke checks.
 `json`, `report` and `portable_decklist`, plus the default compact `summary`. There is no public unbounded `state` view.
 Options include canonical names, comparison notes, selected memberships and complete contribution rationale,
 qualifications and evidence. The pool view has one deduplicated `options` array and role groups referring to those
-options by Card Identity; section-aware selected quantities come only from memberships.
+options by Card Identity; section-aware selected quantities come only from memberships. Optional `role_id` and `card_identity_id` selectors apply to `options` and `pool` before pagination; combined selectors intersect. A role filter retains complete relevant contributions and its goal and coverage assessment. A card filter retains memberships and relevant contributions, including unselected alternatives. For a card-narrowed pool, `counts_scope: "whole_role"` identifies role-wide selected counts and option IDs; those do not describe only the returned options. Empty matches are returned as empty arrays. Other views reject these selectors.
 
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
 JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node uses `path_value_text_v2`: `{kind: "value", path, value}` assigns a complete value; `{kind: "text_fragment", path, index, text, final}` contributes a string fragment.
 Apply records in order: an empty path sets the root; other paths assign an object key or array index. A fragment sequence starts at index zero, continues consecutively for the same path, and finishes only when `final` is true. Assemble all fragments before assigning the string; missing, interleaved or out-of-order fragments mean the read is incomplete. Explicit empty containers preserve empty objects/arrays. Oversized objects are decomposed to preserve their contents. For `json`, this reconstructs
 the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
-the ordered string values. Repeat `id` and `view` with `after`; `first` may change. A view's transient hash binds its
+the ordered string values. Repeat `id`, `view` and any selectors with `after`; `first` may change. A view's transient hash binds its
 content timestamp and all included records, so changed canonical names, evidence publication or evidence applicability
 reject affected continuation even when candidate content timestamps stay unchanged. Unrelated data does not stale an
 unchanged Brief-only view. There is no persisted cursor/result store. An oversized indivisible record fails explicitly;
