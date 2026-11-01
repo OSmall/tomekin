@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tomekin/core": "workspace:*",
+    "@tomekin/agent": "workspace:*",
     "@tomekin/sqlite": "workspace:*",
     "neverthrow": "8.2.0"
   },

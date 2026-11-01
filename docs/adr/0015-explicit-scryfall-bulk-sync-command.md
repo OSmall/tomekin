@@ -1,5 +1,10 @@
 # Explicit Scryfall bulk sync command
 
+The coordinated replacement, migration reconciliation, and bounded HTTP 429 retry policies in
+[ADR 0020](./0020-scryfall-migration-authority-and-reference-coverage.md) refine this decision. That ADR supersedes the
+sequential publication and no-429-retry policies below and records the coordinated implementation's populated-database
+acceptance.
+
 The alpha release will add an explicit user-invoked Scryfall bulk sync command that downloads and imports the default
 local reference datasets in dependency order: `oracle_cards`, `all_cards`, then `oracle_tags`. This command is
 setup/admin behaviour, not normal deck-building behaviour.

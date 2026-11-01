@@ -108,10 +108,10 @@ state unless it later appears in imported source collection data as an Existing 
 deck
 
 **Deck Plan**:
-The strategic reasoning behind a Deck Candidate's card choices: its intended activities and routes to winning,
-contextual card contributions and Deck Roles, and the relationships, conditions, and support needs that connect them. It
-provides context for construction and later Deck Tuning. _Avoid_: Decklist, piloting guide, Card Identity Tags,
-executable card-effects model
+The strategic reasoning behind a Deck Candidate's card choices: its intended game actions, their prerequisites and
+consequences, expected turn-by-turn development, routes to winning, contextual Card Contributions and Deck Roles, and
+the relationships and support needs that connect them. It provides context for construction and later Deck Tuning.
+_Avoid_: Decklist, piloting guide, Card Identity Tags, executable card-effects model
 
 **Deck Tuning**:
 The evaluation and revision of an Existing Deck or Deck Candidate to better satisfy its confirmed Deck Building Brief,
@@ -193,9 +193,10 @@ fodder, sacrifice outlets, and death payoffs. A Deck Package may contain several
 in multiple Deck Packages. _Avoid_: Category, role
 
 **Portable Decklist**:
-The importable card-name decklist generated from a Deck Candidate's authoritative card membership, formatted for broad
-compatibility with common MTG deck tools. A Portable Decklist does not include collection locations, prices,
-explanations, or printing details by default. _Avoid_: Export, raw list
+The importable quantity-and-card-name list generated from a Deck Candidate's authoritative card membership, with only
+Format sections needed by the target import format, such as commanders, Mainboard, or Sideboard. Role groupings,
+explanations, collection locations, prices, and printing details remain outside the Portable Decklist by default.
+_Avoid_: Export, raw list
 
 **Collection Pull List**:
 The assembly-focused list that shows the user's matching owned card copies for a Deck Candidate, including location and
@@ -263,6 +264,22 @@ specific tagging. _Avoid_: Umbrella tag, ancestor tag, broader tag, direct tag, 
 The relationship that applies a Card Identity Tag to a specific Card Identity, including any relationship-specific
 meaning such as prominence or annotation. _Avoid_: Card tag link, tag assignment
 
+**Tag Snowballing**:
+An exploratory card-research method that uses Card Identity Tags learned from seed cards and discovery results to find
+further relevant cards and search directions. Tag prominence guides investigation, while card rules and the Deck Plan
+inform contextual judgment of fit. _Avoid_: Tag scoring algorithm, automatic role assignment
+
+**Research Exemplar**:
+A card studied to understand a relevant mechanism, Card Identity Tags, or search criteria, independently of its
+eligibility for the Deck Candidate. A Research Exemplar need not be owned or satisfy the Brief's selection constraints.
+_Avoid_: Recommended inclusion, eligible option
+
+**Deck Research Coverage**:
+The extent to which a deck-building investigation has explored identified game mechanisms and support needs across the
+permitted card choices, including complementary searches, comparison of promising alternatives, and remaining unexplored
+branches. Deck Research Coverage is distinct from Deck Card Pool size and whether enough suitable cards have been found
+to construct a Deck Candidate. _Avoid_: Pool depth, guaranteed optimality
+
 **Card Identity Relationship**:
 A named relationship between two Card Identities, such as similarity, reference, comparison, or an effect appearing with
 or without a creature body. A Card Identity Relationship connects cards directly and is distinct from a Card Identity
@@ -278,9 +295,15 @@ A user-invoked update of local card reference data from Scryfall's current bulk 
 is distinct from a Scryfall Bulk Data Import because it includes explicit network fetching before local data is updated.
 _Avoid_: Import, refresh, background sync
 
+**Scryfall Card Migration**:
+A Scryfall-published correction that replaces a discarded Card Printing identifier with another identifier, or removes
+it without providing a replacement. It concerns a Card Printing identifier rather than directly specifying a Card
+Identity replacement. _Avoid_: Schema migration, card update feed
+
 **Deck Opportunity**:
-A promising deck-building direction identified from the Collection, usually combining a Format Anchor, theme, available
-support cards, expected play pattern, and likely Missing Cards. _Avoid_: Theme, idea, suggestion
+A promising deck-building direction supported by preliminary Collection research, usually combining a Format Anchor,
+theme, available support cards, expected play pattern, and likely Missing Cards. A Deck Opportunity does not establish
+that a complete Deck Candidate can satisfy the Deck Building Brief. _Avoid_: Theme, idea, suggestion
 
 **Synergy**:
 A meaningful relationship where cards reinforce, enable, reward, or amplify one another as part of a deck's plan.

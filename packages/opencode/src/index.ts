@@ -1,4 +1,4 @@
-import {createImportFoundationServices, type LogComponent, type Logger} from "@tomekin/core";
+import {agentToolResultDetails, serializeAgentToolDetails, createImportFoundationServices, type LogComponent, type Logger, type CardSearchOptions} from "@tomekin/core";
 import {createLocalAgentToolRuntime, type LocalAgentToolHandlers, type LocalAgentToolRuntime} from "@tomekin/agent";
 import {resolveDatabasePath} from "@tomekin/sqlite";
 
@@ -7,6 +7,7 @@ export type {LocalAgentToolHandlers, LocalAgentToolRuntime};
 export type LocalRuntimeOptions = {
     readonly databasePath?: string | undefined;
     readonly log: Logger;
+    readonly search?: CardSearchOptions;
 };
 
 export function createLocalImportFoundation(options: { readonly log: Logger }) {
@@ -24,7 +25,7 @@ export function createLocalAgentToolHandlers(options: LocalRuntimeOptions): Loca
     const dbPath = options.databasePath ?? resolveDatabasePath();
     const logger = options.log.child({component: "opencode" satisfies LogComponent, databasePath: dbPath});
   logger.info({operation: "create_agent_tool_handlers", status: "started"}, "OpenCode agent tool handlers starting");
-    const runtime = createLocalAgentToolRuntime({databasePath: dbPath, log: options.log});
+    const runtime = createLocalAgentToolRuntime({databasePath: dbPath, log: options.log, ...(options.search ? {search:options.search} : {})});
     return {
         ...runtime,
         close: () => {
@@ -40,9 +41,7 @@ export function resultToOpencodeOutput<T>(result: {
     value?: T;
     error?: { readonly message: string; readonly type?: string; readonly [key: string]: unknown };
 }): string {
-  if (result.isOk()) return JSON.stringify(result.value, null, 2);
-  const error = result.error;
-    if (!error) return JSON.stringify({error: "error", message: "Unknown tool error."}, null, 2);
-    const {type, ...details} = error;
-    return JSON.stringify({...details, error: type ?? "error"}, null, 2);
+  return serializeAgentToolDetails(agentToolResultDetails(result));
 }
+
+export * from "./input-schema";

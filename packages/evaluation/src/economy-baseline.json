@@ -1,0 +1,75 @@
+{
+  "sourceRevision": "d16556954a10443e5e207a032dfe75e3e88dd377",
+  "protocol": "economical-research-v1",
+  "fixtureRevision": "synthetic-workflows-v1",
+  "fixtureSha256": "43457ceb152e0a3c15e9dfe9f89d7c203478898bc076b47e1bda980133fa00ba",
+  "tokenizer": {
+    "package": "js-tiktoken",
+    "version": "1.0.21",
+    "encoding": "o200k_base",
+    "scope": "serialized tool arguments and model-visible text only; not billed/session usage"
+  },
+  "staged": false,
+  "calls": 3,
+  "requiredFacts": {
+    "identities": [
+      "00000000-0000-4000-8000-000000000001",
+      "00000000-0000-4000-8000-000000000002",
+      "00000000-0000-4000-8000-000000000003",
+      "00000000-0000-4000-8000-000000000004",
+      "00000000-0000-4000-8000-000000000005",
+      "00000000-0000-4000-8000-000000000006",
+      "00000000-0000-4000-8000-000000000007",
+      "00000000-0000-4000-8000-000000000008"
+    ],
+    "contenderRules": [
+      {
+        "oracle_id": "00000000-0000-4000-8000-000000000001",
+        "oracle_text": "Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. Draw a card. "
+      },
+      {
+        "oracle_id": "00000000-0000-4000-8000-000000000003",
+        "oracle_text": "Draw a card."
+      }
+    ]
+  },
+  "surfaces": {
+    "application": {
+      "requestTokens": 2871,
+      "responseTokens": 10384,
+      "totalTokens": 13255,
+      "responseBytes": 24396
+    },
+    "opencode": {
+      "requestTokens": 2871,
+      "responseTokens": 10384,
+      "totalTokens": 13255,
+      "responseBytes": 24396
+    },
+    "pi_fallback": {
+      "requestTokens": 2871,
+      "responseTokens": 10384,
+      "totalTokens": 13255,
+      "responseBytes": 24396
+    },
+    "pi_worker": {
+      "requestTokens": 2871,
+      "responseTokens": 10384,
+      "totalTokens": 13255,
+      "responseBytes": 24396
+    }
+  },
+  "componentTokens": {
+    "cursors": 7734,
+    "collectionContext": 474,
+    "collectionEvidence": 192
+  },
+  "componentsAreIndependentlyTokenized": true,
+  "identityOccurrences": 8,
+  "repeatedIdentities": 0,
+  "hydratedOccurrences": 8,
+  "repeatedHydratedFacts": 0,
+  "maxCursorCharacters": 2012,
+  "encodingComparison": [],
+  "modelRun": false
+}

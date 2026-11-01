@@ -1,14 +1,21 @@
-import {createHash} from "node:crypto";
-import {chmod, mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
+import {mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
 import {existsSync} from "node:fs";
-import {join} from "node:path";
+import {dirname, join} from "node:path";
+import {fileURLToPath} from "node:url";
+export {supportedPiVersion, assertPiVersion} from "./runtime-version";
+import {supportedPiVersion} from "./runtime-version";
 
-export const expectedPiToolNames = [
-    "draft_deck_building_brief", "query_cards", "get_card_identity", "search_card_identity_tags",
-    "search_card_sets", "summarize_reference_support", "get_format_constraints", "resolve_decklist_cards",
-    "validate_format_legality", "evaluate_deck_candidate", "render_deck_candidate", "save_deck_candidate",
+const basePiToolNames = [
+    "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
+    "search_card_sets", "get_format_constraints",
+    "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
     "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
 ] as const;
+
+export function resolvePiToolNames(environment: Record<string, string | undefined> = process.env): readonly (typeof basePiToolNames[number] | "legacy_query_cards")[] {
+    return [...basePiToolNames, ...(environment.TOMEKIN_ENABLE_LEGACY_QUERY === "true" ? ["legacy_query_cards" as const] : [])];
+}
+export const expectedPiToolNames = resolvePiToolNames();
 
 /** Review anchor; Bun's lockfile records the matching package integrity. */
 export const reviewedAskUserPackage = {
@@ -16,138 +23,70 @@ export const reviewedAskUserPackage = {
     integrity: "sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==",
 } as const;
 
-export function createPiProfileSettings() {
-    return {packages: [{source: reviewedAskUserPackage.source, extensions: ["index.ts"], skills: [], prompts: [], themes: []}]};
+/** Packages are installed by Bun; Pi loads only the two explicit extension files. */
+export function createPiProfileSettings(existing: Record<string, unknown> = {}) {
+    return {...existing, packages: []};
 }
 
 export async function configurePiProfile(workspacePath: string): Promise<void> {
     const profilePath = join(workspacePath, ".data", "pi");
     await mkdir(profilePath, {recursive: true});
-    await writeFile(join(profilePath, "settings.json"), `${JSON.stringify(createPiProfileSettings(), null, 2)}\n`);
+    const settingsPath = join(profilePath, "settings.json");
+    let existing: Record<string, unknown> = {};
+    try {
+        const parsed: unknown = JSON.parse(await readFile(settingsPath, "utf8"));
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Expected a JSON object.");
+        existing = parsed as Record<string, unknown>;
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+            throw new Error(`Cannot read Pi settings at ${settingsPath}; repair the file before launching Tomekin.`, {cause: error});
+        }
+    }
+    const staging = join(profilePath, `.settings-${crypto.randomUUID()}.tmp`);
+    try {
+        await writeFile(staging, `${JSON.stringify(createPiProfileSettings(existing), null, 2)}\n`);
+        await rename(staging, settingsPath);
+    } finally {
+        await rm(staging, {force: true});
+    }
 }
 
-export type PiArtifact = {
-    readonly version: "0.85.1";
-    readonly archiveName: "pi-darwin-arm64.tar.gz";
-    readonly url: "https://github.com/earendil-works/pi/releases/download/v0.85.1/pi-darwin-arm64.tar.gz";
-    readonly sha256: "d5f70e3c0cf7398eac239fd0261ee074d98b7ba7f6b43fe3617f052ed5b79d06";
-};
-
-const macOsArm64Artifact: PiArtifact = {
-    version: "0.85.1",
-    archiveName: "pi-darwin-arm64.tar.gz",
-    url: "https://github.com/earendil-works/pi/releases/download/v0.85.1/pi-darwin-arm64.tar.gz",
-    sha256: "d5f70e3c0cf7398eac239fd0261ee074d98b7ba7f6b43fe3617f052ed5b79d06",
-};
-
-export function piArtifactForPlatform(platform: string, architecture: string): PiArtifact {
-    if (platform !== "darwin" || architecture !== "arm64") {
-        throw new Error(`Tomekin's Pi launcher currently supports only macOS arm64; received ${platform} ${architecture}.`);
-    }
-    return macOsArm64Artifact;
-}
-
-export async function verifyPiArtifact(options: {
-    readonly artifact: PiArtifact;
-    readonly archivePath: string;
-    readonly executablePath: string;
-    readonly sha256File: (path: string) => Promise<string>;
-    readonly runVersion: (path: string) => Promise<{readonly exitCode: number; readonly stdout: string}>;
-}): Promise<void> {
-    const actualChecksum = await options.sha256File(options.archivePath);
-    if (actualChecksum !== options.artifact.sha256) {
-        throw new Error(`Pi artifact checksum mismatch: expected ${options.artifact.sha256}, received ${actualChecksum}.`);
-    }
-    await verifyPiExecutable(options);
+export function resolveAskUserExtensionPath(): string {
+    // A file selects only the extension; selecting the package directory also loads its skills.
+    return join(dirname(fileURLToPath(import.meta.resolve("pi-ask-user/package.json"))), "index.ts");
 }
 
 export function createPiSpawnConfiguration(options: {
     readonly workspacePath: string;
-    readonly executablePath: string;
     readonly extensionPath: string;
+    readonly executablePath?: string;
+    readonly askUserExtensionPath?: string;
     readonly environment?: Record<string, string | undefined>;
 }) {
+    const environment: Record<string, string | undefined> = {...process.env, ...options.environment, PI_CODING_AGENT_DIR: join(options.workspacePath, ".data", "pi")};
     return {
-        executable: options.executablePath,
+        executable: options.executablePath ?? process.execPath,
         args: [
-            "--no-skills", "--no-context-files", "--no-builtin-tools",
+            fileURLToPath(new URL("./pi-main.ts", import.meta.url)),
+            "--no-extensions", "--no-mcp", "--no-approve",
+            "--no-skills", "--no-context-files", "--no-prompt-templates", "--no-themes", "--no-builtin-tools",
             "--skill", join(options.workspacePath, "skills"),
-            "--tools", expectedPiToolNames.join(","), "--extension", options.extensionPath,
+            "--tools", resolvePiToolNames(environment).join(","),
+            "--extension", options.askUserExtensionPath ?? resolveAskUserExtensionPath(),
+            "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,
-        env: {...process.env, ...options.environment, PI_CODING_AGENT_DIR: join(options.workspacePath, ".data", "pi")},
+        env: environment,
         stdin: "inherit" as const,
         stdout: "inherit" as const,
         stderr: "inherit" as const,
     };
 }
 
-/** The launcher owns only transient staging; Pi's profile and Tomekin's database persist. */
-export function shouldCleanLauncherPath(kind: "staging" | "profile" | "database"): boolean {
-    return kind === "staging";
-}
-
-export async function ensureVerifiedPiArtifact(options: {
-    readonly workspacePath: string;
-    readonly fetchArchive?: (url: string) => Promise<Response>;
-}): Promise<string> {
-    const artifact = piArtifactForPlatform(process.platform, process.arch);
-    const runtimeRoot = join(options.workspacePath, ".data", "tomekin-pi-runtime");
-    const cacheRoot = join(runtimeRoot, artifact.version);
-    const executablePath = join(cacheRoot, "pi", "pi");
-    const runVersion = async (path: string) => {
-        const result = Bun.spawnSync([path, "--version"]);
-        return {exitCode: result.exitCode, stdout: new TextDecoder().decode(result.stdout)};
-    };
-    if (existsSync(executablePath)) {
-        await verifyPiExecutable({artifact, executablePath, runVersion});
-        return executablePath;
-    }
-
-    const staging = join(runtimeRoot, `.staging-${crypto.randomUUID()}`);
-    await mkdir(staging, {recursive: true});
-    try {
-        const response = await (options.fetchArchive ?? fetch)(artifact.url);
-        if (!response.ok) throw new Error(`Pi release download failed: ${response.status} ${response.statusText}.`);
-        const archive = join(staging, artifact.archiveName);
-        const bytes = new Uint8Array(await response.arrayBuffer());
-        const checksum = createHash("sha256").update(bytes).digest("hex");
-        if (checksum !== artifact.sha256) throw new Error(`Pi archive checksum mismatch: expected ${artifact.sha256}, received ${checksum}.`);
-        await Bun.write(archive, bytes);
-        const unpack = Bun.spawnSync(["tar", "-xzf", archive, "-C", staging]);
-        if (unpack.exitCode !== 0) throw new Error(`Could not unpack the verified Pi archive (exit ${unpack.exitCode}).`);
-        const stagedExecutable = join(staging, "pi", "pi");
-        if (!existsSync(stagedExecutable)) throw new Error("Verified Pi archive did not contain its expected executable.");
-        await chmod(stagedExecutable, 0o755);
-        await verifyPiArtifact({
-            artifact,
-            archivePath: archive,
-            executablePath: stagedExecutable,
-            sha256File: async (path) => createHash("sha256").update(await readFile(path)).digest("hex"),
-            runVersion,
-        });
-        await rm(cacheRoot, {recursive: true, force: true});
-        await mkdir(cacheRoot, {recursive: true});
-        await rename(join(staging, "pi"), join(cacheRoot, "pi"));
-        return executablePath;
-    } finally {
-        if (shouldCleanLauncherPath("staging")) await rm(staging, {recursive: true, force: true});
-    }
-}
-
-async function verifyPiExecutable(options: {
-    readonly artifact: PiArtifact;
-    readonly executablePath: string;
-    readonly runVersion: (path: string) => Promise<{readonly exitCode: number; readonly stdout: string}>;
-}): Promise<void> {
-    const version = await options.runVersion(options.executablePath);
-    if (version.exitCode !== 0 || version.stdout.trim() !== options.artifact.version) {
-        throw new Error(`Verified Pi artifact did not report version ${options.artifact.version}.`);
-    }
-}
-
-export async function buildTomekinExtension(workspacePath: string): Promise<string> {
-    const runtimeRoot = join(workspacePath, ".data", "tomekin-pi-runtime", macOsArm64Artifact.version);
+export async function buildTomekinExtension(
+    workspacePath: string,
+    runtimeRoot = join(workspacePath, ".data", "tomekin-pi-runtime", supportedPiVersion),
+): Promise<string> {
     await mkdir(runtimeRoot, {recursive: true});
     const extension = join(runtimeRoot, "tomekin-extension.mjs");
     const worker = join(runtimeRoot, "tomekin-tomekin-worker.mjs");
@@ -164,15 +103,14 @@ export async function buildTomekinExtension(workspacePath: string): Promise<stri
 }
 
 export async function launchTomekinPi(workspacePath: string, ports = {
-    ensureArtifact: (path: string) => ensureVerifiedPiArtifact({workspacePath: path}),
     buildExtension: buildTomekinExtension,
     configureProfile: configurePiProfile,
     spawn: (command: string[], options: ReturnType<typeof createPiSpawnConfiguration>) => Bun.spawn(command, options),
 }): Promise<number> {
-    const executablePath = await ports.ensureArtifact(workspacePath);
-    await ports.configureProfile(workspacePath);
+    // Do not touch the persistent profile if the extension cannot be built.
     const extensionPath = await ports.buildExtension(workspacePath);
-    const configuration = createPiSpawnConfiguration({workspacePath, executablePath, extensionPath});
+    await ports.configureProfile(workspacePath);
+    const configuration = createPiSpawnConfiguration({workspacePath, extensionPath});
     const child = ports.spawn([configuration.executable, ...configuration.args], configuration);
     return child.exited;
 }

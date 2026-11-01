@@ -1,5 +1,7 @@
 # CQL2-shaped Card Queries
 
+Status: Superseded for normal retrieval by [ADR 0019](0019-provider-backed-scryfall-card-search.md). This rationale remains historical and applies only to explicitly enabled disabled-default `legacy_query_cards`.
+
 Card Queries will use a CQL2-JSON-inspired expression shape with composable `op` and `args` nodes and an explicit
 allowlist of Tomekin queryables, instead of giving deck-building agents raw SQL or cloning Scryfall's public search
 syntax. The first tool should be `query_cards`, querying a SQL-like joined card-search resource over Card Identity,

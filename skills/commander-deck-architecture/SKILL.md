@@ -1,191 +1,150 @@
 ---
 name: commander-deck-architecture
-description: Use after a Commander/EDH Deck Building Brief and either a commander or selected Deck Opportunity are confirmed to architect a synergistic Commander Deck Candidate with Tomekin tools, tag-aware package discovery, role-density targets, and supported validation passes.
+description: Use after a Commander/EDH Deck Building Brief and either a commander or selected Deck Opportunity are confirmed to construct a Commander Deck Candidate with the shared deck-shape method, qualified starting profile and Commander-specific access assumptions.
 ---
 
 # Commander Deck Architecture
 
-Use this skill after the `tomekin-deck-building` skill has confirmed a Commander/EDH Deck Building Brief and the
-user has chosen a commander or selected a Deck Opportunity from `collection-opportunity-discovery`. This skill is the
-canonical Commander construction method. It does not replace `tomekin-deck-building` for tool orchestration, legality
-validation, rendering, or persistence.
+Use after `tomekin-deck-building` confirms the Commander/EDH Brief and the user has chosen a commander or
+selected a Deck Opportunity. Load `deck-shape-methodology` for the common reasoning sequence and `query-cards` for
+retrieval mechanics. This skill owns Commander assumptions, counting guidance and its worked example; the lifecycle
+skill owns supported tools, deterministic validation, rendering and persistence.
 
-Method provenance: the structural ranges are adjustable heuristics informed by the
-[Commander Power Levels deck-building template](https://www.commanderpowerlevels.com/deckbuilding/template), while
-curve expectations follow the EDHREC analysis of
-[commander Mana Value and curve](https://edhrec.com/articles/paradigm-shift-how-your-commanders-mana-value-alters-your-curve).
-[Wizards' Commander Brackets update](https://magic.wizards.com/en/news/announcements/commander-brackets-beta-update-october-21-2025)
-supports treating power as intended gameplay rather than a score inferred from isolated cards. These sources do not
-define a universal formula or guarantee an optimal deck.
+When discovery hands off a direction, preserve its anchor, activity, winning direction, Collection support and caveats.
+Preserve the whole confirmed Collection Access Policy through retrieval and final joint Availability. Research and refine the selected direction; agree a materially different identity
+before building it.
 
-When discovery hands off a selected Deck Opportunity:
+## Commander Access And Table Context
 
-- Treat its commander or other Format Anchor, functional game plan, expected play pattern, key Collection-supported
-  packages, and stated caveats as the construction starting point.
-- Preserve the confirmed `(locationType, locationName)` Collection allow-list unchanged in every Collection query and
-  the final Availability recheck.
-- Research and refine the opportunity during construction, but do not silently replace its identity or ignore a
-  viability caveat. Ask before making a materially different deck.
+Inspect the commander's relevant card facts, Color Identity, legality, text, parts and supporting tags. Respect the
+confirmed Commander Bracket, play experience, combo tolerance, budget, Missing Card tolerance and exclusions. Strength
+and pilot complexity remain distinct. Preserve the appeal of a user-chosen commander while challenging off-plan cards.
 
-## Core Principle
+Explain what the commander actually supplies, its costs and timing, and how the Mainboard functions when it is absent
+or repeatedly removed. Command-zone access is not a phantom library copy or a reason to automatically shrink a support
+role. Review protection, recovery and independent access in light of that dependence. Use meaningful primary/secondary
+Win Routes rather than a compulsory number of closers. Commander has no Sideboard.
 
-Build a Commander deck as an engine with structural support, not as 100 individually good cards. Every candidate should
-have a clear format anchor, coherent packages, enough mana, enough cards, enough answers, and credible win paths that
-fit
-the confirmed play experience.
+## Adopted Starting Profile
 
-## 1. Commander And Table Fit
+Begin ordinary construction with this meaningful report-attributed profile, then make reasoned deck-specific changes:
 
-Start from the commander as the format anchor.
+| Function | Starting target |
+| --- | ---: |
+| Land/mana-access slots under the report convention | 38 |
+| Card advantage | 12 |
+| Ramp | 10 |
+| Targeted disruption | 12 |
+| Mass disruption | 6 |
+| Plan-serving cards | Approximately 30 |
 
-- Use `get_card_identity` on the commander before building the 99.
-- Confirm the commander's Color Identity, Commander legality, rules text, Card Identity Tags, EDHREC rank, and Game
-  Changer status.
-- Extract the commander's visible mechanics and hidden keywords from rules text, such as `enters`, `attacks`,
-  `sacrifice`, `dies`, `leaves the battlefield`, `draw`, `discard`, `cast from graveyard`, or `modified`.
-- Respect the confirmed Commander Bracket, combo tolerance, budget target, missing-card tolerance, and exclusions.
-- Avoid commanders or packages that create oppressive, archenemy-on-turn-one play unless the brief explicitly asks for
-  that experience.
+These functional targets overlap; their sum is not deck size. The review condition is **baseline satisfied or a
+justified departure recorded**. Explain departures using curve, strategy, anchor access, reliable card access,
+recursion, aggression, opposition, protection/recovery, available options or confirmed constraints. A sufficient
+reason is enough; justify how the resulting configuration still serves its plan, including any accepted compromise.
+Retain the applied criteria and departure rationale with the role goal/assessment or other focused owner for later
+sessions. A later tune should not automatically restore generic counts.
 
-Rule of cool matters. If the user chose a commander because it excites them, optimize around that appeal instead of
-silently replacing the identity with generic goodstuff.
+Provenance: the user adopted this profile in the
+[methodology resolution](https://github.com/OSmall/tomekin/issues/75#issuecomment-6234696206), attributed by the supplied
+report to [The Command Zone 658](https://www.youtube.com/watch?v=OSNV6224cHg), with contextual exceptions attributed to
+[The Command Zone 659](https://www.youtube.com/watch?v=PUrQpnQ7bi8). The
+[qualified synthesis](../../docs/research/2026-10-10-commander-deck-building-research.md) preserves source/evidence limits.
+User adoption independently certifies neither exact transcript attribution nor numerical sufficiency. This profile
+replaces the earlier Commander skeleton and mandatory mana-value rubric; it is not a legality or quality rule.
 
-## 2. Tag Snowballing And Synergy Discovery
+## Apply The Profile In Context
 
-Use tags as first-class evidence for synergy discovery.
+Define qualifying effects for each target using `deck-shape-methodology`. Card selection is distinct from net card
+advantage; burst mana is distinct from repeatable acceleration; protection is distinct from removal. Recursion can
+provide contextual card access with meaningful graveyard, timing and commander-dependence qualifications.
 
-- Inspect the commander's `tags.direct` and `tags.inherits` from `get_card_identity` or `query_cards` with
-  `include.tags: true`.
-- `Inherited Card Identity Tag` is the canonical term for what may casually be called an umbrella, ancestor, or broader
-  tag.
-- Treat direct and inherited tags as useful discovery signals. Inherited Card Identity Tags are especially important for
-  finding adjacent cards in the same functional family.
-- Inherited tag weight carries the strength of the supporting specific Card Identity Tagging. If multiple specific
-  taggings support the same inherited tag, the strongest supporting weight is used.
-- Prefer stronger tag weights in this order: `very_strong`, `strong`, `median`, `weak`.
-- Use tag snowballing: find a promising card, inspect its direct and inherited tags, then search high-signal tags to
-  find
-  similarly promising cards.
-- Prefer cards that overlap the commander or package on multiple tags, text cues, or functional roles.
-- Prefer internal affinity: cards in the 99 should work with each other even when the commander is unavailable.
+The report's mana-access convention includes MDFCs and one-mana landcyclers. Explain costs, timing and competing spell
+uses if applying it. Keep this functional convention separate from card-type facts, the evaluator's defined land count
+and deterministic construction. Count actual selected quantities by relevant section and identify commander
+contributions separately. Pool alternatives supply zero selected coverage.
 
-Use the `query-cards` skill before composing non-trivial `query_cards` filters.
+Review the intended early, middle and closing turns against functional actions and mana/curve. A higher-cost card can
+be appropriate when its role, acceleration, survival and payoff support it; lower Mana Value is not an automatic
+winner. Assess enabler/payoff balance, redundancy that still helps, resource competition and support that works without
+the commander. Do not prefer a card merely for matching more tags or roles. Tags guide discovery alongside independent
+functional searches and inspected card facts.
 
-Tag-query rules to remember:
+## Compact Worked Example: Meren Recursion
 
-- Use `search_card_identity_tags` to resolve tag IDs before querying.
-- Use `hasTagInHierarchy` for normal concept matching so an Inherited Card Identity Tag can match descendant taggings.
-- Use independent `hasTagInHierarchy` predicates for multi-concept searches such as draw plus sacrifice.
-- Use `withTagging` when tag identity and tag metadata must apply to the same tagging row, such as strong card draw.
-- Do not invent ranked weight comparisons. If strength matters, use exact values such as
-  `tag.weight in ["very_strong", "strong"]`.
+**Context:** an illustrative confirmed Brief requests a black-green Meren of Clan Nel Toth deck, recurring small
+creatures and death payoffs, no infinite combo, and a resilient multiplayer play experience. Actual choices still need
+the user's Addition Pool, Collection evidence and applicable deterministic checks; this is a reasoning example, not a
+validated complete 100-card list.
 
-## 3. Themed Core And Mana-Value Rubric
+**Plan and access:** sacrifice useful creatures, recover them for repeated value, and convert deaths into opponent life
+loss with Zulaport Cutthroat as a primary winning direction; creature combat is a secondary route. Meren earns experience
+when another controlled creature dies and recovers one targeted creature at the controller's end step, to battlefield
+or hand depending on Mana Value and experience. She supplies conditional recovery, not unrestricted draw or an
+instant-speed sacrifice outlet. Removal, graveyard disruption and end-step timing threaten the engine. Retain
+independent access and recovery rather than assuming command-zone availability solves them.
 
-Build an initial themed pool before finalizing structural slots.
+**Qualified contributions:** select Sakura-Tribe Elder as one Mainboard option for basic-land acceleration and a
+self-sacrificing creature. Its land arrives tapped; it sacrifices itself, not arbitrary creatures. A recovered Elder
+can repeat the function only with suitable recovery. Select Village Rites for sacrifice access plus conditional card
+access: it costs a creature as well as the spell, so drawing two is not automatically net-positive cardboard. Keep
+Deadly Dispute as an assessed, unselected alternative; it supplies zero current coverage. Golgari Charm can provide
+small-creature disruption, enchantment removal or regeneration, one mode at a time. Regeneration does not answer
+exile or every sweeper. Its role labels cannot establish simultaneous protection and removal.
 
-- Assemble roughly 40 on-theme candidates around the commander's mechanics, tags, and adjacent packages.
-- Include enablers, payoffs, engines, recursion, protection, and closers where the theme needs them.
-- Avoid piles of payoffs with too few enablers.
-- Avoid cards that are merely legal in the Color Identity but do not advance the plan.
+**Profile and departure:** start with the table above. Suppose this configuration retains 38 mana-access slots, 12
+qualified access contributions, 10 ramp, 12 targeted disruption, approximately 30 plan-serving contributions, but only
+four mass-disruption contributors. Treat the broadened access category as a separate justified departure from twelve
+net-advantage pieces, documenting its dependence on recursion and available sacrifice fodder. Explain the departure in that role's assessment: the creature-recursion plan relies
+on its own board and chooses selective interaction, recovery and two extra plan-serving slots over two more mass
+answers. This accepts exposure to large opposing boards and needs reassessment if opposition changes. The count alone
+does not certify adequacy; the example's access category must retain which effects are conditional recursion/selection
+versus net card advantage instead of claiming all twelve are unconditional draw.
 
-Use this mana-value rubric for themed cards:
+**Same-role change:** Village Rites → Deadly Dispute retains one sacrifice/card-access option. Dispute accepts an
+artifact or creature and makes a Treasure, but costs one more mana. The Treasure is a one-shot resource, not proof of
+repeatable ramp; sacrificing an artifact does not trigger creature-death payoffs. Review the resulting early mana and
+creature-fodder access before accepting. Cutting Rites retains it as a viable pool alternative by default.
 
-- 6+ mana: must dramatically alter the game state or provide near-insurmountable advantage within one turn.
-- 5 mana: must immediately provide significant advantage or be a threat that runs away with the game if unanswered.
-- 4 mana: must be highly synergistic, push the engine into overdrive, or set up the next few turns perfectly.
-- 1-3 mana: must be efficient setup, an engine piece, protection, interaction, or recurring value.
+**Intentional redistribution:** a second proposed cut of Harmonize for another needed sacrifice enabler sacrifices
+unconditional card access to repair a demonstrated enabler deficit. Review every lost contribution, whether conditional
+access still meets the applied criteria, and the accepted risk. If the user accepts only this second swap, reassess that
+actual aggregate instead of crediting Dispute's unaccepted access/Treasure contribution. Retain Harmonize as an active
+alternative if it remains suitable; a desired access gap stays explicit. Exact changes and target follow lifecycle
+confirmation rather than implied approval from the Brief.
 
-When cutting, start from the top of the curve. If two cards compete for one slot, prefer higher internal affinity, then
-stronger tag evidence, then lower mana value.
+**Bounded probability question:** for a context-specific access target, ask whether at least one of twelve independently
+qualified Mainboard identities appears in nine cards sampled without replacement from the 99. Exclude the commander,
+assume no mulligan, search, extra draws or prior known cards, and distinguish this from exactly one. This supports only
+seeing an identity; it does not establish mana, fodder, casting or execution. Invoke the supported tool:
 
-## 4. Card Advantage
+```json
+{"operation":"probability","populationSize":99,"populationSuccesses":12,"sampleSize":9,"event":{"kind":"at_least","count":1}}
+```
 
-Card advantage keeps the deck from stalling.
+The probability is approximately 0.7036929 (70.37%). This meets an illustrative chosen 70% access target under these
+assumptions; that target is contextual, not universal. The executable workflow harness checks this independent
+uniform-subset result. Twelve qualified copies, not twelve role labels, define the modeled successes.
 
-- Target at least 12 dedicated card-advantage pieces.
-- For high-functioning casual and stronger decks, prefer 16-17 when the strategy and brief support it.
-- Prefer card advantage that overlaps with the deck's mechanics or tags.
-- Prioritize effects that net positive cards. Looting without net card gain is selection, not card advantage, unless the
-  deck converts discard or graveyard setup into real advantage.
-- Aim for about 8 card-advantage effects at mana value 3 or less.
-- Reserve higher-mana card-advantage slots for explosive refill effects or engine pieces that can draw many cards.
+**Later session:** read the current role criteria, the four-mass-disruption departure, conditional contributions,
+accepted swaps and retained options before tuning. Explain why the current configuration differs from the template.
+Only relevant new intent/evidence warrants reopening that judgment. Retain each justification with its focused record
+when supported by the available candidate tools; do not claim this illustrative reasoning was saved.
 
-## 5. Ramp And Mana Acceleration
+Card-fact provenance: relevant costs/effects checked against Scryfall on 2026-10-18:
+[Meren](https://scryfall.com/card/tdc/297/meren-of-clan-nel-toth),
+[Sakura-Tribe Elder](https://scryfall.com/card/soc/285/sakura-tribe-elder),
+[Village Rites](https://scryfall.com/card/inr/137/village-rites),
+[Deadly Dispute](https://scryfall.com/card/msc/794/deadly-dispute),
+[Golgari Charm](https://scryfall.com/card/uma/201/golgari-charm),
+[Harmonize](https://scryfall.com/card/msc/175/harmonize), and
+[Zulaport Cutthroat](https://scryfall.com/card/soc/233/zulaport-cutthroat).
+These facts support the local contribution examples, not source-report certification or a deck-strength claim.
 
-Ramp lets the deck execute its plan ahead of normal land drops.
+## Return To The Lifecycle
 
-- Target at least 10 standard ramp pieces: mana rocks, mana dorks, land tutors, cost reducers, or equivalent effects.
-- Prefer 1-mana ramp over 2-mana ramp, and 2-mana ramp over 3-mana ramp, unless synergy strongly justifies the slower
-  card.
-- Add 2-4 explosive ramp pieces when they fit the strategy and Commander Bracket, such as burst treasures, rituals, or
-  mana doublers.
-- Avoid explosive ramp that pushes the deck above the confirmed play experience unless the user wants that.
-
-## 6. Interaction, Protection, And Board Wipes
-
-Interaction stops opponents from winning. Protection keeps the deck's own engine alive.
-
-- Target roughly 10 pieces of targeted interaction and protection.
-- Target 2-4 board wipes.
-- Count thematic incidental interaction when it is real and reliable, such as a synergistic creature that removes an
-  artifact on entry.
-- At lower Commander Brackets, thematic interaction can be acceptable.
-- At higher Commander Brackets, prioritize low mana value, instant speed, and flexibility.
-- Include commander protection when the plan depends heavily on the commander being in play.
-
-## 7. Mana Base And Final Structure
-
-Default to 38 lands unless the confirmed brief, curve, ramp density, and evaluation results justify a different number.
-Missing early land drops is a major consistency failure.
-
-Use this structural skeleton as a starting point:
-
-- 1 commander.
-- 13 card-advantage pieces.
-- 12 ramp pieces.
-- 12 interaction, protection, and board-wipe pieces.
-- 38 lands.
-- 24 themed core cards.
-
-The skeleton is a deck-building rubric, not a legality rule. Adjust it deliberately when the commander, curve, or brief
-requires it, and explain the trade-off in the Deck Candidate Markdown.
-
-## 8. Static Win-Path Check
-
-True goldfishing is not supported yet. Do not claim to simulate opening hands, play sequencing, or turn-by-turn
-gameplay.
-
-Instead, run a static win-path check:
-
-- Identify 3-4 credible closers or win paths.
-- Check that those closers use the board states the deck naturally creates.
-- Check that at least some closers work without the commander.
-- If the deck can accrue value but cannot end games, replace low-impact themed cards with stronger closers.
-- Flag rules-sensitive, combo-sensitive, or power-sensitive win paths rather than presenting them with unsupported
-  certainty.
-
-## 9. Evaluation Pass
-
-Before final output, hand the candidate back to the `tomekin-deck-building` orchestration workflow.
-
-Required checks outside this skill:
-
-- Resolve final names with `resolve_decklist_cards`.
-- Validate Commander construction with `validate_format_legality`.
-- Run `evaluate_deck_candidate` for legality, Game Changers, mana curve, land count, and Collection evidence.
-- Recheck final Availability with the same confirmed Collection Location allow-list before rendering.
-- Revise weak areas for up to three full evaluation passes.
-- Render and save only after the final list resolves cleanly and caveats are represented in Markdown.
-
-## Final Explanation Requirements
-
-The final Deck Candidate explanation should state:
-
-- Game plan.
-- Commander Bracket and play experience fit.
-- Structural counts for lands, ramp, card advantage, interaction/protection/wipes, themed core cards, and closers.
-- Key tag packages, including high-signal direct and inherited tags used for discovery.
-- Internal affinity: how the 99 functions when the commander is unavailable.
-- Important inclusions and meaningful exclusions or cuts.
-- Unsupported areas, such as live budget validation or goldfishing, when relevant.
+Resolve final names and explicitly run applicable deterministic checks through `tomekin-deck-building` before claiming
+a completed deck result. Obtain final joint Availability under the whole confirmed Collection Access Policy.
+Explain plan, Commander Bracket/play experience, qualified selected coverage, template departures, mana/curve,
+commander dependence, meaningful inclusions/exclusions, practical constraints and uncertainty. Save authorized incomplete construction through create/edit; explicitly check the actual accepted result and recover
+complete joint Availability and Pull List evidence through the root lifecycle.

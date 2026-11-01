@@ -11,13 +11,45 @@ import {
 } from "@tomekin/core";
 import {applySqliteMigrations, closeDatabase, createSqliteScryfallRepository, openDatabase} from "@tomekin/sqlite";
 import {ok} from "neverthrow";
+import {dispatchScryfallHttp} from "@tomekin/agent";
+import {createProviderDispatchOwner} from "@tomekin/core";
 
-const clock = {
-  now: () => new Date("2025-01-01T00:00:00.000Z"),
-};
-const testLog = createTestRootLoggerFromEnv();
+import {clock, testLog, createDatabase, runCommand, readRepositorySnapshot, fakeSyncPorts,
+  recordsFor, metadata, rawOracleCard, rawAllCard, rawOracleTag, jsonlGzipStream,
+  liveMetadata, defaultBulkDataTypeForJsonlUrl, jsonlGzipResponse} from "./fixtures/scryfall-sync";
 
 describe("sync:scryfall command", () => {
+  test("reconciles an official merge when all incoming datasets retire the old identity", async () => {
+    const paths = createDatabase();
+    expect((await runCommand(["--db", paths.dbPath], fakeSyncPorts())).exitCode).toBe(0);
+    const replacementIdentity = "33333333-3333-4333-8333-333333333333";
+    const replacementPrinting = "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee";
+    const ports = fakeSyncPorts();
+    const refreshed = {
+      ...ports,
+      async downloadBulkData(dataset: ScryfallBulkDataMetadata) {
+        const records = recordsFor(dataset.bulkDataType, {}).map((record) => {
+          if (dataset.bulkDataType === "oracle_tags") return {...rawOracleTag(), taggings: []};
+          return {...record as object, oracle_id: replacementIdentity,
+            ...(dataset.bulkDataType === "all_cards" ? {id: replacementPrinting} : {})};
+        });
+        return ok({bulkDataType: dataset.bulkDataType, sourceUri: dataset.downloadUri,
+          sourceUpdatedAt: dataset.sourceUpdatedAt, stream: () => jsonlGzipStream(records)});
+      },
+      async listCardMigrations() {
+        return ok({data: [{object: "migration", id: "44444444-4444-4444-8444-444444444444",
+          performed_at: "2025-01-01", migration_strategy: "merge",
+          old_scryfall_id: rawAllCard().id, new_scryfall_id: replacementPrinting}], has_more: false});
+      },
+    };
+    const result = await runCommand(["--db", paths.dbPath], refreshed);
+    expect(result.exitCode).toBe(0);
+    const snapshot = await readRepositorySnapshot(paths.dbPath);
+    expect(snapshot.identities.map(card => card.id)).toEqual([replacementIdentity]);
+    expect(snapshot.printings.map(card => card.id)).toEqual([replacementPrinting]);
+    expect(snapshot.imports.filter(attempt => attempt.status === "succeeded")).toHaveLength(6);
+  });
+
   test("downloads through injected ports and imports default datasets into SQLite", async () => {
     const paths = createDatabase();
 
@@ -27,6 +59,8 @@ describe("sync:scryfall command", () => {
     expect(result.stderr).toContain("live Scryfall Bulk Data Sync");
     expect(result.stderr).toContain("Downloading oracle_cards");
     expect(result.stderr).toContain("Importing all_cards");
+    expect(result.stderr).toContain("Staged oracle_cards: 1 record.");
+    expect(result.stderr).toContain("Staged all_cards: 1 record.");
     expect(result.stdout).toContain("Scryfall Bulk Data Sync succeeded");
     expect(result.stdout).toContain("Imported oracle_tags: 1 records");
 
@@ -68,7 +102,7 @@ describe("sync:scryfall command", () => {
                     stderr: {write: () => undefined},
                 },
                 clock,
-                {log: testLog},
+                {log: testLog, apiProvider: createProviderDispatchOwner({dispatch: dispatchScryfallHttp})},
             );
 
             expect(result).toBe(0);
@@ -102,197 +136,6 @@ describe("sync:scryfall command", () => {
       "succeeded",
       "succeeded",
       "succeeded",
-      "succeeded",
-      "failed",
     ]);
   });
 });
-
-async function runCommand(
-  args: readonly string[],
-  syncPorts: ScryfallBulkDataSyncPorts,
-): Promise<{readonly exitCode: number; readonly stdout: string; readonly stderr: string}> {
-  let stdout = "";
-  let stderr = "";
-  const exitCode = await runSyncScryfallCommand(
-    args,
-    {},
-    {
-      stdout: {write: (message) => (stdout += message)},
-      stderr: {write: (message) => (stderr += message)},
-    },
-    clock,
-    {log: testLog, syncPorts},
-  );
-  return {exitCode, stdout, stderr};
-}
-
-function createDatabase(): {readonly dbPath: string} {
-  const dir = mkdtempSync(join(tmpdir(), "tomekin-sync-cli-"));
-  const dbPath = join(dir, "reference.sqlite");
-  applySqliteMigrations(dbPath, {log: testLog});
-  return {dbPath};
-}
-
-async function readRepositorySnapshot(dbPath: string) {
-  const db = openDatabase(dbPath, {log: testLog});
-  try {
-    const repository = createSqliteScryfallRepository(db, clock);
-    const identities = await repository.listCardIdentities();
-    const printings = await repository.listCardPrintings();
-    const tags = await repository.listCardIdentityTags();
-    const imports = await repository.listBulkDataImports();
-    if (identities.isErr()) throw new Error(identities.error.message);
-    if (printings.isErr()) throw new Error(printings.error.message);
-    if (tags.isErr()) throw new Error(tags.error.message);
-    if (imports.isErr()) throw new Error(imports.error.message);
-    return {
-      identities: identities.value,
-      printings: printings.value,
-      tags: tags.value,
-      imports: imports.value,
-    };
-  } finally {
-    closeDatabase(db);
-  }
-}
-
-function fakeSyncPorts(
-  options: {readonly badAllCardsOracleId?: boolean} = {},
-): ScryfallBulkDataSyncPorts {
-  return {
-    async listBulkDataMetadata() {
-      return ok(metadata());
-    },
-    async downloadBulkData(dataset) {
-      return ok({
-        bulkDataType: dataset.bulkDataType,
-        sourceUri: dataset.downloadUri,
-        sourceUpdatedAt: dataset.sourceUpdatedAt,
-        stream: () => jsonlGzipStream(recordsFor(dataset.bulkDataType, options)),
-      });
-    },
-  };
-}
-
-function metadata(): readonly ScryfallBulkDataMetadata[] {
-  return ["oracle_cards", "all_cards", "oracle_tags"].map((bulkDataType) => ({
-    bulkDataType: bulkDataType as ScryfallBulkDataType,
-    sourceUri: `https://api.scryfall.com/bulk-data/${bulkDataType}`,
-    downloadUri: `https://data.scryfall.io/${bulkDataType}.jsonl.gz`,
-    sourceUpdatedAt: clock.now(),
-  }));
-}
-
-function liveMetadata(): readonly Record<string, unknown>[] {
-    return ["oracle_cards", "all_cards", "oracle_tags"].map((bulkDataType) => ({
-        type: bulkDataType,
-        uri: `https://api.scryfall.com/bulk-data/${bulkDataType}`,
-        download_uri: `https://data.scryfall.io/${bulkDataType}/${bulkDataType}.json`,
-        jsonl_download_uri: `https://data.scryfall.io/${bulkDataType}/${bulkDataType}.jsonl.gz`,
-        updated_at: clock.now().toISOString(),
-    }));
-}
-
-function defaultBulkDataTypeForJsonlUrl(url: string): ScryfallBulkDataType | null {
-    for (const bulkDataType of ["oracle_cards", "all_cards", "oracle_tags"] as const) {
-        if (url === `https://data.scryfall.io/${bulkDataType}/${bulkDataType}.jsonl.gz`) {
-            return bulkDataType;
-        }
-    }
-    return null;
-}
-
-function jsonlGzipResponse(records: readonly unknown[]): Response {
-    return new Response(jsonlGzipStream(records), {status: 200});
-}
-
-function recordsFor(
-  bulkDataType: ScryfallBulkDataType,
-  options: {readonly badAllCardsOracleId?: boolean},
-): readonly unknown[] {
-  if (bulkDataType === "oracle_cards") return [rawOracleCard()];
-  if (bulkDataType === "all_cards") {
-    return [
-      options.badAllCardsOracleId
-        ? {...rawAllCard(), oracle_id: "99999999-9999-4999-8999-999999999999"}
-        : rawAllCard(),
-    ];
-  }
-  return [rawOracleTag()];
-}
-
-function jsonlGzipStream(records: readonly unknown[]): ReadableStream<Uint8Array> {
-  return new Response(records.map((record) => JSON.stringify(record)).join("\n"))
-    .body!.pipeThrough(new CompressionStream("gzip"));
-}
-
-function rawOracleCard() {
-  return {
-    object: "card",
-    id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
-    oracle_id: "22222222-2222-4222-8222-222222222222",
-    name: "Sol Ring",
-    layout: "normal",
-    mana_cost: "{1}",
-    cmc: 1,
-    type_line: "Artifact",
-    oracle_text: "{T}: Add {C}{C}.",
-    color_identity: [],
-    keywords: [],
-    game_changer: false,
-      legalities: fixtureLegalities(),
-    scryfall_uri: "https://scryfall.com/card/v10/12/sol-ring",
-  };
-}
-
-function rawAllCard() {
-  return {
-    ...rawOracleCard(),
-    id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
-    set_id: "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
-    set: "v10",
-    set_name: "From the Vault: Relics",
-    set_type: "from_the_vault",
-    set_uri: "https://api.scryfall.com/sets/dddddddd-dddd-4ddd-8ddd-dddddddddddd",
-    set_search_uri: "https://api.scryfall.com/cards/search?q=e%3Av10&unique=prints",
-    scryfall_set_uri: "https://scryfall.com/sets/v10?utm_source=api",
-    collector_number: "12",
-    finishes: ["foil"],
-    lang: "en",
-  };
-}
-
-function fixtureLegalities() {
-    return {
-        commander: "legal" as const,
-        standard: "legal" as const,
-        pioneer: "legal" as const,
-        modern: "legal" as const,
-        legacy: "legal" as const,
-        vintage: "legal" as const,
-        pauper: "legal" as const
-    };
-}
-
-function rawOracleTag() {
-  return {
-    object: "tag",
-    id: "11111111-1111-4111-8111-111111111111",
-    label: "mana rock",
-    slug: "mana-rock",
-    type: "oracle",
-    uri: "https://tagger.scryfall.com/tags/card/mana-rock",
-    description: null,
-    parent_ids: [],
-    child_ids: [],
-    aliases: ["mana-stone"],
-    taggings: [
-      {
-        oracle_id: "22222222-2222-4222-8222-222222222222",
-        weight: "very_strong",
-        annotation: "format staple",
-      },
-    ],
-  };
-}

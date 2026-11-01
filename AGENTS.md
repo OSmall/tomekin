@@ -25,6 +25,12 @@ GitHub Issues is the only live tracker for committed work and specifications. Do
 directory, Todos document, Design Branches document, or any equivalent shadow backlog. Git history is the archive for
 delivered implementation plans.
 
+## Dependency Selection
+
+Prefer widely used, actively maintained dependencies. Before recommending or adding one, compare adoption,
+maintenance and compatibility with the supported runtime. Explain the trade-off when choosing a less-established
+package over established alternatives.
+
 ## Agent skills
 
 The Matt Pocock engineering skills are installed per contributor, not bundled with this repository. Install them
@@ -41,6 +47,15 @@ Uses the default canonical triage labels. See `docs/agents/triage-labels.md`.
 ### Domain docs
 
 Uses a multi-context layout routed by `GLOSSARY-MAP.md`. Before exploring the codebase, read `docs/agents/domain.md`.
+
+## Zod Schema Syntax
+
+When editing Zod schemas, check the version pinned in `packages/core/package.json` and use Context7 documentation for
+that major version, verifying deprecations against the installed declarations. For Zod 4, use top-level format schemas
+such as `z.uuid()`, `z.url()`, `z.email()`, and `z.iso.date()` / `z.iso.datetime()`; chained string-format methods are
+deprecated. Use `.refine()` for predicates or `.check()` for custom issues. With `.check()`, supply each issue's `input`
+and set `continue: true` when preserving non-aborting validation. Preserve accepted inputs and diagnostics when updating
+syntax. See the [Zod 4 migration guide](https://zod.dev/v4/changelog).
 
 ## SQLite Migrations
 

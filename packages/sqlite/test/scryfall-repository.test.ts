@@ -1,3 +1,4 @@
+import {ok} from "neverthrow";
 import {describe, expect, test} from "bun:test";
 import {mkdtempSync} from "node:fs";
 import {tmpdir} from "node:os";
@@ -31,6 +32,44 @@ import {
 } from "@tomekin/sqlite";
 
 describe("SQLite Scryfall repository", () => {
+  test("coordinated staging batches TEMP writes without locking live data or holding a transaction during discovery", async () => {
+    const {db, repository} = createTestRepositoryFixture();
+    const path = db.$client.filename;
+    const other = openDatabase(path, {log: testLog});
+    const identities = await readOracleCardIdentityRecordsFixture();
+    const printings = filterPrintingsWithKnownIdentities(await readAllCardPrintingsFixture(), identities.map(row => row.identity));
+    const stagesInTransaction: boolean[] = [];
+    let observedMainWrite = false;
+    async function* observe<T>(records: readonly T[]) {
+      for (const record of records) {
+        stagesInTransaction.push(db.$client.inTransaction);
+        if (!observedMainWrite) {
+          other.insert(collectionLocation).values({id: "concurrent-location", name: "Concurrent binder", type: "binder"}).run();
+          observedMainWrite = true;
+        }
+        yield record;
+      }
+    }
+    try {
+      const result = await repository.refreshReferenceData!({
+        identities: {...importInput(identities), records: observe(identities)},
+        printings: {...importInput(printings), records: observe(printings)},
+        tags: {...importInput(oracleTagImportRecords()), records: observe(oracleTagImportRecords())},
+        async reconcile() {
+          expect(db.$client.inTransaction).toBe(false);
+          return ok({printings: new Map(), identities: new Map(), applied: []});
+        },
+      });
+      expect(stagesInTransaction.length).toBeGreaterThan(0);
+      expect(stagesInTransaction.every(Boolean)).toBe(true);
+      expect(observedMainWrite).toBe(true);
+      expect(result.isErr()).toBe(true);
+      if (result.isErr()) expect(result.error.message).toContain("concurrent_state_changed");
+      expect(other.select().from(collectionLocation).all()).toEqual([{id: "concurrent-location", name: "Concurrent binder", type: "binder"}]);
+      expect(db.$client.inTransaction).toBe(false);
+    } finally { closeDatabase(other); closeDatabase(db); }
+  });
+
   test("successful oracle_cards import records success and exposes Card Identities", async () => {
     const repository = createTestRepository();
     const records = await readOracleCardIdentityRecordsFixture();
@@ -276,7 +315,7 @@ describe("SQLite Scryfall repository", () => {
         expect(after.value).toEqual(baselineSets.value);
     });
 
-    test("all_cards rejects duplicate promo types and removes stale Sets after Printings", async () => {
+    test("all_cards rejects duplicate promo types and unsafe offline removals", async () => {
         const repository = createTestRepository();
         const records = await readOracleCardIdentityRecordsFixture();
         const printings = filterPrintingsWithKnownIdentities(
@@ -292,12 +331,14 @@ describe("SQLite Scryfall repository", () => {
         ]));
         expect(duplicateResult.isErr()).toBe(true);
 
-        const retainedSet = printing.set;
+        const baselineSets = await repository.listCardSets();
+        if (baselineSets.isErr()) throw new Error(baselineSets.error.message);
         const refresh = await repository.importCardPrintings(importInput([printing]));
-        expect(refresh.isOk()).toBe(true);
+        expect(refresh.isErr()).toBe(true);
+        if (refresh.isErr()) expect(refresh.error.message).toContain("coordinated sync:scryfall");
         const sets = await repository.listCardSets();
         if (sets.isErr()) throw new Error(sets.error.message);
-        expect(sets.value).toEqual([retainedSet]);
+        expect(sets.value).toEqual(baselineSets.value);
     });
 
     test("all_cards can move a retained Printing to a new Set before removing its stale Set", async () => {
@@ -615,7 +656,7 @@ describe("SQLite Scryfall repository", () => {
 
             expect(result.isErr()).toBe(true);
             if (result.isOk()) throw new Error("expected failed import");
-            expect(result.error.message).toContain("orphan existing Collection Card references");
+            expect(result.error.message).toContain("coordinated sync:scryfall");
             expect(result.error.message).toContain("073bfdca-d7b8-4f4b-93f3-6e7c44bc0b0a");
             const collectionRows = await db.select().from(collectionCard);
             expect(collectionRows).toHaveLength(1);
@@ -765,7 +806,7 @@ describe("SQLite Scryfall repository", () => {
 
     expect(result.isErr()).toBe(true);
     if (result.isOk()) throw new Error("expected failed import");
-    expect(result.error.message).toContain("orphan");
+    expect(result.error.message).toContain("coordinated sync:scryfall");
     const identities = await repository.listCardIdentities();
     if (identities.isErr()) throw new Error(identities.error.message);
     expect(identities.value.map((identity) => identity.name)).toContain("Sol Ring");
@@ -907,3 +948,25 @@ const rawOracleTags = [
     taggings: [],
   },
 ] as const;
+
+
+test.each([
+    ["clock rollback", "2024-12-31T00:00:00.000Z"],
+    ["same timestamp and lower UUID", "2025-01-01T00:00:01.000Z"],
+])("Scryfall import readiness and latest facts follow committed replacement under %s", async (_case, timestamp) => {
+    const {db, repository} = createTestRepositoryFixture();
+    try {
+        const records = await readOracleCardIdentityRecordsFixture();
+        (await repository.importCardIdentities(importInput(records)))._unsafeUnwrap();
+        const oldId = "ffffffff-ffff-4fff-8fff-ffffffffffff";
+        db.$client.prepare("UPDATE scryfall_bulk_data_import SET id = ?, import_contract_revision = 0 WHERE bulk_data_type = 'oracle_cards'").run(oldId);
+        const replacement = createSqliteScryfallRepository(db, {now: () => new Date(timestamp)});
+        const imported = (await replacement.importCardIdentities({...importInput(records), startedAt: new Date(timestamp)}))._unsafeUnwrap();
+        expect(imported.id < oldId).toBe(true);
+        (await replacement.importCardPrintings(importInput(await readAllCardPrintingsFixture())))._unsafeUnwrap();
+        (await replacement.recordFailedBulkDataImport("oracle_cards", {startedAt: new Date("2026-01-01"), completedAt: new Date("2026-01-01"), blockingErrors: ["Synthetic failed replacement"]}))._unsafeUnwrap();
+        expect((await replacement.getLatestSuccessfulBulkDataImport("oracle_cards"))._unsafeUnwrap()?.id).toBe(imported.id);
+        expect((await createScryfallSyncServices(replacement, {now: () => new Date(timestamp)}).requireCardReferenceData()).isOk()).toBe(true);
+        expect((await replacement.listCardIdentities())._unsafeUnwrap().find(card => card.name === "Sol Ring")?.id).toBe("6ad8011d-3471-4369-9d68-b264cc027487");
+    } finally {closeDatabase(db);}
+});

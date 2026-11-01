@@ -1,89 +1,101 @@
 import {describe, expect, test} from "bun:test";
+import {mkdtemp, mkdir, readFile, rm, writeFile} from "node:fs/promises";
+import {join} from "node:path";
+import {tmpdir} from "node:os";
 import {
-    createPiProfileSettings, reviewedAskUserPackage,
-    createPiSpawnConfiguration,
-    expectedPiToolNames,
-    launchTomekinPi,
-    piArtifactForPlatform,
-    shouldCleanLauncherPath,
-    verifyPiArtifact,
+    configurePiProfile, createPiProfileSettings, reviewedAskUserPackage,
+    createPiSpawnConfiguration, expectedPiToolNames, launchTomekinPi,
+    assertPiVersion, supportedPiVersion, resolveAskUserExtensionPath,
 } from "@tomekin/pi";
 
 describe("Pi launcher", () => {
-    test("selects only the pinned macOS arm64 artifact", () => {
-        expect(piArtifactForPlatform("darwin", "arm64")).toMatchObject({
-            version: "0.85.1",
-            archiveName: "pi-darwin-arm64.tar.gz",
-            sha256: "d5f70e3c0cf7398eac239fd0261ee074d98b7ba7f6b43fe3617f052ed5b79d06",
-        });
-        expect(() => piArtifactForPlatform("linux", "x64")).toThrow("macOS arm64");
+    test("preserves Pi settings while disabling independently installed packages", async () => {
+        const workspace = await mkdtemp(join(tmpdir(), "tomekin-pi-profile-"));
+        const profile = join(workspace, ".data", "pi");
+        try {
+            await mkdir(profile, {recursive: true});
+            await writeFile(join(profile, "settings.json"), JSON.stringify({defaultProvider: "example", defaultModel: "chosen-model", packages: ["npm:pi-ask-user@0.15.0"]}));
+            await configurePiProfile(workspace);
+            await configurePiProfile(workspace);
+            expect(JSON.parse(await readFile(join(profile, "settings.json"), "utf8"))).toEqual({defaultProvider: "example", defaultModel: "chosen-model", packages: []});
+        } finally {
+            await rm(workspace, {recursive: true, force: true});
+        }
     });
 
-    test("rejects cache entries with a mismatched checksum or version", async () => {
-        const artifact = piArtifactForPlatform("darwin", "arm64");
-        await expect(verifyPiArtifact({
-            artifact,
-            archivePath: "/cache/pi-darwin-arm64.tar.gz",
-            executablePath: "/cache/pi",
-            sha256File: async (path) => {
-                expect(path).toBe("/cache/pi-darwin-arm64.tar.gz");
-                return "wrong";
-            },
-            runVersion: async () => ({exitCode: 0, stdout: "0.85.1\n"}),
-        })).rejects.toThrow("checksum mismatch");
-        await expect(verifyPiArtifact({
-            artifact,
-            archivePath: "/cache/pi-darwin-arm64.tar.gz",
-            executablePath: "/cache/pi",
-            sha256File: async () => artifact.sha256,
-            runVersion: async () => ({exitCode: 0, stdout: "0.85.0\n"}),
-        })).rejects.toThrow("did not report version 0.85.1");
+    test("requires the exact Bun-managed dependency version", async () => {
+        const manifest = await Bun.file(new URL("../package.json", import.meta.url)).json();
+        expect(manifest.dependencies["@earendil-works/pi-coding-agent"]).toBe(supportedPiVersion);
+        expect(() => assertPiVersion(supportedPiVersion)).not.toThrow();
+        expect(() => assertPiVersion("0.85.1")).toThrow("bun install --frozen-lockfile");
+    });
+
+    test("rejects invalid settings without overwriting them", async () => {
+        const workspace = await mkdtemp(join(tmpdir(), "tomekin-pi-settings-"));
+        const profile = join(workspace, ".data", "pi");
+        try {
+            await mkdir(profile, {recursive: true});
+            for (const invalid of ["{unfinished", "[]", "null"]) {
+                await writeFile(join(profile, "settings.json"), invalid);
+                await expect(configurePiProfile(workspace)).rejects.toThrow("repair the file");
+                expect(await readFile(join(profile, "settings.json"), "utf8")).toBe(invalid);
+            }
+        } finally {
+            await rm(workspace, {recursive: true, force: true});
+        }
     });
 
     test("inherits terminal I/O and allows only the approved interactive registry", () => {
         const configuration = createPiSpawnConfiguration({
             workspacePath: "/clone",
-            executablePath: "/cache/pi",
             extensionPath: "/cache/tomekin-extension.mjs",
+            askUserExtensionPath: "/dependencies/pi-ask-user/index.ts",
             environment: {TOMEKIN_DB_PATH: "/isolated.sqlite"},
         });
-
         expect(configuration.stdin).toBe("inherit");
         expect(configuration.stdout).toBe("inherit");
         expect(configuration.stderr).toBe("inherit");
-        expect(configuration.env.PI_CODING_AGENT_DIR).toBe("/clone/.data/pi");
+        expect(configuration.executable).toBe(process.execPath);
+        expect(configuration.args[0]).toEndWith(join("src", "pi-main.ts"));
+        expect(configuration.env.PI_CODING_AGENT_DIR).toBe(join("/clone", ".data", "pi"));
         expect(configuration.args).toEqual(expect.arrayContaining<string>([
-            "--no-skills", "--no-context-files", "--no-builtin-tools",
-            "--skill", "/clone/skills",
-            "--tools", expectedPiToolNames.join(","), "--extension", "/cache/tomekin-extension.mjs",
+            "--no-extensions", "--no-mcp", "--no-approve",
+            "--no-skills", "--no-context-files", "--no-prompt-templates", "--no-themes", "--no-builtin-tools",
+            "--skill", join("/clone", "skills"),
+            "--tools", expectedPiToolNames.join(","),
         ]));
-        expect(expectedPiToolNames).toContain("ask_user");
+        const extensions = configuration.args.flatMap((argument, index) => argument === "--extension" ? [configuration.args[index + 1]] : []);
+        expect(extensions).toEqual(["/dependencies/pi-ask-user/index.ts", "/cache/tomekin-extension.mjs"]);
+        expect(configuration.env.TOMEKIN_DB_PATH).toBe("/isolated.sqlite");
     });
 
-    test("loads only the reviewed ask-user extension package and no bundled resources", () => {
-        expect(createPiProfileSettings()).toEqual({
-            packages: [{
-                source: "npm:pi-ask-user@0.15.0",
-                extensions: ["index.ts"], skills: [], prompts: [], themes: [],
-            }],
-        });
+    test("loads the pinned local ask-user file without installing its bundled resources", async () => {
+        expect(createPiProfileSettings()).toEqual({packages: []});
+        expect(resolveAskUserExtensionPath()).toEndWith(join("pi-ask-user", "index.ts"));
+        const manifest = await Bun.file(new URL("../package.json", import.meta.url)).json();
+        expect(manifest.dependencies["pi-ask-user"]).toBe("0.15.0");
         expect(reviewedAskUserPackage.integrity).toBe("sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==");
     });
 
-    test("propagates the spawned Pi exit status and retains the profile and database", async () => {
+    test("propagates the Bun child exit status", async () => {
         const exitCode = await launchTomekinPi("/clone", {
-            ensureArtifact: async () => "/cache/pi",
             buildExtension: async () => "/cache/extension.mjs",
             configureProfile: async () => {},
             spawn: (command, options) => {
-                expect(command).toEqual(expect.arrayContaining(["/cache/pi", "--extension", "/cache/extension.mjs"]));
+                expect(command[0]).toBe(process.execPath);
+                expect(command).toEqual(expect.arrayContaining(["--extension", "/cache/extension.mjs"]));
                 expect(options.stdin).toBe("inherit");
                 return {exited: Promise.resolve(130)} as never;
             },
         });
         expect(exitCode).toBe(130);
-        expect(shouldCleanLauncherPath("staging")).toBe(true);
-        expect(shouldCleanLauncherPath("profile")).toBe(false);
-        expect(shouldCleanLauncherPath("database")).toBe(false);
+    });
+
+    test("a failed extension build leaves the profile untouched and does not launch Pi", async () => {
+        await expect(launchTomekinPi("/clone", {
+            buildExtension: async () => {throw new Error("build failed");},
+            configureProfile: async () => {throw new Error("profile must not be touched");},
+            spawn: () => {throw new Error("Pi must not be launched");},
+        })).rejects.toThrow("build failed");
     });
 });

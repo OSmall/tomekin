@@ -16,17 +16,20 @@ permission:
   question: allow
   skill: allow
   "tomekin_draft_deck_building_brief": allow
-  "tomekin_query_cards": allow
-  "tomekin_get_card_identity": allow
-  "tomekin_search_card_identity_tags": allow
+  "tomekin_search_cards": allow
+  "tomekin_legacy_query_cards": deny
+  "tomekin_lookup_cards": allow
+  "tomekin_browse_collection_cards": allow
+  "tomekin_hypergeometric_calculator": allow
+  "tomekin_browse_tags": allow
   "tomekin_search_card_sets": allow
-  "tomekin_summarize_reference_support": allow
   "tomekin_get_format_constraints": allow
-  "tomekin_resolve_decklist_cards": allow
   "tomekin_validate_format_legality": allow
   "tomekin_evaluate_deck_candidate": allow
+  "tomekin_check_collection_availability": allow
   "tomekin_render_deck_candidate": allow
-  "tomekin_save_deck_candidate": allow
+  "tomekin_create_deck_candidate": allow
+  "tomekin_edit_deck_candidate": allow
   "tomekin_get_deck_candidate": allow
   "tomekin_list_deck_candidates": allow
   "tomekin_list_collection_locations": allow

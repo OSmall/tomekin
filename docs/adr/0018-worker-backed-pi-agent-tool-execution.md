@@ -7,6 +7,6 @@ this preserves the existing Drizzle and `bun:sqlite` paths for the portable core
 queries and result work from the TUI.
 
 Read-only tools may be cancelled by terminating their Worker, but a dispatched mutation must settle and is never
-reported as cancelled. `save_deck_candidate` is currently the only mutation. If its Worker exits unexpectedly, Tomekin
-reports an unknown outcome and the agent verifies through existing Deck Candidate reads rather than assuming either
+reported as cancelled. The direct create/edit replacement and explicit check tools are classified as mutations; session shutdown waits for
+dispatched mutations to settle. If their Worker exits unexpectedly, Tomekin reports an unknown outcome and the agent verifies through existing Deck Candidate reads rather than assuming either
 rollback or commit. Pi-local `read` and Pi-owned `ask_user` remain outside this shared-tool Worker boundary.

@@ -11,14 +11,14 @@ describe("Tomekin agent configuration", () => {
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
         const agent = read(".opencode/agents/tomekin-deck-builder.md");
 
-        expect(discovery).toContain("Return up to three viable Deck Opportunities");
-        expect(discovery).toContain("never pad the shortlist");
+        expect(discovery).toContain("Return useful compared Deck Opportunities");
+        expect(discovery).toContain("no fixed quota or universal top-N cutoff");
         expect(discovery).toContain("Do not produce, render, or save a full decklist");
         expect(discovery).toContain("commander-deck-architecture");
         expect(discovery).toContain("sixty-card-constructed-deck-architecture");
         expect(commanderArchitecture).toContain("selected a Deck Opportunity");
-        expect(commanderArchitecture).toContain("Preserve the confirmed `(locationType, locationName)` Collection allow-list unchanged");
-        expect(commanderArchitecture).toContain("Recheck final Availability with the same confirmed Collection Location allow-list");
+        expect(commanderArchitecture).toContain("Preserve the whole confirmed Collection Access Policy");
+        expect(commanderArchitecture).toContain("Obtain final joint Availability under the whole confirmed Collection Access Policy");
         expect(coordinator).toContain("collection-opportunity-discovery");
         expect(agent).toContain("tomekin-deck-building");
         expect(coordinator).toContain("Format is absent or ambiguous");
@@ -38,7 +38,7 @@ describe("Tomekin agent configuration", () => {
         expect(methodology).toContain("selection, not net card advantage");
         expect(methodology).toContain("19.59");
         expect(methodology).toContain("Do not create a Sideboard by default");
-        expect(methodology).toContain("at most three complete construction/review passes");
+        expect(methodology).toContain("Save authorized structurally sound construction as it progresses");
         expect(coordinator).toContain("sixty-card-constructed-deck-architecture");
         expect(coordinator).toMatch(/selected\s+Deck Opportunity or specific Format Anchor/);
     });
@@ -51,7 +51,8 @@ describe("Tomekin agent configuration", () => {
             expect(tuning).toContain(path);
         }
         expect(tuning).toContain("Pair every recommended addition with a cut");
-        expect(tuning).toMatch(/wait\s+for separate confirmation/);
+        expect(tuning).toMatch(/Existing\s+explicit authorization/);
+        expect(tuning).toContain("edit_deck_candidate");
         expect(coordinator).toContain("sixty-card-constructed-deck-tuning");
         expect(coordinator).toContain("Do not route it directly to fresh architecture");
     });
@@ -60,17 +61,18 @@ describe("Tomekin agent configuration", () => {
         const querySkill = read(".opencode/skills/query-cards/SKILL.md");
         const coordinator = read(".opencode/skills/tomekin-deck-building/SKILL.md");
 
-        expect(querySkill).toContain("Canonical Collection Location Allow-list");
-        expect(querySkill).toContain("(locationType, locationName)");
-        expect(querySkill).toContain("invalid workflow usage");
+        const legacyQuery = read("skills/query-cards/legacy-query.md");
+        expect(legacyQuery).toContain("Canonical Collection Location Allow-list");
+        expect(legacyQuery).toContain("(locationType, locationName)");
+        expect(legacyQuery).toContain("invalid workflow usage");
         expect(querySkill).toContain("Staged Retrieval");
-        expect(querySkill).toContain("Card Query has no pagination");
+        expect(legacyQuery).toContain("Local `legacy_query_cards` has no pagination");
         expect(coordinator).toContain("final Availability recheck");
         expect(coordinator).toContain("procedural");
     });
 
     test("documents the complete public Card Query legality vocabulary", () => {
-        const querySkill = read(".opencode/skills/query-cards/SKILL.md");
+        const querySkill = read("skills/query-cards/legacy-query.md");
 
         for (const format of ["commander", "standard", "pioneer", "modern", "legacy", "vintage", "pauper"]) {
             expect(querySkill).toContain(`legality.${format}`);
@@ -79,7 +81,7 @@ describe("Tomekin agent configuration", () => {
     });
 
     test("permits Card Set discovery and documents Printing-scope semantics", () => {
-        const querySkill = read(".opencode/skills/query-cards/SKILL.md");
+        const querySkill = read("skills/query-cards/legacy-query.md");
         const agent = read(".opencode/agents/tomekin-deck-builder.md");
 
         expect(agent).toContain('"tomekin_search_card_sets": allow');

@@ -287,3 +287,68 @@ function createPre0003CardReferenceSchema(db: ReturnType<typeof openDatabase>): 
     `));
     db.run(sql.raw(`CREATE INDEX idx_card_printing_card_identity_id ON card_printing (card_identity_id)`));
 }
+
+test("structured candidate migration preserves existing candidate and membership content", () => {
+    const dbPath = join(
+        mkdtempSync(join(tmpdir(), "tomekin-candidate-migration-")),
+        "test.sqlite",
+    );
+    const db = openDatabase(dbPath, { log: testLog });
+    try {
+        const directory = new URL("../drizzle/", import.meta.url);
+        const files = readdirSync(directory)
+            .filter((name) => name.endsWith(".sql"))
+            .sort();
+        const target = files.find((name) =>
+            readFileSync(new URL(name, directory), "utf8").includes(
+                "CREATE TABLE `deck_candidate_plan`",
+            ),
+        )!;
+        expect(target).toBeDefined();
+        for (const filename of files.filter((name) => name < target))
+            runMigrationSql(db, new URL(filename, directory));
+        db.$client.run(
+            "INSERT INTO card_identity (id,name,layout,mana_value,type_line,copy_limit_override_kind,color_identity,keywords_json,game_changer,source_page_uri) VALUES ('card','Forest','normal',0,'Basic Land','none','G','[]',0,'fixture:forest')",
+        );
+        db.$client.run(
+            "INSERT INTO deck_candidate (id,label,format,brief_json,markdown,created_at,updated_at) VALUES ('candidate','Preserve me','casual_60','{\"goal\":\"Keep exact\"}','# Existing content',12,34)",
+        );
+        db.$client.run(
+            "INSERT INTO deck_candidate_card (id,deck_candidate_id,card_identity_id,quantity,section,sort_order,note) VALUES ('membership','candidate','card',30,'mainboard',7,'Keep note')",
+        );
+        runMigrationSql(db, new URL(target, directory));
+        expect(
+            db.$client
+                .query(
+                    "SELECT id,label,brief_json,markdown,created_at,updated_at FROM deck_candidate",
+                )
+                .get(),
+        ).toEqual({
+            id: "candidate",
+            label: "Preserve me",
+            brief_json: '{"goal":"Keep exact"}',
+            markdown: "# Existing content",
+            created_at: 12,
+            updated_at: 34,
+        });
+        expect(
+            db.$client
+                .query(
+                    "SELECT id,quantity,section,sort_order,note FROM deck_candidate_card",
+                )
+                .get(),
+        ).toEqual({
+            id: "membership",
+            quantity: 30,
+            section: "mainboard",
+            sort_order: 7,
+            note: "Keep note",
+        });
+        expect(
+            db.$client.query("SELECT * FROM deck_candidate_option").all(),
+        ).toEqual([]);
+        expect(db.$client.query("PRAGMA foreign_key_check").all()).toEqual([]);
+    } finally {
+        closeDatabase(db);
+    }
+});

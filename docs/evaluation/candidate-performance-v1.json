@@ -1,0 +1,975 @@
+{
+  "kind": "candidate-performance-v1",
+  "sourceCommit": "425c30fe2961fe214064ff1c5b09e8ed9c2734b9",
+  "harnessSha256": "3337a9d735d4057beacd76c8e23248bcb026bfabce03352ca10e5b1411b38c7b",
+  "fixtureSha256": "43457ceb152e0a3c15e9dfe9f89d7c203478898bc076b47e1bda980133fa00ba",
+  "fixtureRevision": "synthetic-workflows-v1",
+  "runtime": {
+    "bun": "1.3.14",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M1"
+  },
+  "protocol": {
+    "warmRuns": 5,
+    "cold": "First dispatch per workload against fresh on-disk synthetic SQLite; OS cache not flushed; later workload shares process/module caches.",
+    "warm": "One unmeasured equivalent warm-up, then fresh equivalent databases. Worker cold starts a new Worker each observation; Worker warm reuses that Worker.",
+    "logging": "Disabled throughout; no logging latency measurement or attribution.",
+    "setup": "Schema migration, source seeding and successful Collection import excluded. Runtime startup and candidate creation recorded separately.",
+    "completion": "Mutation, explicit legality/evaluation/final Availability, full paged optional views, serializers and adapter edits timed separately. Composite timings sum the same observation stages; exclude setup/create/verification reads and duplicate adapter probes. No model, provider or live/private data.",
+    "oldComparator": "Immutable pre-migration-v1.json and pinned evaluate:legacy source3f23b7a; old saves include implicit checks, old read/outputs have different completeness. Raw handler times are not end-to-end speedup ratios.",
+    "target": "Characterize observed local complete three-card edits and requested checks; achieved timing envelope is reported with variance, never enforced as a CI threshold or live-session guarantee."
+  },
+  "workloads": [
+    {
+      "name": "tuning",
+      "selection": {
+        "beforeRows": 12,
+        "afterRows": 12,
+        "copies": 60,
+        "added": 3,
+        "removed": 3,
+        "retainedCutOptions": 3,
+        "roleReferencesIntact": true
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "checksBeforeExplicit": {
+        "legality": "absent",
+        "evaluation": "absent",
+        "collection_availability": "absent"
+      },
+      "checksAfterExplicit": {
+        "legality": "applicable",
+        "evaluation": "applicable",
+        "collection_availability": "applicable"
+      },
+      "contentTimestampPreservedByChecks": true,
+      "availability": {
+        "required": 60,
+        "owned": 7,
+        "eligible": 7,
+        "missing_owned": 53,
+        "policy_shortfall": 0,
+        "committed": 0,
+        "sufficient": false,
+        "metadata_uncertain": false,
+        "possession_scope": "recorded_collection_only"
+      },
+      "legality": {
+        "status": "illegal",
+        "reasons": [
+          "Synthetic 001 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 002 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 003 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 004 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 005 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 006 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 007 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 008 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 009 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 013 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 014 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+          "Synthetic 015 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4."
+        ],
+        "warnings": [],
+        "scryfallSourceUpdatedAt": null,
+        "evidence": {
+          "status": "applicable",
+          "checked_at": "2026-10-18T02:09:32.801Z"
+        }
+      },
+      "evaluation": {
+        "legality": {
+          "status": "illegal",
+          "reasons": [
+            "Synthetic 001 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 002 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 003 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 004 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 005 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 006 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 007 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 008 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 009 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 013 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 014 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4.",
+            "Synthetic 015 — Æ appears 5 times across Mainboard and Sideboard; Casual 60 permits at most 4."
+          ],
+          "warnings": [],
+          "scryfallSourceUpdatedAt": null
+        },
+        "powerAndExperience": {
+          "powerLevel": "Synthetic",
+          "playExperience": "Synergistic, varied, expressive, and fair-feeling."
+        },
+        "manaAndCurve": {
+          "landCount": 0,
+          "manaCurve": {
+            "1": 60
+          }
+        },
+        "collectionStatus": "Collection availability is not evaluated by this tool. Establish explicit Collection evidence before an Availability claim.",
+        "evidence": {
+          "status": "applicable",
+          "checked_at": "2026-10-18T02:09:32.824Z"
+        }
+      },
+      "renderedSelectedRows": 12,
+      "editPayload": {
+        "inputBytes": 1670,
+        "outputBytes": 1232,
+        "repeatedBriefBytes": 0,
+        "repeatedUnchangedMemberships": 0
+      },
+      "adapterEdits": {
+        "fallback": {
+          "complete": true,
+          "inputBytes": 1670,
+          "outputBytes": 1419
+        },
+        "workerCold": {
+          "complete": true,
+          "inputBytes": 1670,
+          "outputBytes": 1419
+        },
+        "workerWarm": {
+          "complete": true,
+          "inputBytes": 1670,
+          "outputBytes": 1419
+        },
+        "openCode": {
+          "complete": true,
+          "outputBytes": 1419
+        }
+      },
+      "optionalOutputs": {
+        "report": {
+          "pages": 3,
+          "bytes": 51865
+        },
+        "portableDecklist": {
+          "pages": 1,
+          "bytes": 1936
+        },
+        "pullList": {
+          "pages": 1,
+          "bytes": 15599
+        }
+      },
+      "timingsMs": {
+        "runtimeStartup": 3.3306249999999977,
+        "candidateCreate": 11.112625000000037,
+        "candidateEdit": 12.379250000000013,
+        "completeReadBeforeChecks": 14.718041999999969,
+        "explicitLegality": 22.54945799999996,
+        "explicitEvaluation": 11.848040999999967,
+        "explicitAvailability": 17.664917000000003,
+        "completeReadAfterChecks": 17.660541999999964,
+        "optionalCompleteReport": 12.308749999999975,
+        "optionalCompletePortableDecklist": 1.5944170000000213,
+        "optionalCompletePullList": 1.5448750000000473,
+        "replacementFactLookup": 7.7948749999999905,
+        "applicationSerialization": 0.025708000000008724,
+        "openCodeSerialization": 0.0635000000000332,
+        "adapterEdit_fallback": 8.923333000000014,
+        "adapterEdit_workerCold": 107.25370799999996,
+        "adapterEdit_workerWarm": 6.793375000000083,
+        "editAndExplicitChecks": 64.44166599999994,
+        "editChecksAndCompleteOptionalOutputs": 87.68458299999998
+      },
+      "timings": {
+        "runtimeStartup": {
+          "coldMs": 3.3306249999999977,
+          "warm": {
+            "samplesMs": [
+              0.7971250000000509,
+              0.6977080000001479,
+              1.5373339999998734,
+              0.5823330000000624,
+              1.7037910000003649
+            ],
+            "medianMs": 0.7971250000000509,
+            "minMs": 0.5823330000000624,
+            "maxMs": 1.7037910000003649,
+            "meanMs": 1.0636582000000998,
+            "populationStdDevMs": 0.4627682376479509
+          }
+        },
+        "candidateCreate": {
+          "coldMs": 11.112625000000037,
+          "warm": {
+            "samplesMs": [
+              3.423291000000063,
+              3.051625000000058,
+              6.051666999999952,
+              2.7413329999999405,
+              3.6238750000002256
+            ],
+            "medianMs": 3.423291000000063,
+            "minMs": 2.7413329999999405,
+            "maxMs": 6.051666999999952,
+            "meanMs": 3.778358200000048,
+            "populationStdDevMs": 1.1765571031762552
+          }
+        },
+        "candidateEdit": {
+          "coldMs": 12.379250000000013,
+          "warm": {
+            "samplesMs": [
+              5.5382079999999405,
+              5.335500000000138,
+              10.712791999999808,
+              6.022709000000077,
+              4.467208999999912
+            ],
+            "medianMs": 5.5382079999999405,
+            "minMs": 4.467208999999912,
+            "maxMs": 10.712791999999808,
+            "meanMs": 6.4152835999999756,
+            "populationStdDevMs": 2.2069382475612516
+          }
+        },
+        "completeReadBeforeChecks": {
+          "coldMs": 14.718041999999969,
+          "warm": {
+            "samplesMs": [
+              4.283500000000004,
+              3.2887909999999465,
+              5.365833000000066,
+              5.373458000000028,
+              3.2836660000002666
+            ],
+            "medianMs": 4.283500000000004,
+            "minMs": 3.2836660000002666,
+            "maxMs": 5.373458000000028,
+            "meanMs": 4.319049600000062,
+            "populationStdDevMs": 0.9319064670436572
+          }
+        },
+        "explicitLegality": {
+          "coldMs": 22.54945799999996,
+          "warm": {
+            "samplesMs": [
+              8.060249999999996,
+              8.904583000000002,
+              6.488541999999825,
+              9.447957999999971,
+              14.879333999999744
+            ],
+            "medianMs": 8.904583000000002,
+            "minMs": 6.488541999999825,
+            "maxMs": 14.879333999999744,
+            "meanMs": 9.556133399999908,
+            "populationStdDevMs": 2.843254072800866
+          }
+        },
+        "explicitEvaluation": {
+          "coldMs": 11.848040999999967,
+          "warm": {
+            "samplesMs": [
+              6.620249999999942,
+              6.857457999999951,
+              6.796666999999843,
+              8.524208000000044,
+              6.671291999999994
+            ],
+            "medianMs": 6.796666999999843,
+            "minMs": 6.620249999999942,
+            "maxMs": 8.524208000000044,
+            "meanMs": 7.093974999999955,
+            "populationStdDevMs": 0.7201354131767584
+          }
+        },
+        "explicitAvailability": {
+          "coldMs": 17.664917000000003,
+          "warm": {
+            "samplesMs": [
+              15.93037500000014,
+              9.680832999999893,
+              11.733667000000196,
+              12.781583999999839,
+              8.463334000000032
+            ],
+            "medianMs": 11.733667000000196,
+            "minMs": 8.463334000000032,
+            "maxMs": 15.93037500000014,
+            "meanMs": 11.71795860000002,
+            "populationStdDevMs": 2.593008278793042
+          }
+        },
+        "completeReadAfterChecks": {
+          "coldMs": 17.660541999999964,
+          "warm": {
+            "samplesMs": [
+              14.11308299999996,
+              13.531958000000031,
+              13.891458000000057,
+              19.377415999999812,
+              14.477000000000317
+            ],
+            "medianMs": 14.11308299999996,
+            "minMs": 13.531958000000031,
+            "maxMs": 19.377415999999812,
+            "meanMs": 15.078183000000035,
+            "populationStdDevMs": 2.171422177929748
+          }
+        },
+        "optionalCompleteReport": {
+          "coldMs": 12.308749999999975,
+          "warm": {
+            "samplesMs": [
+              9.916540999999825,
+              7.4505830000000515,
+              10.36895800000002,
+              13.397167000000081,
+              7.878791999999976
+            ],
+            "medianMs": 9.916540999999825,
+            "minMs": 7.4505830000000515,
+            "maxMs": 13.397167000000081,
+            "meanMs": 9.802408199999991,
+            "populationStdDevMs": 2.1207393455279324
+          }
+        },
+        "optionalCompletePortableDecklist": {
+          "coldMs": 1.5944170000000213,
+          "warm": {
+            "samplesMs": [
+              2.489791999999852,
+              0.9236250000001291,
+              1.0427079999999478,
+              2.140041999999994,
+              1.007082999999966
+            ],
+            "medianMs": 1.0427079999999478,
+            "minMs": 0.9236250000001291,
+            "maxMs": 2.489791999999852,
+            "meanMs": 1.5206499999999779,
+            "populationStdDevMs": 0.6590145878970566
+          }
+        },
+        "optionalCompletePullList": {
+          "coldMs": 1.5448750000000473,
+          "warm": {
+            "samplesMs": [
+              1.943625000000111,
+              1.2113750000000891,
+              1.4251670000001013,
+              1.9871669999999995,
+              1.2419999999997344
+            ],
+            "medianMs": 1.4251670000001013,
+            "minMs": 1.2113750000000891,
+            "maxMs": 1.9871669999999995,
+            "meanMs": 1.561866800000007,
+            "populationStdDevMs": 0.3377767577311867
+          }
+        },
+        "replacementFactLookup": {
+          "coldMs": 7.7948749999999905,
+          "warm": {
+            "samplesMs": [
+              2.579917000000023,
+              4.221292000000176,
+              2.6872079999998277,
+              2.7436669999999594,
+              2.4715830000000096
+            ],
+            "medianMs": 2.6872079999998277,
+            "minMs": 2.4715830000000096,
+            "maxMs": 4.221292000000176,
+            "meanMs": 2.940733399999999,
+            "populationStdDevMs": 0.647028777538948
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.025708000000008724,
+          "warm": {
+            "samplesMs": [
+              0.019083999999793377,
+              0.013958000000002357,
+              0.02887500000019827,
+              0.019915999999966516,
+              0.01670800000010786
+            ],
+            "medianMs": 0.019083999999793377,
+            "minMs": 0.013958000000002357,
+            "maxMs": 0.02887500000019827,
+            "meanMs": 0.019708200000013675,
+            "populationStdDevMs": 0.005030487626526969
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.0635000000000332,
+          "warm": {
+            "samplesMs": [
+              0.009000000000014552,
+              0.007459000000153537,
+              0.007499999999936335,
+              0.010541999999986729,
+              0.008708000000297034
+            ],
+            "medianMs": 0.008708000000297034,
+            "minMs": 0.007459000000153537,
+            "maxMs": 0.010541999999986729,
+            "meanMs": 0.008641800000077637,
+            "populationStdDevMs": 0.0011354446529691787
+          }
+        },
+        "adapterEdit_fallback": {
+          "coldMs": 8.923333000000014,
+          "warm": {
+            "samplesMs": [
+              6.12116600000013,
+              5.220542000000023,
+              5.159875000000056,
+              7.263667000000169,
+              5.1973330000000715
+            ],
+            "medianMs": 5.220542000000023,
+            "minMs": 5.159875000000056,
+            "maxMs": 7.263667000000169,
+            "meanMs": 5.79251660000009,
+            "populationStdDevMs": 0.8190149916021805
+          }
+        },
+        "adapterEdit_workerCold": {
+          "coldMs": 107.25370799999996,
+          "warm": {
+            "samplesMs": [
+              148.60512500000004,
+              120.68079200000011,
+              103.6133749999999,
+              127.81170799999995,
+              95.79987500000016
+            ],
+            "medianMs": 120.68079200000011,
+            "minMs": 95.79987500000016,
+            "maxMs": 148.60512500000004,
+            "meanMs": 119.30217500000003,
+            "populationStdDevMs": 18.608987968953475
+          }
+        },
+        "adapterEdit_workerWarm": {
+          "coldMs": 6.793375000000083,
+          "warm": {
+            "samplesMs": [
+              25.290708000000222,
+              10.704833000000008,
+              6.904208000000153,
+              26.777208999999857,
+              5.618167000000085
+            ],
+            "medianMs": 10.704833000000008,
+            "minMs": 5.618167000000085,
+            "maxMs": 26.777208999999857,
+            "meanMs": 15.059025000000066,
+            "populationStdDevMs": 9.127902292672276
+          }
+        },
+        "editAndExplicitChecks": {
+          "coldMs": 64.44166599999994,
+          "warm": {
+            "samplesMs": [
+              36.14908300000002,
+              30.778373999999985,
+              35.73166799999967,
+              36.77645899999993,
+              34.48116899999968
+            ],
+            "medianMs": 35.73166799999967,
+            "minMs": 30.778373999999985,
+            "maxMs": 36.77645899999993,
+            "meanMs": 34.78335059999986,
+            "populationStdDevMs": 2.1386053053159984
+          }
+        },
+        "editChecksAndCompleteOptionalOutputs": {
+          "coldMs": 87.68458299999998,
+          "warm": {
+            "samplesMs": [
+              53.07895799999983,
+              44.58524900000043,
+              51.25570899999957,
+              57.044501999999966,
+              47.08062699999937
+            ],
+            "medianMs": 51.25570899999957,
+            "minMs": 44.58524900000043,
+            "maxMs": 57.044501999999966,
+            "meanMs": 50.60900899999983,
+            "populationStdDevMs": 4.397035437227483
+          }
+        }
+      }
+    },
+    {
+      "name": "commanderSize",
+      "selection": {
+        "beforeRows": 69,
+        "afterRows": 69,
+        "copies": 100,
+        "added": 3,
+        "removed": 3,
+        "retainedCutOptions": 3,
+        "roleReferencesIntact": true
+      },
+      "coverage": {
+        "missing": [],
+        "unexpected": [],
+        "duplicates": []
+      },
+      "checksBeforeExplicit": {
+        "legality": "absent",
+        "evaluation": "absent",
+        "collection_availability": "absent"
+      },
+      "checksAfterExplicit": {
+        "legality": "applicable",
+        "evaluation": "applicable",
+        "collection_availability": "applicable"
+      },
+      "contentTimestampPreservedByChecks": true,
+      "availability": {
+        "required": 100,
+        "owned": 0,
+        "eligible": 0,
+        "missing_owned": 100,
+        "policy_shortfall": 0,
+        "committed": 0,
+        "sufficient": false,
+        "metadata_uncertain": false,
+        "possession_scope": "recorded_collection_only"
+      },
+      "legality": {
+        "status": "illegal",
+        "reasons": [
+          "Synthetic 001 — Æ appears 32 times across Mainboard and Sideboard; Casual 60 permits at most 4."
+        ],
+        "warnings": [],
+        "scryfallSourceUpdatedAt": null,
+        "evidence": {
+          "status": "applicable",
+          "checked_at": "2026-10-18T02:09:35.180Z"
+        }
+      },
+      "evaluation": {
+        "legality": {
+          "status": "illegal",
+          "reasons": [
+            "Synthetic 001 — Æ appears 32 times across Mainboard and Sideboard; Casual 60 permits at most 4."
+          ],
+          "warnings": [],
+          "scryfallSourceUpdatedAt": null
+        },
+        "powerAndExperience": {
+          "powerLevel": "Synthetic",
+          "playExperience": "Synergistic, varied, expressive, and fair-feeling."
+        },
+        "manaAndCurve": {
+          "landCount": 45,
+          "manaCurve": {
+            "1": 55
+          }
+        },
+        "collectionStatus": "Collection availability is not evaluated by this tool. Establish explicit Collection evidence before an Availability claim.",
+        "evidence": {
+          "status": "applicable",
+          "checked_at": "2026-10-18T02:09:35.207Z"
+        }
+      },
+      "renderedSelectedRows": 69,
+      "editPayload": {
+        "inputBytes": 1671,
+        "outputBytes": 1233,
+        "repeatedBriefBytes": 0,
+        "repeatedUnchangedMemberships": 0
+      },
+      "adapterEdits": {
+        "fallback": {
+          "complete": true,
+          "inputBytes": 1671,
+          "outputBytes": 1420
+        },
+        "workerCold": {
+          "complete": true,
+          "inputBytes": 1671,
+          "outputBytes": 1420
+        },
+        "workerWarm": {
+          "complete": true,
+          "inputBytes": 1671,
+          "outputBytes": 1420
+        },
+        "openCode": {
+          "complete": true,
+          "outputBytes": 1420
+        }
+      },
+      "optionalOutputs": {
+        "report": {
+          "pages": 8,
+          "bytes": 126080
+        },
+        "portableDecklist": {
+          "pages": 2,
+          "bytes": 6404
+        },
+        "pullList": {
+          "pages": 2,
+          "bytes": 43506
+        }
+      },
+      "timingsMs": {
+        "runtimeStartup": 0.5784170000001723,
+        "candidateCreate": 19.113374999999905,
+        "candidateEdit": 7.6730420000003505,
+        "completeReadBeforeChecks": 13.887957999999799,
+        "explicitLegality": 26.104583000000275,
+        "explicitEvaluation": 25.660041999999976,
+        "explicitAvailability": 30.89066700000012,
+        "completeReadAfterChecks": 31.620958999999857,
+        "optionalCompleteReport": 38.32829199999969,
+        "optionalCompletePortableDecklist": 11.558208999999806,
+        "optionalCompletePullList": 5.509458999999879,
+        "replacementFactLookup": 2.4992090000000644,
+        "applicationSerialization": 0.023791999999957625,
+        "openCodeSerialization": 0.010999999999967258,
+        "adapterEdit_fallback": 11.929290999999921,
+        "adapterEdit_workerCold": 130.33737500000007,
+        "adapterEdit_workerWarm": 12.199416999999812,
+        "editAndExplicitChecks": 90.32833400000072,
+        "editChecksAndCompleteOptionalOutputs": 148.22350300000016
+      },
+      "timings": {
+        "runtimeStartup": {
+          "coldMs": 0.5784170000001723,
+          "warm": {
+            "samplesMs": [
+              0.9529999999999745,
+              1.5021249999999782,
+              0.8109999999996944,
+              1.0006249999996726,
+              0.541957999999795
+            ],
+            "medianMs": 0.9529999999999745,
+            "minMs": 0.541957999999795,
+            "maxMs": 1.5021249999999782,
+            "meanMs": 0.9617415999998229,
+            "populationStdDevMs": 0.3138610693161596
+          }
+        },
+        "candidateCreate": {
+          "coldMs": 19.113374999999905,
+          "warm": {
+            "samplesMs": [
+              12.658167000000049,
+              15.976916999999958,
+              12.035374999999476,
+              13.500291999999718,
+              9.491625000000568
+            ],
+            "medianMs": 12.658167000000049,
+            "minMs": 9.491625000000568,
+            "maxMs": 15.976916999999958,
+            "meanMs": 12.732475199999953,
+            "populationStdDevMs": 2.102880198594924
+          }
+        },
+        "candidateEdit": {
+          "coldMs": 7.6730420000003505,
+          "warm": {
+            "samplesMs": [
+              7.124916000000212,
+              11.632166999999754,
+              7.356333000000632,
+              8.47595900000033,
+              5.711166000000048
+            ],
+            "medianMs": 7.356333000000632,
+            "minMs": 5.711166000000048,
+            "maxMs": 11.632166999999754,
+            "meanMs": 8.060108200000196,
+            "populationStdDevMs": 1.9909771169218295
+          }
+        },
+        "completeReadBeforeChecks": {
+          "coldMs": 13.887957999999799,
+          "warm": {
+            "samplesMs": [
+              15.737750000000233,
+              37.50195900000017,
+              16.276499999999942,
+              23.090540999999575,
+              12.036584000000403
+            ],
+            "medianMs": 16.276499999999942,
+            "minMs": 12.036584000000403,
+            "maxMs": 37.50195900000017,
+            "meanMs": 20.928666800000066,
+            "populationStdDevMs": 9.022251648948854
+          }
+        },
+        "explicitLegality": {
+          "coldMs": 26.104583000000275,
+          "warm": {
+            "samplesMs": [
+              31.810709000000315,
+              35.91679199999999,
+              34.823833999999806,
+              30.842083000000457,
+              23.098125000000437
+            ],
+            "medianMs": 31.810709000000315,
+            "minMs": 23.098125000000437,
+            "maxMs": 35.91679199999999,
+            "meanMs": 31.2983086000002,
+            "populationStdDevMs": 4.50496227073738
+          }
+        },
+        "explicitEvaluation": {
+          "coldMs": 25.660041999999976,
+          "warm": {
+            "samplesMs": [
+              29.29391600000008,
+              31.348957999999584,
+              30.61175000000003,
+              29.99016699999993,
+              23.222749999999905
+            ],
+            "medianMs": 29.99016699999993,
+            "minMs": 23.222749999999905,
+            "maxMs": 31.348957999999584,
+            "meanMs": 28.893508199999907,
+            "populationStdDevMs": 2.915547087473356
+          }
+        },
+        "explicitAvailability": {
+          "coldMs": 30.89066700000012,
+          "warm": {
+            "samplesMs": [
+              33.637166000000434,
+              34.521334000000024,
+              33.435999999999694,
+              34.37854100000004,
+              28.257250000000568
+            ],
+            "medianMs": 33.637166000000434,
+            "minMs": 28.257250000000568,
+            "maxMs": 34.521334000000024,
+            "meanMs": 32.84605820000015,
+            "populationStdDevMs": 2.3317845575160723
+          }
+        },
+        "completeReadAfterChecks": {
+          "coldMs": 31.620958999999857,
+          "warm": {
+            "samplesMs": [
+              46.710791999999856,
+              54.5903330000001,
+              37.0004170000002,
+              36.74054199999955,
+              37.729707999999846
+            ],
+            "medianMs": 37.729707999999846,
+            "minMs": 36.74054199999955,
+            "maxMs": 54.5903330000001,
+            "meanMs": 42.55435839999991,
+            "populationStdDevMs": 7.071981370631896
+          }
+        },
+        "optionalCompleteReport": {
+          "coldMs": 38.32829199999969,
+          "warm": {
+            "samplesMs": [
+              36.11541599999964,
+              55.24737499999992,
+              42.01787500000046,
+              32.17670799999996,
+              35.80275000000074
+            ],
+            "medianMs": 36.11541599999964,
+            "minMs": 32.17670799999996,
+            "maxMs": 55.24737499999992,
+            "meanMs": 40.272024800000146,
+            "populationStdDevMs": 8.125208607537298
+          }
+        },
+        "optionalCompletePortableDecklist": {
+          "coldMs": 11.558208999999806,
+          "warm": {
+            "samplesMs": [
+              4.7902500000000146,
+              3.5217079999993075,
+              3.185833000000457,
+              4.650875000000269,
+              4.691499999999905
+            ],
+            "medianMs": 4.650875000000269,
+            "minMs": 3.185833000000457,
+            "maxMs": 4.7902500000000146,
+            "meanMs": 4.168033199999991,
+            "populationStdDevMs": 0.6747978864470422
+          }
+        },
+        "optionalCompletePullList": {
+          "coldMs": 5.509458999999879,
+          "warm": {
+            "samplesMs": [
+              12.588666000000558,
+              13.737499999999272,
+              7.6779169999999795,
+              9.821790999999394,
+              7.47466600000007
+            ],
+            "medianMs": 9.821790999999394,
+            "minMs": 7.47466600000007,
+            "maxMs": 13.737499999999272,
+            "meanMs": 10.260107999999855,
+            "populationStdDevMs": 2.535072258116513
+          }
+        },
+        "replacementFactLookup": {
+          "coldMs": 2.4992090000000644,
+          "warm": {
+            "samplesMs": [
+              4.027333999999428,
+              9.16095899999982,
+              3.5218749999994543,
+              2.135707999999795,
+              1.8300829999998314
+            ],
+            "medianMs": 3.5218749999994543,
+            "minMs": 1.8300829999998314,
+            "maxMs": 9.16095899999982,
+            "meanMs": 4.1351917999996655,
+            "populationStdDevMs": 2.6441478323679024
+          }
+        },
+        "applicationSerialization": {
+          "coldMs": 0.023791999999957625,
+          "warm": {
+            "samplesMs": [
+              0.020958000000064203,
+              0.022458999999798834,
+              0.01916700000037963,
+              0.02699999999913416,
+              0.018874999999752617
+            ],
+            "medianMs": 0.020958000000064203,
+            "minMs": 0.018874999999752617,
+            "maxMs": 0.02699999999913416,
+            "meanMs": 0.02169179999982589,
+            "populationStdDevMs": 0.0029534055864334544
+          }
+        },
+        "openCodeSerialization": {
+          "coldMs": 0.010999999999967258,
+          "warm": {
+            "samplesMs": [
+              0.01079100000060862,
+              0.008958999999777006,
+              0.017166999999972177,
+              0.011749999999665306,
+              0.007916000000477652
+            ],
+            "medianMs": 0.01079100000060862,
+            "minMs": 0.007916000000477652,
+            "maxMs": 0.017166999999972177,
+            "meanMs": 0.011316600000100152,
+            "populationStdDevMs": 0.0032191187985704224
+          }
+        },
+        "adapterEdit_fallback": {
+          "coldMs": 11.929290999999921,
+          "warm": {
+            "samplesMs": [
+              10.612957999999708,
+              12.932083000000603,
+              8.362916000000041,
+              12.189291000000594,
+              9.301833999999872
+            ],
+            "medianMs": 10.612957999999708,
+            "minMs": 8.362916000000041,
+            "maxMs": 12.932083000000603,
+            "meanMs": 10.679816400000163,
+            "populationStdDevMs": 1.7101199612545261
+          }
+        },
+        "adapterEdit_workerCold": {
+          "coldMs": 130.33737500000007,
+          "warm": {
+            "samplesMs": [
+              150.12783300000046,
+              180.1205829999999,
+              146.97079200000007,
+              117.10533299999952,
+              109.6006669999997
+            ],
+            "medianMs": 146.97079200000007,
+            "minMs": 109.6006669999997,
+            "maxMs": 180.1205829999999,
+            "meanMs": 140.78504159999994,
+            "populationStdDevMs": 25.32204531612804
+          }
+        },
+        "adapterEdit_workerWarm": {
+          "coldMs": 12.199416999999812,
+          "warm": {
+            "samplesMs": [
+              15.192665999999917,
+              16.83666700000049,
+              18.038542000000234,
+              10.877375000000029,
+              10.319166000000223
+            ],
+            "medianMs": 15.192665999999917,
+            "minMs": 10.319166000000223,
+            "maxMs": 18.038542000000234,
+            "meanMs": 14.252883200000179,
+            "populationStdDevMs": 3.1227721532055774
+          }
+        },
+        "editAndExplicitChecks": {
+          "coldMs": 90.32833400000072,
+          "warm": {
+            "samplesMs": [
+              101.86670700000104,
+              113.41925099999935,
+              106.22791700000016,
+              103.68675000000076,
+              80.28929100000096
+            ],
+            "medianMs": 103.68675000000076,
+            "minMs": 80.28929100000096,
+            "maxMs": 113.41925099999935,
+            "meanMs": 101.09798320000046,
+            "populationStdDevMs": 11.121368457986275
+          }
+        },
+        "editChecksAndCompleteOptionalOutputs": {
+          "coldMs": 148.22350300000016,
+          "warm": {
+            "samplesMs": [
+              159.38837300000068,
+              195.08679299999767,
+              162.6314170000005,
+              152.47183200000018,
+              130.0882900000015
+            ],
+            "medianMs": 159.38837300000068,
+            "minMs": 130.0882900000015,
+            "maxMs": 195.08679299999767,
+            "meanMs": 159.9333410000001,
+            "populationStdDevMs": 20.927221399357016
+          }
+        }
+      }
+    }
+  ]
+}

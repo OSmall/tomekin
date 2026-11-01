@@ -6,3 +6,6 @@ export * from "./deck-candidate-repository";
 export * from "./migrations";
 export * from "./scryfall-repository";
 export * from "./schema";
+
+export * from "./card-lookup-repository";
+export * from "./collection-browse-repository";

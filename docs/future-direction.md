@@ -19,6 +19,12 @@ variance that such work would need to consider.
 Future product design may introduce maybeboards, considering boards, upgrade boards, or budget alternatives as
 structures separate from the final importable Portable Decklist.
 
+## Reference Data Setup
+
+The single-file Scryfall import command could eventually be deprecated in favor of coordinated Scryfall Bulk Data
+Sync. Until an explicit deprecation decision, the local-file command remains supported for offline repair, debugging,
+and fixture workflows.
+
 ## Validation Evidence
 
 Content fingerprints could eventually support reuse of Deck Candidate validation results by recognizing unchanged
@@ -88,6 +94,8 @@ into a full collection-management system.
 
 ## Technology And Architecture
 
-A later product may use a web-based, multi-user hosted interface instead of or alongside the current local agent
-harness. Database, AI model provider, user interface, hosting, and deployment choices remain open until product needs
-justify them.
+The preferred longer-term product direction is a hosted website with an embedded deck-building chatbot, centralized
+server, and user accounts. Pi currently supplies a developer-facing agent interface over Tomekin's tools; that choice
+does not commit the eventual product to Pi's terminal interface or to distributing a bundled Pi application.
+Database, agent integration, account/authentication, user interface, hosting, and deployment choices remain open until
+product needs justify them. This direction does not change the current local, clone-based alpha scope.
