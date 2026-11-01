@@ -45,6 +45,7 @@ try {
     };
     const lookup = await invoke("lookup_cards", {references: [{kind: "name", value: "Sol Ring"}], select: {name: true, oracle_text: true}});
     const calculator = await invoke("hypergeometric_calculator", {operation: "probability", populationSize: 4, populationSuccesses: 2, sampleSize: 2, event: {kind: "exactly", count: 1}});
+    const arithmetic = await invoke("calculate", {expression: "sqrt(16) + 3^2"});
     const skill = await invoke("read", {path: "skills/tomekin-deck-building/SKILL.md", limit: 2});
     const denied = await invoke("read", {path: "package.json"});
     const beforeReload = session.getActiveToolNames();
@@ -54,7 +55,7 @@ try {
     console.log(JSON.stringify({
         version: VERSION, beforeReload, afterReload, errors,
         lookup: lookup.details, afterReloadLookup: afterReloadLookup.details,
-        calculator: calculator.details, skill: skill.content, denied: denied.details,
+        calculator: calculator.details, arithmetic: arithmetic.details, arithmeticSchema: session.agent.state.tools.find(tool => tool.name === "calculate")!.parameters, skill: skill.content, denied: denied.details,
         skills: resourceLoader.getSkills().skills.map(skill => skill.name),
         contexts: resourceLoader.getAgentsFiles().agentsFiles.length,
         prompts: resourceLoader.getPrompts().prompts.length,

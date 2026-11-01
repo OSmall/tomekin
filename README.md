@@ -89,6 +89,9 @@ lookup. It performs no network fallback; opt-in Collection summaries/copies eval
 including reliable source-added dates and independently searchable unknown dates. Successful reimport requires scope
 reconfirmation; failed attempts preserve current references. See the [Collection contract](docs/card-query.md#collection-policy-and-owned-row-browsing).
 
+Pi also provides `calculate` for bounded scalar arithmetic without Collection or reference data. See the
+[general calculator contract](docs/product-behavior.md#general-calculator-pi) for supported expressions and limits.
+
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
 explicit decimal target. It works without imported card data and does not save records. See the
 [calculator contract](docs/product-behavior.md#hypergeometric-calculator) for inputs, precision and sampling limits.
