@@ -85,6 +85,13 @@
       "when": 1793537751370,
       "tag": "0011_absurd_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1793538109686,
+      "tag": "0012_omniscient_moonstone",
+      "breakpoints": true
     }
   ]
 }

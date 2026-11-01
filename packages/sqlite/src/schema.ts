@@ -98,6 +98,7 @@ export const deckCandidate = sqliteTable(
         selectedChangedAt: text("selected_changed_at"),
         briefChangedAt: text("brief_changed_at"),
         planChangedAt: text("plan_changed_at"),
+        reasoningReview: text("reasoning_review", {enum: ["pending", "reviewed"]}).notNull().default("pending"),
         assessmentsJson: text("assessments_json", {mode: "json"}),
         checkEvidenceJson: text("check_evidence_json", {mode: "json"}),
         createdAt: integer("created_at", {mode: "timestamp"}).notNull(),

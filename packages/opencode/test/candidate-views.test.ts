@@ -12,6 +12,10 @@ test("actual OpenCode candidate schema and output expose complete recoverable vi
     try{
         const schema=tool.schema.toJSONSchema(tool.schema.object(tools.get_deck_candidate.args));
         expect((schema.properties as any).view.enum).toContain("json");
+        expect((schema.properties as any)).toHaveProperty("role_id");
+        expect((schema.properties as any)).toHaveProperty("card_identity_id");
+        const filtered=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId,view:"options",card_identity_id:"00000000-0000-4000-8000-000000000001"} as never));
+        expect(filtered.status).toBe("ok");
         const renderSchema=tool.schema.toJSONSchema(tool.schema.object(tools.render_deck_candidate.args));
         expect((renderSchema.properties as any)).toHaveProperty("candidate_id");
         expect((renderSchema.properties as any)).not.toHaveProperty("sections");
@@ -55,4 +59,15 @@ test("OpenCode recovers a fragmented escaped strategy",async()=>{
         } while(after);
         expect(reconstructCandidateView(research)).toBe(description);
     } finally {restore();runtime.close();fixture.dispose();}
+});
+
+test("OpenCode transports reasoning review acknowledgments",async()=>{
+    const fixture=await createCandidateViewFixture();
+    const restore=tools.configureAgentToolRuntimeForTests({log,createHandlers:options=>createLocalAgentToolHandlers({...options,databasePath:fixture.databasePath})});
+    try {
+        const before=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId} as never));
+        expect(before.reasoning_review).toBe("pending");
+        const result=JSON.parse(await tools.edit_deck_candidate.execute({candidate_id:fixture.candidateId,expected_updated_at:before.updated_at,changes:{reasoning_review:"reviewed"}} as never));
+        expect(result.reasoning_review).toBe("reviewed");
+    } finally {restore();fixture.dispose();}
 });

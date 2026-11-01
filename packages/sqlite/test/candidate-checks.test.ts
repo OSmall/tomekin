@@ -104,6 +104,10 @@ test("pool, note, order, plan and unrelated Brief maintenance preserve checks; e
         const id=saved.candidate_id;
         unwrap(await app.handlers.validateFormatLegality({candidate_id:id,expected_updated_at:saved.updated_at}));
         unwrap(await app.handlers.evaluateDeckCandidate({candidate_id:id,expected_updated_at:saved.updated_at}));
+        saved=unwrap(await app.handlers.editDeckCandidate({candidate_id:id,expected_updated_at:saved.updated_at,changes:{reasoning_review:"reviewed"}}));
+        expect(saved.reasoning_review).toBe("reviewed");
+        expect(saved.validation_evidence.checks.format_legality.status).toBe("applicable");
+        expect(saved.validation_evidence.checks.deck_evaluation.status).toBe("applicable");
         saved=unwrap(await app.handlers.editDeckCandidate({candidate_id:id,expected_updated_at:saved.updated_at,changes:{brief:{goal:"Keep maintaining the deck"},plan:{schema_version:1,description:"Explain the resource plan"},options:[{action:"update",card_identity_id:forest,changes:{comparison_note:"Still useful"}}],memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:60,note:"Favourite basic",sort_order:4}]}}));
         expect(saved.validation_evidence.checks.format_legality.status).toBe("applicable");
         expect(saved.validation_evidence.checks.deck_evaluation.status).toBe("applicable");

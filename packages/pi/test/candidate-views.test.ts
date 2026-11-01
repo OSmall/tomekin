@@ -12,6 +12,11 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         const schema=JSON.parse(JSON.stringify(tool.parameters));
         expect(schema).toEqual(agentToolInputJsonSchema("get_deck_candidate"));
         expect(schema.properties.view.enum).toContain("pool");
+        expect(schema.properties.role_id).toBeDefined();
+        expect(schema.properties.card_identity_id).toBeDefined();
+        const filtered=await tool.execute("filtered",{id:fixture.candidateId,view:"options",card_identity_id:"00000000-0000-4000-8000-000000000001"},new AbortController().signal) as PiToolOutput;
+        expect(JSON.parse(filtered.content[0]!.text)).toEqual(filtered.details);
+        expect(filtered.details).toMatchObject({status:"ok"});
         expect(schema.properties.view.enum).not.toContain("state");
         let after:string|undefined;
         let description:string|undefined;
@@ -87,4 +92,17 @@ for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a
             else expect(reconstructed).toBe(view==="action_analysis" ? description : "Search evidence");
         }
     } finally {await transport?.close();runtime.close();fixture.dispose();}
+});
+
+for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} transports reasoning review acknowledgments`,async()=>{
+    const fixture=await createCandidateViewFixture();
+    const transport=mode==="Worker"?createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts",import.meta.url).href}):undefined;
+    const options={log,...transport?{transport,databasePath:fixture.databasePath}:{createRuntime:()=>createLocalAgentToolRuntime({databasePath:fixture.databasePath,log})}};
+    const read=createCoreTool("get_deck_candidate",options), edit=createCoreTool("edit_deck_candidate",options);
+    try {
+        const before=JSON.parse((await read.execute("read",{id:fixture.candidateId},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(before.reasoning_review).toBe("pending");
+        const result=JSON.parse((await edit.execute("review",{candidate_id:fixture.candidateId,expected_updated_at:before.updated_at,changes:{reasoning_review:"reviewed"}},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(result.reasoning_review).toBe("reviewed");
+    } finally {await transport?.close();fixture.dispose();}
 });
