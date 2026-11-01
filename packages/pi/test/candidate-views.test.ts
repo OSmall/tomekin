@@ -12,6 +12,11 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         const schema=JSON.parse(JSON.stringify(tool.parameters));
         expect(schema).toEqual(agentToolInputJsonSchema("get_deck_candidate"));
         expect(schema.properties.view.enum).toContain("pool");
+        expect(schema.properties.role_id).toBeDefined();
+        expect(schema.properties.card_identity_id).toBeDefined();
+        const filtered=await tool.execute("filtered",{id:fixture.candidateId,view:"options",card_identity_id:"00000000-0000-4000-8000-000000000001"},new AbortController().signal) as PiToolOutput;
+        expect(JSON.parse(filtered.content[0]!.text)).toEqual(filtered.details);
+        expect(filtered.details).toMatchObject({status:"ok"});
         expect(schema.properties.view.enum).not.toContain("state");
         let after:string|undefined;
         let description:string|undefined;
