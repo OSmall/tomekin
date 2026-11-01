@@ -69,7 +69,7 @@ export function candidatePoolView(candidate: DeckCandidate, filters: {role_id?: 
     return {reasoning_review: candidate.reasoning_review, options: candidateOptionDetails(candidate, filters), roles: roles.map(role => ({role,
         selected_copies: roleSelectedCopies(candidate, role),
         ...(filters.card_identity_id === undefined ? {} : {counts_scope: "whole_role" as const}),
-        option_ids: candidate.plan!.contributions.filter(c => c.role_id === role.id).map(c => c.card_identity_id),
+        option_ids: candidate.plan!.contributions.filter(c => c.role_id === role.id && (filters.card_identity_id === undefined || c.card_identity_id === filters.card_identity_id)).map(c => c.card_identity_id),
     }))};
 }
 function encodeRecords(raw: {path: (string | number)[]; value: unknown}[]): CandidateViewRecord[] {
@@ -111,19 +111,19 @@ function recordsFor(candidate: DeckCandidate, args: CandidateViewArgs): Candidat
         const evidenceRecord = {path:["evidence"],value:{status:evidence.status,checked_at:evidence.checked_at,dependencies:evidence.dependencies}};
         if (details === "problems") {
             const problems = result.requirements.filter(r => r.missing_owned > 0 || r.eligible === null || r.eligible < r.quantity);
-            return encodeRecords([evidenceRecord, {path:["context"],value:{summary:result.summary,collection_context:result.collection_context,check_completion:result.check_completion}},
+            return encodeRecords([{path:[],value:{}}, evidenceRecord, {path:["context"],value:{summary:result.summary,collection_context:result.collection_context,check_completion:result.check_completion}},
                 {path:["requirements"],value:[]}, ...problems.map((r, i) => ({path:["requirements",i],value:{...r,
                     card_name:candidate.cards.find(c => c.cardIdentityId === r.oracle_id)?.cardName ?? null,
                     reasons:[...new Set([...r.reasons, ...(r.missing_owned > 0 ? ["missing_owned"] : []), ...(r.policy_shortfall !== null && r.policy_shortfall > 0 ? ["policy_shortfall"] : []), ...(r.eligible === null ? ["eligibility_unconfirmed"] : [])])],
                 }}))]);
         }
-        return encodeRecords([evidenceRecord,...availabilityRecords(result,view==="collection_pull_list")]);
+        return encodeRecords([{path:[],value:{}},evidenceRecord,...availabilityRecords(result,view==="collection_pull_list")]);
 
     }
     let value: unknown;
     if (view === "brief") value = candidate.brief;
     else if (view === "selected") value = candidate.memberships;
-    else if (view === "options") value = candidateOptionDetails(candidate, filters);
+    else if (view === "options") value = args.role_id ? candidatePoolView(candidate, filters) : candidateOptionDetails(candidate, filters);
     else if (view === "pool") value = candidatePoolView(candidate, filters);
     else if (view === "plan") value = candidate.plan;
     else if (view === "action_analysis") value = candidate.plan?.action_analysis_markdown ?? null;

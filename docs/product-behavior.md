@@ -52,7 +52,7 @@ with instructions to reinstall the committed lockfile. `bun run tomekin --versio
 Its separate clone-local runtime cache contains Tomekin's extension and Worker bundles. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, and
+The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, native `codemode`, the scalar `calculate` tool, and
 Pi's interactive `ask_user` tool. Shared tools run in one lazy Bun Worker lane. `read` is limited to regular files
 below `skills/` and supports one-indexed `offset` and `limit`. Native skill discovery remains available while ambient
 resources are disabled. A compact Tomekin prompt replaces Pi's coding orientation; it directs the agent to load relevant
@@ -270,7 +270,7 @@ check time. Ordinary reads do not invoke checks.
 `json`, `report` and `portable_decklist`, plus the default compact `summary`. There is no public unbounded `state` view.
 Options include canonical names, comparison notes, selected memberships and complete contribution rationale,
 qualifications and evidence. The pool view has one deduplicated `options` array and role groups referring to those
-options by Card Identity; section-aware selected quantities come only from memberships. Optional `role_id` and `card_identity_id` selectors apply to `options` and `pool` before pagination; combined selectors intersect. A role filter retains complete relevant contributions and its goal and coverage assessment. A card filter retains memberships and relevant contributions, including unselected alternatives. For a card-narrowed pool, `counts_scope: "whole_role"` identifies role-wide selected counts and option IDs; those do not describe only the returned options. Empty matches are returned as empty arrays. Other views reject these selectors.
+options by Card Identity; section-aware selected quantities come only from memberships. Optional `role_id` and `card_identity_id` selectors apply to `options` and `pool` before pagination; combined selectors intersect. A role filter retains complete relevant contributions and its goal and coverage assessment. A card filter retains memberships and relevant contributions, including unselected alternatives. A role-filtered `options` view returns the same grouped shape as `pool`, including the role goal and assessment; otherwise `options` returns an array. For card-narrowed groups, `counts_scope: "whole_role"` identifies role-wide selected counts, while `option_ids` lists only matching options. Empty matches are returned as empty arrays. Other views reject these selectors.
 
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
 JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node uses `path_value_text_v2`: `{kind: "value", path, value}` assigns a complete value; `{kind: "text_fragment", path, index, text, final}` contributes a string fragment.

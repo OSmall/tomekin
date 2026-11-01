@@ -5,6 +5,10 @@ import {Type} from "@sinclair/typebox";
 import {mkdtempSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
+import {createPiWorkerTransport} from "../src/worker-transport";
+import {applySqliteMigrations} from "@tomekin/sqlite";
+import {createLocalAgentToolRuntime} from "@tomekin/agent";
+import {createTestRootLoggerFromEnv} from "@tomekin/core";
 
 describe("restricted native Pi codemode", () => {
     test("is registered without model authority and keeps direct tools available", () => {
@@ -24,6 +28,38 @@ describe("restricted native Pi codemode", () => {
         expect(result.isError).toBe(true);
         expect(entries).toEqual([]);
         expect(JSON.stringify(result.content)).toContain("checkpoint was not committed");
+    }, 30000);
+    test("an interrupted nested mutation settles in the real Worker without committing a checkpoint", async () => {
+        const dir = mkdtempSync(join(tmpdir(), "tomekin-codemode-mutation-"));
+        const databasePath = join(dir, "test.sqlite");
+        const log = createTestRootLoggerFromEnv();
+        applySqliteMigrations(databasePath, {log});
+        const runtime = createLocalAgentToolRuntime({databasePath, log});
+        const transport = createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts", import.meta.url).href});
+        const session = SessionManager.inMemory(dir);
+        const entries: unknown[] = [];
+        const controller = new AbortController();
+        let definition: any;
+        let dispatched = false;
+        registerCodemode({registerTool: (tool: unknown) => {definition = tool;}, appendEntry: (...args: unknown[]) => entries.push(args), getAllTools: () => [], getSettings: () => ({})} as never);
+        const ctx = {tools:[{name:"create_deck_candidate",description:"Create",parameters:Type.Object({label:Type.String(),brief:Type.Object({format:Type.String(),goal:Type.String(),powerLevel:Type.Null()})})}], sessionManager:session,
+            executeTool: async (_name:string, params:any) => {
+                const pending = transport.invoke({toolCallId:"nested-create",toolName:"create_deck_candidate",databasePath,params},controller.signal);
+                dispatched = true;
+                controller.abort();
+                const output = await pending;
+                return {toolCall:{id:"nested-create"},isError:false,result:output};
+            }};
+        try {
+            const result = await definition.execute("outer", {code:'store("cursor", "unsafe"); await tools.create_deck_candidate({label:"Interrupted create",brief:{format:"casual_60",goal:"Inspect after interruption",powerLevel:null}}); text("done")'}, controller.signal, undefined, ctx);
+            await transport.close();
+            expect(dispatched).toBe(true);
+            expect(result.isError).toBe(true);
+            expect(entries).toEqual([]);
+            const listed = await runtime.handlers.listDeckCandidates();
+            expect(listed.isOk()).toBe(true);
+            expect(listed._unsafeUnwrap().filter((c:any) => c.label === "Interrupted create")).toHaveLength(1);
+        } finally {await transport.close(); runtime.close(); rmSync(dir,{recursive:true,force:true});}
     }, 30000);
     test("forwards a real cursor and restores committed input and cursor after reopening", async () => {
         const dir = mkdtempSync(join(tmpdir(), "tomekin-codemode-"));

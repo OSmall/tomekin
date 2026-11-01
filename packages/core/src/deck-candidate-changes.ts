@@ -433,7 +433,8 @@ export function reviseDeckCandidate(
     const strategicPlan = (value: DeckCandidateState) => {
         if (!value.plan) return null;
         const selected = new Set(value.memberships.map(m => m.card_identity_id));
-        return {...value.plan, contributions: value.plan.contributions.filter(c => selected.has(c.card_identity_id))};
+        const {search_research_markdown: _research, ...plan} = value.plan;
+        return {...plan, contributions: value.plan.contributions.filter(c => selected.has(c.card_identity_id))};
     };
     const material = JSON.stringify(selectedInputs(candidate)) !== JSON.stringify(selectedInputs(baseline)) ||
         JSON.stringify(candidate.brief) !== JSON.stringify(baseline.brief) ||

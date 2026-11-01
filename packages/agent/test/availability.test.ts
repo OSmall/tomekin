@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { reconstructCandidateView } from "@tomekin/core";
 import { createCollectionFixture } from "./fixtures/collection";
 import { id } from "./fixtures/lookup";
 import { readCandidateJson } from "../../core/test/fixtures/read-candidate-json";
@@ -178,6 +179,12 @@ test("saved problem views exclude covered demand, expose uncertainty and bind co
         await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id, expected_updated_at:saved.updated_at});
         const covered = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id, view:"availability", details:"problems"}))._unsafeUnwrap();
         expect(values(covered, "requirements")).toEqual([]);
+        for (const args of [{view:"availability", details:"problems"}, {view:"availability"}, {view:"collection_pull_list"}]) {
+            const page = (await f.runtime.handlers.getDeckCandidate({id:saved.candidate_id, ...args}))._unsafeUnwrap();
+            const result: any = reconstructCandidateView(page.edges.map((e:any) => e.node));
+            expect(result.evidence.status).toBe("applicable");
+            expect(result.requirements).toBeArray();
+        }
         expect(covered.edges.find((e:any) => e.node.path[0] === "context")?.node.value.summary.sufficient).toBe(true);
         const changed = (await f.runtime.handlers.editDeckCandidate({candidate_id:saved.candidate_id, expected_updated_at:saved.updated_at, changes:{brief:{collectionAccessPolicy:{...f.policy,copy_requirements:{condition:["mint"]}}}}}))._unsafeUnwrap();
         await f.runtime.handlers.checkCollectionAvailability({candidate_id:saved.candidate_id, expected_updated_at:changed.updated_at});
