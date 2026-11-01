@@ -24,20 +24,34 @@ unfinished work rather than widening scope.
 ## Required isolated input
 
 The existing `bun run evaluate:parity:prepare` fixture contains eight identities, no basic lands and no tag dataset. It
-can exercise transport but cannot establish a completed-deck result. **The positive fixture is not yet prepared.**
-Before a live run, create a new isolated database with current public Oracle and Printing records and a synthetic
-ManaBox Collection. Record exact source files and SHA-256 hashes, source/import times, import IDs, policy, row/copy and
-identity counts, the code revision and the fixture manifest. Include public tag definitions and associations where
-available; otherwise record their absence and assess honest recovery rather than treating unavailable tags as empty.
+cannot establish a completed-deck result. A larger public/synthetic fixture was prepared at
+`/private/tmp/tomekin-118-acceptance-public/`, with its manifest, source hashes, import ID, location IDs, baseline and
+working database. This temporary directory may be cleaned by the operating system; preserve it before relying on it.
 
-The reviewed Collection must provide, at minimum, the chosen anchors and enough distinct legal identities and basics to
-make a plausible 100-card Commander deck and a separate legal 60-card Mainboard, with meaningful alternatives across
-mana, card advantage, interaction and each strategy. Include a utility land with a non-mana function relevant to the
-Commander candidate and some policy-excluded or insufficient copies. Availability is established from actual selected
-quantities under the agreed policy, not from this inventory design. Verify the imported identities, printings and
-quantities through Tomekin before the session. Preserve a closed baseline copy and a separate working copy; do not edit
-or replace imports during the session. A larger public-data import or sync and the synthetic CSV must be reviewed and
-prepared before this workload can produce positive completed-deck evidence.
+The source is the static 2026-10-15 [Oracle snapshot](https://data.scryfall.io/oracle-cards/oracle-cards-20261015210157.jsonl.gz)
+and matching [tag snapshot](https://data.scryfall.io/oracle-tags/oracle-tags-20261015210033.jsonl.gz). No provider query
+or model session was used for preparation. The imported Oracle file contains 38,751 records and the tag file 4,579
+definitions. The `all_cards` import deliberately contains only 1,638 representative public Printings selected from the
+Oracle snapshot: it is **not** a complete Printing dataset, even though it uses that import type. Do not infer Printing
+coverage or source freshness from readiness. The source is dated and will trigger source-age qualification; reimporting
+new sources changes the baseline and requires renewed review.
+
+The synthetic Collection has 1,639 rows and 6,783 copies in `Acceptance Binder` and `Protected Deck`. Select the binder
+only. It includes each paper, Commander-legal identity with EDHREC rank at most 1,500, plus the first 300 ranked paper,
+Commander-legal white/black/red identities with creature power 0, 1 or 2, both named anchors, Cultivate, Blighted
+Woodland, War Room and the five basic lands. Rows use four copies per nonbasic and 50 per basic, plus one War Room in
+the protected deck. These synthetic quantities are intentionally generous; they are not a real inventory, a claimed
+strategic recommendation or proof the requested strategies are supported. Each Collection row uses the representative
+Printing's actual public ID, set, collector number, language and supported finish; ManaBox IDs are unknown and produced
+1,639 import warnings. The manifest records checksums and exact cardinalities. The public handlers found the anchors,
+Cultivate, utility lands, Island and Forest, returned both Collection locations, and recovered actual `landfall` and
+`reanimate-creature` definitions. Human review must still assess the fixture's suitability and actual strategic outcomes.
+
+`baseline.sqlite` is the closed imported baseline; `work.sqlite` is an identical working copy before any model session.
+Keep the baseline untouched and copy it again for a new run. Reference imports use the snapshot's original 2026-10-15
+source time rather than the time the derived JSON was written. The exact input files, source hashes, policy, code revision,
+model settings and any further changes belong in the evidence record. This preparation establishes neither a complete
+deck nor live-model behavior.
 
 ## Session 1: construction, recovery, explanation and pool research
 
