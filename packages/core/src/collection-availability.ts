@@ -629,7 +629,7 @@ export function availabilityPage(
 ) {
     const records = availabilityRecords(result),
         budget = options.responseBudgetBytes ?? retrievalResponseBudgetBytes,
-        first = args.first ?? 50;
+        first = args.first ?? 0;
     const baseline = createHash("sha256")
         .update(JSON.stringify({ result, binding }))
         .digest("hex");

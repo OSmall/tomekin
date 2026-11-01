@@ -131,9 +131,11 @@ inspection before another create. See [the public write contract](../../docs/pro
    `expected_updated_at`. Initial `brief`/`cards` checks and optional `changes` are transient trials. Trial findings
    apply only to that trial; inspect the saved result after acceptance and check the actual result.
 3. Run `check_collection_availability` with the saved candidate ID/timestamp and its whole confirmed Brief policy.
-   Optional typed `requirements` must cover every selected section/quantity and may only narrow copies. Recover all
-   witness pages. Per-card search summaries cannot replace this joint proof or prevent double allocation. Distinguish
-   Missing-owned, Policy Shortfall, metadata uncertainty and permitted Committed borrowing with its source deck.
+   Optional typed `requirements` must cover every selected section/quantity and may only narrow copies. The default
+   returns a complete aggregate summary without witnesses. For shortages or uncertainty, read saved `availability`
+   with `details: "problems"` and traverse its pages; use explicit witness pages or a Pull List when sourcing copies.
+   Per-card search summaries cannot replace this joint proof or prevent double allocation. Distinguish Missing-owned,
+   Policy Shortfall, metadata uncertainty and permitted Committed borrowing with its source deck.
 4. Review strategy, Brief, qualified selected coverage, curve, dependencies and practical constraints. Reuse check
    evidence only while applicable; relevant selection/policy/reference/import changes require recomputation. A saved
    or legal candidate is not automatically strategically adequate or assemblable. Report genuine gaps honestly.

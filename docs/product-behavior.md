@@ -444,6 +444,8 @@ metadata contributes possible compatible supply, not proven ownership; unknown p
 proof. `metadata_uncertain` and undated compatible quantities remain visible, including strict recent-copy checks.
 Strict recent intent is loaded through the whole Brief and rejects a wider confirmed date policy.
 
+Omitted `first` defaults to 0: the whole demand is computed and applicable evidence published, while the response returns the complete summary and context without witness edges. The real `next_cursor` starts detailed witness recovery; pass a positive `first` and the cursor to inspect details. A complete sufficient summary does not require witness traversal. A shortage count does not identify affected cards.
+
 A complete computation may establish a recorded shortage. The successful bounded path/value envelope distinguishes
 `check_completion: complete` from `witness_completion: partial`; recover all pages to inspect the complete witness.
 `allocations` contain only eligible pulls, while `ownership_allocations` are diagnostic proof of owned coverage and
@@ -462,7 +464,7 @@ exports or candidate edits. Interrupted computations return partial-check errors
 claims; retry the complete original request. There is no partial allocation cache.
 
 `get_deck_candidate` views `availability` and `collection_pull_list`, and render output `collection_pull_list`, use the
-existing bounded fixed-baseline record recovery. Absent/outdated evidence emits an explanation without usable pulls.
+existing bounded fixed-baseline record recovery. `get_deck_candidate` with `view: "availability", details: "problems"` projects only affected requirements, their Card Identity/name, quantities and reasons, alongside the saved summary/context. It excludes covered requirements and allocation rows; an empty list does not replace the aggregate verdict, especially when eligibility is unknown. Continue with the same details selector. Absent/outdated evidence emits an explanation requesting an explicit check without usable prior requirements or pulls.
 Successful Collection replacement invalidates old scope even with matching names: reconfirm and recheck. A Pull List
 never reserves, moves or reassigns cards; the user chooses physical copies, including permitted borrowing from named
 Existing Decks. Existing Format checks remain separate.
