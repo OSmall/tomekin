@@ -35,7 +35,15 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.skills).not.toContain("ask-user");
         expect(actual.contexts).toBe(0);
         expect(actual.prompts).toBe(0);
-        expect(actual.extensions).toHaveLength(2);
+        expect(actual.extensions).toHaveLength(3);
+        expect(actual.systemPrompt).toContain("Collection-first Magic: The Gathering assistant");
+        expect(actual.systemPrompt).toContain("tomekin-deck-building");
+        expect(actual.systemPrompt).not.toContain("expert coding assistant");
+        expect(actual.todoAdd.todos[0].text).toBe("Research");
+        expect(actual.todoList.todos).toHaveLength(1);
+        expect(actual.todoToggle.todos[0].done).toBe(true);
+        expect(actual.todoClear.todos).toHaveLength(0);
+        expect(actual.context).toHaveProperty("estimatedTokens");
     } finally {
         child.kill();
         await child.exited;

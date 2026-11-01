@@ -4,12 +4,13 @@ import {dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
 export {supportedPiVersion, assertPiVersion} from "./runtime-version";
 import {supportedPiVersion} from "./runtime-version";
+import {tomekinPiBootstrap} from "./bootstrap";
 
 const basePiToolNames = [
     "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
     "search_card_sets", "get_format_constraints",
     "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
-    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user",
+    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "read", "ask_user", "todo", "context_status",
 ] as const;
 
 export function resolvePiToolNames(environment: Record<string, string | undefined> = process.env): readonly (typeof basePiToolNames[number] | "legacy_query_cards")[] {
@@ -56,11 +57,17 @@ export function resolveAskUserExtensionPath(): string {
     return join(dirname(fileURLToPath(import.meta.resolve("pi-ask-user/package.json"))), "index.ts");
 }
 
+/** The official example is shipped with the pinned Pi package and loaded directly. */
+export function resolveTodoExtensionPath(): string {
+    return join(dirname(dirname(fileURLToPath(import.meta.resolve("@earendil-works/pi-coding-agent")))), "examples", "extensions", "todo.ts");
+}
+
 export function createPiSpawnConfiguration(options: {
     readonly workspacePath: string;
     readonly extensionPath: string;
     readonly executablePath?: string;
     readonly askUserExtensionPath?: string;
+    readonly todoExtensionPath?: string;
     readonly environment?: Record<string, string | undefined>;
 }) {
     const environment: Record<string, string | undefined> = {...process.env, ...options.environment, PI_CODING_AGENT_DIR: join(options.workspacePath, ".data", "pi")};
@@ -71,8 +78,10 @@ export function createPiSpawnConfiguration(options: {
             "--no-extensions", "--no-mcp", "--no-approve",
             "--no-skills", "--no-context-files", "--no-prompt-templates", "--no-themes", "--no-builtin-tools",
             "--skill", join(options.workspacePath, "skills"),
+            "--system-prompt", tomekinPiBootstrap,
             "--tools", resolvePiToolNames(environment).join(","),
             "--extension", options.askUserExtensionPath ?? resolveAskUserExtensionPath(),
+            "--extension", options.todoExtensionPath ?? resolveTodoExtensionPath(),
             "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,

@@ -50,6 +50,7 @@ describe("Pi launcher", () => {
             workspacePath: "/clone",
             extensionPath: "/cache/tomekin-extension.mjs",
             askUserExtensionPath: "/dependencies/pi-ask-user/index.ts",
+            todoExtensionPath: "/dependencies/pi/examples/extensions/todo.ts",
             environment: {TOMEKIN_DB_PATH: "/isolated.sqlite"},
         });
         expect(configuration.stdin).toBe("inherit");
@@ -62,10 +63,11 @@ describe("Pi launcher", () => {
             "--no-extensions", "--no-mcp", "--no-approve",
             "--no-skills", "--no-context-files", "--no-prompt-templates", "--no-themes", "--no-builtin-tools",
             "--skill", join("/clone", "skills"),
+            "--system-prompt",
             "--tools", expectedPiToolNames.join(","),
         ]));
         const extensions = configuration.args.flatMap((argument, index) => argument === "--extension" ? [configuration.args[index + 1]] : []);
-        expect(extensions).toEqual(["/dependencies/pi-ask-user/index.ts", "/cache/tomekin-extension.mjs"]);
+        expect(extensions).toEqual(["/dependencies/pi-ask-user/index.ts", "/dependencies/pi/examples/extensions/todo.ts", "/cache/tomekin-extension.mjs"]);
         expect(configuration.env.TOMEKIN_DB_PATH).toBe("/isolated.sqlite");
     });
 
