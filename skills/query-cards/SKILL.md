@@ -36,8 +36,8 @@ Read `docs/card-query.md` for the complete field, cursor and error contract.
 
 Use `browse_tags` with an explicit operation: `{type: "search", query: "mana ramp"}` for slug/label/alias search,
 `{type: "lookup", slugs: ["mana-rock"]}` for complete known definitions, or `{type: "list"}` for catalogue listing.
-Definitions include all aliases. Hierarchy is absent unless lookup requests `hierarchy: {}` (immediate parents,
-children and edges); explicitly request `depth: 2` or `3` for bounded deeper exploration. Repeat the operation with
+By default each found definition includes slug and its complete nullable description. Use a nonempty `select` to request any of `description`, `id`, `label`, `aliases`, `source_page_uri`; slug is always included. Hierarchy nodes use the same selection. Hierarchy is absent unless lookup requests `hierarchy: {}` (immediate parents,
+children and edges); explicitly request `depth: 2` or `3` for bounded deeper exploration. Repeat the operation and effective selection with
 `first`/`after` until `next_cursor` is null; recover execution stops with `error.cursor`. Successful empty search,
 known-slug `not_found`, and `reference_data_unready` have different meanings. Successful tag replacement invalidates
 old cursors. Tags support discovery; assess Deck Roles and quality from the card in its candidate context.

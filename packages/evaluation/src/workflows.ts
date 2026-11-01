@@ -1,3 +1,4 @@
+import {reconstructCandidateView} from "@tomekin/core";
 import {createLocalAgentToolRuntime} from "@tomekin/agent";
 import {createProviderDispatchOwner} from "@tomekin/core";
 import {openDatabase, closeDatabase, createSqliteCollectionRepository} from "@tomekin/sqlite";
@@ -32,14 +33,7 @@ async function allPages(call: (args: any) => Promise<any>, args: any): Promise<a
     return nodes;
 }
 async function readJson(call: (args: any) => Promise<any>, candidate: string) {
-    let state: any;
-    for (const node of await allPages(call, {id: candidate, view: "json", first: 7})) {
-        if (!node.path.length) {state = node.value; continue;}
-        let target = state;
-        for (const key of node.path.slice(0, -1)) target = target[key];
-        target[node.path.at(-1)] = node.value;
-    }
-    return state;
+    return reconstructCandidateView(await allPages(call, {id: candidate, view: "json", first: 7})) as any;
 }
 export async function runWorkflowIntegration() {
     const toolModule = new URL("../../../.opencode/tools/tomekin.ts", import.meta.url).href;

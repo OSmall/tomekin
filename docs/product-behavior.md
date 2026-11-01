@@ -20,8 +20,9 @@ Collection-policy filtering and owned-copy evidence are not provided by this sea
 `browse_tags` provides explicit slug/label/alias search, known-slug definitions and recoverable catalogue listing.
 Hierarchy appears only when requested for lookup: one parent/child level by default, explicitly up to three.
 Missing tag data is a readiness error; empty search and known-slug misses are separate successful outcomes.
-Complete definitions and requested graph records survive adapter transport without preview clipping. Catalogue
-pagination binds the successful tag import; per-card inherited tags remain complete at every depth.
+Slug and complete nullable description are returned by default; optional field selection adds or replaces those facts.
+Requested fields and graph records survive adapter transport without preview clipping. Catalogue pagination binds the
+selection and successful tag import; per-card inherited tags remain complete at every depth.
 `search_card_sets` discovers existing imported Set code/name metadata and depends only on All Cards readiness.
 
 ## Known-card facts
@@ -274,9 +275,8 @@ qualifications and evidence. The pool view has one deduplicated `options` array 
 options by Card Identity; section-aware selected quantities come only from memberships.
 
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
-JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node is `{path, value}` in `path_value_v1` format.
-Apply records in order: an empty path sets the root; other paths assign an object key or array index. Explicit empty
-containers preserve empty objects/arrays. Array entities retain complete local reasoning. For `json`, this reconstructs
+JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node uses `path_value_text_v2`: `{kind: "value", path, value}` assigns a complete value; `{kind: "text_fragment", path, index, text, final}` contributes a string fragment.
+Apply records in order: an empty path sets the root; other paths assign an object key or array index. A fragment sequence starts at index zero, continues consecutively for the same path, and finishes only when `final` is true. Assemble all fragments before assigning the string; missing, interleaved or out-of-order fragments mean the read is incomplete. Explicit empty containers preserve empty objects/arrays. Oversized objects are decomposed to preserve their contents. For `json`, this reconstructs
 the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
 the ordered string values. Repeat `id` and `view` with `after`; `first` may change. A view's transient hash binds its
 content timestamp and all included records, so changed canonical names, evidence publication or evidence applicability
