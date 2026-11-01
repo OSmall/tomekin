@@ -52,14 +52,12 @@ with instructions to reinstall the committed lockfile. `bun run tomekin --versio
 Its separate clone-local runtime cache contains Tomekin's extension and Worker bundles. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes the approved Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
-in one lazy Bun Worker lane; `read` is Pi-local and
-limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
-`offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
-while ambient skill and context-file discovery remain disabled. Before every agent turn, Tomekin appends its product
-bootstrap to Pi's normal system prompt. The bootstrap identifies Tomekin's collection-first deck-building role, states
-its restricted authority, and directs the agent to read the root `tomekin-deck-building/SKILL.md` before product-tool
-use. That skill routes to the further skills required by the request.
+The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, and
+Pi's interactive `ask_user` tool. Shared tools run in one lazy Bun Worker lane. `read` is limited to regular files
+below `skills/` and supports one-indexed `offset` and `limit`. Native skill discovery remains available while ambient
+resources are disabled. A compact Tomekin prompt replaces Pi's coding orientation; it directs the agent to load relevant
+skills as needed and reuse guidance already in context. The context tool reports an estimate or unknown. After compaction,
+the agent recovers the actual candidate, Resume note and needed research pages.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
 `search_cards`, `lookup_cards` and `browse_collection_cards` preserve their complete 51,200-byte compact success/error envelopes in model-visible content and details,

@@ -147,15 +147,19 @@ The wrapper verifies the expected Pi version. `.data/tomekin-pi-runtime/<version
 a downloaded Pi executable, and the child inherits the user's terminal streams. There is no platform-specific artifact
 selection, although only macOS arm64 has execution evidence.
 Pi's persistent clone-local profile remains `.data/pi`. The launcher selects the reviewed local `pi-ask-user/index.ts`
-file explicitly and disables ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
+file and the pinned Pi package’s official todo example explicitly and disables ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
 It preserves non-package Pi settings and clears independent package installation; malformed settings fail before rewrite.
 The launcher explicitly registers `skills/` as Pi-native
 skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates the approved
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
 cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
-approved model-visible registry (including Pi's `ask_user` and native `codemode`) at session start. Codemode is registered with model calls disabled; it can compose only the approved tools. Session checkpoints are committed only when a script succeeds and its complete output fits the outer response limit; truncation explicitly fails and leaves the prior checkpoint intact. Before each agent turn, it appends its controlled Tomekin
-bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
+approved model-visible registry (including `ask_user`, `todo`, `context_status` and native `codemode`) at session start.
+Codemode has model calls disabled and composes approved tools. Checkpoints commit only after successful, complete output;
+truncation leaves the prior checkpoint intact. The launcher supplies a compact Tomekin system prompt in place of Pi's coding
+orientation; Pi still assembles its native skill catalog. `context_status` reports estimated usage or unknown, and the
+orientation directs recovery from actual saved candidate research after compaction. `packages/core` owns the shared Agent
+Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.
 

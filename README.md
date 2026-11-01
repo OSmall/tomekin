@@ -58,14 +58,14 @@ Pi's native TUI may separately download its `fd`/`rg` helpers when absent. Set `
 and catalog network refreshes during an offline startup check; this does not make authenticated model calls work offline.
 Helper acquisition and behavior remain Pi-owned.
 
-The session exposes the approved Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
-Pi's interactive `ask_user` tool and restricted native `codemode` for composing approved tools. It does not give the model coding, shell, general filesystem, network, raw-database,
-MCP, task, or todo tools. The launcher explicitly registers the canonical `skills/` directory
-as Pi skills while ambient extension, skill, context-file, prompt, theme, and MCP discovery remain disabled.
-The launcher selects only the Bun-installed `pi-ask-user@0.15.0/index.ts` file, excluding its bundled skills, prompts, and themes.
-It preserves other Pi settings while clearing the profile's package list so Pi does not independently install or update extensions. Tomekin adds a
-controlled per-turn orientation that directs the assistant to read the root deck-building skill before product-tool
-use. Pi retains ownership of login, settings, and conversation data within this clone-local profile.
+The session exposes the approved Tomekin Agent Tools, a skill-only `read`, `ask_user`, restricted native `codemode`,
+the pinned Pi todo extension and `context_status`. It does not grant coding, shell, general filesystem, network,
+raw-database or MCP tools. Pi discovers canonical `skills/`; ambient resources remain disabled. The launcher loads
+the reviewed `pi-ask-user@0.15.0` file and the official todo example shipped with the pinned Pi version. It preserves
+other settings while clearing the profile's package list. A compact Tomekin system prompt replaces Pi's coding orientation
+while preserving native skill discovery. For substantial requests the agent uses a checklist and checks estimated context
+capacity; unknown estimates remain unknown. After compaction it recovers the actual candidate, Resume note and needed
+research pages. Pi retains ownership of login, settings and conversation data within this clone-local profile.
 Existing standalone caches and profile data are retained. Downgrades and cross-version profile/session compatibility
 are unsupported in this developer phase; deliberate downgrade recovery is manual.
 
