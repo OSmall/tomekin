@@ -109,13 +109,13 @@ export async function auditWorkflowSurfaces() {
     const moduleUrl = new URL("../../../.opencode/tools/tomekin.ts", import.meta.url).href;
     const tools = await import(moduleUrl);
     const openCode = Object.keys(tools).filter(name => tools[name] && typeof tools[name].execute === "function").sort();
-    const piOnly = ["read", "ask_user", "calculate", "codemode"];
+    const piOnly = ["read", "ask_user", "calculate", "codemode", "todo", "context_status"];
     const allPi = resolvePiToolNames({});
     const pi = allPi.filter(name => !piOnly.includes(name)).sort();
     const root = fileURLToPath(new URL("../../../", import.meta.url));
     const read = createMethodologyReadTool({workspacePath: root});
     const agent = readFileSync(new URL("../../../.opencode/agents/tomekin-deck-builder.md", import.meta.url), "utf8");
-    if (!agent.includes("skill: allow") || !agent.includes("load the native")) throw new Error("OpenCode skill routing unavailable");
+    if (!agent.includes("skill: allow") || !/load the native/i.test(agent)) throw new Error("OpenCode skill routing unavailable");
     for (const name of openCode) if (!agent.includes(`"tomekin_${name}": allow`)) throw new Error(`OpenCode permission missing: ${name}`);
     const loadedCanonicalSkills = [];
     for (const name of readdirSync(`${root}/skills`)) {
