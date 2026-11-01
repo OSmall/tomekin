@@ -6,7 +6,7 @@ import {type DeckCandidate, roleSelectedCopies, summarizeDeckCandidate} from "./
 import {compactJsonBytes, decodeRetrievalCursor, cursorBindingsMatch, cursorScopeMatches, encodeRetrievalCursor, retrievalResponseBudgetBytes, type RetrievalSuccess, type RetrievalFailure, type RetrievalProblem} from "./card-retrieval";
 import {renderCandidateReportParts, renderPortableDecklist} from "./deck-candidate-rendering";
 
-export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
+export const candidateViewValues = ["summary", "brief", "selected", "options", "pool", "plan", "action_analysis", "search_research", "assessments", "json", "report", "portable_decklist", "availability", "collection_pull_list"] as const;
 export const GetDeckCandidateViewArgsSchema = z.strictObject({
     id: z.uuid(), view: z.enum(candidateViewValues).default("summary"),
     first: z.number().int().min(0).max(200).optional(), after: z.string().min(1).optional(),
@@ -101,6 +101,8 @@ function recordsFor(candidate: DeckCandidate, view: string): CandidateViewRecord
     else if (view === "options") value = candidateOptionDetails(candidate);
     else if (view === "pool") value = candidatePoolView(candidate);
     else if (view === "plan") value = candidate.plan;
+    else if (view === "action_analysis") value = candidate.plan?.action_analysis_markdown ?? null;
+    else if (view === "search_research") value = candidate.plan?.search_research_markdown ?? null;
     else if (view === "assessments") value = {assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
     else if (view === "report") value = renderCandidateReportParts(candidate);

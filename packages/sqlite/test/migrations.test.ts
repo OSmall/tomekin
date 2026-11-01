@@ -1,5 +1,5 @@
 import {describe, expect, test} from "bun:test";
-import {mkdtempSync, readdirSync, readFileSync} from "node:fs";
+import {mkdtempSync, readdirSync, readFileSync, rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {sql} from "drizzle-orm";
@@ -351,4 +351,23 @@ test("structured candidate migration preserves existing candidate and membership
     } finally {
         closeDatabase(db);
     }
+});
+
+test("research migration preserves existing candidate plan and related records", () => {
+    const dir = mkdtempSync(join(tmpdir(), "tomekin-research-migration-"));
+    const db = openDatabase(join(dir, "test.sqlite"), {log:testLog});
+    try {
+        const directory = new URL("../drizzle/", import.meta.url);
+        const files = readdirSync(directory).filter(name => name.endsWith(".sql")).sort();
+        const target = files.find(name => readFileSync(new URL(name, directory), "utf8").includes("ADD `action_analysis_markdown`"))!;
+        expect(target).toBeDefined();
+        for (const filename of files.filter(name => name < target)) runMigrationSql(db, new URL(filename, directory));
+        db.$client.run("INSERT INTO deck_candidate (id,label,format,brief_json,markdown,created_at,updated_at) VALUES ('candidate','Existing','casual_60','{}','old',12,34)");
+        db.$client.run("INSERT INTO deck_candidate_plan (candidate_id,description) VALUES ('candidate','Current strategy')");
+        db.$client.run("INSERT INTO deck_candidate_node (candidate_id,id,kind,label,description) VALUES ('candidate','role','role','Mana','Make mana')");
+        runMigrationSql(db, new URL(target, directory));
+        expect(db.$client.query("SELECT description,action_analysis_markdown,search_research_markdown FROM deck_candidate_plan").get()).toEqual({description:"Current strategy",action_analysis_markdown:null,search_research_markdown:null});
+        expect(db.$client.query("SELECT id,label,description FROM deck_candidate_node").get()).toEqual({id:"role",label:"Mana",description:"Make mana"});
+        expect(db.$client.query("PRAGMA foreign_key_check").all()).toEqual([]);
+    } finally {closeDatabase(db); rmSync(dir,{recursive:true,force:true});}
 });

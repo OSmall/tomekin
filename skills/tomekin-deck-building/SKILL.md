@@ -102,8 +102,14 @@ Brief, current plan, assessed options/contributions and selected memberships in 
 Every retained option needs a reasoned role contribution; a desired role with zero selected contributors needs a gap
 assessment. Repeated copies use membership quantities. Cuts retain assessed options unless explicitly removed.
 
+Agree the initial action analysis with the user before saving it in `plan.action_analysis_markdown`. Save subsequent
+authorized research in `plan.search_research_markdown` at substantial stage boundaries, without resending the accepted
+analysis. Keep a concise Resume section in the plan description matching the latest saved state; mark exceptional partial
+work incomplete. Check the returned timestamp and research presence/byte sizes. On resumption read the current description
+and exhaust each necessary research view through `next_cursor: null`; report any interrupted or failed traversal.
+
 Read `get_deck_candidate` for a compact summary. Recover complete focused `brief`, `selected`, `options`, `pool`,
-`plan`, `assessments`, `json`, `availability` or `collection_pull_list` views with `first`/`after`. Repeat `id` and
+`plan`, `action_analysis`, `search_research`, `assessments`, `json`, `availability` or `collection_pull_list` views with `first`/`after`. Repeat `id` and
 `view`, apply ordered value assignments and assemble each text fragment sequence by its zero-based index through its final fragment, then concatenate reconstructed report/decklist strings. An incomplete or out-of-order sequence is not a complete read. A changed baseline requires restart. Use `edit_deck_candidate`
 with `candidate_id`, the exact last-read `expected_updated_at`, and typed `changes`. Quantities are absolute; omissions
 preserve stored values and optional fields can explicitly clear with `null`. Coordinate related additions/removals in one

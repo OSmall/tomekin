@@ -181,6 +181,8 @@ export const CandidateAssessmentsSchema = z.strictObject({
 const planInput = z.strictObject({
     schema_version: z.literal(1),
     description: text,
+    action_analysis_markdown: z.string().nullable().optional(),
+    search_research_markdown: z.string().nullable().optional(),
     nodes: z.array(NewNodeSchema).default([]),
     contributions: z.array(NewContributionSchema).default([]),
     relationships: z.array(NewRelationshipSchema).default([]),
@@ -290,6 +292,8 @@ export const DeckCandidateChangesSchema = z.strictObject({
         .strictObject({
             schema_version: z.literal(1),
             description: text.optional(),
+            action_analysis_markdown: z.string().nullable().optional(),
+            search_research_markdown: z.string().nullable().optional(),
         })
         .nullable()
         .optional(),
@@ -332,6 +336,8 @@ export type CandidatePlan = {
     schema_version: 1;
     candidate_id: string;
     description: string;
+    action_analysis_markdown?: string | null;
+    search_research_markdown?: string | null;
     nodes: CandidateNode[];
     contributions: CandidateContribution[];
     relationships: CandidateRelationship[];
@@ -363,6 +369,7 @@ export type DeckCandidateSummary = {
     updated_at: string;
     selected_quantities: Record<DeckCandidateCardSection, number>;
     pool_size: number;
+    research: {action_analysis: {present: boolean; bytes: number}; search_research: {present: boolean; bytes: number}};
     roles: {
         id: string;
         label: string;
@@ -379,6 +386,7 @@ export type CandidateWriteResult = {
     changed_references: string[];
     summary: string;
     validation_evidence: DeckCandidateSummary["validation_evidence"];
+    research: DeckCandidateSummary["research"];
 };
 export type DeckCandidateRepositoryError = {
     readonly type:
@@ -438,6 +446,10 @@ export function summarizeDeckCandidate(
         updated_at: candidate.updatedAt,
         selected_quantities,
         pool_size: candidate.options.length,
+        research: {
+            action_analysis: {present: candidate.plan?.action_analysis_markdown != null, bytes: Buffer.byteLength(candidate.plan?.action_analysis_markdown ?? "", "utf8")},
+            search_research: {present: candidate.plan?.search_research_markdown != null, bytes: Buffer.byteLength(candidate.plan?.search_research_markdown ?? "", "utf8")},
+        },
         roles: (candidate.plan?.nodes ?? [])
             .filter(
                 (node): node is Extract<CandidateNode, { kind: "role" }> =>

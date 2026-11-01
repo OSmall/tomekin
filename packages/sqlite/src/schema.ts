@@ -443,6 +443,8 @@ export const deckCandidatePlan = sqliteTable(
             .primaryKey()
             .references(() => deckCandidate.id),
         description: text("description").notNull(),
+        actionAnalysisMarkdown: text("action_analysis_markdown"),
+        searchResearchMarkdown: text("search_research_markdown"),
     },
     (t) => [
         check(

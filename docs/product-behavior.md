@@ -245,7 +245,7 @@ progress, including unfinished or empty selection. `edit_deck_candidate({candida
 loads unchanged records server-side and applies one atomic typed change set. There is no mandatory Markdown, automatic
 legality/evaluation/Availability check, dedicated copy tool, stored proposal, confirmation token or completion state.
 
-The Brief owns Format and preferences. A plan uses `schema_version: 1`; node and relationship additions declare a local
+The Brief owns Format and preferences. A plan owns a concise description with a current Resume note and optional `action_analysis_markdown` and `search_research_markdown` documents. Each is independently replaced on a stage-sized save; omission preserves it and `null` clears it. An early candidate may have an empty pool and selection. A plan uses `schema_version: 1`; node and relationship additions declare a local
 `ref`. Contributions use `role_id` or `role_ref`; relationships use `source_id`/`source_ref` and `target_id`/`target_ref`.
 The server returns candidate/authored UUIDs in `created_ids`. Local references are confined to the request. Roles and
 relationships retain stable IDs across wording changes. Options use Card Identity, contributions use option/role pairs,
@@ -263,12 +263,12 @@ returned reasoning is never silently truncated.
 The exact UTC `updated_at` is candidate-wide. A stale edit returns `conflict`, with candidate ID and expected/current
 timestamps. Reload and reconcile rather than silently rebasing. Success returns compact actual-change context and stable
 ID mappings. `get_deck_candidate({id})` and `list_deck_candidates` return summaries with Format/anchor, timestamps, selected
-section quantities, pool size and concise role/gap information. Summaries expose each recorded check's applicability and
+section quantities, pool size, research presence and UTF-8 byte sizes, and concise role/gap information. Write results include the same compact research indicators and the latest candidate timestamp. Summaries expose each recorded check's applicability and
 check time. Ordinary reads do not invoke checks.
 
 ### Complete views and generated output
 
-`get_deck_candidate({id, view, first?, after?})` supports `brief`, `selected`, `options`, `pool`, `plan`, `assessments`,
+`get_deck_candidate({id, view, first?, after?})` supports `brief`, `selected`, `options`, `pool`, `plan`, `action_analysis`, `search_research`, `assessments`,
 `json`, `report` and `portable_decklist`, plus the default compact `summary`. There is no public unbounded `state` view.
 Options include canonical names, comparison notes, selected memberships and complete contribution rationale,
 qualifications and evidence. The pool view has one deduplicated `options` array and role groups referring to those
@@ -277,7 +277,7 @@ options by Card Identity; section-aware selected quantities come only from membe
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
 JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node uses `path_value_text_v2`: `{kind: "value", path, value}` assigns a complete value; `{kind: "text_fragment", path, index, text, final}` contributes a string fragment.
 Apply records in order: an empty path sets the root; other paths assign an object key or array index. A fragment sequence starts at index zero, continues consecutively for the same path, and finishes only when `final` is true. Assemble all fragments before assigning the string; missing, interleaved or out-of-order fragments mean the read is incomplete. Explicit empty containers preserve empty objects/arrays. Oversized objects are decomposed to preserve their contents. For `json`, this reconstructs
-the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
+the complete current candidate, including research, full check findings and dependencies. The focused research views return their complete nullable Markdown strings, while plan, JSON and report views include both documents. For report/decklist views, concatenate
 the ordered string values. Repeat `id` and `view` with `after`; `first` may change. A view's transient hash binds its
 content timestamp and all included records, so changed canonical names, evidence publication or evidence applicability
 reject affected continuation even when candidate content timestamps stay unchanged. Unrelated data does not stale an
