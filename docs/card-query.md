@@ -66,11 +66,19 @@ There is no automatic retry loop. Host HTTP observation has an independent 120-s
 One active Tomekin provider process per user/state root is enforced with an exclusive owner directory under
 `${XDG_STATE_HOME:-~/.local/state}/tomekin/scryfall`. Pi and OpenCode sessions must share this state root; a second
 active provider process fails with actionable setup guidance, even with another database/worktree. Keep one provider
-process active at a time. Minimal durable control metadata records only provider/version, wall cooldown deadline and
-uncertain-dispatch state; it contains no q, cursors or cards. An interrupted owner, uncertain state or corrupt recovery
+process active at a time. Minimal durable control metadata records provider/version, wall cooldown deadline, the last
+settled start time and lane interval, and uncertain-dispatch state; it contains no q, cursors or cards. A clean settled
+exit retains only any real cooldown and remaining start spacing; it does not create a recovery cooldown. Search starts
+remain at least 500 ms apart and sync/reference starts at least 100 ms apart, including lane changes and process
+replacement. An interrupted owner, uncertain state or corrupt recovery
 state establishes a fresh 31-second quiet period and retains any longer known deadline, reanchored to monotonic time.
 Uncertain ownership fails closed for inspection. A crash between receiving an unrecorded longer header and durable
 publication cannot reconstruct that unseen value; recovery does not claim otherwise. Persistence failure closes admission.
+
+Initialization logs distinguish retained cooldown, uncertain requests, recovered ownership and corrupt or unreadable state.
+Admission logs distinguish required and measured delay, with a cooldown or spacing reason; a 429 logs its established
+cooldown. These diagnostics do not include query, card or cursor payloads. The reproduced clean-exit defect does not
+establish the cause of the earlier Alesha session wait.
 
 Info logs contain selected-property names, stage timings, provider/raw/returned counts and exact application/adapter
 bytes. Debug deliberately includes q, full incoming/outgoing cursors and decoded positions/import bindings. Operational

@@ -47,9 +47,9 @@ test("paces actual starts without a second response delay and keeps detached 429
 
 import {
     retryAfterDelay,
-    ProviderFailure,
     type ProviderControlState,
-} from "../src";
+} from "../src/provider-admission";
+import {ProviderFailure} from "../src/card-search";
 test("late timers reserve from actual dispatches rather than catching up", async () => {
     let time = 0,
         late = true;
@@ -182,4 +182,41 @@ test("Retry-After accepts longer valid delta/date values and never shortens the 
         expect(retryAfterDelay(value, wall)).toBe(31000);
     expect(retryAfterDelay("120", wall)).toBe(120000);
     expect(retryAfterDelay("Thu, 01 Jan 2026 00:02:00 GMT", wall)).toBe(120000);
+});
+
+test("settled starts retain remaining lane spacing across owner replacement", async () => {
+    for (const [previous, next, expected] of [[100, 500, 500], [500, 100, 500], [100, 100, 100]] as const) {
+        let time = 1000;
+        let state: ProviderControlState | undefined;
+        const starts: number[] = [];
+        const makeOwner = (interval: number) => createProviderDispatchOwner({
+            now: () => time, wallNow: () => time,
+            ...(state ? {initialState: state} : {}),
+            persist: value => {state = value;},
+            intervalMs: () => interval,
+            wait: async ms => {time += ms;},
+            dispatch: async () => {starts.push(time); return {status: 200, body: null};},
+        });
+        await makeOwner(previous).dispatch("https://api.scryfall.com/bulk-data", {remainingMs: 10000});
+        time += 20;
+        await makeOwner(next).dispatch("https://api.scryfall.com/cards/search?q=x", {remainingMs: 10000});
+        expect(starts).toEqual([1000, 1000 + expected]);
+    }
+});
+
+test("admission diagnostics report recovery causes and required versus measured waits", async () => {
+    let time = 1000;
+    const events: any[] = [];
+    const log = {info: (data: unknown) => events.push(data), child() {return this;}} as any;
+    const owner = createProviderDispatchOwner({
+        now: () => time, wallNow: () => time, log,
+        initialState: {version: 1, provider: "scryfall", cooldownWallUntil: 4000, uncertain: true},
+        wait: async ms => {time += ms + 20;},
+        dispatch: async () => ({status: 429, body: null, retryAfterMs: 60000}),
+    });
+    await owner.dispatch("https://api.scryfall.com/cards/search?q=private", {remainingMs: 120000});
+    expect(events).toContainEqual(expect.objectContaining({operation: "provider_initialization", retainedCooldownMs: 3000, uncertainPriorRequest: true, recoveryDelayMs: 31000}));
+    expect(events).toContainEqual(expect.objectContaining({operation: "provider_admission", reason: "cooldown", requiredWaitMs: 31000, admissionWaitMs: 31020}));
+    expect(events).toContainEqual(expect.objectContaining({operation: "provider_cooldown", reason: "http_429", requiredWaitMs: 60000}));
+    expect(JSON.stringify(events)).not.toContain("private");
 });
