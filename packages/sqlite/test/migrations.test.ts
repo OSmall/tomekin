@@ -371,3 +371,19 @@ test("research migration preserves existing candidate plan and related records",
         expect(db.$client.query("PRAGMA foreign_key_check").all()).toEqual([]);
     } finally {closeDatabase(db); rmSync(dir,{recursive:true,force:true});}
 });
+
+test("reasoning-review migration preserves existing candidate and defaults it to pending", () => {
+    const dir=mkdtempSync(join(tmpdir(),"tomekin-review-migration-"));
+    const db=openDatabase(join(dir,"test.sqlite"),{log:testLog});
+    try {
+        const directory=new URL("../drizzle/",import.meta.url);
+        const files=readdirSync(directory).filter(name=>name.endsWith(".sql")).sort();
+        const target=files.find(name=>readFileSync(new URL(name,directory),"utf8").includes("ADD `reasoning_review`"))!;
+        expect(target).toBeDefined();
+        for(const filename of files.filter(name=>name<target)) runMigrationSql(db,new URL(filename,directory));
+        db.$client.run("INSERT INTO deck_candidate (id,label,format,brief_json,markdown,created_at,updated_at) VALUES ('candidate','Existing','casual_60','{}','old',12,34)");
+        runMigrationSql(db,new URL(target,directory));
+        expect(db.$client.query("SELECT label,markdown,reasoning_review FROM deck_candidate").get()).toEqual({label:"Existing",markdown:"old",reasoning_review:"pending"});
+        expect(db.$client.query("PRAGMA foreign_key_check").all()).toEqual([]);
+    } finally {closeDatabase(db);rmSync(dir,{recursive:true,force:true});}
+});

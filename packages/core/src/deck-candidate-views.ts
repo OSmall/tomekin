@@ -58,7 +58,7 @@ export function candidateOptionDetails(candidate: DeckCandidate) {
     }));
 }
 export function candidatePoolView(candidate: DeckCandidate) {
-    return {options: candidateOptionDetails(candidate), roles: (candidate.plan?.nodes ?? []).filter(n => n.kind === "role").map(role => ({role,
+    return {reasoning_review: candidate.reasoning_review, options: candidateOptionDetails(candidate), roles: (candidate.plan?.nodes ?? []).filter(n => n.kind === "role").map(role => ({role,
         selected_copies: roleSelectedCopies(candidate, role),
         option_ids: candidate.plan!.contributions.filter(c => c.role_id === role.id).map(c => c.card_identity_id),
     }))};
@@ -117,7 +117,7 @@ function recordsFor(candidate: DeckCandidate, view: string, details?: "problems"
     else if (view === "plan") value = candidate.plan;
     else if (view === "action_analysis") value = candidate.plan?.action_analysis_markdown ?? null;
     else if (view === "search_research") value = candidate.plan?.search_research_markdown ?? null;
-    else if (view === "assessments") value = {assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
+    else if (view === "assessments") value = {reasoning_review: candidate.reasoning_review, assessments: candidate.assessments, assessment_status: {power_play_experience_fit: candidate.assessments.power_play_experience_fit == null ? "unrecorded" : "recorded", mana_curve_adequacy: candidate.assessments.mana_curve_adequacy == null ? "unrecorded" : "recorded"}, validation_evidence: candidate.validation_evidence ?? summarizeDeckCandidate(candidate).validation_evidence};
     else if (view === "portable_decklist") value = renderPortableDecklist(candidate.format, candidate.cards).split("\n").map(line => `${line}\n`);
     else if (view === "report") value = renderCandidateReportParts(candidate);
     else value = candidate;

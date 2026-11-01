@@ -1330,3 +1330,41 @@ test("large views enforce the complete escaped byte budget and reconstruct exact
         expect(malformed.error.envelope.error.code).toBe("invalid_cursor");
     }finally{app.dispose();}
 });
+
+test("reasoning review persists and reopens on material selected changes", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        expect(created.reasoning_review).toBe("pending");
+        const reviewed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{reasoning_review:"reviewed"}}));
+        expect(reviewed.reasoning_review).toBe("reviewed");
+        const amended = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:29}]}}));
+        expect(amended.reasoning_review).toBe("pending");
+        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id})).reasoning_review).toBe("pending");
+        const stale = await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{reasoning_review:"reviewed"}});
+        expect(stale.isErr()).toBe(true);
+    } finally { app.dispose(); }
+});
+
+test("review acknowledgments protect material edits while alternative maintenance stays reviewed", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        const reviewed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{reasoning_review:"reviewed"}}));
+        const alternative = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{options:[{action:"add",card_identity_id:draw,comparison_note:"An alternative"}],contributions:[{action:"add",contribution:{card_identity_id:draw,role_id:created.created_ids.mana,rationale:"Alternative mana"}}]}}));
+        expect(alternative.reasoning_review).toBe("reviewed");
+        const invalid = await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:alternative.updated_at,changes:{memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:29}],reasoning_review:"reviewed"}});
+        expect(invalid.isErr()).toBe(true);
+        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id})).reasoning_review).toBe("reviewed");
+        const removed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:alternative.updated_at,changes:{memberships:[{action:"remove",card_identity_id:forest,section:"mainboard"}]}}));
+        expect(removed.reasoning_review).toBe("pending");
+        expect(removed.changed_references).toContain(`affected_roles:${created.created_ids.mana}`);
+        const reopened = openDatabase(app.path, {log});
+        try {
+            const candidate = unwrap(await createSqliteDeckCandidateRepository(reopened, {now:()=>new Date()}).getDeckCandidate(created.candidate_id));
+            expect(candidate.reasoning_review).toBe("pending");
+            expect(candidate.options.some((o: any) => o.card_identity_id === forest)).toBe(true);
+            expect(candidate.memberships.find((m: any) => m.card_identity_id === forest && m.section === "mainboard")).toBeUndefined();
+        } finally { closeDatabase(reopened); }
+    } finally { app.dispose(); }
+});

@@ -56,3 +56,14 @@ test("OpenCode recovers a fragmented escaped strategy",async()=>{
         expect(reconstructCandidateView(research)).toBe(description);
     } finally {restore();runtime.close();fixture.dispose();}
 });
+
+test("OpenCode transports reasoning review acknowledgments",async()=>{
+    const fixture=await createCandidateViewFixture();
+    const restore=tools.configureAgentToolRuntimeForTests({log,createHandlers:options=>createLocalAgentToolHandlers({...options,databasePath:fixture.databasePath})});
+    try {
+        const before=JSON.parse(await tools.get_deck_candidate.execute({id:fixture.candidateId} as never));
+        expect(before.reasoning_review).toBe("pending");
+        const result=JSON.parse(await tools.edit_deck_candidate.execute({candidate_id:fixture.candidateId,expected_updated_at:before.updated_at,changes:{reasoning_review:"reviewed"}} as never));
+        expect(result.reasoning_review).toBe("reviewed");
+    } finally {restore();fixture.dispose();}
+});
