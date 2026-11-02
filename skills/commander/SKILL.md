@@ -1,55 +1,88 @@
 ---
 name: commander
-description: Use for Commander/EDH deck discovery, construction, explanation or tuning when Format-specific rules and assumptions matter.
+description: "Commander/EDH: apply Format-specific rules, the adopted Template and commander-dependent strategy during discovery, construction, explanation or tuning."
 ---
 
 # Commander
 
-Use `deck-development`, `card-research` and `probability-analysis` for the shared process. Follow the confirmed Commander Bracket, play experience and Collection Access Policy. Check actual Format constraints and card facts with the tools: Commander normally has 100 cards including its commander, singleton by Card Identity other than permitted exceptions, and Color Identity restrictions. The command zone is not part of the library; Commander has no ordinary Sideboard. Check eligibility and any special deck-construction rules rather than assuming a legendary card is eligible. Do not infer current banned lists or Bracket classifications from this skill.
+Use `deck-development` for task flow and completion, `card-research` for investigation and `probability-analysis` for numerical decisions. Follow the confirmed Commander Bracket, play experience and Collection Access Policy. Retrieve actual construction constraints and card facts: Commander normally has 100 cards including its commander, singleton by Card Identity except permitted overrides, Color Identity restrictions and no ordinary Sideboard. Check commander eligibility and special construction rules with the tools; current banned lists and Bracket classifications remain external changing facts.
 
-Analyze the commander's actual costs, abilities, triggers, targets, timing and conditions. Account for commander tax, repeated removal and the turns needed to deploy or protect it. Identify what the deck can do before the commander arrives and after it is removed. A commander in the command zone is available to be cast, not automatically on the battlefield, paid for, protected or able to activate.
+Analyze the commander's exact actions through the shared workflow. Account for casting cost, commander tax, removal, protection and time to productive use. Command-zone access makes it available to cast, while the deck must still fund deployment and use. Explain development before it arrives and recovery or alternative play after it is removed.
 
-## The Template: a starting profile, not a proof
+## Apply the Template
 
-The adopted Command Zone Template starts with 38 land/mana-access slots, 12 card-advantage sources, 10 ramp sources, 12 targeted disruption sources, 6 mass disruption sources and roughly 30 plan-serving cards. It is a diagnostic starting point for a typical multiplayer deck, not a legality rule, a promise of balance or a substitute for the Brief. The categories total 108: at least eight category memberships must overlap if they all fit in 100 cards. These are *functions*, not mutually exclusive piles or a demand to cast every counted card. The commander and card modes need explicit accounting so they do not create phantom library copies or free effects.
+**Template** means the adopted Command Zone starting profile below. Account for all six functions, then explain material departures and what compensates for them. These are overlapping functional memberships, not six disjoint piles or fixed Deck Packages. A Deck Package is a coherent strategic group that may span several functions.
 
-Work from actual selected cards and quantities. For each function record what it does, when it is usable, prerequisites, recurring costs, interaction with the deck and what it competes with. A card can genuinely support several functions, but a choice of modes cannot perform those modes simultaneously without another reason. A sacrifice outlet that produces mana only when supplied with creatures has a different reliability and cost from an unconditional mana rock. Do not count an attractive label as a reliable effect. Discuss material departures, their cause and what compensates for them; build around the user's plan rather than forcing counts.
+| Function | Starting memberships |
+| --- | ---: |
+| Land/mana access | 38 |
+| Card advantage | 12 |
+| Ramp | 10 |
+| Targeted disruption | 12 |
+| Mass disruption | 6 |
+| Plan | approximately 30 |
 
-### Land and access
+The baseline sums to 108 memberships; fitting those in 100 selected cards needs overlap. Evaluate each contribution's real costs, conditions, timing and competition. Concurrent effects can serve several functions, while alternative modes or spending a shared resource may prevent simultaneous use. Count actual selected quantities and sections; keep the commander distinct from library copies.
 
-Start around 38 mana-access slots, then assess colored sources, untapped access and actual land drops against the curve and plan. The source's convention allows modal double-faced cards (MDFCs) and cards that landcycle for one mana in this starting count; record those separately from the actual lands in the library and from deterministic legality counts. A landcycler costs mana and a card to find a land, may have target restrictions, and is not itself a land drop. An MDFC used as a land is unavailable as its spell and can enter tapped or require a cost. Utility lands can support the plan or interaction, but a colorless or conditional source may make early colored spells harder to cast. Describe the trade-off instead of claiming all 38 slots have equal access.
+### Land and mana access
 
-At 38 land-like cards in a 99-card library, the episode reports approximately 54.8% for three or more and 82.8% for two or more in an initial seven, before mulligans; it reports about 65.8% and 88.6% respectively when considering an eighth card. Those are examples under a simplified sampling model, not proof of an on-time third land drop or castability. Recalculate for the actual library, qualifying sources and useful deadline; avoid treating landcyclers as free lands or a free draw as universally applicable.
+Start around 38 mana-access memberships, then assess actual land drops, colors, untapped access and curve against intended turns. The adopted convention includes MDFCs and cards that landcycle for one mana, recorded separately from actual lands. An MDFC used as a land gives up its spell mode; a landcycler consumes mana and a card, needs a suitable target, and still requires playing the found land. Utility lands can support other functions while straining colored access.
 
-### Card advantage and ramp
+As an independently checked sampling illustration, 38 qualifying cards in a 99-card library yield about 54.8% for at least three and 82.9% for at least two in seven cards; in eight cards the figures are about 65.8% and 88.6%. These are uniform samples before mulligans or other access. Define qualifying sources and actual draws before recalculating; treating all land-like options as equivalent does not establish on-time land drops or castability.
 
-- **Card advantage, starting at 12:** seek reliable access to more usable cards than the initial investment, whether by drawing, conditional extra plays, tutoring for multiple resources, or recurrence when the deck can actually use it. Record timing, resource payment, zone, restrictions, trigger frequency and whether the cards remain accessible. Looking at several cards and keeping one is selection, not automatically net advantage. A card that merely amplifies other draw is not an independent draw source; a mana rock that can later be sacrificed to draw may replace itself without generating net advantage. Life or mana payments and delayed access matter.
-- **Ramp, starting at 10:** favor effects that increase mana available beyond the ordinary land drop in the relevant later turns. A mana creature, land put onto the battlefield or mana rock can qualify, subject to summoning sickness, cost, color, timing and vulnerability. A ritual may enable an important one-turn play but is temporary mana, not a persistent ramp source; extra land drops need lands to play. Ramp still needs enough land and colored mana to install it. For a plan relying on a four-mana commander on turn three, the source suggests considering about 12 two-mana ramp effects rather than assuming any ten ramp cards do that job. Check access, installation and colors for this deck.
+### Card advantage
 
-### Disruption and resilience
+Start at 12 sources of usable net card gain, assessed by investment, timing, payment, zone and restrictions. Draw, access to extra plays and recursion can supply advantage when the deck can use the resources. Selection or replacing the card spent is a different contribution. A draw amplifier needs a functioning source to amplify.
 
-- **Targeted disruption, starting at 12:** count effects that meaningfully interfere with an opponent's specific card or action, such as removal, a counterspell or a disruptive land. Check legal targets, speed, mana held up, permanence and relevant threats. A card that only shields your own board is protection, not automatically targeted removal. In multiplayer, spending one card to answer one threat has an opportunity cost while other opponents retain their resources; consider breadth and timing as well as count.
-- **Mass disruption, starting at 6:** identify effects that can impair multiple opposing resources or plays. The source offers a starting mix of roughly three ways to deal with creatures, one for artifacts/enchantments, one for graveyards and one repeatable interactive effect. These are overlapping functional suggestions, not mandatory unique slots. Assess whether a wipe also destroys the deck's own engine, whether it prevents rather than removes threats, and whether graveyard or repeatable effects actually handle the expected threats. Fogs, protection and narrow graveyard effects are contextual edge cases: explain their actual scope rather than counting them automatically.
-- **Protection and recovery:** separately assess interaction that preserves the commander or engine, rebuilds after a wipe, returns key pieces and avoids dependence on a single permanent or zone. A protective effect may also disrupt opponents when its actual text supports that claim; do not credit it with removal it cannot perform.
+Verified exemplar associations: Phyrexian Arena has the direct tag `draw-engine`, with broader inherited associations `repeatable-draw` and `card-advantage`; Harmonize has `burst-draw`; Wall of Omens has `cantrip`. Inspect current definitions and Oracle facts through `card-research`. Repeated draw need not produce net advantage, and a cantrip label alone does not establish it.
 
-### Plan: enablers, payoffs and enhancers
+### Ramp
 
-Describe the concrete route from inputs to winning. **Enablers** supply the action, material or access the plan needs; protection and recursion can support this. **Payoffs** turn the action into useful progress, including a credible Win Route. **Enhancers** multiply an existing process but often need another piece to do anything. A card may play several roles; assess the actual action and independence, not just its category.
+Start at 10 sources that increase usable mana beyond ordinary land development on relevant turns. Qualify mana creatures, rocks and lands put onto the battlefield by installation cost, summoning sickness, colors, first production and vulnerability. Temporary mana can enable a turn without supplying sustained acceleration; extra land drops need lands to play.
 
-The episode illustrates three starting distributions within approximately 30 plan-related memberships, not universal recipes:
+Sol Ring's verified `mana-rock` association inherits `ramp` and `mana-producer`. Colorless acceleration can pay other costs and preserve colored sources for abilities. For a turn-three four-mana play, compare actual cheap accelerators, installation mana and colors with the natural curve using `probability-analysis`; ten cards labelled ramp need not support that deadline.
 
-| Commander's main function | Enablers | Additional payoffs | Enhancers |
+### Targeted disruption
+
+Start at 12 effects that meaningfully interfere with a specific opposing card or action. Assess targets, speed, payment, permanence and expected threats. Swords to Plowshares has the verified `spot-removal` tag; its exact Oracle text determines what it answers. Counterspells and disruptive lands can serve other forms of targeted interaction. Multiplayer one-for-one exchanges spend resources while other opponents retain theirs, so breadth and timing matter alongside count.
+
+### Mass disruption
+
+Start at 6 effects that constrain multiple opposing resources or actions. Investigate removal, prevention, taxes and repeatable interference by their actual scope. A wipe is one mechanism, not the whole category. The reported starting mix is roughly three creature answers, one artifact/enchantment answer, one graveyard answer and one repeatable interactive effect; treat that as an overlapping illustration to adapt to expected threats.
+
+Wrath of God's verified `sweeper` association illustrates broad removal that can also destroy the deck's engine. Propaganda's direct `tax-attack` tag and broader inherited `pillowfort` association illustrate another mechanism: taxing each creature attacking you can constrain multiple attackers without removing them. Assess how readily opponents can pay, which threats bypass it and whom it protects. Calling that broad combat disruption is functional reasoning from its text, not a claim that a source or tag certifies one full unit of coverage.
+
+Fogs, graveyard effects and protective spells vary in breadth and timing. Credit only what they can disrupt in this plan; an effect shielding your own board does not automatically answer opposing resources.
+
+### Plan
+
+Start with approximately 30 memberships serving the intended game actions and Win Routes. **Enablers** provide inputs, actions or access; **payoffs** convert those actions into useful progress or winning; **enhancers** multiply a working process. Include protection and recovery with the plan functions they sustain, such as preserving the commander or rebuilding an engine. Record disruption overlap only when the actual effects support both functions.
+
+The source-derived guidance illustrates different needs depending on what the commander supplies:
+
+| Commander's main function | Enablers | Payoffs | Enhancers |
 | --- | ---: | ---: | ---: |
 | Payoff for a repeated action | 25 or more | about 2 | about 3 |
 | Supplies the enabling action | about 18 | about 8 | about 4 |
 | Multiplies other effects | 25 or more | about 5 | 0 as a starting point |
 
-Classify the commander from its exact text and the chosen plan; some commanders serve multiple functions. Treat the table as an illustration of how access to a commander changes deck needs, not an instruction to force those quantities. The commander is outside the library, may cost too much or be removed, and is not a substitute for resilient enablers and payoffs. Choose counts based on the action's frequency, meaningful deadlines, dependency and available alternatives. Include ordinary support even when it overlaps the plan. For example, an aristocrats plan needs a supply of expendable creatures, a way to sacrifice them and a payoff; a multiplier without the other pieces is not a functioning engine. Different plans need different resources and win routes.
+These are report-attributed illustrations, not fixed ratios. A commander may serve several functions, cost too much to use on time or be removed. Choose counts from actual action frequency, useful deadlines, resilience and available alternatives. For example, Viscera Seer's `free-sacrifice-outlet` and Blood Artist's `blood-artist-ability` are verified discovery hints for an outlet and a death payoff; the plan still needs expendable creatures and enough output to close. A multiplier alone cannot supply those inputs.
 
-### Curve and mana in context
+## Compare curve and mana
 
-As one reference curve, the episode gives 0 cards at mana value 0, 9 at 1, 18 at 2, 15 at 3, 10 at 4, 5 at 5 and 5 at 6 or more, alongside 38 lands and the commander. The listed nonland values total 62, so adding 38 lands and a separate commander produces 101, not 100; the source does not resolve that accounting. Treat it as a rounded illustrative profile, not a fixed distribution, and count the actual 100 cards and modal choices explicitly. Inspect the *functional* curve: alternative costs, early setup, mana held for interaction, recurring activations, untapped sources and how a spell affects the turn it is cast. A high printed cost may be reasonable if its actual alternate route is supported; do not assume it is discounted or reanimated every game.
+Use this reported Command Zone illustration as relative weights for comparison:
 
-Walk representative early, middle and later turns. Can the deck hit its land drops, install ramp, cast the commander and still pay for its plan or protection? Are colors available on the turns the relevant spells require them? What happens after a wipe or a second commander cast? Note costs that compete for the same mana, sacrifice material or card. Explain gaps and trade-offs, and revisit the profile when actual selected membership changes.
+| Mana Value | 0 | 1 | 2 | 3 | 4 | 5 | 6+ |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Reported weight | 0 | 9 | 18 | 15 | 10 | 5 | 5 |
 
-Source provenance for this in-skill method: The Command Zone, “Commander Deckbuilding Template for the New Era,” episode 658 (2025), and its discussion of overlap in episode 733 (2026). These are adopted starting heuristics, not independently verified universal optimums; card facts and current rules come from available tools, not the episode or an assumed internet connection.
+The weights total 62; the source's commander/land accounting has not been independently established. Compare proportions rather than copying them into a 100-card list. State whether the actual curve includes the commander and how modal cards are counted, and count the final selected deck separately. This is an illustrative starting shape, not a prescribed Bracket or an acceptable-distance test.
+
+1. Compare the actual curve and land count with the reference. Explain meaningful differences through Power Level, budget, permitted cards, play experience and the plan; a supported higher curve can be appropriate.
+2. Walk intended early, middle and later turns using actual casting routes, untapped colored sources, ramp setup, interaction held up and recurring costs. Repeated commander casts and rebuilding after disruption change the required budget. A high printed Mana Value can have a supported alternate route, but count its actual prerequisites.
+3. Use `probability-analysis` to compare material alternatives, such as cheaper effects versus more mana support. State the access/deadline measured, improvements, displaced functions and unresolved conditions. Mean Mana Value, standard deviation or histogram similarity alone cannot establish that these turns work.
+4. Retain the chosen trade-off and revisit affected counts and calculations when selection changes. Describe this as static analysis unless actual games or simulations supply additional evidence.
+
+## Provenance
+
+The adopted baseline comes from The Command Zone, [episode 658](https://www.youtube.com/watch?v=OSNV6224cHg); [episode 659](https://www.youtube.com/watch?v=PUrQpnQ7bi8) discusses contextual departures and [episode 733](https://podcasts.apple.com/au/podcast/why-overlap-is-the-key-to-good-deck-building-733/id898023861?i=1000758698520) discusses overlap. Publisher descriptions confirm those topics. Exact ratios, the disruption mix and curve weights remain report-attributed illustrations; substantive captions were unavailable during the 2026-11-02 check. Their retention is qualified adopted guidance, not fresh transcript verification. The sampling examples were independently recalculated; tag examples were checked against imported Scryfall records on that date. Use current tool-backed card facts and definitions for the actual task.

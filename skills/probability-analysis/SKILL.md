@@ -1,21 +1,34 @@
 ---
 name: probability-analysis
-description: Use for numerical questions, deck quantities, access reliability, mana timing or other reproducible probability and arithmetic.
+description: "Probability and arithmetic: answer numerical questions or justify deck quantities, access reliability, useful deadlines and mana trade-offs."
 ---
 
 # Probability analysis
 
-Define the decision, event and useful deadline before calculating. Use actual selected quantities and relevant sections; pool alternatives count zero. Identify qualifying conditions, overlapping roles, dependence and accessible zones. Model graveyard access when relevant as conditional access, not a hand draw. A command-zone card is available under command-zone rules, not a phantom library copy or funded operation.
+Use executable arithmetic for important numerical answers. A standalone calculation needs neither a Collection import nor a saved candidate. For deck work, reuse the confirmed Brief and applicable numerical evidence.
 
-Use `hypergeometric_calculator` for its finite uniform sampling and minimum-count questions; use `calculate`, where available in Pi, for supported executable arithmetic. If the current adapter lacks the required arithmetic capability, state the limit. State population, sample, event, assumptions and exclusions, including mulligans, search, known cards, timing and independence where relevant. Choose reliability targets for the Brief, compare useful alternatives and explain which payoffs or support are displaced. Keep decision-relevant counts, assumptions and outputs with current reasoning, and reuse only while inputs remain applicable.
+## Model the decision
 
-For mana, assess usable total and colored sources at relevant turns, tapped/conditional lands, ramp installation and whole-turn spending. Consider recurring payments and representative later turns, not just a first activation. Seeing or accessing a source is not castability, combined execution, sustained output, strategic quality or win rate. State where the chosen model cannot answer the actual question. A standalone calculation needs no Collection import or saved candidate.
+1. **Define success.** State the intended action, useful deadline and qualifying conditions. Identify actual selected copies and relevant zones; retained pool alternatives contribute zero. Distinguish seeing a card from accessing it in a usable zone and paying for it. A command-zone card is outside the library sample, and graveyard access depends on how the card reaches that zone and can be used there.
+2. **Specify the sample.** For a uniformly sampled fixed population without replacement, state population size N, qualifying count K and cards sampled n. Count the actual opening hand and draws by the deadline under the Format's play/draw assumptions. Treat extra draw, tutors, milling, mulligans and known cards explicitly: a selected mulligan hand is not a larger uniform hand, and searching or conditional access needs its own model. With known cards removed, adjust both the remaining population and qualifying count.
+3. **Calculate the stated event.** Use `hypergeometric_calculator` for exactly, at-least, at-most or inclusive-range events and for finding the minimum qualifying population count that reaches a contextual target. The latter varies K, not the number drawn. For supported general arithmetic use Pi's `calculate`; state a capability limit if the adapter cannot execute the required calculation. Report tool inputs, event and result, preserving exact boundary/certainty status rather than inferring certainty from a rounded percentage.
+4. **Test the interpretation.** Identify what the calculation omits. A slow or conditional card may belong to a broad role but fail the measured early event. Overlapping roles, multi-color sources and required combinations share cards or resources; use a valid joint/conditional model instead of multiplying marginal probabilities without justified independence. If the available tools cannot answer the combined question, label the simplification and state the unresolved condition.
+5. **Compare a choice.** Compare the present configuration with plausible alternatives, choosing reliability targets from the Brief and consequences of missing the action. Explain displaced enablers, payoffs, enhancers or support. Retain the event, qualifying counts, material assumptions, result and trade-off with the current Plan or assessment. Recalculate when those inputs change; reuse valid results across cards instead of manufacturing per-card scores.
 
-## Model a decision
+## Check mana and curve against intended turns
 
-1. Phrase the event in terms of a decision: for example, seeing at least one qualifying early ramp source by a particular turn, rather than an undefined “consistency.” State the population actually sampled, qualifying successes, sample size, deadline and whether the commander, Sideboard or already known cards are outside that population. If opening hand and normal draws are included, count the actual draws under the stated play and mulligan assumptions.
-2. Use the hypergeometric tool for sampling without replacement from a fixed population. For at least one success, the complement is `1 - C(N - K, n) / C(N, n)` for population N, qualifying cards K and samples n. The general event “at least r” is the sum of the individual probabilities for r through the feasible maximum. Prefer the executable tool over hand arithmetic and report its inputs and result.
-3. Qualify the sample. A land seen after the deadline, a spell lacking its colors, a conditional tutor without its target, or a graveyard card without a way to put it there may not satisfy the decision. State which events the calculation includes and which require additional modeling. Overlapping categories are not independent just because they have separate role counts; multiplying their probabilities without an appropriate joint model can overstate certainty.
-4. Compare the present count to plausible alternatives and the cards displaced. Do not present a generic target percentage as a rule. If an exact joint calculation is unavailable, give a clearly labeled simplification or bounded comparison and explain what remains unknown. Save meaningful assumptions and results with current reasoning, not a calculation diary; revisit them when selected quantities, relevant access or deadlines change.
+Assess actual land access, usable total and colored sources, tapped/filter/opponent-dependent lands, ramp installation and first production, recurring payments and mana held for protection or interaction. Follow a representative opening, productive middle turn and later turn. Resources produced by an action can fund later actions; they cannot pay the completed cost that produced them. Colorless mana can fund other costs and free colored sources.
 
-For colored mana, distinguish a source's color production from its ability to enter untapped and pay for a spell on the target turn. For a two-color spell, different required colors may compete for the same source or for the turn's mana. Account for ramp's casting cost and when it starts producing, as well as mana required by activation, protection and recurring payments. A probability of seeing sources is evidence about access, not proof that all costs can be paid together.
+For a multi-color spell, count each source's actual output: the same single unit of flexible mana cannot pay two simultaneous requirements. A tutor can add access only if it can be paid for and used before the deadline. Access percentages describe the modeled event; they do not establish castability, joint execution, sustained output, strategic adequacy or win rate.
+
+Use the applicable Format's reference profile to orient curve review, then compare the actual deck with feasible alternatives. Printed Mana Value summaries describe composition; effective casting routes, activation costs and whole-turn spending determine what the deck can do. A curve's mean, spread or visual resemblance alone supplies no acceptance threshold.
+
+## Sampling reference
+
+For X qualifying cards in a uniform sample without replacement:
+
+`P(X = x) = C(K, x) × C(N − K, n − x) / C(N, n)`
+
+The feasible range is `max(0, n − (N − K))` through `min(n, K)`. Sum feasible outcomes for the requested event. In particular, `P(X ≥ 1) = 1 − C(N − K, n) / C(N, n)`, taking impossible combinations as zero. These formulas explain the model; use the tool for the numerical result.
+
+As a checked example, N=60, K=4 and n=7 gives P(X≥1) ≈39.95%, before mulligans, search or other access. This is the chance of seeing at least one qualifying card, not a casting probability. Distribution definitions: [R's hypergeometric reference](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Hypergeometric.html). Tool schemas own request shapes.

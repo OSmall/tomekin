@@ -10,11 +10,17 @@ Example for a single successful page, where `fixed` is a valid request assembled
 
 ```js
 // @options: {"max_output_tokens": 30000}
-const previous = load("research") ?? { fixed, cursor: null };
-const request = previous.cursor === null ? previous.fixed : { ...previous.fixed, after: previous.cursor };
-const page = JSON.parse(await tools.search_cards(request));
-text(JSON.stringify(page));
-if (page.status !== "error") store("research", { fixed: previous.fixed, cursor: page.next_cursor });
+const previous = load("research") ?? { fixed, cursor: null, complete: false };
+if (previous.complete) {
+  text("This traversal is already complete.");
+} else {
+  const request = previous.cursor === null ? previous.fixed : { ...previous.fixed, after: previous.cursor };
+  const page = JSON.parse(await tools.search_cards(request));
+  text(JSON.stringify(page));
+  if (page.status !== "error") {
+    store("research", { fixed: previous.fixed, cursor: page.next_cursor, complete: page.next_cursor === null });
+  }
+}
 ```
 
 Define `fixed` in the first script, then use only the loaded checkpoint on subsequent calls. A null cursor means exhaustion, so do not restart an already completed traversal unintentionally. For partial/error responses retain and report all delivered facts and the provided safe `error.cursor`; when none is supplied retry from the prior committed position. Changed query, scope, policy, or relevant baseline must follow the tool's restart/reconfirmation response; do not splice pages from incompatible requests. Do not claim completion before `next_cursor` is null and all required output has been delivered.
