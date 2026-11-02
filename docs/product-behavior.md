@@ -52,7 +52,7 @@ with instructions to reinstall the committed lockfile. `bun run tomekin --versio
 Its separate clone-local runtime cache contains Tomekin's extension and Worker bundles. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, native `codemode`, the scalar `calculate` tool, and
+The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, native `codemode`, the plugin's native `calculator` tool, and
 Pi's interactive `ask_user` tool. Shared tools run in one lazy Bun Worker lane. `read` is limited to regular files
 below `skills/` and supports one-indexed `offset` and `limit`. Native skill discovery remains available while ambient
 resources are disabled. A compact Tomekin prompt replaces Pi's coding orientation; it directs the agent to load relevant
@@ -65,7 +65,8 @@ with ordinary `first`/`after` recovery. Location inspection preserves complete n
 scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
-only the reviewed local `pi-ask-user@0.15.0/index.ts` extension file and no bundled resources. Ambient extensions, MCP,
+the reviewed local `pi-ask-user@0.15.0/index.ts` and `@fitchmultz/pi-calculator@4.1.9/index.ts` extension files,
+the pinned Pi todo example, restricted codemode and Tomekin's own extension, without bundled package resources. Ambient extensions, MCP,
 project approval, prompt templates, and themes are disabled alongside ambient skills and context files.
 The launcher clears Pi-managed packages while preserving other settings; invalid settings fail without being overwritten.
 Pi login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. The launcher has no
@@ -332,14 +333,25 @@ reports `unknown_write_outcome`. Neither the Worker lane nor a candidate ID repl
 
 ## General Calculator (Pi)
 
-The Pi-only `calculate` tool evaluates one scalar expression without opening a Collection or requiring reference data.
-It accepts finite numeric literals, parentheses, `+`, `-`, `*`, `/`, `^`, `%`, constants `pi` and `e`, and the functions
-`abs`, `sqrt`, `exp`, `log`, `log10`, `floor`, `ceil`, `round`, `min`, and `max`. For example, `sqrt(16) + 3^2`
-returns `13`. Expressions are limited to 512 characters and 128 syntax nodes; functions accept one to eight arguments.
-Assignments, property access, collections, arbitrary functions, non-real and non-finite results are rejected with an
-`invalid_expression` error. Results use floating-point arithmetic, not exact rational arithmetic. Use the unchanged
-`hypergeometric_calculator` for its supported sampling and minimum-count questions. A calculation does not establish
-that its assumptions, independence, castability or strategic conclusions are correct.
+The Pi-only `calculator` tool comes directly from the pinned `@fitchmultz/pi-calculator` extension. It evaluates one
+expression without opening a Collection or requiring reference data. It supports arithmetic (`+`, `-`, `*`, `/`, `%`,
+`^`, `**`), parentheses, uppercase `PI` and `E`, roots/logarithms/trigonometry, rounding, percentages, factorials and
+descriptive statistics. Independent results can share a flat array. For example, `sqrt(16) + 3^2` returns `"13"`,
+and `[0.1 + 0.2, 2^64]` returns `["0.3", "18446744073709551616"]`.
+
+Inputs and arithmetic round to 40 significant digits; results are decimal strings, not symbolic exact answers.
+Model-visible content contains the scalar value or a JSON array of strings. Both `details` and `structuredContent`
+contain `{expression, value}`, with a trimmed expression and a string or string-array value. Code mode receives that
+object directly. Native Pi validation and error handling apply; evaluation failures throw instead of returning the
+previous wrapper's `invalid_expression` envelope. There is no `calculate` compatibility alias.
+
+The plugin limits expressions to 4,096 characters and 128 nesting levels, serialized expression/value output to 50 KiB,
+and factorial operands and aggregate factorial work to 1,000. Expensive operations have additional work/argument limits.
+Assignments, property access, nonnumeric/nonfinite results and nested result arrays are rejected; one invalid array
+member fails the whole expression. Evaluation runs in Pi's process with work limits, rather than the shared-tool Worker.
+See the [pinned upstream reference](https://github.com/fitchmultz/pi-calculator/blob/v4.1.9/docs/reference.md) for the full
+function catalog and limits. Use `hypergeometric_calculator` for its supported sampling and minimum-count questions.
+A calculation does not establish that its assumptions, independence, castability or strategic conclusions are correct.
 
 ## Hypergeometric Calculator
 

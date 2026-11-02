@@ -10,7 +10,7 @@ const basePiToolNames = [
     "draft_deck_building_brief", "search_cards", "lookup_cards", "browse_collection_cards", "hypergeometric_calculator", "browse_tags",
     "search_card_sets", "get_format_constraints",
     "validate_format_legality", "evaluate_deck_candidate", "check_collection_availability", "render_deck_candidate", "create_deck_candidate", "edit_deck_candidate",
-    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "calculate", "read", "ask_user", "codemode", "todo", "context_status",
+    "get_deck_candidate", "list_deck_candidates", "list_collection_locations", "calculator", "read", "ask_user", "codemode", "todo", "context_status",
 ] as const;
 
 export function resolvePiToolNames(environment: Record<string, string | undefined> = process.env): readonly (typeof basePiToolNames[number] | "legacy_query_cards")[] {
@@ -24,7 +24,7 @@ export const reviewedAskUserPackage = {
     integrity: "sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==",
 } as const;
 
-/** Packages are installed by Bun; Pi loads only the two explicit extension files. */
+/** Packages are installed by Bun; Pi loads only explicitly approved extension files. */
 export function createPiProfileSettings(existing: Record<string, unknown> = {}) {
     return {...existing, packages: []};
 }
@@ -57,6 +57,10 @@ export function resolveAskUserExtensionPath(): string {
     return join(dirname(fileURLToPath(import.meta.resolve("pi-ask-user/package.json"))), "index.ts");
 }
 
+export function resolveCalculatorExtensionPath(): string {
+    return join(dirname(fileURLToPath(import.meta.resolve("@fitchmultz/pi-calculator/package.json"))), "index.ts");
+}
+
 /** The official example is shipped with the pinned Pi package and loaded directly. */
 export function resolveTodoExtensionPath(): string {
     return join(dirname(dirname(fileURLToPath(import.meta.resolve("@earendil-works/pi-coding-agent")))), "examples", "extensions", "todo.ts");
@@ -67,6 +71,7 @@ export function createPiSpawnConfiguration(options: {
     readonly extensionPath: string;
     readonly executablePath?: string;
     readonly askUserExtensionPath?: string;
+    readonly calculatorExtensionPath?: string;
     readonly todoExtensionPath?: string;
     readonly environment?: Record<string, string | undefined>;
 }) {
@@ -83,6 +88,7 @@ export function createPiSpawnConfiguration(options: {
             "--extension", join(options.workspacePath, "packages", "pi", "src", "codemode.ts"),
             "--extension", options.askUserExtensionPath ?? resolveAskUserExtensionPath(),
             "--extension", options.todoExtensionPath ?? resolveTodoExtensionPath(),
+            "--extension", options.calculatorExtensionPath ?? resolveCalculatorExtensionPath(),
             "--extension", options.extensionPath,
         ],
         cwd: options.workspacePath,

@@ -202,8 +202,9 @@ Pi launcher tests use injected process seams and temporary profiles. They verify
 version rejection, inherited Bun child/terminal configuration, explicit reviewed extension-file selection, preservation
 of Pi settings, rejection of invalid settings, and build failure before profile changes.
 The package-runtime integration starts an isolated Bun subprocess with the actual Pi SDK, production extension/Worker
-bundles and question extension. It checks the active tool registry, SQLite-backed lookup, calculator output, scoped skill
-reads, resource isolation and extension reload without a model/account/network request. These checks do not establish
+bundles and explicitly selected question, calculator, todo and codemode extensions from the launcher configuration.
+It checks the active tool registry, SQLite-backed lookup, native calculator scalar/batch decimal results, structured
+code-mode results and errors, scoped skill reads, resource isolation and extension reload without a model/account/network request. These checks do not establish
 authentication or cross-platform compatibility, and do not launch the interactive CLI. Worker tests prove
 that a slow delegated task leaves an independent Pi-side event responsive. Dependency upgrades in the current developer
 phase require no automated integrated-CLI launch test or formal manual terminal smoke-test gate; normal developer use

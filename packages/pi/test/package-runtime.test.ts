@@ -27,8 +27,14 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.lookup).toEqual(actual.afterReloadLookup);
         expect(JSON.stringify(actual.lookup)).toContain("Sol Ring");
         expect(actual.lookup.error).toBeUndefined();
-        expect(actual.arithmetic.result).toBe(13);
-        expect(actual.arithmeticSchema).toMatchObject({type: "object", additionalProperties: false, required: ["expression"], properties: {expression: {type: "string", maxLength: 512}}});
+        expect(actual.beforeReload).not.toContain("calculate");
+        expect(actual.arithmetic.details).toEqual({expression: "sqrt(16) + 3^2", value: "13"});
+        expect(actual.arithmetic.structuredContent).toEqual(actual.arithmetic.details);
+        expect(actual.arithmeticBatch.structuredContent).toEqual({expression: "[0.1 + 0.2, 2^64]", value: ["0.3", "18446744073709551616"]});
+        expect(actual.arithmeticComposed.content).toContainEqual({type: "text", text: JSON.stringify(actual.arithmeticBatch.structuredContent)});
+        expect(actual.arithmeticError.details.calls[0]).toMatchObject({name: "calculator", status: "error", error: expect.stringContaining("division by zero")});
+        expect(actual.afterReloadArithmetic).toEqual(actual.arithmetic);
+        expect(actual.arithmeticSchema).toMatchObject({type: "object", additionalProperties: false, required: ["expression"], properties: {expression: {type: "string", maxLength: 4096}}});
         expect(actual.calculator.error).toBeUndefined();
         expect(actual.calculator.probability).toBeCloseTo(2 / 3, 12);
         expect(JSON.stringify(actual.skill)).toContain("deck-development");
@@ -39,7 +45,7 @@ test("the actual Pi package loads the restricted Tomekin extension and executes 
         expect(actual.skills).not.toContain("ask-user");
         expect(actual.contexts).toBe(0);
         expect(actual.prompts).toBe(0);
-        expect(actual.extensions).toHaveLength(4);
+        expect(actual.extensions).toHaveLength(5);
         expect(actual.systemPrompt).toContain("Collection-first Magic: The Gathering assistant");
         expect(actual.systemPrompt).toContain("deck-development");
         expect(actual.systemPrompt).not.toContain("expert coding assistant");

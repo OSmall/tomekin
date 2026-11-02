@@ -5,7 +5,7 @@ import {tmpdir} from "node:os";
 import {
     configurePiProfile, createPiProfileSettings, reviewedAskUserPackage,
     createPiSpawnConfiguration, expectedPiToolNames, launchTomekinPi,
-    assertPiVersion, supportedPiVersion, resolveAskUserExtensionPath,
+    assertPiVersion, supportedPiVersion, resolveAskUserExtensionPath, resolveCalculatorExtensionPath,
 } from "@tomekin/pi";
 
 describe("Pi launcher", () => {
@@ -51,6 +51,7 @@ describe("Pi launcher", () => {
             extensionPath: "/cache/tomekin-extension.mjs",
             askUserExtensionPath: "/dependencies/pi-ask-user/index.ts",
             todoExtensionPath: "/dependencies/pi/examples/extensions/todo.ts",
+            calculatorExtensionPath: "/dependencies/pi-calculator/index.ts",
             environment: {TOMEKIN_DB_PATH: "/isolated.sqlite"},
         });
         expect(configuration.stdin).toBe("inherit");
@@ -67,7 +68,7 @@ describe("Pi launcher", () => {
             "--tools", expectedPiToolNames.join(","),
         ]));
         const extensions = configuration.args.flatMap((argument, index) => argument === "--extension" ? [configuration.args[index + 1]] : []);
-        expect(extensions).toEqual([join("/clone", "packages", "pi", "src", "codemode.ts"), "/dependencies/pi-ask-user/index.ts", "/dependencies/pi/examples/extensions/todo.ts", "/cache/tomekin-extension.mjs"]);
+        expect(extensions).toEqual([join("/clone", "packages", "pi", "src", "codemode.ts"), "/dependencies/pi-ask-user/index.ts", "/dependencies/pi/examples/extensions/todo.ts", "/dependencies/pi-calculator/index.ts", "/cache/tomekin-extension.mjs"]);
         expect(configuration.env.TOMEKIN_DB_PATH).toBe("/isolated.sqlite");
     });
 
@@ -77,6 +78,12 @@ describe("Pi launcher", () => {
         const manifest = await Bun.file(new URL("../package.json", import.meta.url)).json();
         expect(manifest.dependencies["pi-ask-user"]).toBe("0.15.0");
         expect(reviewedAskUserPackage.integrity).toBe("sha512-wmgcHUSGptAS+u+9AT4Fbjxo+iclOXERDym9m/VeX7pDcVs5vwloSKP+BcQ96beuxMEVEhFVydPkXzoYmIvpVQ==");
+    });
+
+    test("loads the pinned calculator extension file", async () => {
+        expect(resolveCalculatorExtensionPath()).toEndWith(join("@fitchmultz", "pi-calculator", "index.ts"));
+        const manifest = await Bun.file(new URL("../package.json", import.meta.url)).json();
+        expect(manifest.dependencies["@fitchmultz/pi-calculator"]).toBe("4.1.9");
     });
 
     test("propagates the Bun child exit status", async () => {

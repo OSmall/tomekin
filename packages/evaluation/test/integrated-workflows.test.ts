@@ -17,7 +17,7 @@ import {auditWorkflowSurfaces} from "../src/workflows";
 test("Pi and OpenCode expose shared product capabilities and load one canonical workflow skill tree", async () => {
     const audit = await auditWorkflowSurfaces();
     expect(audit.capabilitiesMatch).toBe(true);
-    expect(audit.piOnlyCapabilities).toEqual(["ask_user", "calculate", "codemode", "context_status", "read", "todo"]);
+    expect(audit.piOnlyCapabilities).toEqual(["ask_user", "calculator", "codemode", "context_status", "read", "todo"]);
     expect(audit.legacyDisabled).toBe(true);
     expect(audit.retiredNormalCapabilities).toEqual([]);
     expect(audit.loadedCanonicalSkills.sort()).toEqual(["card-research", "commander", "deck-development", "probability-analysis", "sixty-card-constructed"]);

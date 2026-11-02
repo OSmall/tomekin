@@ -109,7 +109,7 @@ export async function auditWorkflowSurfaces() {
     const moduleUrl = new URL("../../../.opencode/tools/tomekin.ts", import.meta.url).href;
     const tools = await import(moduleUrl);
     const openCode = Object.keys(tools).filter(name => tools[name] && typeof tools[name].execute === "function").sort();
-    const piOnly = ["read", "ask_user", "calculate", "codemode", "todo", "context_status"];
+    const piOnly = ["read", "ask_user", "calculator", "codemode", "todo", "context_status"];
     const allPi = resolvePiToolNames({});
     const pi = allPi.filter(name => !piOnly.includes(name)).sort();
     const root = fileURLToPath(new URL("../../../", import.meta.url));

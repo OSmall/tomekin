@@ -4,14 +4,13 @@ import {createLocalAgentToolRuntime, type LocalAgentToolRuntime} from "@tomekin/
 import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
 import {relative, resolve, sep} from "node:path";
-import {createGeneralCalculatorTool} from "./general-calculator";
 import {expectedPiToolNames} from "./launcher";
 import {createPiWorkerTransport, type PiWorkerTransport} from "./worker-transport";
 
 const MAX_CORE_RESULT_CHARACTERS = 16_000;
 const MAX_READ_LINES = 2_000;
 const MAX_READ_BYTES = 50 * 1024;
-const coreToolNames = expectedPiToolNames.filter((name) => !["read", "ask_user", "todo", "context_status", "codemode", "calculate"].includes(name));
+const coreToolNames = expectedPiToolNames.filter((name) => !["read", "ask_user", "todo", "context_status", "codemode", "calculator"].includes(name));
 
 type ResultLike = {isOk(): boolean; isErr(): boolean; value?: unknown; error?: {readonly type?: string; readonly message: string}};
 type ReferenceRuntime = {readonly handlers: {summarizeReferenceSupport(): Promise<ResultLike>}; close(): void};
@@ -175,7 +174,6 @@ export default function registerTomekinExtension(pi: PiApi) {
     const databasePath = resolveDatabasePath();
     const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href,log});
     for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {transport, databasePath, log}));
-    pi.registerTool(createGeneralCalculatorTool());
     pi.registerTool(createMethodologyReadTool({workspacePath: process.cwd()}));
     pi.registerTool({
         name: "context_status", label: "Context status",

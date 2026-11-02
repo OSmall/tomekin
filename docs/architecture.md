@@ -147,14 +147,15 @@ The wrapper verifies the expected Pi version. `.data/tomekin-pi-runtime/<version
 a downloaded Pi executable, and the child inherits the user's terminal streams. There is no platform-specific artifact
 selection, although only macOS arm64 has execution evidence.
 Pi's persistent clone-local profile remains `.data/pi`. The launcher selects the reviewed local `pi-ask-user/index.ts`
-file and the pinned Pi package’s official todo example explicitly and disables ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
+and `@fitchmultz/pi-calculator/index.ts` files and the pinned Pi package's official todo example explicitly and disables
+ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
 It preserves non-package Pi settings and clears independent package installation; malformed settings fail before rewrite.
 The launcher explicitly registers `skills/` as Pi-native
 skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates the approved
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
 cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
-approved model-visible registry (including `ask_user`, `todo`, `context_status` and native `codemode`) at session start.
+approved model-visible registry (including `ask_user`, `todo`, `calculator`, `context_status` and native `codemode`) at session start.
 Codemode has model calls disabled and composes approved tools. Checkpoints commit only after successful, complete output;
 truncation leaves the prior checkpoint intact. The launcher supplies a compact Tomekin system prompt in place of Pi's coding
 orientation; Pi still assembles its native skill catalog. `context_status` reports estimated usage or unknown, and the
@@ -274,14 +275,17 @@ See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [eco
 
 ### Pi general arithmetic dependency
 
-Pi's approved `calculate` tool uses Math.js 15.2.0 behind an explicit scalar-expression allowlist and fixed input and
-syntax limits. The parser does not expose assignments, property access, general code, filesystem or network tools. The
-model receives only a finite floating-point result or an actionable error. This is a Pi capability; the shared
-hypergeometric calculator remains independently available to both adapters.
+Pi explicitly loads `@fitchmultz/pi-calculator@4.1.9` as a Bun-managed extension file before Tomekin's registry audit.
+The upstream plugin owns the `calculator` name, schema, decimal evaluation, work limits, result contract and errors.
+Tomekin adds no evaluator, compatibility alias or result wrapper. Its `decimal.js` and `expr-eval-fork` dependencies
+replace the previous custom Math.js tool. Native code-mode callers receive the declared structured result directly.
+Evaluation remains in Pi's process, outside the shared-tool Worker; plugin work limits do not provide Worker cancellation.
+The shared hypergeometric calculator remains independently available to both adapters.
 
-For this selection, npm's October 23–29, 2026 figures reported 5,290,071 weekly downloads for Math.js and 542,242 for
-expr-eval. Math.js 15.2.0 was modified April 2026 and supports Node 18 or later; expr-eval 2.0.2 was last modified June
-2022. Math.js is broader and adds more dependencies, but offers active maintenance and a documented expression parser.
-Tomekin accepts only a small inspected syntax subset, avoiding exposure of its general parser functions. Bun 1.3.14 and
-the pinned Pi package are exercised by the actual package launch/reload test. Download figures are an adoption signal,
-not a security guarantee.
+The [five-option investigation](research/2026-11-02-pi-calculator-options.md) found no official production Pi calculator.
+The selected community plugin has little adoption evidence (zero stars at selection), but recent successful upstream
+Pi compatibility checks, explicit work limits and about 487 KB of unpacked runtime source including its two dependencies.
+It avoids the extra process/runtime or cloud dependency of the compared MCP options. Upstream documents Node >=24;
+an isolated Bun 1.3.14/Pi 1.4.0 trial passed, and the actual-package integration test covers loading, direct and nested
+results, native errors and reload under Tomekin's restricted launcher configuration. This establishes the measured
+Bun path, not broader upstream Bun support or cross-platform qualification.

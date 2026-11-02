@@ -59,9 +59,9 @@ and catalog network refreshes during an offline startup check; this does not mak
 Helper acquisition and behavior remain Pi-owned.
 
 The session exposes the approved Tomekin Agent Tools, a skill-only `read`, `ask_user`, restricted native `codemode`,
-the pinned Pi todo extension and `context_status`. It does not grant coding, shell, general filesystem, network,
+the pinned Pi todo and calculator extensions and `context_status`. It does not grant coding, shell, general filesystem, network,
 raw-database or MCP tools. Pi discovers canonical `skills/`; ambient resources remain disabled. The launcher loads
-the reviewed `pi-ask-user@0.15.0` file and the official todo example shipped with the pinned Pi version. It preserves
+the reviewed `pi-ask-user@0.15.0` and `@fitchmultz/pi-calculator@4.1.9` extension files and the official todo example shipped with the pinned Pi version. It preserves
 other settings while clearing the profile's package list. A compact Tomekin system prompt replaces Pi's coding orientation
 while preserving native skill discovery. For substantial requests the agent uses a checklist and checks estimated context
 capacity; unknown estimates remain unknown. After compaction it recovers the actual candidate, Resume note and needed
@@ -89,7 +89,8 @@ lookup. It performs no network fallback; opt-in Collection summaries/copies eval
 including reliable source-added dates and independently searchable unknown dates. Successful reimport requires scope
 reconfirmation; failed attempts preserve current references. See the [Collection contract](docs/card-query.md#collection-policy-and-owned-row-browsing).
 
-Pi also provides `calculate` for bounded scalar arithmetic without Collection or reference data. See the
+Pi provides the plugin's native `calculator` for 40-significant-digit decimal arithmetic, scientific functions,
+statistics and batches without Collection or reference data. Results are decimal strings. See the
 [general calculator contract](docs/product-behavior.md#general-calculator-pi) for supported expressions and limits.
 
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
