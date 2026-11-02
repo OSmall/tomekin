@@ -5,13 +5,12 @@ import {resolveDatabasePath} from "@tomekin/sqlite";
 import {readFileSync, realpathSync, statSync} from "node:fs";
 import {relative, resolve, sep} from "node:path";
 import {expectedPiToolNames} from "./launcher";
-import {appendTomekinPiBootstrap} from "./bootstrap";
 import {createPiWorkerTransport, type PiWorkerTransport} from "./worker-transport";
 
 const MAX_CORE_RESULT_CHARACTERS = 16_000;
 const MAX_READ_LINES = 2_000;
 const MAX_READ_BYTES = 50 * 1024;
-const coreToolNames = expectedPiToolNames.filter((name) => name !== "read" && name !== "ask_user");
+const coreToolNames = expectedPiToolNames.filter((name) => !["read", "ask_user", "todo", "context_status", "codemode", "calculator"].includes(name));
 
 type ResultLike = {isOk(): boolean; isErr(): boolean; value?: unknown; error?: {readonly type?: string; readonly message: string}};
 type ReferenceRuntime = {readonly handlers: {summarizeReferenceSupport(): Promise<ResultLike>}; close(): void};
@@ -176,6 +175,15 @@ export default function registerTomekinExtension(pi: PiApi) {
     const transport = createPiWorkerTransport({workerUrl: new URL("./tomekin-tomekin-worker.mjs", import.meta.url).href,log});
     for (const name of coreToolNames) pi.registerTool(createCoreTool(name, {transport, databasePath, log}));
     pi.registerTool(createMethodologyReadTool({workspacePath: process.cwd()}));
+    pi.registerTool({
+        name: "context_status", label: "Context status",
+        description: "Report the current estimated context usage and model window before a substantial pass. Unknown values are not zero.",
+        parameters: Type.Object({}, {additionalProperties: false}), executionMode: "sequential",
+        async execute(_id: string, _params: Record<string, unknown>, _signal: AbortSignal, _update?: unknown, context?: {getContextUsage(): {tokens: number | null; contextWindow: number; percent: number | null} | undefined}) {
+            const usage = context?.getContextUsage();
+            return projectOutput({estimatedTokens: usage?.tokens ?? null, contextWindow: usage?.contextWindow ?? null, estimatedPercent: usage?.percent ?? null});
+        },
+    } as PiTool);
     const registerLaterTool = pi.registerTool.bind(pi);
     pi.registerTool = (tool) => {
         if (!expectedPiToolNames.includes(tool.name as typeof expectedPiToolNames[number])) throw new Error(`Pi tool registry contains unexpected tool ${tool.name}.`);
@@ -184,5 +192,4 @@ export default function registerTomekinExtension(pi: PiApi) {
     };
     pi.on("session_start", () => auditPiToolRegistry(pi.getActiveTools()));
     pi.on("session_shutdown", async () => { await transport.close(); });
-    pi.on("before_agent_start", (event) => ({systemPrompt: appendTomekinPiBootstrap(event.systemPrompt)}));
 }

@@ -215,7 +215,7 @@ Exact UTC text timestamps preserve creation/update precision. Every committed co
 even within one clock tick; edits check the exact last-read value inside an immediate transaction. Separate selected,
 Brief and plan/pool timestamps provide check-specific invalidation inputs. Pool-only maintenance leaves selected inputs
 unchanged. Publishing check evidence is separate from content editing. The old second-precision metadata and Markdown
-columns remain physically present; the current write API does not accept Markdown or implement legacy conversion.
+columns remain physically present; the current write API does not implement legacy conversion.
 
 `check_evidence_json` stores at most the latest `format_legality`, `deck_evaluation` and `collection_availability` records, each with complete
 findings, UTC check time and captured selected/Brief timestamps, relevant Brief fields, Oracle import/contract revision
@@ -235,7 +235,7 @@ Cutting membership retains its assessed option and contributions. Updates preser
 
 ### Current plan and assessed pool
 
-`deck_candidate_plan` holds one current description per candidate. `deck_candidate_node` holds stable candidate-scoped
+`deck_candidate_plan` holds one current description and nullable action-analysis and search-research Markdown documents per candidate. Whole-field writes replace only supplied documents; omitted values survive and explicit null clears a document. `deck_candidate_node` holds stable candidate-scoped
 roles and Win Routes with kind-specific fields and optional claim-local coverage/evidence JSON. `deck_candidate_option`
 is unique by candidate/Card Identity and owns an optional comparison note. `deck_candidate_contribution` is unique by
 candidate/option/role and owns rationale, qualifications and evidence. `deck_candidate_relationship` owns stable directed
@@ -283,3 +283,7 @@ Reports, role-grouped/deduplicated pool views and Portable Decklists derive from
 report authority or snapshot. Canonical names are joined on read. Explicit JSON retains the complete candidate and latest
 recorded check findings/dependencies. Continuation's view fingerprint is computed transiently from included records and
 content timestamp, not persisted as a candidate revision or historical report.
+
+### Current reasoning review
+
+Candidates carry a persisted `pending` or `reviewed` reasoning-review state, independent of legality, Availability and strategic adequacy. Existing candidates default to pending. Changes to selected quantities or sections, the Brief, or current strategic reasoning reopen review; unrelated alternative maintenance does not. The edit result identifies directly affected contributions and roles after selected membership changes. Reconcile indirect dependencies and the actual saved selection before acknowledging `reviewed` in a separate edit using the latest `expected_updated_at`. Review-only edits preserve deterministic check freshness; a stale acknowledgement conflicts and material changes cannot be acknowledged in the same edit. Reviewed reasoning may still record gaps.

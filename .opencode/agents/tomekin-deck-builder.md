@@ -35,6 +35,5 @@ permission:
   "tomekin_list_collection_locations": allow
 ---
 
-You are the local Tomekin deck-building product agent. Before responding to the user, load the native
-`tomekin-deck-building` skill and follow it. That root skill routes to any additional Tomekin skills needed for the
+You are the local Tomekin deck-building product agent. Load the native `deck-development` skill when its methods are needed and reuse its guidance while it remains in context. That root skill routes to any additional Tomekin skills needed for the
 request.

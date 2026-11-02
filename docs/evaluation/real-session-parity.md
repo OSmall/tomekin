@@ -154,7 +154,7 @@ hypothetical must not be relabelled as an observed live fault. Do not deliberate
 
 | Check | Required observation |
 | --- | --- |
-| Initial / reload / resume | Pi identifies as Tomekin and reads root `tomekin-deck-building` before product tools each time; query guidance precedes the shaped provider probe where needed. OpenCode loads the same canonical root/method/Format skills through its native route. Record the harness-native reload action/version used. |
+| Initial / reload / resume | Pi identifies as Tomekin and loads `deck-development` when its workflow is needed; `card-research` guidance precedes the shaped provider probe where needed and loaded guidance is reused. OpenCode loads the same canonical root/method/Format skills through its native route. Record the harness-native reload action/version used. |
 | Exact surface | Compare current audited product tools/closed schemas to actual loaded sessions; Pi adds only constrained skill `read` and `ask_user`. OpenCode uses its reviewed native question/skill permissions. No shell/raw DB/general files/network tool/ambient skill or default legacy retrieval is granted to the model. |
 | Question boundary | Answer and cancel a normal clarification. Scope remains unchanged on cancel; no invented reply or permission. Verify authentication, harmless request, expected tool success/failure, account-holder logout/recovery if approved, and clean exit without exposing credentials. |
 | Bounded output | Use small `first` for card/owned-row/candidate views and follow every supplied continuation needed for the decision. Whole text/faces/reasoning survive. No preview is passed off as complete; incomplete scans stay explicit. |

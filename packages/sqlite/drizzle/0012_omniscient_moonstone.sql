@@ -1,0 +1,1 @@
+ALTER TABLE `deck_candidate` ADD `reasoning_review` text DEFAULT 'pending' NOT NULL;

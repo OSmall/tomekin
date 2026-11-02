@@ -107,27 +107,35 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
         if (
             raw.version !== 1 ||
             raw.provider !== "scryfall" ||
-            typeof raw.cooldownWallUntil !== "number" ||
-            typeof raw.uncertain !== "boolean"
+            typeof raw.cooldownWallUntil !== "number" || !Number.isFinite(raw.cooldownWallUntil) ||
+            typeof raw.uncertain !== "boolean" ||
+            (raw.lastStartWall !== undefined && (typeof raw.lastStartWall !== "number" || !Number.isFinite(raw.lastStartWall))) ||
+            (raw.lastIntervalMs !== undefined && (typeof raw.lastIntervalMs !== "number" || !Number.isFinite(raw.lastIntervalMs) || raw.lastIntervalMs < 0)) ||
+            ((raw.lastStartWall === undefined) !== (raw.lastIntervalMs === undefined))
         )
             throw new Error("Invalid provider state");
         initial = raw;
     } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ENOENT")
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+            log?.warn({operation: "provider_initialization", reason: "unreadable_or_corrupt_state", recoveryDelayMs: 31000}, "Provider state requires conservative recovery");
             initial = {
                 version: 1,
                 provider: "scryfall",
                 cooldownWallUntil: Date.now() + 31000,
                 uncertain: true,
             };
+        }
     }
-    if (recovered)
+    if (recovered) {
+        log?.warn({operation: "provider_initialization", reason: "recovered_owner", recoveryDelayMs: 31000}, "Provider owner recovered conservatively");
         initial = {
             version: 1,
             provider: "scryfall",
+            ...initial,
             cooldownWallUntil: initial?.cooldownWallUntil ?? 0,
             uncertain: true,
         };
+    }
     const persist = (state: ProviderControlState) => {
         const temp = stateFile + `.${process.pid}.tmp`;
         writeFileSync(temp, JSON.stringify(state), {mode: 0o600, flush: true});
@@ -147,15 +155,6 @@ function claimProcessProvider(log?: Logger): CardSearchProvider {
         dispatch: dispatchScryfallHttp,
     });
     process.once("exit", () => {
-        try {
-            persist({
-                version: 1,
-                provider: "scryfall",
-                cooldownWallUntil: JSON.parse(readFileSync(stateFile, "utf8"))
-                    .cooldownWallUntil,
-                uncertain: true,
-            });
-        } catch {}
         try {
             rmSync(lock, {recursive: true});
         } catch {}

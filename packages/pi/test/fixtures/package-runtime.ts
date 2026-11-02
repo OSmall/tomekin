@@ -5,7 +5,7 @@ import {fileURLToPath} from "node:url";
 import {
     createAgentSession, DefaultResourceLoader, ModelRuntime, SessionManager, SettingsManager, VERSION,
 } from "@earendil-works/pi-coding-agent";
-import {buildTomekinExtension, expectedPiToolNames, resolveAskUserExtensionPath} from "@tomekin/pi";
+import {buildTomekinExtension, createPiSpawnConfiguration, expectedPiToolNames, tomekinPiBootstrap} from "@tomekin/pi";
 import {createLookupFixture} from "../../../agent/test/fixtures/lookup";
 
 // This subprocess receives isolated profile storage and no account credentials.
@@ -19,11 +19,13 @@ try {
     const agentDir = process.env.PI_CODING_AGENT_DIR!;
     await mkdir(agentDir, {recursive: true});
     const extension = await buildTomekinExtension(workspace, join(directory, "bundles"));
+    const configuration = createPiSpawnConfiguration({workspacePath: workspace, extensionPath: extension});
     const settingsManager = SettingsManager.create(workspace, agentDir);
     settingsManager.setProjectTrusted(false);
     const resourceLoader = new DefaultResourceLoader({
         cwd: workspace, agentDir, settingsManager,
-        additionalExtensionPaths: [resolveAskUserExtensionPath(), extension],
+        additionalExtensionPaths: configuration.args.flatMap((argument, index) => argument === "--extension" ? [configuration.args[index + 1]!] : []),
+        systemPromptOverride: () => tomekinPiBootstrap,
         additionalSkillPaths: [join(workspace, "skills")],
         noExtensions: true, noSkills: true, noContextFiles: true, noPromptTemplates: true, noThemes: true,
     });
@@ -45,16 +47,34 @@ try {
     };
     const lookup = await invoke("lookup_cards", {references: [{kind: "name", value: "Sol Ring"}], select: {name: true, oracle_text: true}});
     const calculator = await invoke("hypergeometric_calculator", {operation: "probability", populationSize: 4, populationSuccesses: 2, sampleSize: 2, event: {kind: "exactly", count: 1}});
-    const skill = await invoke("read", {path: "skills/tomekin-deck-building/SKILL.md", limit: 2});
+    session.agent.state.messages.push({role: "assistant", content: [{type: "toolCall", id: "package-smoke-codemode", name: "codemode", arguments: {}}], api: "openai-responses", provider: "fixture", model: "fixture", usage: {input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: {input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0}}, stopReason: "toolUse", timestamp: Date.now()});
+    const composed = await invoke("codemode", {code: `const page = JSON.parse(await tools.lookup_cards({references: [{kind: "name", value: "Sol Ring"}], select: {name: true}})); text(JSON.stringify(page));`});
+    const arithmetic = await invoke("calculator", {expression: "sqrt(16) + 3^2"});
+    const arithmeticBatch = await invoke("calculator", {expression: "[0.1 + 0.2, 2^64]"});
+    const arithmeticComposed = await invoke("codemode", {code: `const result = await tools.calculator({expression: "[0.1 + 0.2, 2^64]"}); text(result);`});
+    const arithmeticError = await invoke("codemode", {code: `try { await tools.calculator({expression: "1 / 0"}); } catch (error) { text(error.message); }`});
+
+    const skill = await invoke("read", {path: "skills/deck-development/SKILL.md", limit: 2});
+    const references = await Promise.all(["skills/card-research/codemode.md", "skills/card-research/legacy-query.md"].map(path => invoke("read", {path, limit: 2})));
     const denied = await invoke("read", {path: "package.json"});
+    const todoAdd = await invoke("todo", {action: "add", text: "Research"});
+    session.sessionManager.appendMessage({role: "toolResult", toolCallId: "saved-todo", toolName: "todo", content: todoAdd.content, details: todoAdd.details, isError: false, timestamp: Date.now()});
+    await session.reload();
+    const todoList = await invoke("todo", {action: "list"});
+    const todoToggle = await invoke("todo", {action: "toggle", id: 1});
+    const todoClear = await invoke("todo", {action: "clear"});
+    const context = await invoke("context_status", {});
+    const systemPrompt = session.systemPrompt;
     const beforeReload = session.getActiveToolNames();
     await session.reload();
     const afterReload = session.getActiveToolNames();
     const afterReloadLookup = await invoke("lookup_cards", {references: [{kind: "name", value: "Sol Ring"}], select: {name: true, oracle_text: true}});
+    const afterReloadArithmetic = await invoke("calculator", {expression: "sqrt(16) + 3^2"});
     console.log(JSON.stringify({
-        version: VERSION, beforeReload, afterReload, errors,
+        version: VERSION, beforeReload, afterReload, errors, systemPrompt, todoAdd: todoAdd.details, todoList: todoList.details, todoToggle: todoToggle.details, todoClear: todoClear.details, context: context.details,
         lookup: lookup.details, afterReloadLookup: afterReloadLookup.details,
-        calculator: calculator.details, skill: skill.content, denied: denied.details,
+        calculator: calculator.details, arithmetic, arithmeticBatch, arithmeticComposed, arithmeticError, afterReloadArithmetic,
+        arithmeticSchema: session.agent.state.tools.find(tool => tool.name === "calculator")!.parameters, composed: composed.content, skill: skill.content, references: references.map(result => result.content), denied: denied.details,
         skills: resourceLoader.getSkills().skills.map(skill => skill.name),
         contexts: resourceLoader.getAgentsFiles().agentsFiles.length,
         prompts: resourceLoader.getPrompts().prompts.length,

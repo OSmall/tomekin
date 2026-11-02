@@ -202,8 +202,9 @@ Pi launcher tests use injected process seams and temporary profiles. They verify
 version rejection, inherited Bun child/terminal configuration, explicit reviewed extension-file selection, preservation
 of Pi settings, rejection of invalid settings, and build failure before profile changes.
 The package-runtime integration starts an isolated Bun subprocess with the actual Pi SDK, production extension/Worker
-bundles and question extension. It checks the active tool registry, SQLite-backed lookup, calculator output, scoped skill
-reads, resource isolation and extension reload without a model/account/network request. These checks do not establish
+bundles and explicitly selected question, calculator, todo and codemode extensions from the launcher configuration.
+It checks the active tool registry, SQLite-backed lookup, native calculator scalar/batch decimal results, structured
+code-mode results and errors, scoped skill reads, resource isolation and extension reload without a model/account/network request. These checks do not establish
 authentication or cross-platform compatibility, and do not launch the interactive CLI. Worker tests prove
 that a slow delegated task leaves an independent Pi-side event responsive. Dependency upgrades in the current developer
 phase require no automated integrated-CLI launch test or formal manual terminal smoke-test gate; normal developer use
@@ -211,7 +212,7 @@ supplies feedback. The current developer uses macOS arm64; Windows/Linux executi
 
 Pi extension tests also verify the controlled bootstrap's prompt composition and the shared core tool schemas without a
 live Pi process or LLM. The separate matched real-session parity evaluation (#26), described in the README and its own
-protocol, covers initial, reload, and resume orientation and a correctly shaped Card Query after loading the query-cards
+protocol, covers initial, reload, and resume orientation and a correctly shaped Card Query after loading the card-research
 skill. It is not a dependency-upgrade gate. Real Scryfall bulk data is outside the default suite and is not required for ordinary TDD.
 
 ## Exact Output Tests
@@ -262,7 +263,7 @@ paired additions and cuts, aggregate re-analysis, preserved deck size, determini
 revised Deck Candidate is built, evidence-backed explanations, and persistence only when existing or new authorization covers the exact
 final change set.
 
-The same corpus includes human-reviewed shared deck-shape methodology expectations: meaningful Commander starting
+The same corpus includes human-reviewed shared deck-development methodology expectations: meaningful Commander starting
 profiles and retained departures, factual qualification and modal competition, whole-contribution swaps, section-aware
 selected coverage versus active alternatives, current reasoning/evidence and explicit checking boundaries. These are
 reasoning invariants, not new CI quality scores. The [deterministic four-workflow demonstration](evaluation/workflows.md) exercises the current public seams and actual
@@ -390,3 +391,6 @@ Component counts are independently tokenized diagnostics, not additive billing e
 compact tag modes, foil-scoped membership without evidence, explicit policy inspection, bounded cursors and context
 restart. Scenario 17 separately tests live-agent methodology and human outcome review. See
 [economy protocol and results](evaluation/economy.md).
+
+The [Collection-scoped search measurement](evaluation/scoped-search-128.md) compares complete synthetic
+provider traversals with and without tag enrichment and records its limits.

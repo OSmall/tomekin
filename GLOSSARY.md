@@ -187,6 +187,10 @@ A reasoned judgment of a Deck Role's adequacy, conditions, reliability, and gaps
 explains intentionally unfilled desired roles and remains distinct from counts derived from selected-card quantities and
 contributions. _Avoid_: Synergy score, verified viability
 
+**Template**:
+The adopted The Command Zone Podcast Commander starting profile for functional deck composition, understood with
+contextual overlap and justified departures. _Avoid_: Mandatory role quota, legality rule
+
 **Deck Package**:
 A coherent group of cards in a Deck Candidate that work together toward a shared strategic purpose, such as sacrifice
 fodder, sacrifice outlets, and death payoffs. A Deck Package may contain several Deck Roles, and a card may participate

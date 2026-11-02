@@ -1,3 +1,4 @@
+import {reconstructCandidateView, type CandidateViewRecord} from "@tomekin/core";
 import {execFileSync} from "node:child_process";
 import {readFileSync} from "node:fs";
 import {cpus} from "node:os";
@@ -217,19 +218,15 @@ if (import.meta.main) {
 }
 
 async function readCandidateJson(runtime: ReturnType<typeof createLocalAgentToolRuntime>,id:string):Promise<DeckCandidate> {
-    let restored: any,after:string|undefined;
+    const records: CandidateViewRecord[] = [];
+    let after:string|undefined;
     do {
         const result=await runtime.handlers.getDeckCandidate({id,view:"json",first:200,...after?{after}:{}});
         if(result.isErr())throw new Error(JSON.stringify(result.error));
         if(!("edges" in result.value))throw new Error("Expected bounded candidate JSON records");
         const page=result.value;
-        for(const {node:{path,value}} of page.edges){
-            if(!path.length){restored=value;continue;}
-            let parent=restored;
-            for(const key of path.slice(0,-1))parent=parent[key];
-            parent[path.at(-1)!]=value;
-        }
+        records.push(...page.edges.map(({node}) => node));
         after=Boolean(page.next_cursor)?page.next_cursor ?? undefined:undefined;
     }while(after);
-    return restored as DeckCandidate;
+    return reconstructCandidateView(records) as DeckCandidate;
 }
