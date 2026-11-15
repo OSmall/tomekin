@@ -1,1 +1,0 @@
-../../../skills/commander-deck-architecture/SKILL.md

@@ -9,6 +9,8 @@ export type ProviderControlState = {
     provider: "scryfall";
     cooldownWallUntil: number;
     uncertain: boolean;
+    lastStartWall?: number;
+    lastIntervalMs?: number;
 };
 export type ProviderOwnerOptions = {
     now?: () => number;
@@ -27,8 +29,11 @@ export function createProviderDispatchOwner(
     const now = options.now ?? (() => performance.now()),
         wall = options.wallNow ?? (() => Date.now()),
         wait = options.wait ?? abortableWait;
-    let lastStart = -Infinity,
-        lastInterval = 0,
+    const initialWall = wall(), initialNow = now();
+    let lastStart = options.initialState?.lastStartWall === undefined ? -Infinity :
+            initialNow - Math.max(0, initialWall - options.initialState.lastStartWall),
+        lastStartWall = options.initialState?.lastStartWall,
+        lastInterval = options.initialState?.lastIntervalMs ?? 0,
         cooldown =
             now() +
             Math.max(
@@ -51,6 +56,7 @@ export function createProviderDispatchOwner(
                 provider: "scryfall",
                 cooldownWallUntil: durableWallUntil,
                 uncertain,
+                ...(lastStartWall === undefined ? {} : {lastStartWall, lastIntervalMs: lastInterval}),
             });
         } catch {
             failed = true;
@@ -63,6 +69,10 @@ export function createProviderDispatchOwner(
             });
         }
     };
+    const retainedCooldownMs = Math.max(0, (options.initialState?.cooldownWallUntil ?? 0) - initialWall);
+    options.log?.info({operation: "provider_initialization", retainedCooldownMs,
+        uncertainPriorRequest: options.initialState?.uncertain ?? false,
+        recoveryDelayMs: options.initialState?.uncertain ? 31000 : 0}, "Provider admission initialized");
     return {
         id: "scryfall",
         dispatch(url, context) {
@@ -90,12 +100,12 @@ export function createProviderDispatchOwner(
                 while (true) {
                     if (context.signal?.aborted) throw cancelled();
                     const remaining = deadline - now(),
-                        delay = Math.max(
-                            0,
-                            lastStart + Math.max(lastInterval, options.intervalMs?.(url) ?? 500) - now(),
-                            cooldown - now(),
-                        );
-                    if (remaining <= 0 || delay >= remaining)
+                        spacingWait = Math.max(0, lastStart + Math.max(lastInterval, options.intervalMs?.(url) ?? 500) - now()),
+                        cooldownWait = Math.max(0, cooldown - now()),
+                        delay = Math.max(spacingWait, cooldownWait),
+                        reason = cooldownWait >= spacingWait && cooldownWait > 0 ? "cooldown" : "start_spacing";
+                    if (remaining <= 0 || delay >= remaining) {
+                        log?.info({operation: "provider_admission", reason, requiredWaitMs: delay, admissionWaitMs: 0, remainingBudgetMs: Math.max(0, remaining)}, "Provider admission could not fit the request budget");
                         throw new ProviderFailure(
                             cooldown > now()
                                 ? {
@@ -114,13 +124,15 @@ export function createProviderDispatchOwner(
                                       retryable: true,
                                   },
                         );
+                    }
                     if (delay === 0) break;
-                    const t = now(),
-                        cooldownWait = Math.max(0, cooldown - t);
+                    const t = now();
                     await wait(delay, context.signal);
                     log?.info(
                         {
                             operation: "provider_admission",
+                            requiredWaitMs: delay,
+                            reason,
                             admissionWaitMs: now() - t,
                             cooldownWaitMs: Math.min(now() - t, cooldownWait),
                             cooldownRemainingMs: Math.max(0, cooldown - now()),
@@ -132,6 +144,7 @@ export function createProviderDispatchOwner(
                 persist(true);
                 lastInterval = options.intervalMs?.(url) ?? 500;
                 lastStart = now();
+                lastStartWall = wall();
                 // No await separates this timestamp from transport invocation.
                 const response = options.dispatch(url);
                 requestCount++;
@@ -155,6 +168,7 @@ export function createProviderDispatchOwner(
                         cooldown,
                         now() + Math.max(31000, reply.retryAfterMs ?? 0),
                     );
+                    log?.info({operation: "provider_cooldown", reason: "http_429", requiredWaitMs: Math.ceil(cooldown - now())}, "Provider cooldown established");
                     reply = {
                         ...reply,
                         retryAfterMs: Math.ceil(cooldown - now()),

@@ -71,6 +71,7 @@ export function createSqliteDeckCandidateRepository(
                                 selectedChangedAt: now,
                                 briefChangedAt: now,
                                 planChangedAt: now,
+                                reasoningReview: candidate.reasoning_review,
                                 assessmentsJson: candidate.assessments,
                             })
                             .run();
@@ -123,6 +124,7 @@ export function createSqliteDeckCandidateRepository(
                                 selectedChangedAt: candidate.selectedChangedAt,
                                 briefChangedAt: candidate.briefChangedAt,
                                 planChangedAt: candidate.planChangedAt,
+                                reasoningReview: candidate.reasoning_review,
                                 assessmentsJson: candidate.assessments,
                             })
                             .where(eq(deckCandidate.id, candidate.id))
@@ -226,9 +228,11 @@ function writeResult(
         updated_at: candidate.updatedAt,
         created_ids: createdIds,
         changed_references: changedReferences,
+        reasoning_review: candidate.reasoning_review,
         summary: `${verb}: ${changedReferences.length} targeted record/field changes; ${candidate.options.length} assessed options, ${candidate.memberships.reduce((sum, m) => sum + m.quantity, 0)} selected copies.`,
         validation_evidence:
             summarizeDeckCandidate(candidate).validation_evidence,
+        research: summarizeDeckCandidate(candidate).research,
     };
 }
 function persistRecords(
@@ -328,11 +332,13 @@ function persistRecords(
                 .values({
                     candidateId: id,
                     description: candidate.plan.description,
+                    actionAnalysisMarkdown: candidate.plan.action_analysis_markdown ?? null,
+                    searchResearchMarkdown: candidate.plan.search_research_markdown ?? null,
                 })
                 .run();
-        else if (candidate.plan.description !== oldPlan.description)
+        else if (candidate.plan.description !== oldPlan.description || candidate.plan.action_analysis_markdown !== oldPlan.action_analysis_markdown || candidate.plan.search_research_markdown !== oldPlan.search_research_markdown)
             db.update(deckCandidatePlan)
-                .set({ description: candidate.plan.description })
+                .set({ description: candidate.plan.description, actionAnalysisMarkdown: candidate.plan.action_analysis_markdown ?? null, searchResearchMarkdown: candidate.plan.search_research_markdown ?? null })
                 .where(eq(deckCandidatePlan.candidateId, id))
                 .run();
     }
@@ -622,6 +628,7 @@ function readCandidate(db: Store, id: string, versions:DeckCheckVersions=deckChe
         selectedChangedAt: row.selectedChangedAt ?? updatedAt,
         briefChangedAt: row.briefChangedAt ?? updatedAt,
         planChangedAt: row.planChangedAt ?? updatedAt,
+        reasoning_review: row.reasoningReview,
         assessments: (row.assessmentsJson ??
             {}) as DeckCandidate["assessments"],
         plan: plan
@@ -629,6 +636,8 @@ function readCandidate(db: Store, id: string, versions:DeckCheckVersions=deckChe
                   schema_version: 1,
                   candidate_id: id,
                   description: plan.description,
+                  action_analysis_markdown: plan.actionAnalysisMarkdown,
+                  search_research_markdown: plan.searchResearchMarkdown,
                   nodes,
                   contributions,
                   relationships,

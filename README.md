@@ -58,14 +58,14 @@ Pi's native TUI may separately download its `fd`/`rg` helpers when absent. Set `
 and catalog network refreshes during an offline startup check; this does not make authenticated model calls work offline.
 Helper acquisition and behavior remain Pi-owned.
 
-The session exposes the approved Tomekin Agent Tools, Tomekin's scoped replacement for Pi's `read` tool over `skills/`, and
-Pi's interactive `ask_user` tool. It does not give the model coding, shell, general filesystem, network, raw-database,
-MCP, task, discovery, or todo tools. The launcher explicitly registers the canonical `skills/` directory
-as Pi skills while ambient extension, skill, context-file, prompt, theme, and MCP discovery remain disabled.
-The launcher selects only the Bun-installed `pi-ask-user@0.15.0/index.ts` file, excluding its bundled skills, prompts, and themes.
-It preserves other Pi settings while clearing the profile's package list so Pi does not independently install or update extensions. Tomekin adds a
-controlled per-turn orientation that directs the assistant to read the root deck-building skill before product-tool
-use. Pi retains ownership of login, settings, and conversation data within this clone-local profile.
+The session exposes the approved Tomekin Agent Tools, a skill-only `read`, `ask_user`, restricted native `codemode`,
+the pinned Pi todo and calculator extensions and `context_status`. It does not grant coding, shell, general filesystem, network,
+raw-database or MCP tools. Pi discovers canonical `skills/`; ambient resources remain disabled. The launcher loads
+the reviewed `pi-ask-user@0.15.0` and `@fitchmultz/pi-calculator@4.1.9` extension files and the official todo example shipped with the pinned Pi version. It preserves
+other settings while clearing the profile's package list. A compact Tomekin system prompt replaces Pi's coding orientation
+while preserving native skill discovery. For substantial requests the agent uses a checklist and checks estimated context
+capacity; unknown estimates remain unknown. After compaction it recovers the actual candidate, Resume note and needed
+research pages. Pi retains ownership of login, settings and conversation data within this clone-local profile.
 Existing standalone caches and profile data are retained. Downgrades and cross-version profile/session compatibility
 are unsupported in this developer phase; deliberate downgrade recovery is manual.
 
@@ -89,6 +89,10 @@ lookup. It performs no network fallback; opt-in Collection summaries/copies eval
 including reliable source-added dates and independently searchable unknown dates. Successful reimport requires scope
 reconfirmation; failed attempts preserve current references. See the [Collection contract](docs/card-query.md#collection-policy-and-owned-row-browsing).
 
+Pi provides the plugin's native `calculator` for 40-significant-digit decimal arithmetic, scientific functions,
+statistics and batches without Collection or reference data. Results are decimal strings. See the
+[general calculator contract](docs/product-behavior.md#general-calculator-pi) for supported expressions and limits.
+
 The shared `hypergeometric_calculator` computes bounded sampling probabilities or a minimum qualifying count against an
 explicit decimal target. It works without imported card data and does not save records. See the
 [calculator contract](docs/product-behavior.md#hypergeometric-calculator) for inputs, precision and sampling limits.
@@ -100,8 +104,8 @@ for controlled inputs, exact new-path gates and sanitized results; `bun run eval
 public-reference/synthetic-owned fixtures without running a model or accessing an account.
 
 Within that separate parity evaluation, check initial sessions, extension reload, and resumed sessions: Pi identifies as Tomekin, loads
-`tomekin-deck-building` before its first product-tool call, and completes a correctly shaped `search_cards` call after
-loading `query-cards` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
+`deck-development` when its workflow is needed, and completes a correctly shaped `search_cards` call after
+loading `card-research` when retrieval selection or recovery needs guidance. During a deliberately slow product-tool call, confirm that
 the spinner and terminal input remain responsive, Escape cancels a read, and dispatched candidate writes settle and are not reported cancelled.
 
 ### Upgrading an existing pre-Card-Set database
@@ -265,7 +269,8 @@ TOMEKIN_LOG_FORMAT=json TOMEKIN_LOG_FILE=.data/tomekin.jsonl opencode
 - Deck Opportunities and Deck Change Proposals are transient. The current persistence service saves Deck Candidates
   only.
 - Final Availability checks cover the complete selected demand against recorded Collection rows under the Brief policy.
-  Bounded Collection Pull Lists recover complete witnesses; imported data does not establish physical possession.
+  The default check returns the complete summary without witness rows; focused saved problems explain shortages and
+  uncertainty. Bounded Collection Pull Lists recover sourcing witnesses; imported data does not establish physical possession.
 - ManaBox List rows are not currently skipped and summarized; an unsupported location type fails the readable import
   and preserves the previous Collection snapshot ([issue #39](https://github.com/OSmall/tomekin/issues/39)).
 
@@ -299,11 +304,12 @@ bun run typecheck
 - [`docs/adr/`](./docs/adr/): hard-to-reverse architecture and technology decisions.
 - [`docs/research/`](./docs/research/): saved research notes and prototypes.
 
-The canonical [deck-shape methodology](skills/deck-shape-methodology/SKILL.md) supplies shared reasoning for discovery,
-construction and tuning. The [Commander skill](skills/commander-deck-architecture/SKILL.md) owns its adopted contextual
-starting profile and compact example; 60-card guidance remains in its Format skills. Format-owned calculator examples use the implemented exact tool. The [four-workflow demonstration](docs/evaluation/workflows.md)
-exercises current retrieval, durable incomplete construction, partial tuning, explicit checks and joint assembly through
-isolated SQLite and supported adapters. Deterministic evidence does not establish live-model quality.
+The canonical [deck-development skill](skills/deck-development/SKILL.md) routes discovery, construction,
+tuning, explanation and resumption. [Card research](skills/card-research/SKILL.md) and
+[probability analysis](skills/probability-analysis/SKILL.md) own shared methods;
+[Commander](skills/commander/SKILL.md) and [60-card Constructed](skills/sixty-card-constructed/SKILL.md)
+supply Format-specific guidance. The [workflow demonstration](docs/evaluation/workflows.md) exercises product seams
+with synthetic data. Deterministic evidence does not establish live-model quality.
 
 ## Future Direction
 

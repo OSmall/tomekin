@@ -20,8 +20,9 @@ Collection-policy filtering and owned-copy evidence are not provided by this sea
 `browse_tags` provides explicit slug/label/alias search, known-slug definitions and recoverable catalogue listing.
 Hierarchy appears only when requested for lookup: one parent/child level by default, explicitly up to three.
 Missing tag data is a readiness error; empty search and known-slug misses are separate successful outcomes.
-Complete definitions and requested graph records survive adapter transport without preview clipping. Catalogue
-pagination binds the successful tag import; per-card inherited tags remain complete at every depth.
+Slug and complete nullable description are returned by default; optional field selection adds or replaces those facts.
+Requested fields and graph records survive adapter transport without preview clipping. Catalogue pagination binds the
+selection and successful tag import; per-card inherited tags remain complete at every depth.
 `search_card_sets` discovers existing imported Set code/name metadata and depends only on All Cards readiness.
 
 ## Known-card facts
@@ -51,14 +52,12 @@ with instructions to reinstall the committed lockfile. `bun run tomekin --versio
 Its separate clone-local runtime cache contains Tomekin's extension and Worker bundles. The default Tomekin database remains
 `.data/tomekin.sqlite`, and `TOMEKIN_DB_PATH` remains available for an isolated session.
 
-The session exposes the approved Tomekin Agent Tools, `read`, and Pi's interactive `ask_user` tool. Shared tools run
-in one lazy Bun Worker lane; `read` is Pi-local and
-limited to existing regular files below `skills/`; it reads the working tree and supports Pi-style one-indexed line
-`offset` and `limit` ranges. The launcher explicitly registers that directory as Pi-native skills,
-while ambient skill and context-file discovery remain disabled. Before every agent turn, Tomekin appends its product
-bootstrap to Pi's normal system prompt. The bootstrap identifies Tomekin's collection-first deck-building role, states
-its restricted authority, and directs the agent to read the root `tomekin-deck-building/SKILL.md` before product-tool
-use. That skill routes to the further skills required by the request.
+The session exposes the approved Tomekin Agent Tools, the official Pi `todo` checklist, `context_status`, `read`, native `codemode`, the plugin's native `calculator` tool, and
+Pi's interactive `ask_user` tool. Shared tools run in one lazy Bun Worker lane. `read` is limited to regular files
+below `skills/` and supports one-indexed `offset` and `limit`. Native skill discovery remains available while ambient
+resources are disabled. A compact Tomekin prompt replaces Pi's coding orientation; it directs the agent to load relevant
+skills as needed and reuse guidance already in context. The context tool reports an estimate or unknown. After compaction,
+the agent recovers the actual candidate, Resume note and needed research pages.
 Core-owned Zod input contracts supply tool argument affordance; Card Query preserves its structured validation
 diagnostics for nuanced semantic rules. Expected failures are actionable results and unexpected errors are sanitized.
 `search_cards`, `lookup_cards` and `browse_collection_cards` preserve their complete 51,200-byte compact success/error envelopes in model-visible content and details,
@@ -66,7 +65,8 @@ with ordinary `first`/`after` recovery. Location inspection preserves complete n
 scoped `read` has its own file limits. Aborting a read
 terminates its Worker and discards late output. Dispatched candidate writes and explicit check tools settle before shutdown and are not reported as cancelled; an
 unexpected Worker exit reports an unknown outcome for the agent to verify through Deck Candidate reads. The profile loads
-only the reviewed local `pi-ask-user@0.15.0/index.ts` extension file and no bundled resources. Ambient extensions, MCP,
+the reviewed local `pi-ask-user@0.15.0/index.ts` and `@fitchmultz/pi-calculator@4.1.9/index.ts` extension files,
+the pinned Pi todo example, restricted codemode and Tomekin's own extension, without bundled package resources. Ambient extensions, MCP,
 project approval, prompt templates, and themes are disabled alongside ambient skills and context files.
 The launcher clears Pi-managed packages while preserving other settings; invalid settings fail without being overwritten.
 Pi login, settings, conversations, and recovery remain Pi-owned within the clone-local profile. The launcher has no
@@ -244,7 +244,7 @@ progress, including unfinished or empty selection. `edit_deck_candidate({candida
 loads unchanged records server-side and applies one atomic typed change set. There is no mandatory Markdown, automatic
 legality/evaluation/Availability check, dedicated copy tool, stored proposal, confirmation token or completion state.
 
-The Brief owns Format and preferences. A plan uses `schema_version: 1`; node and relationship additions declare a local
+The Brief owns Format and preferences. A plan owns a concise description with a current Resume note and optional `action_analysis_markdown` and `search_research_markdown` documents. Each is independently replaced on a stage-sized save; omission preserves it and `null` clears it. An early candidate may have an empty pool and selection. A plan uses `schema_version: 1`; node and relationship additions declare a local
 `ref`. Contributions use `role_id` or `role_ref`; relationships use `source_id`/`source_ref` and `target_id`/`target_ref`.
 The server returns candidate/authored UUIDs in `created_ids`. Local references are confined to the request. Roles and
 relationships retain stable IDs across wording changes. Options use Card Identity, contributions use option/role pairs,
@@ -262,23 +262,22 @@ returned reasoning is never silently truncated.
 The exact UTC `updated_at` is candidate-wide. A stale edit returns `conflict`, with candidate ID and expected/current
 timestamps. Reload and reconcile rather than silently rebasing. Success returns compact actual-change context and stable
 ID mappings. `get_deck_candidate({id})` and `list_deck_candidates` return summaries with Format/anchor, timestamps, selected
-section quantities, pool size and concise role/gap information. Summaries expose each recorded check's applicability and
+section quantities, pool size, research presence and UTF-8 byte sizes, and concise role/gap information. Write results include the same compact research indicators and the latest candidate timestamp. Summaries expose each recorded check's applicability and
 check time. Ordinary reads do not invoke checks.
 
 ### Complete views and generated output
 
-`get_deck_candidate({id, view, first?, after?})` supports `brief`, `selected`, `options`, `pool`, `plan`, `assessments`,
+`get_deck_candidate({id, view, first?, after?})` supports `brief`, `selected`, `options`, `pool`, `plan`, `action_analysis`, `search_research`, `assessments`,
 `json`, `report` and `portable_decklist`, plus the default compact `summary`. There is no public unbounded `state` view.
 Options include canonical names, comparison notes, selected memberships and complete contribution rationale,
 qualifications and evidence. The pool view has one deduplicated `options` array and role groups referring to those
-options by Card Identity; section-aware selected quantities come only from memberships.
+options by Card Identity; section-aware selected quantities come only from memberships. Optional `role_id` and `card_identity_id` selectors apply to `options` and `pool` before pagination; combined selectors intersect. A role filter retains complete relevant contributions and its goal and coverage assessment. A card filter retains memberships and relevant contributions, including unselected alternatives. A role-filtered `options` view returns the same grouped shape as `pool`, including the role goal and assessment; otherwise `options` returns an array. For card-narrowed groups, `counts_scope: "whole_role"` identifies role-wide selected counts, while `option_ids` lists only matching options. Empty matches are returned as empty arrays. Other views reject these selectors.
 
 Explicit views use the shared complete bounded envelope: default `first: 50`, range 0–200, maximum 51,200 escaped UTF-8
-JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node is `{path, value}` in `path_value_v1` format.
-Apply records in order: an empty path sets the root; other paths assign an object key or array index. Explicit empty
-containers preserve empty objects/arrays. Array entities retain complete local reasoning. For `json`, this reconstructs
-the complete current candidate, including full check findings and dependencies. For report/decklist views, concatenate
-the ordered string values. Repeat `id` and `view` with `after`; `first` may change. A view's transient hash binds its
+JSON bytes, complete `edges[].node`, one `next_cursor` (null at exhaustion) and stop reason. Each node uses `path_value_text_v2`: `{kind: "value", path, value}` assigns a complete value; `{kind: "text_fragment", path, index, text, final}` contributes a string fragment.
+Apply records in order: an empty path sets the root; other paths assign an object key or array index. A fragment sequence starts at index zero, continues consecutively for the same path, and finishes only when `final` is true. Assemble all fragments before assigning the string; missing, interleaved or out-of-order fragments mean the read is incomplete. Explicit empty containers preserve empty objects/arrays. Oversized objects are decomposed to preserve their contents. For `json`, this reconstructs
+the complete current candidate, including research, full check findings and dependencies. The focused research views return their complete nullable Markdown strings, while plan, JSON and report views include both documents. For report/decklist views, concatenate
+the ordered string values. Repeat `id`, `view` and any selectors with `after`; `first` may change. A view's transient hash binds its
 content timestamp and all included records, so changed canonical names, evidence publication or evidence applicability
 reject affected continuation even when candidate content timestamps stay unchanged. Unrelated data does not stale an
 unchanged Brief-only view. There is no persisted cursor/result store. An oversized indivisible record fails explicitly;
@@ -331,6 +330,28 @@ intended result. For creates, use list/get to inspect possible matches by label,
 are not unique and exact-once retries are not guaranteed. Inspect ambiguous matches rather than guessing. Pi serializes
 mutations, ignores cancellation once dispatched and waits for their settlement during shutdown. Unexpected Worker failure
 reports `unknown_write_outcome`. Neither the Worker lane nor a candidate ID replaces concurrency checks or authorization.
+
+## General Calculator (Pi)
+
+The Pi-only `calculator` tool comes directly from the pinned `@fitchmultz/pi-calculator` extension. It evaluates one
+expression without opening a Collection or requiring reference data. It supports arithmetic (`+`, `-`, `*`, `/`, `%`,
+`^`, `**`), parentheses, uppercase `PI` and `E`, roots/logarithms/trigonometry, rounding, percentages, factorials and
+descriptive statistics. Independent results can share a flat array. For example, `sqrt(16) + 3^2` returns `"13"`,
+and `[0.1 + 0.2, 2^64]` returns `["0.3", "18446744073709551616"]`.
+
+Inputs and arithmetic round to 40 significant digits; results are decimal strings, not symbolic exact answers.
+Model-visible content contains the scalar value or a JSON array of strings. Both `details` and `structuredContent`
+contain `{expression, value}`, with a trimmed expression and a string or string-array value. Code mode receives that
+object directly. Native Pi validation and error handling apply; evaluation failures throw instead of returning the
+previous wrapper's `invalid_expression` envelope. There is no `calculate` compatibility alias.
+
+The plugin limits expressions to 4,096 characters and 128 nesting levels, serialized expression/value output to 50 KiB,
+and factorial operands and aggregate factorial work to 1,000. Expensive operations have additional work/argument limits.
+Assignments, property access, nonnumeric/nonfinite results and nested result arrays are rejected; one invalid array
+member fails the whole expression. Evaluation runs in Pi's process with work limits, rather than the shared-tool Worker.
+See the [pinned upstream reference](https://github.com/fitchmultz/pi-calculator/blob/v4.1.9/docs/reference.md) for the full
+function catalog and limits. Use `hypergeometric_calculator` for its supported sampling and minimum-count questions.
+A calculation does not establish that its assumptions, independence, castability or strategic conclusions are correct.
 
 ## Hypergeometric Calculator
 
@@ -444,6 +465,8 @@ metadata contributes possible compatible supply, not proven ownership; unknown p
 proof. `metadata_uncertain` and undated compatible quantities remain visible, including strict recent-copy checks.
 Strict recent intent is loaded through the whole Brief and rejects a wider confirmed date policy.
 
+Omitted `first` defaults to 0: the whole demand is computed and applicable evidence published, while the response returns the complete summary and context without witness edges. The real `next_cursor` starts detailed witness recovery; pass a positive `first` and the cursor to inspect details. A complete sufficient summary does not require witness traversal. A shortage count does not identify affected cards.
+
 A complete computation may establish a recorded shortage. The successful bounded path/value envelope distinguishes
 `check_completion: complete` from `witness_completion: partial`; recover all pages to inspect the complete witness.
 `allocations` contain only eligible pulls, while `ownership_allocations` are diagnostic proof of owned coverage and
@@ -462,7 +485,7 @@ exports or candidate edits. Interrupted computations return partial-check errors
 claims; retry the complete original request. There is no partial allocation cache.
 
 `get_deck_candidate` views `availability` and `collection_pull_list`, and render output `collection_pull_list`, use the
-existing bounded fixed-baseline record recovery. Absent/outdated evidence emits an explanation without usable pulls.
+existing bounded fixed-baseline record recovery. `get_deck_candidate` with `view: "availability", details: "problems"` projects only affected requirements, their Card Identity/name, quantities and reasons, alongside the saved summary/context. It excludes covered requirements and allocation rows; an empty list does not replace the aggregate verdict, especially when eligibility is unknown. Continue with the same details selector. Absent/outdated evidence emits an explanation requesting an explicit check without usable prior requirements or pulls.
 Successful Collection replacement invalidates old scope even with matching names: reconfirm and recheck. A Pull List
 never reserves, moves or reassigns cards; the user chooses physical copies, including permitted borrowing from named
 Existing Decks. Existing Format checks remain separate.
@@ -480,3 +503,15 @@ needed focused views, then missing facts. Pool-only research retains justified a
 finishes without automatically fetching full witnesses/reports or invoking construction/assembly finalization.
 All paginated Agent Tools return one compact continuation while more results remain. Changed search conditions or bound
 dependencies require restart, with ordinary permission checks still applied on every call.
+
+### Current reasoning review
+
+Candidates carry a persisted `pending` or `reviewed` reasoning-review state, independent of legality, Availability and strategic adequacy. Existing candidates default to pending. Changes to selected quantities or sections, the Brief, or current strategic reasoning reopen review; unrelated alternative maintenance does not. The edit result identifies directly affected contributions and roles after selected membership changes. Reconcile indirect dependencies and the actual saved selection before acknowledging `reviewed` in a separate edit using the latest `expected_updated_at`. Review-only edits preserve deterministic check freshness; a stale acknowledgement conflicts and material changes cannot be acknowledged in the same edit. Reviewed reasoning may still record gaps.
+
+## Deck workflow guidance
+
+The canonical skills route by requested outcome: Collection-backed opportunity discovery, chosen-anchor construction,
+tuning, explanation, focused pool research, or direct questions. A selected anchor begins action analysis; the user
+agrees its initial analysis before it is saved. Authorized later research can progress and save at stage boundaries.
+Saved Resume and research views support recovery. Current selected membership determines coverage and Availability;
+completion claims additionally require contextual review and applicable explicit checks.

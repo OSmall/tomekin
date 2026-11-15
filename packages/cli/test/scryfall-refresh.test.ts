@@ -1,4 +1,5 @@
 import {describe, expect, test} from "bun:test";
+import {readFileSync} from "node:fs";
 import {ok, type Result} from "neverthrow";
 import {createCollectionImportServices, createAgentToolHandlers, type ScryfallBulkDataSyncPorts} from "@tomekin/core";
 import {openDatabase, closeDatabase, createSqliteCollectionRepository, createSqliteDeckCandidateRepository,
@@ -277,12 +278,21 @@ describe("coordinated Scryfall refresh through the command", () => {
   test("generated reconciliation metadata migration upgrades a populated previous schema without changing user data", async () => {
     const path = await populated(); await seedUserData(path);
     const db = connection(path);
-    db.$client.exec("DROP TABLE scryfall_migration_application; DROP TABLE scryfall_migration_evidence; DELETE FROM __drizzle_migrations WHERE rowid=(SELECT max(rowid) FROM __drizzle_migrations)");
+    // Reconstruct the populated schema immediately before 0010, including the later additive
+    // columns: simply deleting the latest journal row replays the wrong migration.
+    const journal = JSON.parse(readFileSync(new URL("../../sqlite/drizzle/meta/_journal.json", import.meta.url), "utf8"));
+    const reconciliation = journal.entries.find((entry: {tag: string}) => entry.tag.startsWith("0010_"));
+    if (!reconciliation) throw new Error("Missing reconciliation migration");
+    db.$client.exec("DROP TABLE scryfall_migration_application; DROP TABLE scryfall_migration_evidence; ALTER TABLE deck_candidate_plan DROP COLUMN action_analysis_markdown; ALTER TABLE deck_candidate_plan DROP COLUMN search_research_markdown; ALTER TABLE deck_candidate DROP COLUMN reasoning_review");
+    db.$client.query("DELETE FROM __drizzle_migrations WHERE created_at >= ?").run(reconciliation.when);
     closeDatabase(db);
     const before = logicalSnapshot(path);
     applySqliteMigrations(path, {log: testLog});
     const after = logicalSnapshot(path);
-    for (const [table, rows] of Object.entries(before)) if (table !== "__drizzle_migrations") expect(after[table]).toEqual(rows);
+    for (const [table, rows] of Object.entries(before)) if (table !== "__drizzle_migrations") {
+      const projected = after[table]!.map((row: Record<string, unknown>) => Object.fromEntries(Object.keys((rows as Record<string, unknown>[])[0] ?? {}).map(key => [key, row[key]])));
+      expect(projected).toEqual(rows);
+    }
     expect(audit(path).applications).toEqual([]); expect(audit(path).foreignKeys).toEqual([]);
   });
 

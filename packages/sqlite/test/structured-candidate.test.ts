@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
     createAgentToolHandlers,
+    reconstructCandidateView,
     createTestRootLoggerFromEnv,
 } from "@tomekin/core";
 import {
@@ -1263,7 +1264,7 @@ test("complete candidate reasoning is recoverable through baseline-bound views b
             records.push(...page.edges);
             cursor = Boolean(page.next_cursor) ? page.next_cursor : null;
         }
-        expect(records.find((e: any) => e.node.path.join(".") === "plan.description").node.value).toBe(description);
+        expect((reconstructCandidateView(records.map((e: any) => e.node)) as any).plan.description).toBe(description);
         expect(records.find((e: any) => e.node.path.join(".") === "plan.contributions.0").node.value).toMatchObject({rationale: "Reliable repeatable mana", qualifications: ["One activation each turn"], evidence: [{reference: "Card facts", note: "A mana ability"}]});
         const wrongView = await app.handlers.getDeckCandidate({id: created.candidate_id, view: "pool", after: first.next_cursor});
         expect(wrongView.isErr()).toBe(true);
@@ -1295,7 +1296,7 @@ test("on-demand pool and generated output keep alternatives distinct from select
     } finally {app.dispose();}
 });
 
-test("large views enforce the complete escaped byte budget, reconstruct exact JSON and fail oversized records explicitly", async()=>{
+test("large views enforce the complete escaped byte budget and reconstruct exact JSON and text", async()=>{
     const app=setup();
     try{
         const created=await initial(app);
@@ -1304,30 +1305,119 @@ test("large views enforce the complete escaped byte budget, reconstruct exact JS
         const zero=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"json",first:0}));
         expect(zero.edges).toEqual([]);
         expect(Boolean(zero.next_cursor)).toBe(true);
-        let after=zero.next_cursor,restored:any,large=false;
+        let after=zero.next_cursor,large=false;
+        const records:any[]=[];
         do{
             const page=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"json",first:200,after}));
             expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(51200);
             large ||= page.stop_reason==="response_budget";
-            for(const {node:{path,value}} of page.edges){
-                if(!path.length){restored=value;continue;}
-                let parent=restored;
-                for(const key of path.slice(0,-1))parent=parent[key];
-                parent[path[path.length-1]]=value;
-            }
+            records.push(...page.edges.map((edge:any)=>edge.node));
             after=Boolean(page.next_cursor)?page.next_cursor:null;
         }while(after);
         expect(large).toBe(true);
-        expect(restored).toEqual(unwrap(await createSqliteDeckCandidateRepository(app.db,{now:()=>new Date()}).getDeckCandidate(created.candidate_id)));
+        expect(reconstructCandidateView(records)).toEqual(unwrap(await createSqliteDeckCandidateRepository(app.db,{now:()=>new Date()}).getDeckCandidate(created.candidate_id)));
         const oversized='🦉'.repeat(18000);
         unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:changed.updated_at,changes:{plan:{schema_version:1,description:oversized}}}));
-        const first=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200}));
-        const failed=await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200,after:first.next_cursor});
-        expect(failed.isErr()).toBe(true);
-        expect(failed.error.envelope).toMatchObject({status:"error",edges:[],error:{code:"record_too_large",required_bytes:expect.any(Number),limit_bytes:51200}});
-        expect(failed.error.envelope).not.toHaveProperty("pageInfo");
-        expect(Buffer.byteLength(JSON.stringify(failed.error.envelope))).toBeLessThanOrEqual(51200);
+        const planRecords:any[]=[]; let planCursor:string | undefined;
+        do {
+            const page=unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"plan",first:200,...planCursor ? {after:planCursor} : {}}));
+            expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(51200);
+            planRecords.push(...page.edges.map((edge:any)=>edge.node));
+            planCursor=page.next_cursor ?? undefined;
+        } while(planCursor);
+        expect((reconstructCandidateView(planRecords) as any).description).toBe(oversized);
         const malformed=await app.handlers.getDeckCandidate({id:created.candidate_id,view:"json",after:"invalid!"});
         expect(malformed.error.envelope.error.code).toBe("invalid_cursor");
     }finally{app.dispose();}
+});
+
+test("reasoning review persists and reopens on material selected changes", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        expect(created.reasoning_review).toBe("pending");
+        const reviewed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{reasoning_review:"reviewed"}}));
+        expect(reviewed.reasoning_review).toBe("reviewed");
+        const amended = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:29}]}}));
+        expect(amended.reasoning_review).toBe("pending");
+        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id})).reasoning_review).toBe("pending");
+        const stale = await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{reasoning_review:"reviewed"}});
+        expect(stale.isErr()).toBe(true);
+    } finally { app.dispose(); }
+});
+
+test("review acknowledgments protect material edits while alternative maintenance stays reviewed", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        const reviewed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{reasoning_review:"reviewed"}}));
+        const alternative = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:reviewed.updated_at,changes:{options:[{action:"add",card_identity_id:draw,comparison_note:"An alternative"}],contributions:[{action:"add",contribution:{card_identity_id:draw,role_id:created.created_ids.mana,rationale:"Alternative mana"}}]}}));
+        expect(alternative.reasoning_review).toBe("reviewed");
+        const research = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:alternative.updated_at,changes:{plan:{schema_version:1,search_research_markdown:"Alternative pool research"}}}));
+        expect(research.reasoning_review).toBe("reviewed");
+        const invalid = await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:research.updated_at,changes:{memberships:[{action:"set",card_identity_id:forest,section:"mainboard",quantity:29}],reasoning_review:"reviewed"}});
+        expect(invalid.isErr()).toBe(true);
+        expect(unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id})).reasoning_review).toBe("reviewed");
+        const removed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:research.updated_at,changes:{memberships:[{action:"remove",card_identity_id:forest,section:"mainboard"}]}}));
+        expect(removed.reasoning_review).toBe("pending");
+        expect(removed.changed_references).toContain(`affected_roles:${created.created_ids.mana}`);
+        const reopened = openDatabase(app.path, {log});
+        try {
+            const candidate = unwrap(await createSqliteDeckCandidateRepository(reopened, {now:()=>new Date()}).getDeckCandidate(created.candidate_id));
+            expect(candidate.reasoning_review).toBe("pending");
+            expect(candidate.options.some((o: any) => o.card_identity_id === forest)).toBe(true);
+            expect(candidate.memberships.find((m: any) => m.card_identity_id === forest && m.section === "mainboard")).toBeUndefined();
+        } finally { closeDatabase(reopened); }
+    } finally { app.dispose(); }
+});
+
+test("focused pool and options views filter before pagination and bind selectors", async () => {
+    const app = setup();
+    try {
+        const created = await initial(app);
+        const changed = unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:created.updated_at,changes:{
+            options:[{action:"add",card_identity_id:draw,comparison_note:"Alternative"}],
+            nodes:[{action:"update",id:created.created_ids.mana,changes:{coverage_goal:{sections:["mainboard"],minimum_copies:10,criteria:"Produce mana",rationale:"Develop"},coverage_assessment:{summary:"Adequate"}}},{action:"add",node:{ref:"backup",kind:"role",label:"Backup",description:"Another role"}}],
+            contributions:[{action:"add",contribution:{card_identity_id:draw,role_id:created.created_ids.mana,rationale:"Fallback",qualifications:["Only later"],evidence:[{reference:"Facts",note:"A source"}]}},{action:"add",contribution:{card_identity_id:forest,role_ref:"backup",rationale:"Also supports backup"}}]
+        }}));
+        const args = {id:created.candidate_id,view:"pool",role_id:created.created_ids.mana,card_identity_id:draw};
+        let after: string | null = null;
+        const records: any[] = [];
+        do {
+            const page = unwrap(await app.handlers.getDeckCandidate({...args,first:1,...after ? {after} : {}}));
+            records.push(...page.edges.map((e:any)=>e.node));
+            after = page.next_cursor;
+        } while(after);
+        const {reconstructCandidateView} = await import("@tomekin/core");
+        const pool: any = reconstructCandidateView(records);
+        expect(pool.options).toHaveLength(1);
+        expect(pool.options[0]).toMatchObject({card_identity_id:draw,memberships:[],contributions:[{rationale:"Fallback",qualifications:["Only later"],evidence:[{reference:"Facts",note:"A source"}]}]});
+        expect(pool.roles[0]).toMatchObject({selected_copies:30,counts_scope:"whole_role",option_ids:[draw],role:{id:created.created_ids.mana,coverage_goal:{minimum_copies:10},coverage_assessment:{summary:"Adequate"}}});
+        const roleWithGoal = unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"options",role_id:created.created_ids.mana}));
+        const focusedRole: any = reconstructCandidateView(roleWithGoal.edges.map((e:any)=>e.node));
+        expect(focusedRole.roles[0].role).toMatchObject({coverage_goal:{minimum_copies:10},coverage_assessment:{summary:"Adequate"}});
+        const roleOnly = unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"options",role_id:changed.created_ids.backup}));
+        const roleOptions: any = reconstructCandidateView(roleOnly.edges.map((e:any)=>e.node));
+        expect(roleOptions.options).toHaveLength(1);
+        expect(roleOptions.options[0]).toMatchObject({card_identity_id:forest,contributions:[{rationale:"Also supports backup"}]});
+        expect(roleOptions.roles[0].role).toMatchObject({id:changed.created_ids.backup, label:"Backup"});
+        const cardOnly = unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"pool",card_identity_id:forest}));
+        const cardPool: any = reconstructCandidateView(cardOnly.edges.map((e:any)=>e.node));
+        expect(cardPool.options[0].memberships).toHaveLength(2);
+        expect(cardPool.options[0].contributions).toHaveLength(2);
+        expect(cardPool.roles).toHaveLength(2);
+        const empty = unwrap(await app.handlers.getDeckCandidate({id:created.candidate_id,view:"pool",role_id:changed.created_ids.backup,card_identity_id:draw}));
+        const emptyPool: any = reconstructCandidateView(empty.edges.map((e:any)=>e.node));
+        expect(emptyPool.options).toEqual([]);
+        expect(emptyPool.roles[0]).toMatchObject({counts_scope:"whole_role",selected_copies:31});
+        const prefix = unwrap(await app.handlers.getDeckCandidate({...args,first:0}));
+        const mismatch = await app.handlers.getDeckCandidate({...args,card_identity_id:forest,after:prefix.next_cursor});
+        expect(mismatch.isErr()).toBe(true);
+        expect(mismatch.error.envelope.error.code).toBe("invalid_cursor");
+        expect((await app.handlers.getDeckCandidate({...args,view:"plan"})).isErr()).toBe(true);
+        unwrap(await app.handlers.editDeckCandidate({candidate_id:created.candidate_id,expected_updated_at:changed.updated_at,changes:{label:"Changed"}}));
+        const stale = await app.handlers.getDeckCandidate({...args,after:prefix.next_cursor});
+        expect(stale.isErr()).toBe(true);
+        expect(stale.error.envelope.error.code).toBe("stale_cursor");
+    } finally {app.dispose();}
 });

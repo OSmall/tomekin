@@ -1,1 +1,0 @@
-../../../skills/tomekin-deck-building/SKILL.md

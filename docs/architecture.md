@@ -28,8 +28,8 @@ for operating rules, restart recovery and the unrecorded-header crash limitation
 Normal discovery is `search_cards`; local CQL2 is only explicitly enabled `legacy_query_cards`. `lookup_cards` remains
 local and does not hydrate missing facts from the provider. Reference relationships and existing foreign keys remain.
 
-Local `browse_tags` provides explicit search/lookup/list over retained tags, aliases and hierarchy. Complete-record
-pages use stateless import-bound cursors and transactional catalogue reads; hierarchy depth is explicit and bounded.
+Local `browse_tags` provides explicit search/lookup/list over retained tags, aliases and hierarchy. Selected-field
+pages use stateless selection- and import-bound cursors and transactional catalogue reads; hierarchy depth is explicit and bounded.
 `search_card_sets` uses the existing Set catalogue and only requires All Cards readiness. No second reference store.
 
 ## Current Components
@@ -134,7 +134,7 @@ Collection import read user-supplied local files.
 
 `packages/agent` composes the SQLite-backed Agent Tool runtime without selecting a harness. Callers pass an explicit
 database path and logger, invoke handlers, then close the runtime.
-`skills/` contains the eight canonical Tomekin skills, rooted at `tomekin-deck-building`. `packages/opencode` and
+`skills/` contains five canonical Tomekin skills, with `deck-development` routing deck work. `packages/opencode` and
 `.opencode/` remain a thin OpenCode adapter: it translates tool input and output, uses the shared runtime per call, and
 reaches canonical skills through repository-local shims. The adapter
 does not receive raw database, shell, source-tree, or arbitrary network authority for normal product use.
@@ -147,15 +147,20 @@ The wrapper verifies the expected Pi version. `.data/tomekin-pi-runtime/<version
 a downloaded Pi executable, and the child inherits the user's terminal streams. There is no platform-specific artifact
 selection, although only macOS arm64 has execution evidence.
 Pi's persistent clone-local profile remains `.data/pi`. The launcher selects the reviewed local `pi-ask-user/index.ts`
-file explicitly and disables ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
+and `@fitchmultz/pi-calculator/index.ts` files and the pinned Pi package's official todo example explicitly and disables
+ambient extensions, MCP, project approval, skills, contexts, prompts, and themes.
 It preserves non-package Pi settings and clears independent package installation; malformed settings fail before rewrite.
 The launcher explicitly registers `skills/` as Pi-native
 skills while retaining disabled ambient skill and context-file discovery. A Bun-bundled extension translates the approved
 shared Agent Tools through one lazy Worker lane. The Worker owns the SQLite runtime and preserves complete compact
 lookup envelopes; unmigrated tools retain their temporary 16,000-character safety cap. The Worker is recreated after
 cancellation or failure. Pi-local `read` remains a working-tree Tomekin-skill-only reader. The extension re-audits the
-approved model-visible registry (including Pi's `ask_user`) at session start. Before each agent turn, it appends its controlled Tomekin
-bootstrap to Pi's existing system prompt. `packages/core` owns the shared Agent Tool input contracts, which OpenCode and Pi project into their harness
+approved model-visible registry (including `ask_user`, `todo`, `calculator`, `context_status` and native `codemode`) at session start.
+Codemode has model calls disabled and composes approved tools. Checkpoints commit only after successful, complete output;
+truncation leaves the prior checkpoint intact. The launcher supplies a compact Tomekin system prompt in place of Pi's coding
+orientation; Pi still assembles its native skill catalog. `context_status` reports estimated usage or unknown, and the
+orientation directs recovery from actual saved candidate research after compaction. `packages/core` owns the shared Agent
+Tool input contracts, which OpenCode and Pi project into their harness
 schemas; Card Query keeps focused semantic validation behind that structural contract. The allow-list excludes generic authority;
 Pi's own credentials and TUI interaction stay Pi-owned.
 
@@ -249,12 +254,13 @@ historical Collection rows, duplicate identity columns, saved search or standalo
 
 ## Workflow instruction boundary
 
-One canonical `skills/` tree owns operational instructions in both adapters. `tomekin-deck-building` coordinates
-retrieval, authorization, create/edit, explicit checks and final outputs; `deck-shape-methodology` owns common contextual
-reasoning. Discovery and Format architecture/tuning compose it, with templates/calculator examples retained by Format
-owners. Services enforce structure, facts and requested deterministic checks; the agent owns strategic assessment and
-confirmation covering the actual result. No approval token, persisted Opportunity or separate workflow engine is added.
-The [workflow demonstration](evaluation/workflows.md) exercises these seams with synthetic data and actual transports.
+One canonical `skills/` tree owns operational instructions in both adapters. `deck-development` routes by requested
+outcome and owns construction, review and resumption; `card-research` and `probability-analysis` own shared methods,
+while `commander` and `sixty-card-constructed` hold Format-specific guidance. Pi's constrained reader can access their
+conditional companion references. OpenCode consumes the same native skill targets; Pi-specific code mode and general
+arithmetic are not implied OpenCode capabilities. Services enforce structure, facts and requested deterministic checks;
+the agent owns contextual strategy. The [workflow demonstration](evaluation/workflows.md) exercises product seams with
+synthetic data, not live model reasoning.
 
 ## Agent-context economy
 
@@ -264,5 +270,22 @@ URLs remain outside cursors. Search reconstructs provider pages from repeated na
 restart checks remain explicit. Success exposes one next_cursor, null at exhaustion, across search, lookup, catalogue,
 owned-row browsing, candidate views/rendering and Availability witnesses. No saved cursor/result store is added.
 Ordinary Collection search/browse context uses policy_id; full resolved policy is an explicit inspection projection.
-The canonical query-cards skill owns staged research; root/discovery/tuning workflows route to it.
+The canonical card-research skill owns staged retrieval and research coverage.
 See [ADR 0021](adr/0021-agent-efficient-retrieval-continuations.md) and the [economy evidence](evaluation/economy.md).
+
+### Pi general arithmetic dependency
+
+Pi explicitly loads `@fitchmultz/pi-calculator@4.1.9` as a Bun-managed extension file before Tomekin's registry audit.
+The upstream plugin owns the `calculator` name, schema, decimal evaluation, work limits, result contract and errors.
+Tomekin adds no evaluator, compatibility alias or result wrapper. Its `decimal.js` and `expr-eval-fork` dependencies
+replace the previous custom Math.js tool. Native code-mode callers receive the declared structured result directly.
+Evaluation remains in Pi's process, outside the shared-tool Worker; plugin work limits do not provide Worker cancellation.
+The shared hypergeometric calculator remains independently available to both adapters.
+
+The [five-option investigation](research/2026-11-02-pi-calculator-options.md) found no official production Pi calculator.
+The selected community plugin has little adoption evidence (zero stars at selection), but recent successful upstream
+Pi compatibility checks, explicit work limits and about 487 KB of unpacked runtime source including its two dependencies.
+It avoids the extra process/runtime or cloud dependency of the compared MCP options. Upstream documents Node >=24;
+an isolated Bun 1.3.14/Pi 1.4.0 trial passed, and the actual-package integration test covers loading, direct and nested
+results, native errors and reload under Tomekin's restricted launcher configuration. This establishes the measured
+Bun path, not broader upstream Bun support or cross-platform qualification.

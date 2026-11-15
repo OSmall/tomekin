@@ -1,5 +1,7 @@
 # Pi-native Tomekin skills
 
+Status: accepted; the skill names and partition below are superseded by the five-skill architecture in [the current architecture](../architecture.md#workflow-instruction-boundary).
+
 Pi explicitly discovers Tomekin's canonical `skills/` directory as native skills while ambient discovery remains
 disabled. Its model may read only real, regular working-tree files beneath that directory through a constrained `read`
 replacement. The root `tomekin-deck-building` skill supplies Tomekin's product workflow and routes to the supporting

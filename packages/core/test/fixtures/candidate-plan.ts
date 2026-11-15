@@ -3,7 +3,7 @@ export function candidatePlanFixture(): DeckCandidate {
     const id = "11111111-1111-4111-8111-111111111111", a = "22222222-2222-4222-8222-222222222222", b = "33333333-3333-4333-8333-333333333333";
     const time = "2026-10-18T00:00:00.000Z";
     return {id, label:'Forest "engine" <safe> & [plan]', format:"casual_60", formatAnchor:null,
-        brief:DeckBuildingBriefSchema.parse({format:"casual_60",goal:"Explain a synthetic public plan",powerLevel:null}),createdAt:time,updatedAt:time,selectedChangedAt:time,briefChangedAt:time,planChangedAt:time,
+        brief:DeckBuildingBriefSchema.parse({format:"casual_60",goal:"Explain a synthetic public plan",powerLevel:null}),createdAt:time,updatedAt:time,selectedChangedAt:time,briefChangedAt:time,planChangedAt:time,reasoning_review:"pending",
         options:[{card_identity_id:a,card_name:"Forest",comparison_note:"Repeatable source"},{card_identity_id:b,card_name:"Pool Alternative",comparison_note:"Costs a card"}],
         memberships:[{card_identity_id:a,card_name:"Forest",quantity:3,section:"mainboard"},{card_identity_id:a,card_name:"Forest",quantity:1,section:"sideboard"}],
         cards:[{cardIdentityId:a,cardName:"Forest",quantity:3,section:"mainboard",sortOrder:0,note:null},{cardIdentityId:a,cardName:"Forest",quantity:1,section:"sideboard",sortOrder:0,note:null}],

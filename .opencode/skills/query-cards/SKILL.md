@@ -1,1 +1,0 @@
-../../../skills/query-cards/SKILL.md

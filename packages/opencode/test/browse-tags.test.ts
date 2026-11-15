@@ -10,9 +10,11 @@ test("OpenCode catalogue operations preserve closed nested metadata across indep
     expect("search_card_identity_tags" in tools).toBe(false);
     const schema = tool.schema.toJSONSchema(tool.schema.object(tools.browse_tags.args), {metadata: tool.schema.registry()});
     expect((schema.properties as any).operation).toEqual((agentToolInputJsonSchema("browse_tags").properties as any).operation);
+    expect((schema.properties as any).select).toEqual((agentToolInputJsonSchema("browse_tags").properties as any).select);
     expect(JSON.stringify((schema.properties as any).operation)).toContain('"maximum":3');
     const validator = tool.schema.object(tools.browse_tags.args);
-    expect(validator.safeParse({operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {}}}).success).toBe(true);
+    expect(validator.safeParse({operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {}}, select: ["id", "aliases"]}).success).toBe(true);
+    expect(validator.safeParse({operation: {type: "list"}, select: []}).success).toBe(false);
     expect(validator.safeParse({operation: {type: "search", query: "mana", hierarchy: {}}}).success).toBe(false);
     expect(validator.safeParse({operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {depth: 4}}}).success).toBe(false);
 });
@@ -28,6 +30,9 @@ test("OpenCode returns complete catalogue definitions and structured misses and 
         const parsed = JSON.parse(output); expect(output).toBe(JSON.stringify(parsed));
         expect(parsed.edges[0].node.tag.description).toBe(text);
         expect(parsed.edges[1].node).toEqual({status: "not_found", slug: "absent"});
+        const selected = JSON.parse(await tools.browse_tags.execute({operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {}}, select: ["label", "aliases"]}));
+        expect(selected.edges[0].node.tag).toEqual({slug: "mana-rock", label: "mana rock", aliases: []});
+        expect(selected.edges[0].node.hierarchy.parents).toEqual([{slug: "mana", label: "mana", aliases: []}]);
         const invalid = JSON.parse(await tools.browse_tags.execute({operation: {type: "lookup", slugs: []}} as never));
         expect(invalid).toMatchObject({status: "error", error: {code: "invalid_request", retryable: false}});
     } finally {restore(); fixture.dispose();}

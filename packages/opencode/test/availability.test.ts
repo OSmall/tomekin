@@ -10,6 +10,7 @@ import { createCollectionFixture } from "../../agent/test/fixtures/collection";
 import { id, log } from "../../agent/test/fixtures/lookup";
 import {
     check_collection_availability,
+    get_deck_candidate,
     configureAgentToolRuntimeForTests,
 } from "../../../.opencode/tools/tomekin";
 
@@ -124,6 +125,13 @@ test("Availability exposes closed public check inputs and settles complete struc
             ),
         );
         expect(savedOpen.evidence.status).toBe("applicable");
+        const summaryInput = {candidate_id:saved.candidate_id, expected_updated_at:saved.updated_at};
+        const summaryOpen = JSON.parse(await check_collection_availability.execute(summaryInput as never, {} as never));
+        expect(summaryOpen).toMatchObject({check_completion:"complete", witness_completion:"partial", edges:[], summary:{required:7,missing_owned:1}});
+        expect(summaryOpen.next_cursor).toBeTruthy();
+        const problemInput = {id:saved.candidate_id,view:"availability",details:"problems"};
+        const openProblems = JSON.parse(await get_deck_candidate.execute(problemInput as never, {} as never));
+        expect(openProblems.edges.some((e:any) => e.node.value?.card_name === "Sol Ring")).toBe(true);
         for (const mode of ["Worker", "fallback"] as const) {
             const tool = createCoreTool("check_collection_availability", {
                 log,
@@ -138,6 +146,13 @@ test("Availability exposes closed public check inputs and settles complete struc
                       }),
             });
             expect(JSON.parse(JSON.stringify(tool.parameters))).toEqual(schema);
+            const defaultResult: any = await tool.execute("summary", summaryInput, new AbortController().signal);
+            expect(defaultResult.details).toMatchObject({check_completion:"complete",witness_completion:"partial",edges:[],summary:{required:7}});
+            const reader = createCoreTool("get_deck_candidate", {log, ...(mode === "Worker" ? {transport,databasePath:f.databasePath} : {createRuntime:() => createLocalAgentToolRuntime({databasePath:f.databasePath,log})})});
+            expect(JSON.parse(JSON.stringify(reader.parameters))).toEqual(agentToolInputJsonSchema("get_deck_candidate"));
+            const problemResult: any = await reader.execute("problems", problemInput, new AbortController().signal);
+            expect(JSON.parse(problemResult.content[0].text)).toEqual(JSON.parse(JSON.stringify(problemResult.details)));
+            expect(problemResult.details.edges.some((e:any) => e.node.value?.card_name === "Sol Ring")).toBe(true);
             const controller = new AbortController(),
                 pending = tool.execute(mode, savedInput, controller.signal);
             controller.abort();

@@ -228,3 +228,72 @@ test("unsafe aggregate quantities and incidental exact-Printing identity conflic
         expect(unsafe).toMatchObject({edges: [], error: {code: "local_error", reason: "unsafe_quantity"}});
     } finally {runtime.close(); f.dispose();}
 });
+
+test("scoped search enriches only delivered eligible results while preserving complete traversal", async () => {
+    const {mkdtempSync, readFileSync, rmSync} = await import("node:fs");
+    const {tmpdir} = await import("node:os");
+    const {join} = await import("node:path");
+    const {createRootLogger, resolveLogConfigFromEnv} = await import("@tomekin/core");
+    const f = await createCollectionFixture();
+    await f.reimportTags();
+    const dir = mkdtempSync(join(tmpdir(), "tomekin-scoped-tags-")), path = join(dir, "log.jsonl");
+    const searchLog = createRootLogger(resolveLogConfigFromEnv({NODE_ENV: "production", TOMEKIN_LOG_DESTINATION: "file", TOMEKIN_LOG_FILE: path, TOMEKIN_LOG_FORMAT: "json"}));
+    const urls: string[] = [];
+    const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log: searchLog, search: {provider: {id: "fixture", async dispatch(url) {
+        urls.push(url);
+        const second = new URL(url).searchParams.has("page");
+        return {status: 200, body: second
+            ? {object: "list", data: [card(id(203)), card(id(204), id(999))], has_more: false}
+            : {object: "list", data: [card(id(200), id(999)), card(id(201)), card(id(202), id(999))], has_more: true, next_page: "https://api.scryfall.com/cards/search?q=fixture&page=2"}};
+    }}}});
+    try {
+        const base = {q: "fixture", select: {name: true, tags: true}, collection_scope: {}, collection_policy: {kind: "explicit", policy: f.policy}, first: 1};
+        const first = envelope(await runtime.handlers.searchCards(base));
+        const second = envelope(await runtime.handlers.searchCards({...base, after: first.next_cursor}));
+        expect([first, second].flatMap(r => r.edges.map((e: any) => e.node.card.oracle_id))).toEqual([id(1), id(1)]);
+        expect(first.edges[0].node.card.tags).toMatchObject({direct: [{slug: "mana-rock"}, {slug: "resource"}]});
+        expect(second.next_cursor).toBeNull();
+        const entries = readFileSync(path, "utf8").trim().split("\n").map(line => JSON.parse(line)).filter(row => row.operation === "search_cards");
+        expect(entries.map(row => row.tagEnrichmentReads)).toEqual([1, 1]);
+        expect(entries.map(row => row.rawCount)).toEqual([4, 3]);
+        const withoutTags = {...base, select: {name: true}};
+        const plainFirst = envelope(await runtime.handlers.searchCards(withoutTags));
+        const plainSecond = envelope(await runtime.handlers.searchCards({...withoutTags, after: plainFirst.next_cursor}));
+        expect([plainFirst, plainSecond].flatMap(r => r.edges.map((e: any) => e.node.card))).toEqual([
+            {oracle_id: id(1), name: "Sol Ring"}, {oracle_id: id(1), name: "Sol Ring"},
+        ]);
+        const empty = envelope(await runtime.handlers.searchCards({...base, collection_scope: {locations: [{type: "deck", name: "Shared"}]}}));
+        expect(empty).toMatchObject({status: "ok", edges: [], next_cursor: null});
+        const zero = envelope(await runtime.handlers.searchCards({...base, first: 0}));
+        expect(zero).toMatchObject({status: "ok", edges: [], next_cursor: expect.any(String)});
+        const allEntries = readFileSync(path, "utf8").trim().split("\n").map(line => JSON.parse(line)).filter(row => row.operation === "search_cards");
+        expect(allEntries.slice(2).map(row => row.tagEnrichmentReads)).toEqual([0, 0, 0, 0]);
+        expect(urls.every(url => new URL(url).searchParams.get("q") === "fixture")).toBe(true);
+    } finally {runtime.close(); f.dispose(); rmSync(dir, {recursive: true, force: true});}
+});
+
+test("scoped tagged search resumes complete eligible results across response-size stops", async () => {
+    const f = await createCollectionFixture();
+    await f.reimportTags();
+    const source = [card(id(200), id(999)), card(id(201)), card(id(202)), card(id(203), id(999))].map(c => ({...c, oracle_text: 'Complete text "語". '.repeat(65)}));
+    const runtime = createLocalAgentToolRuntime({databasePath: f.databasePath, log, search: {responseBudgetBytes: 3000, provider: {id: "fixture", async dispatch() {return {status: 200, body: {object: "list", data: source, has_more: false}};}}}});
+    try {
+        const args = {q: "fixture", select: {name: true, oracle_text: true, tags: true}, collection_scope: {}, collection_policy: {kind: "explicit", policy: f.policy}};
+        const pages = [];
+        let after: string | undefined;
+        do {
+            const page = envelope(await runtime.handlers.searchCards({...args, ...(after ? {after} : {})}));
+            expect(page.status).toBe("ok");
+            expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(3000);
+            pages.push(page);
+            after = page.next_cursor;
+        } while (after);
+        expect(pages.length).toBeGreaterThan(1);
+        const cards = pages.flatMap(page => page.edges.map((edge: any) => edge.node.card));
+        expect(cards.map(card => card.oracle_id)).toEqual([id(1), id(1)]);
+        for (const card of cards) {
+            expect(card.oracle_text).toBe('Complete text "語". '.repeat(65));
+            expect(card.tags.direct.map((tag: any) => tag.slug)).toEqual(["mana-rock", "resource"]);
+        }
+    } finally {runtime.close(); f.dispose();}
+});

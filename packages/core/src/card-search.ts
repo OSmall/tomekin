@@ -159,6 +159,7 @@ export async function searchCards(
         providerCalls = 0,
         providerPages = 0,
         rawCount = 0,
+        tagEnrichmentReads = 0,
         httpMs = 0,
         projectionMs = 0,
         localMs = 0;
@@ -295,6 +296,7 @@ export async function searchCards(
                 providerDispatchAttempts: providerCalls,
                 providerPages,
                 rawCount,
+                tagEnrichmentReads,
                 returnedCount: edges.length,
                 outputBytes: bytes,
                 providerStageMs: httpMs,
@@ -663,7 +665,12 @@ export async function searchCards(
                 if (collection?.context.match === "printing") node.card.printing_id = raw.id as string;
                 projectionMs += now() - projectionStart;
                 check();
-                if (args.select.tags && !tagUnavailable) {
+                const matches = collection ? await collection.evaluate(node, raw.id as string, check) : true;
+                check();
+                if (matches && (edges.length === first || budgetLookahead))
+                    return await finalize(true, budgetLookahead ? "response_budget" : "first");
+                if (matches && args.select.tags && !tagUnavailable) {
+                    tagEnrichmentReads++;
                     const snapshot = await localSnapshot([node.card.oracle_id]);
                     if (snapshot.isErr())
                         throw new ProviderFailure({
@@ -679,12 +686,8 @@ export async function searchCards(
                             tags: "identity_not_in_local_reference_data",
                         };
                 }
-                if (args.select.tags && tagUnavailable)
+                if (matches && args.select.tags && tagUnavailable)
                     node.unavailable_fields = {tags: tagUnavailable};
-                const matches = collection ? await collection.evaluate(node, raw.id as string, check) : true;
-                check();
-                if (matches && (edges.length === first || budgetLookahead))
-                    return await finalize(true, budgetLookahead ? "response_budget" : "first");
                 const consumed: Position = {
                     url: safe.url,
                     page: safe.page,

@@ -8,8 +8,25 @@ test("catalogue lookup returns complete definitions without hierarchy and explic
     try {
         const result = await runtime.handlers.browseTags({operation: {type: "lookup", slugs: ["mana-rock", "absent"]}});
         expect(result.isOk()).toBe(true);
-        expect(result.value.edges).toMatchObject([{node: {status: "found", tag: {slug: "mana-rock", label: "mana rock", description: null, aliases: []}}}, {node: {status: "not_found", slug: "absent"}}]);
+        expect(result.value.edges).toMatchObject([{node: {status: "found", tag: {slug: "mana-rock", description: null}}}, {node: {status: "not_found", slug: "absent"}}]);
         expect(result.value.edges[0].node).not.toHaveProperty("hierarchy");
+        expect((result.value.edges[0].node as any).tag).toEqual({slug: "mana-rock", description: null});
+    } finally {runtime.close(); fixture.dispose();}
+});
+
+test("explicit definition fields apply to hierarchy and bind continuation to effective selection", async () => {
+    const fixture = await createLookupFixture({tags: true});
+    const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
+    try {
+        const operation = {type: "lookup", slugs: ["mana-rock", "mana"], hierarchy: {}};
+        const first = (await runtime.handlers.browseTags({operation, select: ["label", "id"], first: 1}))._unsafeUnwrap();
+        const found = first.edges[0]!.node as any;
+        expect(found.tag).toEqual({slug: "mana-rock", label: "mana rock", id: expect.any(String)});
+        expect(found.hierarchy.parents).toEqual([{slug: "mana", label: "mana", id: expect.any(String)}]);
+        expect(found.hierarchy.relationships).toEqual([{parent_slug: "mana", child_slug: "mana-rock"}]);
+        expect((await runtime.handlers.browseTags({operation, select: ["id", "label", "id"], after: first.next_cursor})).isOk()).toBe(true);
+        expect((await runtime.handlers.browseTags({operation, select: ["description"], after: first.next_cursor}))._unsafeUnwrapErr().envelope.error).toMatchObject({code: "invalid_cursor", reason: "query_mismatch"});
+        for (const select of [[], ["unknown"]]) expect((await runtime.handlers.browseTags({operation, select}))._unsafeUnwrapErr().envelope.error.code).toBe("invalid_request");
     } finally {runtime.close(); fixture.dispose();}
 });
 
@@ -36,7 +53,7 @@ test("catalogue search covers slug, label and alias and list recovers every comp
     const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
     try {
         for (const query of ["MANA-ROCK", "mana rock", "ACCELERATOR"]) {
-            const page = (await runtime.handlers.browseTags({operation: {type: "search", query}}))._unsafeUnwrap();
+            const page = (await runtime.handlers.browseTags({operation: {type: "search", query}, select: ["aliases"]}))._unsafeUnwrap();
             expect(page.edges).toMatchObject([{node: {tag: {slug: "mana-rock", aliases: ["Artifact accelerator"]}}}]);
         }
         expect((await runtime.handlers.browseTags({operation: {type: "search", query: "%"}}))._unsafeUnwrap().edges).toEqual([]);
@@ -142,7 +159,7 @@ test.each([
     const repo = createSqliteScryfallRepository(db, {now: () => now});
     const runtime = createLocalAgentToolRuntime({databasePath: fixture.databasePath, log});
     try {
-        const args = {operation: {type: "list"}, first: 1};
+        const args = {operation: {type: "list"}, select: ["label"], first: 1};
         const first = (await runtime.handlers.browseTags(args))._unsafeUnwrap();
         expect(first.edges).toMatchObject([{node: {tag: {slug: "mana", label: "mana"}}}]);
         const after = first.next_cursor!;

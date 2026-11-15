@@ -57,6 +57,7 @@ export function constructDeckCandidate(
         selectedChangedAt: now,
         briefChangedAt: now,
         planChangedAt: now,
+        reasoning_review: "pending",
         plan: null,
         options: [],
         memberships: [],
@@ -73,6 +74,8 @@ export function constructDeckCandidate(
                           plan: {
                               schema_version: 1,
                               description: input.plan.description,
+                              action_analysis_markdown: input.plan.action_analysis_markdown,
+                              search_research_markdown: input.plan.search_research_markdown,
                           },
                       }
                     : {}),
@@ -154,6 +157,8 @@ export function reviseDeckCandidate(
             schema_version: 1,
             candidate_id: candidate.id,
             description: changes.plan.description,
+            action_analysis_markdown: null,
+            search_research_markdown: null,
             nodes: [],
             contributions: [],
             relationships: [],
@@ -161,6 +166,10 @@ export function reviseDeckCandidate(
     }
     if (changes.plan?.description && candidate.plan)
         candidate.plan.description = changes.plan.description;
+    if (candidate.plan && changes.plan) {
+        if (changes.plan.action_analysis_markdown !== undefined) candidate.plan.action_analysis_markdown = changes.plan.action_analysis_markdown;
+        if (changes.plan.search_research_markdown !== undefined) candidate.plan.search_research_markdown = changes.plan.search_research_markdown;
+    }
     if (changes.assessments)
         candidate.assessments = {
             ...candidate.assessments,
@@ -420,12 +429,37 @@ export function reviseDeckCandidate(
             JSON.stringify(baseline.assessments)
     )
         candidate.planChangedAt = now;
+    // Only selected contributions affect current reasoning; alternative maintenance alone does not.
+    const strategicPlan = (value: DeckCandidateState) => {
+        if (!value.plan) return null;
+        const selected = new Set(value.memberships.map(m => m.card_identity_id));
+        const {search_research_markdown: _research, ...plan} = value.plan;
+        return {...plan, contributions: value.plan.contributions.filter(c => selected.has(c.card_identity_id))};
+    };
+    const material = JSON.stringify(selectedInputs(candidate)) !== JSON.stringify(selectedInputs(baseline)) ||
+        JSON.stringify(candidate.brief) !== JSON.stringify(baseline.brief) ||
+        JSON.stringify(strategicPlan(candidate)) !== JSON.stringify(strategicPlan(baseline)) ||
+        JSON.stringify(candidate.assessments) !== JSON.stringify(baseline.assessments);
+    if (material && changes.reasoning_review === "reviewed")
+        invalid("changes.reasoning_review", "Review material changes first, then acknowledge the saved state in a separate edit.");
+    candidate.reasoning_review = material ? "pending" : (changes.reasoning_review ?? baseline.reasoning_review);
+    if (JSON.stringify(selectedInputs(candidate)) !== JSON.stringify(selectedInputs(baseline))) {
+        const changedIds = new Set([...selectedInputs(candidate), ...selectedInputs(baseline)]
+            .filter(m => JSON.stringify(selectedInputs(candidate).find(n => membershipKey(n) === membershipKey(m))) !==
+                         JSON.stringify(selectedInputs(baseline).find(n => membershipKey(n) === membershipKey(m))))
+            .map(m => m.card_identity_id));
+        const affected = [...(baseline.plan?.contributions ?? []), ...(candidate.plan?.contributions ?? [])]
+            .filter(c => changedIds.has(c.card_identity_id));
+        for (const key of new Set(affected.map(contributionKey))) changedReferences.push(`affected_contributions:${key}`);
+        for (const id of new Set(affected.map(c => c.role_id))) changedReferences.push(`affected_roles:${id}`);
+    }
     candidate.updatedAt = now;
     return {
         candidate,
         createdIds,
         changedReferences: [
             ...Object.keys(changes).filter((key) => {
+                if (key === "reasoning_review") return candidate.reasoning_review !== baseline.reasoning_review;
                 if (key === "label") return candidate.label !== baseline.label;
                 if (key === "brief")
                     return (
@@ -434,8 +468,9 @@ export function reviseDeckCandidate(
                     );
                 if (key === "plan")
                     return (
-                        candidate.plan?.description !==
-                        baseline.plan?.description
+                        candidate.plan?.description !== baseline.plan?.description ||
+                        candidate.plan?.action_analysis_markdown !== baseline.plan?.action_analysis_markdown ||
+                        candidate.plan?.search_research_markdown !== baseline.plan?.search_research_markdown
                     );
                 if (key === "assessments")
                     return (

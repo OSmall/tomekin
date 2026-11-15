@@ -22,6 +22,9 @@ for (const mode of ["fallback", "Worker"] as const) test(`Pi ${mode} carries com
         expect(output.content[0]!.text.length).toBeGreaterThan(16_000);
         expect(JSON.parse(output.content[0]!.text)).toEqual(output.details);
         expect((output.details as any).edges[0].node.tag.description).toBe(text);
+        const selected = await definition.execute("selected", {operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {}}, select: ["label", "source_page_uri"]}, new AbortController().signal) as PiToolOutput;
+        expect((selected.details as any).edges[0].node.tag).toEqual({slug: "mana-rock", label: "mana rock", source_page_uri: "https://example.invalid/tag"});
+        expect((selected.details as any).edges[0].node.hierarchy.parents).toEqual([{slug: "mana", label: "mana", source_page_uri: "https://example.invalid/tag"}]);
         const invalid = await definition.execute("invalid", {operation: {type: "lookup", slugs: ["mana-rock"], hierarchy: {depth: 9}}}, new AbortController().signal) as PiToolOutput;
         expect(invalid.details).toMatchObject({status: "error", error: {code: "invalid_request"}});
     } finally {await transport?.close(); fixture.dispose();}

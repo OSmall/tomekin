@@ -6,7 +6,7 @@ import {createLocalAgentToolRuntime} from "@tomekin/agent";
 import {closeDatabase, createSqliteCollectionRepository, openDatabase} from "@tomekin/sqlite";
 import {createCoreTool, createPiWorkerTransport, type PiToolOutput} from "@tomekin/pi";
 import {resultToOpencodeOutput} from "@tomekin/opencode";
-import type {DeckCandidate, CandidateViewRecord} from "@tomekin/core";
+import {reconstructCandidateView, type DeckCandidate, type CandidateViewRecord} from "@tomekin/core";
 import {brief, createFixture, fixtureRevision, id, log} from "./fixtures";
 import {coverage, summarize, utf8Bytes} from "./baseline";
 
@@ -37,14 +37,7 @@ async function readView(runtime: Runtime, candidateId: string, view: "json" | "p
     return {records, pages, bytes};
 }
 function restore(records: CandidateViewRecord[]): DeckCandidate {
-    let value: any;
-    for (const record of records) {
-        if (!record.path.length) {value = record.value; continue;}
-        let parent = value;
-        for (const key of record.path.slice(0, -1)) parent = parent[key];
-        parent[record.path.at(-1)!] = record.value;
-    }
-    return value;
+    return reconstructCandidateView(records) as DeckCandidate;
 }
 function checkStatuses(candidate: DeckCandidate) {
     const checks = candidate.validation_evidence!.checks!;

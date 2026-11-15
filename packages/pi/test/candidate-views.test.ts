@@ -1,6 +1,6 @@
 import {expect,test} from "bun:test";
 import {createLocalAgentToolRuntime} from "@tomekin/agent";
-import {agentToolInputJsonSchema} from "@tomekin/core";
+import {agentToolInputJsonSchema, reconstructCandidateView} from "@tomekin/core";
 import {createCoreTool,createPiWorkerTransport,type PiToolOutput} from "@tomekin/pi";
 import {createCandidateViewFixture,completeCandidateDescription} from "../../agent/test/fixtures/candidate-views";
 import {log} from "../../agent/test/fixtures/lookup";
@@ -12,6 +12,11 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         const schema=JSON.parse(JSON.stringify(tool.parameters));
         expect(schema).toEqual(agentToolInputJsonSchema("get_deck_candidate"));
         expect(schema.properties.view.enum).toContain("pool");
+        expect(schema.properties.role_id).toBeDefined();
+        expect(schema.properties.card_identity_id).toBeDefined();
+        const filtered=await tool.execute("filtered",{id:fixture.candidateId,view:"options",card_identity_id:"00000000-0000-4000-8000-000000000001"},new AbortController().signal) as PiToolOutput;
+        expect(JSON.parse(filtered.content[0]!.text)).toEqual(filtered.details);
+        expect(filtered.details).toMatchObject({status:"ok"});
         expect(schema.properties.view.enum).not.toContain("state");
         let after:string|undefined;
         let description:string|undefined;
@@ -41,4 +46,63 @@ for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} preserves comp
         expect(JSON.parse(stale.content[0]!.text)).toEqual(stale.details);
         expect(stale.details).toMatchObject({status:"error",edges:[],error:{code:"stale_cursor",recovery:"restart"}});
     }finally{await transport?.close();fixture.dispose();}
+});
+
+for(const mode of ["fallback", "Worker"] as const)test(`Pi ${mode} can recover a very large escaped Unicode strategy across bounded text fragments`,async()=>{
+    const fixture=await createCandidateViewFixture();
+    const runtime=createLocalAgentToolRuntime({databasePath:fixture.databasePath,log});
+    const transport=mode==="Worker"?createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts",import.meta.url).href}):undefined;
+    const tool=createCoreTool("get_deck_candidate",{log,...transport?{transport,databasePath:fixture.databasePath}:{createRuntime:()=>createLocalAgentToolRuntime({databasePath:fixture.databasePath,log})}});
+    const description='🦊\\\"\n'.repeat(10000);
+    try {
+        const current=await runtime.handlers.getDeckCandidate({id:fixture.candidateId});
+        if(current.isErr())throw new Error(current.error.message);
+        const update=await runtime.handlers.editDeckCandidate({candidate_id:fixture.candidateId,expected_updated_at:(current.value as any).updated_at,changes:{plan:{schema_version:1,description,action_analysis_markdown:description,search_research_markdown:"Search evidence"},nodes:[{action:"add",node:{ref:"large",kind:"role",label:"Large",description,coverage_assessment:{summary:"No selected contributors."}}}]}});
+        if(update.isErr())throw new Error(update.error.message);
+        let after:string|undefined, index=0, result='';
+        const records:any[]=[];
+        do {
+            const read=await tool.execute("large",{id:fixture.candidateId,view:"plan",first:2,...after?{after}:{}},new AbortController().signal) as PiToolOutput;
+            const page=JSON.parse(read.content[0]!.text);
+            expect(page).toEqual(read.details); expect(page.status).toBe("ok");
+            records.push(...page.edges.map((edge:any)=>edge.node));
+            expect(Buffer.byteLength(JSON.stringify(page))).toBeLessThanOrEqual(51200);
+            for(const {node} of page.edges) if(node.kind==='text_fragment' && node.path.join('.')==='description') {
+                expect(node.index).toBe(index++); result+=node.text;
+                if(node.final)expect(result).toBe(description);
+            }
+            after=page.next_cursor??undefined;
+        } while(after);
+        expect(index).toBeGreaterThan(1); expect(result).toBe(description);
+        expect((reconstructCandidateView(records) as any).description).toBe(description);
+        const firstFragment=records.findIndex(record=>record.kind==='text_fragment');
+        expect(()=>reconstructCandidateView(records.slice(0,firstFragment+1))).toThrow();
+        expect(()=>reconstructCandidateView(records.filter((_,i)=>i!==firstFragment))).toThrow();
+        for (const view of ["json", "report", "action_analysis", "search_research"] as const) {
+            const all:any[]=[]; let cursor:string|undefined;
+            do {
+                const output=await tool.execute("full",{id:fixture.candidateId,view,first:200,...cursor?{after:cursor}:{}},new AbortController().signal) as PiToolOutput;
+                const page=JSON.parse(output.content[0]!.text);
+                expect(page.status).toBe("ok"); expect(Buffer.byteLength(output.content[0]!.text)).toBeLessThanOrEqual(51200);
+                all.push(...page.edges.map((edge:any)=>edge.node)); cursor=page.next_cursor??undefined;
+            } while(cursor);
+            const reconstructed:any=reconstructCandidateView(all);
+            if(view==="json") {expect(reconstructed.plan.description).toBe(description); expect(reconstructed.plan.nodes.find((node:any)=>node.label==="Large").description).toBe(description);}
+            else if(view==="report") expect(reconstructed.join("")).toContain(description);
+            else expect(reconstructed).toBe(view==="action_analysis" ? description : "Search evidence");
+        }
+    } finally {await transport?.close();runtime.close();fixture.dispose();}
+});
+
+for(const mode of ["fallback","Worker"] as const)test(`Pi ${mode} transports reasoning review acknowledgments`,async()=>{
+    const fixture=await createCandidateViewFixture();
+    const transport=mode==="Worker"?createPiWorkerTransport({workerUrl:new URL("../src/tomekin-worker.ts",import.meta.url).href}):undefined;
+    const options={log,...transport?{transport,databasePath:fixture.databasePath}:{createRuntime:()=>createLocalAgentToolRuntime({databasePath:fixture.databasePath,log})}};
+    const read=createCoreTool("get_deck_candidate",options), edit=createCoreTool("edit_deck_candidate",options);
+    try {
+        const before=JSON.parse((await read.execute("read",{id:fixture.candidateId},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(before.reasoning_review).toBe("pending");
+        const result=JSON.parse((await edit.execute("review",{candidate_id:fixture.candidateId,expected_updated_at:before.updated_at,changes:{reasoning_review:"reviewed"}},new AbortController().signal) as PiToolOutput).content[0]!.text);
+        expect(result.reasoning_review).toBe("reviewed");
+    } finally {await transport?.close();fixture.dispose();}
 });

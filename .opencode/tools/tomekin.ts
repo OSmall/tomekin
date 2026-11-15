@@ -93,6 +93,11 @@ export const legacy_query_cards = process.env.TOMEKIN_ENABLE_LEGACY_QUERY === "t
   },
 }) : undefined;
 
+const tagSelection = createCanonicalOpenCodeInputSchema(
+    agentToolContracts.browse_tags.inputSchema.shape.select,
+    (agentToolInputJsonSchema("browse_tags").properties as Record<string, unknown>).select,
+    (validate) => tool.schema.custom<BrowseTagsArgs["select"]>(validate),
+);
 const tagOperation = createCanonicalOpenCodeInputSchema(
     TagCatalogueOperationSchema,
     (agentToolInputJsonSchema("browse_tags").properties as Record<string, unknown>).operation,
@@ -100,7 +105,7 @@ const tagOperation = createCanonicalOpenCodeInputSchema(
 );
 export const browse_tags = tool({
     description: agentToolContracts.browse_tags.description,
-    args: {...argsOf("browse_tags"), operation: tagOperation},
+    args: {...argsOf("browse_tags"), operation: tagOperation, select: tagSelection},
     async execute(args, context?: {abort:AbortSignal}) {
         return runTool("browse_tags", args, (handlers) => handlers.browseTags(args,context?.abort));
     },
